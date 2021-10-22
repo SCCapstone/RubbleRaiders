@@ -3,7 +3,7 @@
 Blades & Tomes is a turn-based dungeon crawl game made with the libGDX engine
 where you play as an adventurer, wishing to strike his fortune within the deep depths
 of dark dungeons. To learn more about the project, please refer to the project
-description on the wiki [here](https://github.com/SCCapstone/RubbleRaiders/wiki/Project-Description)
+description on the wiki [here.](https://github.com/SCCapstone/RubbleRaiders/wiki/Project-Description)
 
 ## Requirements
 
@@ -14,7 +14,7 @@ To be able to run the app, please install the following programs:
 
 ## Setup
 
-*Please clone this directory into your workspace directory before starting this step!*
+To SetUp the local branch, first clone the branch to your workspace directory (let's say "~/my_work_directory")
 
 ## Running
 
