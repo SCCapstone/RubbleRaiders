@@ -14,9 +14,11 @@ To be able to run the app, please install the following programs:
 
 ## Setup
 
-
+*Please clone this directory into your workspace directory before starting this step!*
 
 ## Running
+
+
 
 # Authors
 
