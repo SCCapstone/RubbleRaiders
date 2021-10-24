@@ -10,6 +10,8 @@ public class DesktopLauncher {
 		config.height = 800;
 		config.width = 800;
 		config.title = "Blades & Tomes";
+		config.resizable = false;
+		config.forceExit = false;
 		new LwjglApplication(new BladeAndTomes(), config);
 	}
 }

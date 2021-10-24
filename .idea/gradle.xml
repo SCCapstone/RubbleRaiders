@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/BladeAndTomes" />
+        <option name="gradleJvm" value="corretto-11" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/BladeAndTomes" />
+            <option value="$PROJECT_DIR$/BladeAndTomes/core" />
+            <option value="$PROJECT_DIR$/BladeAndTomes/desktop" />
+            <option value="$PROJECT_DIR$/BladeAndTomes/html" />
+            <option value="$PROJECT_DIR$/BladeAndTomes/ios" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
