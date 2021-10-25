@@ -11,6 +11,9 @@ public class BladeAndTomes extends Game {
 	private int windowHight = 800,
 					windowWidth = 800;
 	boolean showFirstImage;
+	float backgroundColorR = 0,
+				backgroundColorG = 0.1f,
+					backgroundColorB = 0.2f;
 
 
 	@Override
@@ -24,7 +27,7 @@ public class BladeAndTomes extends Game {
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(0, 0.1f, 0.2f, 1);
+		ScreenUtils.clear(backgroundColorR, backgroundColorG, backgroundColorB, 1);
 		batch.begin();
 		if(showFirstImage){
 		batch.draw(img, windowWidth/2, windowHight/2);
