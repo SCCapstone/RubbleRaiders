@@ -7,6 +7,9 @@ import com.badlogic.game.BladeAndTomes;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.height = 800;
+		config.width = 800;
+		config.title = "Blades & Tomes";
 		new LwjglApplication(new BladeAndTomes(), config);
 	}
 }

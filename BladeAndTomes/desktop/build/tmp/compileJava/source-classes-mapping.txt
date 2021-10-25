@@ -1,0 +1,2 @@
+com/badlogic/game/desktop/DesktopLauncher.java
+ com.badlogic.game.desktop.DesktopLauncher
