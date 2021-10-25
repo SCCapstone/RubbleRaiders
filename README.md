@@ -24,5 +24,6 @@ To SetUp the local branch, first clone the branch to your workspace directory (l
 
 Aidan Emmons - akemmons@email.sc.edu
 
+Brent Able - bpable@email.sc.edu
 
 -- Anirudh Oruganti Merge Testing 
