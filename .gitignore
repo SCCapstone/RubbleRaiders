@@ -1,7 +1,11 @@
+## This file was retrieved from https://github.com/libgdx/libgdx/blob/master/.gitignore
+# All credit goes to libGDX for providing the publically accessed file.
+
 # Temporary Files
 *~
 .*.swp
 .DS_STORE
+BladeAndTomes/.DS_STORE
 desktop.ini
 robovm-build/
 project.xcworkspace/
