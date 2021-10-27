@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		config.title = "Blades & Tomes";
 		config.resizable = false;
 		config.forceExit = false;
+		// Test Merge
 		new LwjglApplication(new BladeAndTomes(), config);
 	}
 }
