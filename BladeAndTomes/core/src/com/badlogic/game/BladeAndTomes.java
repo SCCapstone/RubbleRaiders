@@ -9,13 +9,13 @@ public class BladeAndTomes extends Game {
 	SpriteBatch batch;
 	Texture img,img2;
 	private int windowHight = 800,
-					windowWidth = 800;
+			windowWidth = 800;
 	boolean showFirstImage;
 	float backgroundColorR = 0,
-				backgroundColorG = 0.1f,
-					backgroundColorB = 0.2f;
+			backgroundColorG = 0.1f,
+			backgroundColorB = 0.2f;
 
-
+	int move =0;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -29,17 +29,21 @@ public class BladeAndTomes extends Game {
 	public void render () {
 		ScreenUtils.clear(backgroundColorR, backgroundColorG, backgroundColorB, 1);
 		batch.begin();
+		if (move>200){
+			move = 0;
+		}
 		if(showFirstImage){
-		batch.draw(img, windowWidth/2, windowHight/2);
+			batch.draw(img, windowWidth/2+move, windowHight/2);
 			showFirstImage =false;
 		}
 		else {
-			batch.draw(img2, windowWidth/2, windowHight/2-70);
+			batch.draw(img2, windowWidth/2-move, windowHight/2-70);
 			showFirstImage =true;
 		}
+		move++;
 		batch.end();
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();
