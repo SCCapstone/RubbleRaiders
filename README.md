@@ -26,4 +26,5 @@ Aidan Emmons - akemmons@email.sc.edu
 
 Brent Able - bpable@email.sc.edu
 
--- Anirudh Oruganti Merge Testing 
+V.N Anirudh Oruganti - oruganti@email.sc.edu
+
