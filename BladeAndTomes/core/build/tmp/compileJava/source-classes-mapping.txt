@@ -1,2 +1,4 @@
+com/badlogic/game/MergeConflict.java
+ com.badlogic.game.MergeConflict
 com/badlogic/game/BladeAndTomes.java
  com.badlogic.game.BladeAndTomes
