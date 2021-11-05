@@ -1,3 +1,4 @@
+# RubbleRaiders
 # Blades & Tomes
 
 Blades & Tomes is a turn-based dungeon crawl game made with the libGDX engine
@@ -27,4 +28,3 @@ Aidan Emmons - akemmons@email.sc.edu
 Brent Able - bpable@email.sc.edu
 
 V.N Anirudh Oruganti - oruganti@email.sc.edu
-
