@@ -1,30 +1,87 @@
 package com.badlogic.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BladeAndTomes extends Game {
 	ShapeRenderer shapeRenderer;
 	SpriteBatch batch;
 	Texture img;
 	BitmapFont font;
+	Stage stageInstance;
 
+	//Defining general text button look
+	TextButton.TextButtonStyle generalTextButtonStyle;
+	TextureRegion generalTextButtonUpRegion;
+	TextureRegion generalTextButtonDownRegion;
+	Texture generalTextButtonUpState;
+	Texture generalTextButtonDownState;
+
+	/**
+	 * Creates and initializes all objects and variables for the main project before moving the program to
+	 * the first screen.
+	 */
 	@Override
 	public void create () {
+
+
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 		font = new BitmapFont();
+
+		//Sets Scene2D instance
+		stageInstance = new Stage(new ScreenViewport());
+
+		//Sets upstate and downstate textures for texture Buttons
+		generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
+		generalTextButtonDownState = new Texture(Gdx.files.internal("Text_Button_Down_State.jpg"));
+
+		//Sets up the region to be used
+		generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);
+		generalTextButtonDownRegion = new TextureRegion(generalTextButtonDownState);
+
+		//Defines the style to be used in the
+		generalTextButtonStyle = new TextButton.TextButtonStyle ();
+		generalTextButtonStyle.up = new TextureRegionDrawable(generalTextButtonUpRegion);
+		generalTextButtonStyle.down = new TextureRegionDrawable(generalTextButtonDownRegion);
+		generalTextButtonStyle.font = font;
+		generalTextButtonStyle.fontColor = new Color(0f, 0f, 0f, 1f);
+
+
+
 		// need to create main menu screen
-		setScreen(new MainMenu(this));
+		setScreen (new MainMenu (this));
 	}
 
+	/**
+	 * Sets the stage viewport to the height and width of the window.
+	 * @param width
+	 * @param height
+	 */
+	@Override
+	public void resize (int width, int height) {
+		stageInstance.getViewport().update(width, height, true);
+	}
+
+	/**
+	 * Disposes of all instances that take space up in memory and require rendering
+	 * including Scene2D, batch, and textures
+	 */
 	@Override
 	public void dispose () {
+		stageInstance.dispose();
 		batch.dispose();
 		img.dispose();
 		shapeRenderer.dispose();

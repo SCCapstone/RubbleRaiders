@@ -1,2 +1,9 @@
+com/badlogic/game/CharacterCreation.java
+ com.badlogic.game.CharacterCreation
 com/badlogic/game/BladeAndTomes.java
  com.badlogic.game.BladeAndTomes
+com/badlogic/game/MainMenu.java
+ com.badlogic.game.MainMenu
+ com.badlogic.game.MainMenu$1
+ com.badlogic.game.MainMenu$2
+ com.badlogic.game.MainMenu$3
