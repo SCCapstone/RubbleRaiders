@@ -1,5 +1,7 @@
 package com.badlogic.game;
 
+import Sounds.BackGroundMusic;
+import Sounds.ButtonClickSound;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
@@ -28,6 +30,9 @@ public class MainMenu extends ScreenAdapter {
     int newGame,characters,settings,exitGame;
     // Option Dimensions and Location
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
+    // BackGroundMusic
+    BackGroundMusic _bgmusic;
+    ButtonClickSound buttonSound;
 //    TextButton createCharacterButton,
 //                exitButton,
 //                settingsButton,
@@ -60,12 +65,10 @@ public class MainMenu extends ScreenAdapter {
             GAME.stageInstance.addActor(MainMenuOptions[i]);
 
         }
-        Music test = Gdx.audio.newMusic(Gdx.files.internal("test.mp3"));
-        test.play();
-        test.setLooping(true);
-        test.setVolume(1f);
-        test.play();
+        _bgmusic = new BackGroundMusic();
+        _bgmusic.playMusic();
 
+        buttonSound = new ButtonClickSound();
     }
 
 
@@ -103,7 +106,9 @@ public class MainMenu extends ScreenAdapter {
                 Gdx.app.exit();
             }
         });
-
+        if(Gdx.input.justTouched()){
+            buttonSound.playClick();
+        }
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
