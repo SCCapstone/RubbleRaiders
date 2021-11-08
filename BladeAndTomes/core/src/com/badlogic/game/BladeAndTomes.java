@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,6 +29,9 @@ public class BladeAndTomes extends Game {
 	TextureRegion generalTextButtonDownRegion;
 	Texture generalTextButtonUpState;
 	Texture generalTextButtonDownState;
+	TextField.TextFieldStyle generalTextFieldStyle;
+
+	Player player;
 
 	/**
 	 * Creates and initializes all objects and variables for the main project before moving the program to
@@ -36,6 +40,8 @@ public class BladeAndTomes extends Game {
 	@Override
 	public void create () {
 
+
+		player = new Player();
 
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
@@ -52,14 +58,18 @@ public class BladeAndTomes extends Game {
 		generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);
 		generalTextButtonDownRegion = new TextureRegion(generalTextButtonDownState);
 
-		//Defines the style to be used in the
+		//Defines the style to be used in the text buttons
 		generalTextButtonStyle = new TextButton.TextButtonStyle ();
 		generalTextButtonStyle.up = new TextureRegionDrawable(generalTextButtonUpRegion);
 		generalTextButtonStyle.down = new TextureRegionDrawable(generalTextButtonDownRegion);
 		generalTextButtonStyle.font = font;
 		generalTextButtonStyle.fontColor = new Color(0f, 0f, 0f, 1f);
 
-
+		//Defines the style to be used for the text field
+		generalTextFieldStyle = new TextField.TextFieldStyle();
+		generalTextFieldStyle.font = font;
+		generalTextFieldStyle.fontColor = new Color(0f,0f,0f,1f);
+		generalTextFieldStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 
 		// need to create main menu screen
 		setScreen (new MainMenu (this));
