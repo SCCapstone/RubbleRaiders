@@ -1,5 +1,7 @@
 package com.badlogic.game;
 
+import Sounds.BackGroundMusic;
+import Sounds.ButtonClickSound;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
@@ -36,7 +38,13 @@ public class MainMenu extends ScreenAdapter {
 
     // Option Dimensions and Location
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
+<<<<<<< HEAD
 
+=======
+    // BackGroundMusic
+    BackGroundMusic _bgmusic;
+    ButtonClickSound buttonSound;
+>>>>>>> 757ecb8eb29c45dd018e044e6caf1913a01f17ec
 //    TextButton createCharacterButton,
 //                exitButton,
 //                settingsButton,
@@ -90,12 +98,19 @@ public class MainMenu extends ScreenAdapter {
             MainMenuOptions[i].setHeight(optionHeight);
             GAME.stageInstance.addActor(MainMenuOptions[i]);
         }
+<<<<<<< HEAD
 
         Music test = Gdx.audio.newMusic(Gdx.files.internal("test.mp3"));
         test.play();
         test.setLooping(true);
         test.setVolume(1f);
         test.play();
+=======
+        _bgmusic = new BackGroundMusic();
+        _bgmusic.playMusic();
+
+        buttonSound = new ButtonClickSound();
+>>>>>>> 757ecb8eb29c45dd018e044e6caf1913a01f17ec
     }
 
     /**
@@ -132,6 +147,19 @@ public class MainMenu extends ScreenAdapter {
         //game.batch.draw(background, 0, 0);
         //game.batch.end();
 
+<<<<<<< HEAD
+=======
+        MainMenuOptions[exitGame].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                dispose();
+                Gdx.app.exit();
+            }
+        });
+        if(Gdx.input.justTouched()){
+            buttonSound.playClick();
+        }
+>>>>>>> 757ecb8eb29c45dd018e044e6caf1913a01f17ec
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
