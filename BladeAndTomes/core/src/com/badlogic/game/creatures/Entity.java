@@ -1,4 +1,4 @@
-package com.badlogic.game;
+package com.badlogic.game.creatures;
 
 public class Entity {
 

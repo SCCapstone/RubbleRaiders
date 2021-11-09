@@ -1,24 +1,18 @@
-package com.badlogic.game;
+package com.badlogic.game.screens;
 
 import Sounds.BackGroundMusic;
 import Sounds.ButtonClickSound;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.screens.CharacterCreation;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenu extends ScreenAdapter {
 
@@ -38,6 +32,7 @@ public class MainMenu extends ScreenAdapter {
 
     // Option Dimensions and Location
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
+
     // BackGroundMusic
     BackGroundMusic _bgmusic;
     ButtonClickSound buttonSound;
@@ -50,7 +45,7 @@ public class MainMenu extends ScreenAdapter {
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
      */
-    public MainMenu(BladeAndTomes game) {
+    public MainMenu(final BladeAndTomes game) {
         this.GAME = game;
         background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
         backgroundImage = new Image(background);

@@ -1,5 +1,7 @@
 package com.badlogic.game;
 
+import com.badlogic.game.creatures.Player;
+import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,12 +9,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -21,17 +21,18 @@ public class BladeAndTomes extends Game {
 	SpriteBatch batch;
 	Texture img;
 	BitmapFont font;
-	Stage stageInstance;
+	public Stage stageInstance;
 
 	//Defining general text button look
-	TextButton.TextButtonStyle generalTextButtonStyle;
+	public TextButton.TextButtonStyle generalTextButtonStyle;
 	TextureRegion generalTextButtonUpRegion;
 	TextureRegion generalTextButtonDownRegion;
 	Texture generalTextButtonUpState;
 	Texture generalTextButtonDownState;
-	TextField.TextFieldStyle generalTextFieldStyle;
 
-	Player player;
+	public TextField.TextFieldStyle generalTextFieldStyle;
+
+	public Player player;
 
 	/**
 	 * Creates and initializes all objects and variables for the main project before moving the program to
@@ -72,7 +73,7 @@ public class BladeAndTomes extends Game {
 		generalTextFieldStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 
 		// need to create main menu screen
-		setScreen (new MainMenu (this));
+		setScreen (new MainMenu(this));
 	}
 
 	/**

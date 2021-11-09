@@ -1,13 +1,16 @@
-package com.badlogic.game;
+package com.badlogic.game.creatures;
+
+import java.lang.String;
 
 public class Player extends Entity {
 
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
-    private enum PlayerClass {WIZARD, CLERIC, WARRIOR};
+    private enum classes {WARRIOR, CLERIC ,WIZARD};
 
     private int playerClass;
+    private String name;
 
     /**
      * Default constructor for player entity
@@ -20,9 +23,10 @@ public class Player extends Entity {
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int playerClass)
+    public Player(int healthPoints, int armorPoints, String name, int playerClass)
     {
         super(healthPoints, armorPoints);
+        this.name = name;
         this.playerClass = playerClass;
     }
 
@@ -35,5 +39,16 @@ public class Player extends Entity {
     {
         this.playerClass = playerClass;
     }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
 
 }
