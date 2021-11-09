@@ -20,9 +20,9 @@ public class Player extends Entity {
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int playerClass)
+    public Player(int healthPoints, int armorPoints, int movement, int playerClass)
     {
-        super(healthPoints, armorPoints);
+        super(healthPoints, armorPoints, movement);
         this.playerClass = playerClass;
     }
 
