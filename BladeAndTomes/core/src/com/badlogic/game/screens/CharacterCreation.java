@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.Input;
 import java.lang.String;
 
 public class CharacterCreation extends ScreenAdapter {
@@ -16,6 +15,8 @@ public class CharacterCreation extends ScreenAdapter {
 
     //TODO: Make this public class in backbone or Player?
     enum classes {WARRIOR, CLERIC ,WIZARD}
+
+    //TODO: Have indication of selection being made.
 
     TextField nameField;
     TextButton[] classSelection;
@@ -44,6 +45,7 @@ public class CharacterCreation extends ScreenAdapter {
         });
         nameField.setX(960,1);
         nameField.setY(960, 1);
+        GAME.stageInstance.addActor(nameField);
 
         //Anirudh Oruganti made a good suggestion as to how objects with
         //similar functions should be initialized, especially buttons.
@@ -56,9 +58,9 @@ public class CharacterCreation extends ScreenAdapter {
 
         //See above comment
         for(int i=0; i<classes.values().length; i++) {
-            classSelection[i].setWidth(360);
+            classSelection[i].setWidth(160);
             classSelection[i].setHeight(90);
-            classSelection[i].setX(360+i*180,1);
+            classSelection[i].setX(780+i*180,1);
             classSelection[i].setY(640,1);
             GAME.stageInstance.addActor(classSelection[i]);
         }
@@ -98,6 +100,8 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setArmorPoints(0);
                 GAME.player.setPlayerClass(selection);
                 GAME.player.setName(name);
+                GAME.player.setMovement(5);
+                GAME.setScreen(new Overworld(GAME));
             }
         });
         GAME.stageInstance.addActor(exitButton);
@@ -105,31 +109,16 @@ public class CharacterCreation extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        super.render(delta);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
-        {
-            name = nameField.getText();
-        }
     }
 
     @Override
     public void show() {
-        super.show();
+        Gdx.input.setInputProcessor(GAME.stageInstance);
     }
 
     @Override
     public void hide() {
-        super.hide();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-    }
-
-    @Override
-    public void dispose() {
-            super.dispose();
+        Gdx.input.setInputProcessor(null);
     }
 
 }

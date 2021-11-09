@@ -4,7 +4,7 @@ import com.badlogic.game.creatures.Entity;
 
 public class Npc extends Entity {
 
-    private enum NpcClass {Trader, Companion, Enemy};
+    private enum npcClass {Trader, Companion, Enemy};
 
     private int npc;
 

@@ -5,6 +5,7 @@ import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,7 +20,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class BladeAndTomes extends Game {
 	ShapeRenderer shapeRenderer;
 	SpriteBatch batch;
-	Texture img;
 	BitmapFont font;
 	public Stage stageInstance;
 
@@ -76,6 +76,14 @@ public class BladeAndTomes extends Game {
 		setScreen (new MainMenu(this));
 	}
 
+	@Override
+	public void render() {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stageInstance.act(Gdx.graphics.getDeltaTime());
+		stageInstance.draw();
+	}
+
+
 	/**
 	 * Sets the stage viewport to the height and width of the window.
 	 * @param width
@@ -94,7 +102,6 @@ public class BladeAndTomes extends Game {
 	public void dispose () {
 		stageInstance.dispose();
 		batch.dispose();
-		img.dispose();
 		shapeRenderer.dispose();
 	}
 }

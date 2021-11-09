@@ -3,10 +3,8 @@ package com.badlogic.game.screens;
 import Sounds.BackGroundMusic;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.game.screens.CharacterCreation;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -67,7 +65,9 @@ public class MainMenu extends ScreenAdapter {
         MainMenuOptions[newGame].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.clear();
+                for(int i = 0; i< MainMenuOptions.length; i++) {
+                    MainMenuOptions[i].remove();
+                }
                 dispose();
                 GAME.setScreen(new CharacterCreation(GAME));
             }
@@ -90,6 +90,7 @@ public class MainMenu extends ScreenAdapter {
             GAME.stageInstance.addActor(MainMenuOptions[i]);
         }
 
+        //TODO: Move menu sounds to backbone layer
         _bgmusic = new BackGroundMusic();
         _bgmusic.playMusic();
 
@@ -129,14 +130,16 @@ public class MainMenu extends ScreenAdapter {
         //game.batch.begin();
         //game.batch.draw(background, 0, 0);
         //game.batch.end();
-        
+
+
+        //TODO: Move background noises and music to backbone layer
         if(Gdx.input.justTouched()){
             buttonSound.playClick();
         }
 
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
-        GAME.stageInstance.draw();
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        //GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
+        //GAME.stageInstance.draw();
 
         // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
     }

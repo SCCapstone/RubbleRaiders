@@ -36,7 +36,7 @@ public class Entity {
         return healthPoints;
     }
 
-    pulic int getMovement() { return movement; }
+    public int getMovement() { return movement; }
 
     public void setArmorPoints(int armorPoints) {
         this.armorPoints = armorPoints;
