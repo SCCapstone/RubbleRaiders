@@ -10,6 +10,9 @@ public class Player extends Entity {
     private enum classes {WARRIOR, CLERIC ,WIZARD};
 
     private int playerClass;
+    private int physical;
+    private int mental;
+    private int social;
     private String name;
 
     /**
@@ -34,6 +37,21 @@ public class Player extends Entity {
         return playerClass;
     }
 
+    public int getPhysical()
+    {
+        return physical;
+    }
+
+    public int getMental()
+    {
+        return mental;
+    }
+
+    public int getSocial()
+    {
+        return social;
+    }
+
     public void setPlayerClass(int playerClass)
     {
         this.playerClass = playerClass;
@@ -48,6 +66,12 @@ public class Player extends Entity {
     {
         this.name = name;
     }
+
+    public void setPhysical(int physical) { this.physical = physical; }
+
+    public void setMental(int mental) { this.mental = mental; }
+
+    public void setSocial(int social) { this.physical = social; }
 
 
 }
