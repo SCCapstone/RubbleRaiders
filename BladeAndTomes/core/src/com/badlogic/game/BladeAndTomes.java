@@ -41,7 +41,6 @@ public class BladeAndTomes extends Game {
 	@Override
 	public void create () {
 
-
 		player = new Player();
 
 		shapeRenderer = new ShapeRenderer();
@@ -76,6 +75,11 @@ public class BladeAndTomes extends Game {
 		setScreen (new MainMenu(this));
 	}
 
+	/**
+	 * This function is called by OpenGL to render objects presented in the order defined below and
+	 * then displaying it to the user as well as acting when the program will take in input and accept
+	 * that input.
+	 */
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

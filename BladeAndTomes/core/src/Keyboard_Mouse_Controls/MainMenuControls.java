@@ -1,12 +1,13 @@
 package Keyboard_Mouse_Controls;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class MainMenuControls implements InputProcessor {
 
     @Override
     public boolean keyDown(int i) {
-        return false;
+        return true;
     }
 
     @Override
