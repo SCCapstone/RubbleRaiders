@@ -4,6 +4,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -13,16 +14,10 @@ public class CharacterCreation extends ScreenAdapter {
 
     final BladeAndTomes GAME;
 
-    //TODO: Make this public class in backbone or Player?
-    enum classes {WARRIOR, CLERIC ,WIZARD}
-
     //TODO: Have indication of selection being made.
 
     TextField nameField;
-    TextField physicalField;
-    TextField mentalField;
-    TextField socialField;
-    TextField[] statFields;
+    Label[] statFields;
     TextButton[] classSelection;
     TextButton exitButton;
 
@@ -51,11 +46,11 @@ public class CharacterCreation extends ScreenAdapter {
         nameField.setY(1110, 1);
         GAME.stageInstance.addActor(nameField);
 
-        //Text Fields for the Physical, Mental, and Social stats done in the same way as Anirudh Oruganti suggested
-        statFields = new TextField[]{
-                physicalField = new TextField("Physical: " + GAME.player.getPhysical(), GAME.generalTextFieldStyle),
-                mentalField = new TextField("Mental: " + GAME.player.getMental(), GAME.generalTextFieldStyle),
-                socialField = new TextField("Social: " + GAME.player.getSocial(), GAME.generalTextFieldStyle)
+        //Displays for the Physical, Mental, and Social stats done in the same way as Anirudh Oruganti suggested
+        statFields = new Label[]{
+                new Label("Physical: " + GAME.player.getPhysical(), GAME.generalLabelStyle),
+                new Label("Mental: " + GAME.player.getMental(), GAME.generalLabelStyle),
+                new Label("Social: " + GAME.player.getSocial(), GAME.generalLabelStyle)
         };
         for(int i=0; i<statFields.length; i++) {
             statFields[i].setAlignment(1);
@@ -65,6 +60,7 @@ public class CharacterCreation extends ScreenAdapter {
             GAME.stageInstance.addActor(statFields[i]);
         }
 
+        /*
         physicalField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
@@ -84,7 +80,7 @@ public class CharacterCreation extends ScreenAdapter {
             public void keyTyped(TextField textField, char c) {
 
             }
-        });
+        });*/
 
         //Anirudh Oruganti made a good suggestion as to how objects with
         //similar functions should be initialized, especially buttons.
@@ -96,7 +92,7 @@ public class CharacterCreation extends ScreenAdapter {
         };
 
         //See above comment
-        for(int i=0; i<classes.values().length; i++) {
+        for(int i=0; i<BladeAndTomes.classes.values().length; i++) {
             classSelection[i].setWidth(160);
             classSelection[i].setHeight(90);
             classSelection[i].setX(780+i*180,1);
@@ -104,33 +100,42 @@ public class CharacterCreation extends ScreenAdapter {
             GAME.stageInstance.addActor(classSelection[i]);
         }
 
-        classSelection[classes.WARRIOR.ordinal()].addListener(new ChangeListener() {
+        classSelection[BladeAndTomes.classes.WARRIOR.ordinal()].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                selection = classes.WARRIOR.ordinal();
+                selection = BladeAndTomes.classes.WARRIOR.ordinal();
                 GAME.player.setPhysical(10);
+                statFields[0].setText("Physical: " + GAME.player.getPhysical());
                 GAME.player.setMental(7);
+                statFields[1].setText("Mental: " + GAME.player.getMental());
                 GAME.player.setSocial(5);
+                statFields[2].setText("Social: " + GAME.player.getSocial());
             }
         });
 
-        classSelection[classes.CLERIC.ordinal()].addListener(new ChangeListener() {
+        classSelection[BladeAndTomes.classes.CLERIC.ordinal()].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                selection = classes.CLERIC.ordinal();
+                selection = BladeAndTomes.classes.CLERIC.ordinal();
                 GAME.player.setPhysical(7);
+                statFields[0].setText("Physical: " + GAME.player.getPhysical());
                 GAME.player.setMental(5);
+                statFields[1].setText("Mental: " + GAME.player.getMental());
                 GAME.player.setSocial(10);
+                statFields[2].setText("Social: " + GAME.player.getSocial());
             }
         });
 
-        classSelection[classes.WIZARD.ordinal()].addListener(new ChangeListener() {
+        classSelection[BladeAndTomes.classes.WIZARD.ordinal()].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                selection = classes.WIZARD.ordinal();
+                selection = BladeAndTomes.classes.WIZARD.ordinal();
                 GAME.player.setPhysical(5);
+                statFields[0].setText("Physical: " + GAME.player.getPhysical());
                 GAME.player.setMental(10);
+                statFields[1].setText("Mental: " + GAME.player.getMental());
                 GAME.player.setSocial(7);
+                statFields[2].setText("Social: " + GAME.player.getSocial());
             }
         });
 

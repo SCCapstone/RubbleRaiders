@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -22,6 +23,8 @@ public class BladeAndTomes extends Game {
 	SpriteBatch batch;
 	BitmapFont font;
 	public Stage stageInstance;
+	//TODO: Make this public class in backbone or Player?
+	public enum classes {WARRIOR, CLERIC ,WIZARD}
 
 	//Defining general text button look
 	public TextButton.TextButtonStyle generalTextButtonStyle;
@@ -31,6 +34,7 @@ public class BladeAndTomes extends Game {
 	Texture generalTextButtonDownState;
 
 	public TextField.TextFieldStyle generalTextFieldStyle;
+	public Label.LabelStyle generalLabelStyle;
 
 	public Player player;
 
@@ -70,6 +74,11 @@ public class BladeAndTomes extends Game {
 		generalTextFieldStyle.font = font;
 		generalTextFieldStyle.fontColor = new Color(0f,0f,0f,1f);
 		generalTextFieldStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
+
+		generalLabelStyle = new Label.LabelStyle();
+		generalLabelStyle.font = font;
+		generalLabelStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
+		generalLabelStyle.fontColor = new Color(0f,0f,0f,1f);
 
 		// need to create main menu screen
 		setScreen (new MainMenu(this));

@@ -72,7 +72,7 @@ public class Player extends Entity {
 
     public void setMental(int mental) { this.mental = mental; }
 
-    public void setSocial(int social) { this.physical = social; }
+    public void setSocial(int social) { this.social = social; }
 
 
 }
