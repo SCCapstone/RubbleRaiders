@@ -1,0 +1,2 @@
+com/badlogic/game/IOSLauncher.java
+ com.badlogic.game.IOSLauncher

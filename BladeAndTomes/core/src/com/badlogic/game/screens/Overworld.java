@@ -5,10 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.math.Rectangle;
+
+import static com.badlogic.gdx.graphics.Color.FOREST;
 
 public class Overworld extends ScreenAdapter {
 
@@ -89,10 +94,11 @@ public class Overworld extends ScreenAdapter {
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(playerIcon);
 
+
     }
 
-    @Override
-    public void render(float delta) {
+    public void render(){
+
     }
 
     @Override

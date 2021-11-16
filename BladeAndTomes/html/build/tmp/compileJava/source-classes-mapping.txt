@@ -1,0 +1,2 @@
+com/badlogic/game/client/HtmlLauncher.java
+ com.badlogic.game.client.HtmlLauncher
