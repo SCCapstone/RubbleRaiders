@@ -25,8 +25,10 @@ public class Dungeon extends ScreenAdapter {
         MOVE_DISTANCE = 64;
 
         //set background info
-        background = new Texture(Gdx.files.internal("dungeon.png"));
+        background = new Texture(Gdx.files.internal("MainDungeon.png"));
         backgroundImage = new Image(background);
+        backgroundImage.setSize(2000,1350);
+        backgroundImage.setPosition(-25,-20);
         GAME.stageInstance.addActor(backgroundImage);
 
         //set player image and location
@@ -66,8 +68,8 @@ public class Dungeon extends ScreenAdapter {
             public void checkEnterRoom()
             {
                 //Two side rooms - one to the left and one to the right
-                if((playerIcon.getX() <= 100 && playerIcon.getY() < 900 && playerIcon.getY() > 500) ||
-                        (playerIcon.getX() > 1920 - 100 && playerIcon.getY() < 900 && playerIcon.getY() > 500))
+                if((playerIcon.getX() <= 150 && playerIcon.getY() < 750 && playerIcon.getY() > 500) ||
+                        (playerIcon.getX() > 1920 - 150 && playerIcon.getY() < 750 && playerIcon.getY() > 500))
                 {
                     GAME.stageInstance.clear();
                     dispose();
