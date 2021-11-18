@@ -25,6 +25,8 @@ public class Dungeon extends ScreenAdapter {
         MOVE_DISTANCE = 64;
 
         //set background info
+        //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
+        //Author of images Kamigeek
         background = new Texture(Gdx.files.internal("MainDungeon.png"));
         backgroundImage = new Image(background);
         backgroundImage.setSize(2000,1350);

@@ -25,6 +25,8 @@ public class SideDungeon extends ScreenAdapter {
         this.GAME = game; 
         MOVE_DISTANCE = 64;
 
+        //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
+        //Author of images Kamigeek
         background = new Texture(Gdx.files.internal("SideDungeon.png"));
         backgroundImage = new Image(background);
         backgroundImage.setSize(2000,1350);
