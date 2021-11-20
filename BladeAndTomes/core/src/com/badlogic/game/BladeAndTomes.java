@@ -37,7 +37,7 @@ public class BladeAndTomes extends Game {
 	public Label.LabelStyle generalLabelStyle;
 
 	public Player player;
-
+	MainMenu menu;
 	/**
 	 * Creates and initializes all objects and variables for the main project before moving the program to
 	 * the first screen.
@@ -79,9 +79,9 @@ public class BladeAndTomes extends Game {
 		generalLabelStyle.font = font;
 		generalLabelStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 		generalLabelStyle.fontColor = new Color(0f,0f,0f,1f);
+		menu = new MainMenu(this);
 
 		// need to create main menu screen
-		setScreen (new MainMenu(this));
 	}
 
 	/**
@@ -94,6 +94,9 @@ public class BladeAndTomes extends Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stageInstance.act(Gdx.graphics.getDeltaTime());
 		stageInstance.draw();
+		setScreen (menu);
+		super.render();
+
 	}
 
 
