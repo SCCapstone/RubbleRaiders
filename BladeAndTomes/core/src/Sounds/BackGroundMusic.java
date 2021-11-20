@@ -16,7 +16,7 @@ public class BackGroundMusic {
         isMute = muted;
     }
    public BackGroundMusic(){
-        playList = new String[]{"test.mp3"};
+        playList = new String[]{"new_main_menu_theme.mp3"};
         volume  =   0.5f;
         isMute = false;
     }

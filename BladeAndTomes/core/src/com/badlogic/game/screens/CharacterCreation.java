@@ -18,6 +18,7 @@ public class CharacterCreation extends ScreenAdapter {
 
     TextField nameField;
     Label[] statFields;
+    Label[] secondaryStatFields;
     TextButton[] classSelection;
     TextButton exitButton;
 
@@ -82,6 +83,23 @@ public class CharacterCreation extends ScreenAdapter {
             }
         });*/
 
+        //Displays for the secondary stats done in the same way as Anirudh Oruganti suggested
+        secondaryStatFields = new Label[]{
+                new Label("Acrobatics: " + GAME.player.getAcrobatics(), GAME.generalLabelStyle),
+                new Label("Bruteforce: " + GAME.player.getBruteforce(), GAME.generalLabelStyle),
+                new Label("Speech: " + GAME.player.getSpeech(), GAME.generalLabelStyle),
+                new Label("Barter: " + GAME.player.getBarter(), GAME.generalLabelStyle),
+                new Label("Awareness: " + GAME.player.getAwareness(), GAME.generalLabelStyle),
+                new Label("Intuition: " + GAME.player.getIntuition(), GAME.generalLabelStyle)
+        };
+        for(int i=0; i<secondaryStatFields.length; i++) {
+            secondaryStatFields[i].setAlignment(1);
+            secondaryStatFields[i].setHeight(90);
+            secondaryStatFields[i].setX(560+i*180,1);
+            secondaryStatFields[i].setY(800,1);
+            GAME.stageInstance.addActor(secondaryStatFields[i]);
+        }
+
         //Anirudh Oruganti made a good suggestion as to how objects with
         //similar functions should be initialized, especially buttons.
         //This was modeled off of the code he pushed to MainMenu.java .
@@ -110,6 +128,12 @@ public class CharacterCreation extends ScreenAdapter {
                 statFields[1].setText("Mental: " + GAME.player.getMental());
                 GAME.player.setSocial(5);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
+                secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
+                secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
+                secondaryStatFields[2].setText("Speech: " + GAME.player.getSpeech());
+                secondaryStatFields[3].setText("Barter: " + GAME.player.getBarter());
+                secondaryStatFields[4].setText("Awareness: " + GAME.player.getAwareness());
+                secondaryStatFields[5].setText("Intuition: " + GAME.player.getIntuition());
             }
         });
 
@@ -123,6 +147,12 @@ public class CharacterCreation extends ScreenAdapter {
                 statFields[1].setText("Mental: " + GAME.player.getMental());
                 GAME.player.setSocial(10);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
+                secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
+                secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
+                secondaryStatFields[2].setText("Speech: " + GAME.player.getSpeech());
+                secondaryStatFields[3].setText("Barter: " + GAME.player.getBarter());
+                secondaryStatFields[4].setText("Awareness: " + GAME.player.getAwareness());
+                secondaryStatFields[5].setText("Intuition: " + GAME.player.getIntuition());
             }
         });
 
@@ -136,6 +166,12 @@ public class CharacterCreation extends ScreenAdapter {
                 statFields[1].setText("Mental: " + GAME.player.getMental());
                 GAME.player.setSocial(7);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
+                secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
+                secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
+                secondaryStatFields[2].setText("Speech: " + GAME.player.getSpeech());
+                secondaryStatFields[3].setText("Barter: " + GAME.player.getBarter());
+                secondaryStatFields[4].setText("Awareness: " + GAME.player.getAwareness());
+                secondaryStatFields[5].setText("Intuition: " + GAME.player.getIntuition());
             }
         });
 

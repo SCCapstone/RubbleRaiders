@@ -13,6 +13,12 @@ public class Player extends Entity {
     private int physical;
     private int mental;
     private int social;
+    private int acrobatics;
+    private int bruteforce;
+    private int speech;
+    private int barter;
+    private int awareness;
+    private int intuition;
     private String name;
 
     /**
@@ -53,6 +59,42 @@ public class Player extends Entity {
         return social;
     }
 
+    public int getAcrobatics()
+    {
+        acrobatics = (int)((physical * 1.25) + (mental / 2));
+        return acrobatics;
+    }
+
+    public int getBruteforce()
+    {
+        bruteforce = (int)(physical * 1.75);
+        return bruteforce;
+    }
+
+    public int getSpeech()
+    {
+        speech = (int)((social * 1.25) + (physical / 2));
+        return speech;
+    }
+
+    public int getBarter()
+    {
+        barter = social;
+        return barter;
+    }
+
+    public int getAwareness()
+    {
+        awareness = (int)((mental * 1.5) + (social / 2));
+        return awareness;
+    }
+
+    public int getIntuition()
+    {
+        intuition = (int)(mental * .75);
+        return intuition;
+    }
+
     public void setPlayerClass(int playerClass)
     {
         this.playerClass = playerClass;
@@ -73,6 +115,7 @@ public class Player extends Entity {
     public void setMental(int mental) { this.mental = mental; }
 
     public void setSocial(int social) { this.social = social; }
+
 
 
 }
