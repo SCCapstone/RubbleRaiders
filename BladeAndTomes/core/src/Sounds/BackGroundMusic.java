@@ -21,12 +21,16 @@ public class BackGroundMusic {
         isMute = false;
     }
 
+    public float getVolume() { return volume; }
+
     public void setVolume(float newVolume){
         volume = newVolume;
     }
+
     public void setMute(boolean mute){
         isMute = mute;
     }
+
     public void playMusic(){
         int musicType = new Random().nextInt(playList.length);
         Music test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));

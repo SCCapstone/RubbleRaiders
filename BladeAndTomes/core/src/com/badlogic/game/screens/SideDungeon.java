@@ -4,6 +4,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -80,9 +81,21 @@ public class SideDungeon extends ScreenAdapter {
         });
 
         GAME.stageInstance.setKeyboardFocus(playerIcon);
+
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(playerIcon);
+    }
 
+    @Override
+    public void render(float delta) {
+
+        //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
+        //Specifically the advanced section on super.render() as well as the following section on the main
+        //game screen
+        //https://libgdx.com/dev/simple-game-extended/
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
+        GAME.stageInstance.draw();
     }
 
     @Override

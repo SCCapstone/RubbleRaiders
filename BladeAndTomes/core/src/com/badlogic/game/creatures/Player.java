@@ -1,5 +1,7 @@
 package com.badlogic.game.creatures;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 import java.lang.String;
 
 public class Player extends Entity {
@@ -20,6 +22,7 @@ public class Player extends Entity {
     private int awareness;
     private int intuition;
     private String name;
+    public Image playerIcon;
 
     /**
      * Default constructor for player entity
@@ -27,16 +30,19 @@ public class Player extends Entity {
     public Player()
     {
         super();
+        this.playerClass = 1;
+        this.name = "";
     }
 
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int movement, int playerClass, String name)
+    public Player(int healthPoints, int armorPoints, int movement, int playerClass, String name, Image image)
     {
         super(healthPoints, armorPoints, movement);
         this.playerClass = playerClass;
         this.name = name;
+        this.playerIcon = image;
     }
 
     public int getPlayerClass()
@@ -115,7 +121,4 @@ public class Player extends Entity {
     public void setMental(int mental) { this.mental = mental; }
 
     public void setSocial(int social) { this.social = social; }
-
-
-
 }

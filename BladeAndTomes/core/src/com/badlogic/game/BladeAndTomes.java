@@ -5,15 +5,17 @@ import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -23,21 +25,26 @@ public class BladeAndTomes extends Game {
 	SpriteBatch batch;
 	BitmapFont font;
 	public Stage stageInstance;
-	//TODO: Make this public class in backbone or Player?
+
 	public enum classes {WARRIOR, CLERIC ,WIZARD}
 
 	//Defining general text button look
-	public TextButton.TextButtonStyle generalTextButtonStyle;
+	public TextButtonStyle generalTextButtonStyle;
 	TextureRegion generalTextButtonUpRegion;
 	TextureRegion generalTextButtonDownRegion;
 	Texture generalTextButtonUpState;
 	Texture generalTextButtonDownState;
 
-	public TextField.TextFieldStyle generalTextFieldStyle;
-	public Label.LabelStyle generalLabelStyle;
+	public TextFieldStyle generalTextFieldStyle;
+	public LabelStyle generalLabelStyle;
+	public WindowStyle generalWindowStyle;
+	public SliderStyle generalSliderStyle;
 
 	public Player player;
-	MainMenu menu;
+	public Image playerIcon;
+
+	public final int MOVE_DISTANCE = 64;
+
 	/**
 	 * Creates and initializes all objects and variables for the main project before moving the program to
 	 * the first screen.
@@ -63,25 +70,40 @@ public class BladeAndTomes extends Game {
 		generalTextButtonDownRegion = new TextureRegion(generalTextButtonDownState);
 
 		//Defines the style to be used in the text buttons
-		generalTextButtonStyle = new TextButton.TextButtonStyle ();
+		generalTextButtonStyle = new TextButtonStyle ();
 		generalTextButtonStyle.up = new TextureRegionDrawable(generalTextButtonUpRegion);
 		generalTextButtonStyle.down = new TextureRegionDrawable(generalTextButtonDownRegion);
 		generalTextButtonStyle.font = font;
 		generalTextButtonStyle.fontColor = new Color(0f, 0f, 0f, 1f);
 
 		//Defines the style to be used for the text field
-		generalTextFieldStyle = new TextField.TextFieldStyle();
+		generalTextFieldStyle = new TextFieldStyle();
 		generalTextFieldStyle.font = font;
 		generalTextFieldStyle.fontColor = new Color(0f,0f,0f,1f);
 		generalTextFieldStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 
-		generalLabelStyle = new Label.LabelStyle();
+		//Defines the style to be used for the Label
+		generalLabelStyle = new LabelStyle();
 		generalLabelStyle.font = font;
 		generalLabelStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 		generalLabelStyle.fontColor = new Color(0f,0f,0f,1f);
-		menu = new MainMenu(this);
 
-		// need to create main menu screen
+		//libGDX documentation on WindowStyle and how it is to be implemented by libGDX devs
+		//https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
+		generalWindowStyle = new WindowStyle();
+		generalWindowStyle.titleFont = font;
+		generalWindowStyle.titleFontColor = new Color(0f,0f,0f,1f);
+		generalWindowStyle.stageBackground = new TextureRegionDrawable(new Texture(Gdx.files.internal("Main_Menu_Screen.jpg")));
+
+		//libGDX documentation on SliderStyle and how it is to be implemented by libGDX devs
+		//https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.SliderStyle.html
+		generalSliderStyle = new SliderStyle();
+		generalSliderStyle.backgroundDown = new TextureRegionDrawable(generalTextButtonDownRegion);
+		generalSliderStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
+		generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
+		generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
+
+		this.setScreen(new MainMenu(this));
 	}
 
 	/**
@@ -91,10 +113,11 @@ public class BladeAndTomes extends Game {
 	 */
 	@Override
 	public void render() {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stageInstance.act(Gdx.graphics.getDeltaTime());
-		stageInstance.draw();
-		setScreen (menu);
+
+		//Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
+		//Specifically the advanced section on super.render() as well as the following section on the main
+		//game screen
+		//https://libgdx.com/dev/simple-game-extended/
 		super.render();
 
 	}
