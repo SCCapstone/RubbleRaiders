@@ -7,6 +7,10 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -25,6 +29,14 @@ public class MainMenu extends ScreenAdapter {
     Slider settingsMusicSlider;
     Label settingsMusicLabel;
 
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        batch.dispose();
+        torchAtlas.dispose();
+    }
+
     Window loadWindow;
 
     // Options
@@ -36,20 +48,22 @@ public class MainMenu extends ScreenAdapter {
     // BackGroundMusic
     BackGroundMusic _bgmusic;
     ButtonClickSound buttonSound;
-//    TextButton createCharacterButton,
-//                exitButton,
-//                settingsButton,
-//                characterSelection;
-
+    private SpriteBatch batch;
+    private TextureAtlas torchAtlas;
+    private Animation<TextureRegion> animation;
+    private float timePassed;
     /**
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
      */
     public MainMenu(final BladeAndTomes game) {
         this.GAME = game;
-        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
-        backgroundImage = new Image(background);
-        GAME.stageInstance.addActor(backgroundImage);
+        batch = new SpriteBatch();
+        torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));
+        animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
+////        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
+//        backgroundImage = new Image(background);
+//        GAME.stageInstance.addActor(backgroundImage);
         newGame = 0; characters = 1; settings = 2; exitGame = 3;
 
         //TODO: Move menu sounds to backbone layer
@@ -209,6 +223,13 @@ public class MainMenu extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+        // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
+        batch.begin();
+        timePassed +=Gdx.graphics.getDeltaTime();
+        batch.draw(animation.getKeyFrame(timePassed,true),1200,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),450,600);
+
+        batch.end();
 
         if(Gdx.input.justTouched()){
             buttonSound.playClick();
