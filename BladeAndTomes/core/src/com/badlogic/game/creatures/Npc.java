@@ -24,9 +24,6 @@ public class Npc extends Entity {
         return npc;
     }
 
-    public void setNpcClass(int npcClass)
-    {
-        this.npc = npcClass;
-    }
+    public void setNpcClass(int npcClass) { this.npc = npcClass; }
 
 }

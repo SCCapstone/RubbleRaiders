@@ -21,6 +21,7 @@ public class Player extends Entity {
     private int barter;
     private int awareness;
     private int intuition;
+    private String id;
     private String name;
     public Image playerIcon;
 
@@ -30,6 +31,7 @@ public class Player extends Entity {
     public Player()
     {
         super();
+        this.id = "player";
         this.playerClass = 1;
         this.name = "";
     }
@@ -37,9 +39,10 @@ public class Player extends Entity {
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int movement, int playerClass, String name, Image image)
+    public Player(int healthPoints, int armorPoints, int movement, int playerClass, String id, String name, Image image)
     {
         super(healthPoints, armorPoints, movement);
+        this.id = id;
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
@@ -49,6 +52,8 @@ public class Player extends Entity {
     {
         return playerClass;
     }
+
+    public String getId() { return id; }
 
     public int getPhysical()
     {
@@ -105,6 +110,8 @@ public class Player extends Entity {
     {
         this.playerClass = playerClass;
     }
+
+    public void setId(String id) { this.id = id; }
 
     public String getName()
     {
