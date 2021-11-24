@@ -39,9 +39,9 @@ public class Player extends Entity {
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int movement, int playerClass, String id, String name, Image image)
+    public Player(int healthPoints, int armorPoints, int movement, int height, int width, int playerClass, String id, String name, Image image)
     {
-        super(healthPoints, armorPoints, movement);
+        super(healthPoints, armorPoints, movement, height, width);
         this.id = id;
         this.playerClass = playerClass;
         this.name = name;

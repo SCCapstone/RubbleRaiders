@@ -1,0 +1,11 @@
+<Settings>
+	<bindings>
+	<moveup> w </moveup>
+	<movedown> s </movedown>
+	<moveleft> a </moveleft>
+	<moveright> d </moveright>
+	<interact> x </interact>
+	<menu> escape </menu>
+	<cursor> mouse </cursor>
+	</bindings>
+</Settings>

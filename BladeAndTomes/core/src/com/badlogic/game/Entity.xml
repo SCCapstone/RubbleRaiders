@@ -1,0 +1,37 @@
+<entity>
+	<character id="player">
+		<name> john doe </name>
+		<title> null </title>
+		<image texture = "PlayerIcon.jpg"> </image>
+			<primarystats>
+				<physical> 1 </physical>
+				<social> 1 </social>
+				<mental> 1 </mental>
+			</primarystats>
+			<secondarystats>
+				<acrobatics> 1 </acrobatics>
+				<bruteforce> 1 </bruteforce>
+				<bartering> 1 </bartering>
+				<speech> 1 </speech>
+				<awareness> 1 </awareness>
+				<intuition> 1 </intuition>
+			</secondarystats>
+	</character>
+	<character id="npc">
+		<name> jane doe </name>
+		<title> trader </title>
+			<primarystats>
+				<physical> 3 </physical>
+				<social> 8 </social>
+				<mental> 4 </mental>
+			</primarystats>
+			<secondarystats>
+				<acrobatics> 3 </acrobatics>
+				<bruteforce> 3 </bruteforce>
+				<bartering> 10 </bartering>
+				<speech> 9 </speech>
+				<perception> 6 </perception>
+				<devicework> 6 </devicework>
+			</secondarystats>
+	</character>
+</entity>

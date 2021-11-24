@@ -13,9 +13,9 @@ public class Npc extends Entity {
         super();
     }
 
-    public Npc(int healthPoints, int armorPoints, int movement, int npcClass)
+    public Npc(int healthPoints, int armorPoints, int movement, int height, int width, int npcClass)
     {
-        super(healthPoints, armorPoints, movement);
+        super(healthPoints, armorPoints, movement, height, width);
         this.npc = npcClass;
     }
 
