@@ -6,6 +6,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -16,6 +18,16 @@ public class Overworld extends ScreenAdapter {
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
     Image playerIcon;
+    SpriteBatch batch;
+    Texture background;
+    Texture chapel;
+    Texture barracks;
+    Texture questBoard;
+    Texture portal;
+    Texture marketStall;
+    Texture tavern;
+    BitmapFont font;
+
 
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
@@ -28,11 +40,23 @@ public class Overworld extends ScreenAdapter {
 
         MOVE_DISTANCE = 64;
 
+        batch = new SpriteBatch();
+        // Assets were obtained from below source
+        // https://merchant-shade.itch.io/16x16-mini-world-sprites
+        background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
+        chapel = new Texture(Gdx.files.internal("Chapel.jpg"));
+        barracks = new Texture(Gdx.files.internal("Barracks.jpg"));
+        marketStall = new Texture(Gdx.files.internal("MarketBuilding.jpg"));
+        portal = new Texture(Gdx.files.internal("PortalToDungeon.jpg"));
+        questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
+        tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
+
+
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition(960, 1110);
+        playerIcon.setPosition(960, 600);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
@@ -106,6 +130,16 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+
+        GAME.batch.begin();
+        GAME.batch.draw(background, 0 ,0);
+        GAME.batch.draw(tavern, (float) (Gdx.graphics.getWidth() * 0.75), (float) (Gdx.graphics.getHeight() * 0.75));
+        GAME.batch.draw(marketStall, Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 5);
+        GAME.batch.draw(barracks, (float) (Gdx.graphics.getWidth() * 0.75), Gdx.graphics.getHeight() / 4);
+        GAME.batch.draw(chapel, Gdx.graphics.getWidth() / 4, (float) (Gdx.graphics.getHeight() * 0.75));
+        GAME.batch.draw(questBoard, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        GAME.batch.draw(portal, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 8);
+        GAME.batch.end();
     }
 
     @Override
