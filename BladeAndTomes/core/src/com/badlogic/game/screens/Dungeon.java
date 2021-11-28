@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlay.MainInventory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -18,7 +19,7 @@ public class Dungeon extends ScreenAdapter {
     Image playerIcon;
     Texture background;
     Image backgroundImage;
-
+    MainInventory inventory;
     public Dungeon(final BladeAndTomes game) {
 
         this.GAME = game;
@@ -85,6 +86,7 @@ public class Dungeon extends ScreenAdapter {
 
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(playerIcon);
+        inventory = new MainInventory(GAME);
     }
 
     @Override
@@ -97,6 +99,7 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+        inventory.update();
     }
 
     @Override
