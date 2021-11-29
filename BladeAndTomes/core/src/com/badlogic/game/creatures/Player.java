@@ -1,6 +1,7 @@
 package com.badlogic.game.creatures;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.lang.String;
 
@@ -24,6 +25,14 @@ public class Player extends Entity {
     private String id;
     private String name;
     public Image playerIcon;
+
+    public Rectangle interactSquare;
+    public Rectangle moveSquare;
+    public Rectangle rangeSquare;
+    public boolean isMoved;
+
+    final int MOVE_DISTANCE = 64;
+
 
     /**
      * Default constructor for player entity
@@ -128,4 +137,15 @@ public class Player extends Entity {
     public void setMental(int mental) { this.mental = mental; }
 
     public void setSocial(int social) { this.social = social; }
+
+    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBprder)
+    {
+        return true;
+    }
+
+    public boolean handleExit(Rectangle playerMove, Rectangle exitSquare)
+    {
+        return true;
+    }
+
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -19,11 +20,20 @@ public class Dungeon extends ScreenAdapter {
     Image playerIcon;
     Texture background;
     Image backgroundImage;
-    MainInventory inventory;
+
+    Rectangle walkableArea;
+    Rectangle doorHitBox;
+    float xIcon, yIcon, xMove, yMove, xInter, yInter;
+
+    int roomId;
+
     public Dungeon(final BladeAndTomes game) {
 
         this.GAME = game;
         MOVE_DISTANCE = 64;
+
+        GAME.player.playerIcon.setPosition(960,690);
+        GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
@@ -34,55 +44,12 @@ public class Dungeon extends ScreenAdapter {
         backgroundImage.setPosition(-25,-20);
         GAME.stageInstance.addActor(backgroundImage);
 
-        //set player image and location
-        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setPosition(960, 1110);
 
-        playerIcon.addListener(new InputListener() {
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.LEFT) {
-                    playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
-                    checkEnterRoom();
-                    return true;
-                }
-
-                if (keycode == Input.Keys.RIGHT) {
-                    playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
-                    checkEnterRoom();
-                    return true;
-                }
-
-                if (keycode == Input.Keys.UP) {
-                    playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
-                    checkEnterRoom();
-                    return true;
-                }
-
-                if (keycode == Input.Keys.DOWN) {
-                    playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
-                    checkEnterRoom();
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            public void checkEnterRoom()
-            {
-                //Two side rooms - one to the left and one to the right
-                if((playerIcon.getX() <= 150 && playerIcon.getY() < 750 && playerIcon.getY() > 500) ||
-                        (playerIcon.getX() > 1920 - 150 && playerIcon.getY() < 750 && playerIcon.getY() > 500))
-                {
-                    GAME.stageInstance.clear();
-                    dispose();
-                    GAME.setScreen(new SideDungeon(GAME));
-                }
-            }
-
-        });
-
-        GAME.stageInstance.setKeyboardFocus(playerIcon);
+        //Used dimensions of the room as a reference point thanks to Alex Farcer
+        walkableArea = new Rectangle();
+        walkableArea.setSize((int) backgroundImage.getWidth() - 3*MOVE_DISTANCE, (int) backgroundImage.getHeight() - 3*MOVE_DISTANCE);
+        walkableArea.setCenter(walkableArea.getWidth()/2, walkableArea.getHeight()/2);
+        walkableArea.setPosition(MOVE_DISTANCE*3, MOVE_DISTANCE*3);
 
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(playerIcon);
@@ -92,6 +59,42 @@ public class Dungeon extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
+        // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
+        // Co-Opted for use in our Project for creating walkable areas and loading zones.
+        //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
+        if (!GAME.player.moveSquare.overlaps(walkableArea)) {
+            if (GAME.player.playerIcon.getY() > (walkableArea.getY() + walkableArea.getHeight())) {
+                GAME.player.playerIcon.setPosition(xIcon, yIcon - 3*MOVE_DISTANCE);
+                GAME.player.moveSquare.setPosition(xMove, yMove - 3*MOVE_DISTANCE);
+                GAME.player.interactSquare.setPosition(xInter, yInter - 3*MOVE_DISTANCE);
+            }
+            else if (GAME.player.playerIcon.getY() < walkableArea.getY()) {
+                GAME.player.playerIcon.setPosition(xIcon, yIcon + 3*MOVE_DISTANCE);
+                GAME.player.moveSquare.setPosition(xMove, yMove + 3*MOVE_DISTANCE);
+                GAME.player.interactSquare.setPosition(xInter, yInter + 3*MOVE_DISTANCE);
+            }
+
+            if (GAME.player.playerIcon.getX() > (walkableArea.getX() + walkableArea.getWidth())) {
+                GAME.player.playerIcon.setPosition(xIcon - 3*MOVE_DISTANCE, yIcon);
+                GAME.player.moveSquare.setPosition(xMove - 3*MOVE_DISTANCE, yMove);
+                GAME.player.interactSquare.setPosition(xInter - 3*MOVE_DISTANCE, yInter);
+            }
+            else if (GAME.player.playerIcon.getX() < walkableArea.getX()) {
+                GAME.player.playerIcon.setPosition(xIcon + 3*MOVE_DISTANCE, yIcon);
+                GAME.player.moveSquare.setPosition(xMove + 3*MOVE_DISTANCE, yMove);
+                GAME.player.interactSquare.setPosition(xInter + 3*MOVE_DISTANCE, yInter);
+            }
+        }
+        else {
+            xIcon = GAME.player.playerIcon.getX();
+            yIcon = GAME.player.playerIcon.getY();
+            xMove = GAME.player.moveSquare.getX();
+            yMove = GAME.player.moveSquare.getY();
+            xInter = GAME.player.interactSquare.getX();
+            yInter = GAME.player.interactSquare.getY();
+        }
+
+
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
@@ -99,7 +102,30 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-        inventory.update();
+
+        //Two side rooms - one to the left and one to the right
+        //Alex Farcer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
+        if(roomId == 0 &&
+                (GAME.player.playerIcon.getX() <= 150 && GAME.player.playerIcon.getY() < 750 && GAME.player.playerIcon.getY() > 500) ||
+                (GAME.player.playerIcon.getX() > 1920 - 150 && GAME.player.playerIcon.getY() < 750 && GAME.player.playerIcon.getY() > 500))
+        {
+            if(GAME.player.playerIcon.getX() > 1920 - 150 && GAME.player.playerIcon.getY() < 750 && GAME.player.playerIcon.getY() > 500) {
+                roomId = 1;
+            }
+            else {
+                roomId = 2;
+            }
+
+            GAME.stageInstance.clear();
+            backgroundImage = new Image(new Texture(Gdx.files.internal("SideDungeon.png")));
+            GAME.stageInstance.addActor(backgroundImage);
+            GAME.stageInstance.addActor(GAME.player.playerIcon);
+            GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+        }
+        else if (roomId != 0)
+        {
+
+        }
     }
 
     @Override

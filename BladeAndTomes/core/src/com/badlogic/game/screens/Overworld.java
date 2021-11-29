@@ -1,7 +1,6 @@
 package com.badlogic.game.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
