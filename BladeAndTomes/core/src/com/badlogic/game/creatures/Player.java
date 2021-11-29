@@ -1,5 +1,12 @@
 package com.badlogic.game.creatures;
 
+import com.badlogic.game.screens.Dungeon;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -43,6 +50,47 @@ public class Player extends Entity {
         this.id = "player";
         this.playerClass = 1;
         this.name = "";
+
+        moveSquare = new Rectangle();
+
+        //TODO: Simplify all of this into Player class?
+        //TODO: Move Player Icon Definitions to Backbone?
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
+        moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+
+        // Thank you to libGDX.info editors for creating a helpful tutorial
+        // on MoveActions as well as the libGDX creators for teaching pool-able actions
+        // and InputListeners on their wiki.
+        // https://libgdx.info/basic_action/
+        // https://github.com/libgdx/libgdx/wiki/Scene2d
+        playerIcon.addListener(new InputListener() {
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
+                    case Input.Keys.UP:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        break;
+                    case Input.Keys.DOWN:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        break;
+                    case Input.Keys.LEFT:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        break;
+                    case Input.Keys.RIGHT:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        break;
+                    default:
+                        return false;
+                }
+                moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                return true;
+            }
+        });
     }
 
     /**
@@ -55,6 +103,40 @@ public class Player extends Entity {
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
+
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+        // Thank you to libGDX.info editors for creating a helpful tutorial
+        // on MoveActions as well as the libGDX creators for teaching pool-able actions
+        // and InputListeners on their wiki.
+        // https://libgdx.info/basic_action/
+        // https://github.com/libgdx/libgdx/wiki/Scene2d
+        playerIcon.addListener(new InputListener() {
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
+                    case Input.Keys.UP:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        break;
+                    case Input.Keys.DOWN:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        break;
+                    case Input.Keys.LEFT:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        break;
+                    case Input.Keys.RIGHT:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 
     public int getPlayerClass()

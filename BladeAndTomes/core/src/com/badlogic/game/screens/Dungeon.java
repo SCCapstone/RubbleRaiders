@@ -2,15 +2,11 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.MainInventory;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Dungeon extends ScreenAdapter {
@@ -20,6 +16,7 @@ public class Dungeon extends ScreenAdapter {
     Image playerIcon;
     Texture background;
     Image backgroundImage;
+    MainInventory inventory;
 
     Rectangle walkableArea;
     Rectangle doorHitBox;
@@ -45,7 +42,8 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.addActor(backgroundImage);
 
 
-        //Used dimensions of the room as a reference point thanks to Alex Farcer
+        // Used dimensions of the room as a reference point thanks to Alex Farcer for providing them later in code
+        // (See render function)
         walkableArea = new Rectangle();
         walkableArea.setSize((int) backgroundImage.getWidth() - 3*MOVE_DISTANCE, (int) backgroundImage.getHeight() - 3*MOVE_DISTANCE);
         walkableArea.setCenter(walkableArea.getWidth()/2, walkableArea.getHeight()/2);
@@ -102,6 +100,7 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+        inventory.update();
 
         //Two side rooms - one to the left and one to the right
         //Alex Farcer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.

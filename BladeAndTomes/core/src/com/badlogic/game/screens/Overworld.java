@@ -1,12 +1,14 @@
 package com.badlogic.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -26,6 +28,7 @@ public class Overworld extends ScreenAdapter {
     Texture marketStall;
     Texture tavern;
     BitmapFont font;
+    Rectangle[] loadZone;
 
 
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
@@ -40,6 +43,7 @@ public class Overworld extends ScreenAdapter {
         MOVE_DISTANCE = 64;
 
         batch = new SpriteBatch();
+
         // Assets were obtained from below source
         // https://merchant-shade.itch.io/16x16-mini-world-sprites
         background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
@@ -50,85 +54,37 @@ public class Overworld extends ScreenAdapter {
         questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
         tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
 
+        loadZone = new Rectangle[] {
+          new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()
+        };
 
-        //TODO: Simplify all of this into Player class?
-        //TODO: Move Player Icon Definitions to Backbone?
-        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition(960, 600);
-
-        // Thank you to libGDX.info editors for creating a helpful tutorial
-        // on MoveActions as well as the libGDX creators for teaching pool-able actions
-        // and InputListeners on their wiki.
-        // https://libgdx.info/basic_action/
-        // https://github.com/libgdx/libgdx/wiki/Scene2d
-        playerIcon.addListener(new InputListener() {
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                int moveX = 0, moveY = 0;
-
-                switch(keycode) {
-                    case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
-                        moveY = MOVE_DISTANCE;
-                        break;
-                    case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
-                        moveY = -MOVE_DISTANCE;
-                        break;
-                    case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
-                        moveX = -MOVE_DISTANCE;
-                        break;
-                    case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
-                        moveX = MOVE_DISTANCE;
-                        break;
-                    default:
-                        return false;
-                }
-
-                checkOffMap(playerIcon.getX() + moveX, playerIcon.getY() + moveY);
-
-                return true;
+        for(int i = 0; i<4; i++) {
+            if(i%2==0) {
+                loadZone[i].setSize(GAME.MOVE_DISTANCE, GAME.stageInstance.getHeight());
             }
-
-            /**
-             * Function that makes sure to moves the screen to the dungeon screen so that the player can leave the overworld
-             * and adventure within the depths.
-             */
-            public void checkOffMap(float x, float y)
-            {
-                //TODO: Reduce compound statement into something easily runnable.
-                if((x <= 128 || y <= 128) || (x > GAME.stageInstance.getWidth() - 128 || y > GAME.stageInstance.getHeight() - 128))
-                {
-                    GAME.stageInstance.clear();
-                    dispose();
-                    GAME.setScreen(new Dungeon(GAME));
-                }
+            else {
+                loadZone[i].setSize(GAME.stageInstance.getWidth(), GAME.MOVE_DISTANCE);
             }
-        });
+            loadZone[i].setCenter(loadZone[i].getWidth()/2, loadZone[i].getHeight());
+        }
+
+        loadZone[0].setPosition(0,0);
+        loadZone[1].setPosition(0,0);
+        loadZone[2].setPosition(0, GAME.stageInstance.getHeight()- GAME.MOVE_DISTANCE);
+        loadZone[3].setPosition(GAME.stageInstance.getWidth()- GAME.MOVE_DISTANCE, 0);
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
-        GAME.stageInstance.setKeyboardFocus(playerIcon);
+        GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
 
         //Adds the player's icon to the stage.
-        GAME.stageInstance.addActor(playerIcon);
+        GAME.stageInstance.addActor(GAME.player.playerIcon);
     }
 
     @Override
     public void render(float delta){
 
-        //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
-        //Specifically the advanced section on super.render() as well as the following section on the main
-        //game screen
-        //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
-        GAME.stageInstance.draw();
 
         GAME.batch.begin();
         GAME.batch.draw(background, 0 ,0);
@@ -139,6 +95,32 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.draw(questBoard, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         GAME.batch.draw(portal, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 8);
         GAME.batch.end();
+
+        /*if((GAME.player.playerIcon.getX() <= MOVE_DISTANCE || GAME.player.playerIcon.getY() <= MOVE_DISTANCE) || (GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - MOVE_DISTANCE ||
+                GAME.player.playerIcon.getY() > GAME.stageInstance.getHeight() - MOVE_DISTANCE))
+        {
+            GAME.stageInstance.clear();
+            dispose();
+            GAME.setScreen(new Dungeon(GAME));
+        }*/
+
+        // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
+        // Co-Opted for use in our Project for creating walkable areas and loading zones.
+        //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
+        for(int i=0; i<loadZone.length; i++) {
+            if(GAME.player.moveSquare.overlaps(loadZone[i])) {
+                GAME.stageInstance.clear();
+                dispose();
+                GAME.setScreen(new Dungeon(GAME));
+            }
+        }
+
+        //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
+        //Specifically the advanced section on super.render() as well as the following section on the main
+        //game screen
+        //https://libgdx.com/dev/simple-game-extended/
+        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
+        GAME.stageInstance.draw();
     }
 
     @Override
