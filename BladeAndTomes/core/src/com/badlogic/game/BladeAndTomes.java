@@ -145,7 +145,7 @@ public class BladeAndTomes extends Game {
         generalWindowStyle = new WindowStyle();
         generalWindowStyle.titleFont = font;
         generalWindowStyle.titleFontColor = new Color(0f,0f,0f,1f);
-        generalWindowStyle.stageBackground = new TextureRegionDrawable(new Texture(Gdx.files.internal("Main_Menu_Screen.jpg")));
+        //generalWindowStyle.stageBackground = new TextureRegionDrawable(new Texture(Gdx.files.internal("Main_Menu_Screen.jpg")));
 
         //libGDX documentation on SliderStyle and how it is to be implemented by libGDX devs
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.SliderStyle.html

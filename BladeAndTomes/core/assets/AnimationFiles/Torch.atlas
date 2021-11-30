@@ -6,50 +6,50 @@ filter: Nearest, Nearest
 repeat: none
 Torch2-0
   rotate: false
-  xy: 2, 2
-  size: 400, 400
-  orig: 400, 400
+  xy: 142, 2
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1
 Torch2-1
   rotate: false
-  xy: 806, 2
-  size: 400, 400
-  orig: 400, 400
+  xy: 946, 2
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1
 Torch2-2
   rotate: false
-  xy: 404, 2
-  size: 400, 400
-  orig: 400, 400
+  xy: 544, 2
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1
 Torch2-3
   rotate: false
-  xy: 2, 404
-  size: 400, 400
-  orig: 400, 400
+  xy: 142, 404
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1
 Torch2-4
   rotate: false
-  xy: 806, 404
-  size: 400, 400
-  orig: 400, 400
+  xy: 946, 404
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1
 Torch2-5
   rotate: false
-  xy: 404, 404
-  size: 400, 400
-  orig: 400, 400
+  xy: 544, 404
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1
 Torch2-6
   rotate: false
-  xy: 1208, 404
-  size: 400, 400
-  orig: 400, 400
+  xy: 1348, 404
+  size: 120, 400
+  orig: 120, 400
   offset: 0, 0
   index: -1

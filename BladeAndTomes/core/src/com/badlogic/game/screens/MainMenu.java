@@ -86,10 +86,10 @@ public class MainMenu extends ScreenAdapter {
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
         settingsWindow = new Window("Settings", GAME.generalWindowStyle);
-        settingsWindow.setPosition(760, 590);
+        settingsWindow.setPosition(750, 590);
         settingsWindow.setKeepWithinStage(true);
         settingsWindow.setHeight(400);
-        settingsWindow.setWidth(600);
+        settingsWindow.setWidth(400);
         settingsWindow.setMovable(true);
 
         //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
@@ -227,8 +227,8 @@ public class MainMenu extends ScreenAdapter {
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
         batch.begin();
         timePassed +=Gdx.graphics.getDeltaTime();
-        batch.draw(animation.getKeyFrame(timePassed,true),1100,600);
-        batch.draw(animation.getKeyFrame(timePassed,true),350,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),1240,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),490,600);
 
         batch.end();
 
