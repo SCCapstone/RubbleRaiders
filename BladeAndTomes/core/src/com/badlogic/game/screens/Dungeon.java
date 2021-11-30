@@ -20,9 +20,9 @@ public class Dungeon extends ScreenAdapter {
     Image backgroundImage;
     MainInventory inventory;
 
-    Rectangle walkableArea;
-    Rectangle doorHitBox;
-    float xIcon, yIcon, xMove, yMove, xInter, yInter;
+    //Rectangle walkableArea;
+    //Rectangle doorHitBox;
+    //float xIcon, yIcon, xMove, yMove, xInter, yInter;
 
     int roomId;
 
@@ -120,7 +120,8 @@ public class Dungeon extends ScreenAdapter {
 
         //Two side rooms - one to the left and one to the right
         //Alex Farcer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
-        //I used the
+        //I used the resolution sizes provided by Alex Farcer and adjusted them to allow for the backgrounds to properly
+        //fit as well as so the loading zomes would be hit in the correct manner.
         if(roomId == 0 &&
                 (GAME.player.playerIcon.getX() <= 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) ||
                 (GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300))

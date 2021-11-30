@@ -22,17 +22,18 @@ public class Overworld extends ScreenAdapter {
     final int MOVE_DISTANCE;
     Image playerIcon;
     SpriteBatch batch;
+
     Texture background;
     Texture chapel;
     Texture barracks;
     Texture questBoard;
     Texture portal;
     Texture NPCTrader;
-
     Texture marketStall;
     Texture tavern;
+
     BitmapFont font;
-    Rectangle[] loadZone;
+    //Rectangle[] loadZone;
     MainInventory inventory;
     Point NPC_Cords;
     boolean doTrade;
@@ -61,7 +62,6 @@ public class Overworld extends ScreenAdapter {
         questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
         tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
         NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
-
 
         /*
         loadZone = new Rectangle[] {
@@ -93,7 +93,6 @@ public class Overworld extends ScreenAdapter {
         inventory = new MainInventory(GAME);
         NPC_Cords = new Point();
         NPC_Cords.setLocation(Gdx.graphics.getWidth() /8,Gdx.graphics.getHeight() / 2);
-
     }
 
     @Override
@@ -113,6 +112,7 @@ public class Overworld extends ScreenAdapter {
 
         GAME.batch.end();
 
+        //Simplifying the boundaries and attaching them to constants allows for ease of player access.
         if((GAME.player.moveSquare.getX() <= 2*MOVE_DISTANCE ||
                 GAME.player.moveSquare.getY() <= 2*MOVE_DISTANCE) ||
                 (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 2*MOVE_DISTANCE ||
