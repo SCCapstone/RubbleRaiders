@@ -52,6 +52,23 @@ public class MainInventory {
 
 
     }
+    public void showNPCTradeScreen(boolean doTrade){
+        if(doTrade){
+            hiddenInventory.tradeScreen = true;
+            hiddenInventory.isTradesGenerated = false;
+            hiddenInventory.displayNPCTrade();
+        }
+        else if(!doTrade && hiddenInventory.tradeScreen) {
+            hiddenInventory.tradeScreen = false;
+            hiddenInventory.isTradesGenerated = true;
+
+//            hiddenInventory.clearInventorySlots();
+            hiddenInventory.hideInvtory();
+        }
+
+
+
+    }
 
     public void update() {
 
@@ -94,7 +111,6 @@ public class MainInventory {
             inventorySloat[i].setHeight(optionHeight);
             Game.stageInstance.addActor(inventorySloat[i]);
         }
-
     }
 
 }

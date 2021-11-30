@@ -5,12 +5,13 @@ import java.util.ArrayList;
 public class Inventory {
     public String[] mainInventoryItems;
     ArrayList<Integer> swap;
-
+    public int tradeCurrency;
     public Inventory() {
         mainInventoryItems = new String[19];
         for (int i = 0; i < mainInventoryItems.length; ++i)
             mainInventoryItems[i] = "item " + (i + 1);
         swap = new ArrayList<>();
+        tradeCurrency = 0;
     }
 
     public void updateInventory() {
@@ -20,6 +21,24 @@ public class Inventory {
     public void saveInventory() {
 
     }
+
+    public void npcSwapCurrency(int swapIndex, boolean  confirmSwap, int amount ){
+        if(confirmSwap){
+            mainInventoryItems[swapIndex] = "";
+            tradeCurrency +=amount;
+            swap.clear();
+        }
+
+    }
+
+    public void npcSwapItem(int swapIndex, boolean  confirmSwap, String item ){
+        if(confirmSwap){
+            mainInventoryItems[swapIndex] = item;
+            swap.clear();
+        }
+
+    }
+
 
     public int[] addSwap(int index) {
         swap.add(index);

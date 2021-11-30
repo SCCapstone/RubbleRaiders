@@ -27,7 +27,7 @@ public class BladeAndTomes extends Game {
     BitmapFont font;
     Texture image;
     public Stage stageInstance;
-    public final float WINDOWWIDTH = 1920, WINDOWHIGHT = 1280;
+    public final float WINDOWWIDTH = 1920, WINDOWHIGHT = 1080;
 
 
     public enum classes {WARRIOR, CLERIC, WIZARD}

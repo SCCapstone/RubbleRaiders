@@ -3,6 +3,7 @@ package com.badlogic.game.screens;
 import Sounds.BackGroundMusic;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

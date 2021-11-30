@@ -1,18 +1,20 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlay.MainInventory;
+import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
+import java.awt.*;
 
 public class Overworld extends ScreenAdapter {
 
@@ -25,11 +27,16 @@ public class Overworld extends ScreenAdapter {
     Texture barracks;
     Texture questBoard;
     Texture portal;
+    Texture NPCTrader;
+
     Texture marketStall;
     Texture tavern;
     BitmapFont font;
     Rectangle[] loadZone;
-
+    MainInventory inventory;
+    Point NPC_Cords;
+    boolean doTrade;
+    Label npcTraderMsg;
 
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
@@ -41,7 +48,7 @@ public class Overworld extends ScreenAdapter {
         this.GAME = game;
 
         MOVE_DISTANCE = 64;
-
+        doTrade = false;
         batch = new SpriteBatch();
 
         // Assets were obtained from below source
@@ -53,6 +60,8 @@ public class Overworld extends ScreenAdapter {
         portal = new Texture(Gdx.files.internal("PortalToDungeon.jpg"));
         questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
         tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
+        NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
+
 
         loadZone = new Rectangle[] {
           new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()
@@ -79,6 +88,10 @@ public class Overworld extends ScreenAdapter {
 
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(GAME.player.playerIcon);
+        inventory = new MainInventory(GAME);
+        NPC_Cords = new Point();
+        NPC_Cords.setLocation(Gdx.graphics.getWidth() /8,Gdx.graphics.getHeight() / 2);
+
     }
 
     @Override
@@ -94,6 +107,8 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.draw(chapel, Gdx.graphics.getWidth() / 4, (float) (Gdx.graphics.getHeight() * 0.75));
         GAME.batch.draw(questBoard, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         GAME.batch.draw(portal, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 8);
+        GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y);
+
         GAME.batch.end();
 
         /*if((GAME.player.playerIcon.getX() <= MOVE_DISTANCE || GAME.player.playerIcon.getY() <= MOVE_DISTANCE) || (GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - MOVE_DISTANCE ||
@@ -108,7 +123,7 @@ public class Overworld extends ScreenAdapter {
         // Co-Opted for use in our Project for creating walkable areas and loading zones.
         //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
         for(int i=0; i<loadZone.length; i++) {
-            if(GAME.player.moveSquare.overlaps(loadZone[i])) {
+            if (GAME.player.moveSquare.overlaps(loadZone[i])) {
                 GAME.stageInstance.clear();
                 dispose();
                 GAME.setScreen(new Dungeon(GAME));
@@ -119,8 +134,35 @@ public class Overworld extends ScreenAdapter {
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
+        System.out.println("Image Loc: "+(GAME.player.moveSquare.getX()-NPC_Cords.getLocation().x)/100 );
+        npcTraderMsg = new Label("Wanna Trade\n Press \"T\" ", GAME.BaseLabelStyle2);
+
+        if((int)(GAME.player.moveSquare.getX()-NPC_Cords.getLocation().x)/200 == 0 &&(int)(GAME.player.moveSquare.getY()-NPC_Cords.getLocation().y)/100 ==0){
+            inventory.update();
+            npcTraderMsg.setHeight(100);
+            npcTraderMsg.setWidth(100);
+            npcTraderMsg.setX(NPC_Cords.getLocation().x+50);
+            npcTraderMsg.setY(NPC_Cords.getLocation().y+100);
+            GAME.stageInstance.addActor(npcTraderMsg);
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+            doTrade = !doTrade;
+                inventory.showNPCTradeScreen(doTrade);
+            }
+        } else {
+            if(doTrade){
+                doTrade =false;
+                inventory.showNPCTradeScreen(doTrade);
+            }
+            npcTraderMsg.addAction(Actions.removeActor());
+        }
+        inventory.update();
+
+
+
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+
     }
 
     @Override
