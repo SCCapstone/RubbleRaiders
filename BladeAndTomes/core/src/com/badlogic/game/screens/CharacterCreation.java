@@ -45,7 +45,7 @@ public class CharacterCreation extends ScreenAdapter {
             }
         });
         nameField.setX(960,1);
-        nameField.setY(1110, 1);
+        nameField.setY(910, 1);
         GAME.stageInstance.addActor(nameField);
 
         //Displays for the Physical, Mental, and Social stats done in the same way as Anirudh Oruganti suggested
@@ -58,7 +58,7 @@ public class CharacterCreation extends ScreenAdapter {
             statFields[i].setAlignment(1);
             statFields[i].setHeight(90);
             statFields[i].setX(780+i*180,1);
-            statFields[i].setY(960,1);
+            statFields[i].setY(760,1);
             GAME.stageInstance.addActor(statFields[i]);
         }
 
@@ -75,7 +75,7 @@ public class CharacterCreation extends ScreenAdapter {
             secondaryStatFields[i].setAlignment(1);
             secondaryStatFields[i].setHeight(90);
             secondaryStatFields[i].setX(560+i*180,1);
-            secondaryStatFields[i].setY(800,1);
+            secondaryStatFields[i].setY(600,1);
             GAME.stageInstance.addActor(secondaryStatFields[i]);
         }
 
@@ -93,7 +93,7 @@ public class CharacterCreation extends ScreenAdapter {
             classSelection[i].setWidth(160);
             classSelection[i].setHeight(90);
             classSelection[i].setX(780+i*180,1);
-            classSelection[i].setY(640,1);
+            classSelection[i].setY(440,1);
             GAME.stageInstance.addActor(classSelection[i]);
         }
 
@@ -158,7 +158,7 @@ public class CharacterCreation extends ScreenAdapter {
         exitButton.setWidth(360);
         exitButton.setHeight(90);
         exitButton.setX(960,1);
-        exitButton.setY(320,1);
+        exitButton.setY(120,1);
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {

@@ -63,6 +63,7 @@ public class Overworld extends ScreenAdapter {
         NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
 
 
+        /*
         loadZone = new Rectangle[] {
           new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()
         };
@@ -81,6 +82,7 @@ public class Overworld extends ScreenAdapter {
         loadZone[1].setPosition(0,0);
         loadZone[2].setPosition(0, GAME.stageInstance.getHeight()- GAME.MOVE_DISTANCE);
         loadZone[3].setPosition(GAME.stageInstance.getWidth()- GAME.MOVE_DISTANCE, 0);
+        */
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
@@ -111,24 +113,26 @@ public class Overworld extends ScreenAdapter {
 
         GAME.batch.end();
 
-        /*if((GAME.player.playerIcon.getX() <= MOVE_DISTANCE || GAME.player.playerIcon.getY() <= MOVE_DISTANCE) || (GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - MOVE_DISTANCE ||
-                GAME.player.playerIcon.getY() > GAME.stageInstance.getHeight() - MOVE_DISTANCE))
+        if((GAME.player.moveSquare.getX() <= 2*MOVE_DISTANCE ||
+                GAME.player.moveSquare.getY() <= 2*MOVE_DISTANCE) ||
+                (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 2*MOVE_DISTANCE ||
+                        GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 2*MOVE_DISTANCE))
         {
             GAME.stageInstance.clear();
             dispose();
             GAME.setScreen(new Dungeon(GAME));
-        }*/
+        }
 
         // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
         // Co-Opted for use in our Project for creating walkable areas and loading zones.
         //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
-        for(int i=0; i<loadZone.length; i++) {
-            if (GAME.player.moveSquare.overlaps(loadZone[i])) {
+        /*for(int i=0; i<loadZone.length; i++) {
+            if(GAME.player.moveSquare.overlaps(loadZone[i])) {
                 GAME.stageInstance.clear();
                 dispose();
                 GAME.setScreen(new Dungeon(GAME));
             }
-        }
+        }*/
 
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main

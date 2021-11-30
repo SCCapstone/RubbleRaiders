@@ -75,7 +75,7 @@ public class MainMenu extends ScreenAdapter {
 
         settingsMusicLabel = new Label("Music Volume", GAME.generalLabelStyle);
 
-        optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 900f; optionLocY = 960f;
+        optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
         MainMenuOptions = new TextButton[]{
                 new TextButton("New Game", game.generalTextButtonStyle),
                 new TextButton("Characters", game.generalTextButtonStyle),
@@ -88,8 +88,8 @@ public class MainMenu extends ScreenAdapter {
         settingsWindow = new Window("Settings", GAME.generalWindowStyle);
         settingsWindow.setPosition(760, 590);
         settingsWindow.setKeepWithinStage(true);
-        settingsWindow.setHeight(600);
-        settingsWindow.setWidth(800);
+        settingsWindow.setHeight(400);
+        settingsWindow.setWidth(600);
         settingsWindow.setMovable(true);
 
         //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
@@ -227,8 +227,8 @@ public class MainMenu extends ScreenAdapter {
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
         batch.begin();
         timePassed +=Gdx.graphics.getDeltaTime();
-        batch.draw(animation.getKeyFrame(timePassed,true),1200,600);
-        batch.draw(animation.getKeyFrame(timePassed,true),450,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),1100,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),350,600);
 
         batch.end();
 

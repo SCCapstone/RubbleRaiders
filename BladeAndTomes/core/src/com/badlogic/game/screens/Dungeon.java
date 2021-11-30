@@ -1,12 +1,14 @@
 package com.badlogic.game.screens;
 
 import ScreenOverlay.MainInventory;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Dungeon extends ScreenAdapter {
@@ -29,28 +31,34 @@ public class Dungeon extends ScreenAdapter {
         this.GAME = game;
         MOVE_DISTANCE = 64;
 
-        GAME.player.playerIcon.setPosition(960,690);
-        GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+        GAME.stageInstance.clear();
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
         //Author of images Kamigeek
         background = new Texture(Gdx.files.internal("MainDungeon.png"));
         backgroundImage = new Image(background);
-        backgroundImage.setSize(2000,1350);
+
+        // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
+        // image so that it would properly fit within the confines of the background.
+        backgroundImage.setSize(2000,1150);
         backgroundImage.setPosition(-25,-20);
         GAME.stageInstance.addActor(backgroundImage);
 
 
         // Used dimensions of the room as a reference point thanks to Alex Farcer for providing them later in code
         // (See render function)
+        /*
         walkableArea = new Rectangle();
         walkableArea.setSize((int) backgroundImage.getWidth() - 3*MOVE_DISTANCE, (int) backgroundImage.getHeight() - 3*MOVE_DISTANCE);
         walkableArea.setCenter(walkableArea.getWidth()/2, walkableArea.getHeight()/2);
-        walkableArea.setPosition(MOVE_DISTANCE*3, MOVE_DISTANCE*3);
+        walkableArea.setPosition(MOVE_DISTANCE*3, MOVE_DISTANCE*3);*/
 
         //Adds the player's icon to the stage.
-        GAME.stageInstance.addActor(playerIcon);
+        GAME.player.playerIcon.setPosition(960,490);
+        GAME.stageInstance.addActor(GAME.player.playerIcon);
+        GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+
         inventory = new MainInventory(GAME);
     }
 
@@ -60,7 +68,7 @@ public class Dungeon extends ScreenAdapter {
         // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
         // Co-Opted for use in our Project for creating walkable areas and loading zones.
         //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
-        if (!GAME.player.moveSquare.overlaps(walkableArea)) {
+        /*if (!GAME.player.moveSquare.overlaps(walkableArea)) {
             if (GAME.player.playerIcon.getY() > (walkableArea.getY() + walkableArea.getHeight())) {
                 GAME.player.playerIcon.setPosition(xIcon, yIcon - 3*MOVE_DISTANCE);
                 GAME.player.moveSquare.setPosition(xMove, yMove - 3*MOVE_DISTANCE);
@@ -90,7 +98,7 @@ public class Dungeon extends ScreenAdapter {
             yMove = GAME.player.moveSquare.getY();
             xInter = GAME.player.interactSquare.getX();
             yInter = GAME.player.interactSquare.getY();
-        }
+        }*/
 
 
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
@@ -102,22 +110,36 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.draw();
         inventory.update();
 
+        /*if((GAME.player.moveSquare.getX() <= 3*MOVE_DISTANCE ||
+                        GAME.player.moveSquare.getY() <= 3*MOVE_DISTANCE) ||
+                (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE ||
+                        GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 3*MOVE_DISTANCE))
+        {
+            GAME.player.playerIcon.setPosition();
+        }*/
+
         //Two side rooms - one to the left and one to the right
         //Alex Farcer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
+        //I used the
         if(roomId == 0 &&
-                (GAME.player.playerIcon.getX() <= 150 && GAME.player.playerIcon.getY() < 750 && GAME.player.playerIcon.getY() > 500) ||
-                (GAME.player.playerIcon.getX() > 1920 - 150 && GAME.player.playerIcon.getY() < 750 && GAME.player.playerIcon.getY() > 500))
+                (GAME.player.playerIcon.getX() <= 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) ||
+                (GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300))
         {
-            if(GAME.player.playerIcon.getX() > 1920 - 150 && GAME.player.playerIcon.getY() < 750 && GAME.player.playerIcon.getY() > 500) {
+            if(GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) {
                 roomId = 1;
             }
-            else {
+            else if(GAME.player.playerIcon.getX() <= 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) {
                 roomId = 2;
             }
 
             GAME.stageInstance.clear();
+
+            //I (Aidan) Estimated the size of the room based on the
             backgroundImage = new Image(new Texture(Gdx.files.internal("SideDungeon.png")));
+            backgroundImage.setBounds(-25, -20, 2000, 1150);
             GAME.stageInstance.addActor(backgroundImage);
+
+            GAME.player.playerIcon.setPosition(960, MOVE_DISTANCE*3);
             GAME.stageInstance.addActor(GAME.player.playerIcon);
             GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
         }
@@ -125,6 +147,8 @@ public class Dungeon extends ScreenAdapter {
         {
 
         }
+
+        isCollisionHandled(GAME.player, GAME.stageInstance);
     }
 
     @Override
@@ -136,5 +160,36 @@ public class Dungeon extends ScreenAdapter {
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
+
+    public boolean isCollisionHandled(Player player, Stage stage)
+    {
+        if(player.playerIcon.getX() <= 1*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
+            player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+        else if(player.playerIcon.getY() <= 4*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
+            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+        else if(player.playerIcon.getX() >= stage.getWidth() - 4*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
+            player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+        else if(player.playerIcon.getY() >= stage.getHeight() - 2*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
+            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+
+        return true;
+    }
+
 
 }
