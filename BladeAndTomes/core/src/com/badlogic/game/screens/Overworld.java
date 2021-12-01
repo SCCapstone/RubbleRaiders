@@ -2,6 +2,8 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.MainInventory;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.creatures.Player;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -41,6 +44,7 @@ public class Overworld extends ScreenAdapter {
 
     MainInventory inventory;
     Point NPC_Cords;
+    Point Portal_Cords;
     boolean doTrade;
     Label npcTraderMsg;
 
@@ -127,6 +131,8 @@ public class Overworld extends ScreenAdapter {
         inventory = new MainInventory(GAME);
         NPC_Cords = new Point();
         NPC_Cords.setLocation(Gdx.graphics.getWidth() /8,Gdx.graphics.getHeight() / 2);
+        Portal_Cords = new Point();
+        Portal_Cords.setLocation(Gdx.graphics.getWidth() /2,Gdx.graphics.getHeight() / 8);
     }
 
     @Override
@@ -146,11 +152,21 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.end();
 
         //Simplifying the boundaries and attaching them to constants allows for ease of player access.
+        /*
         if((GAME.player.moveSquare.getX() <= 2*MOVE_DISTANCE ||
                 GAME.player.moveSquare.getY() <= 2*MOVE_DISTANCE) ||
                 (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 2*MOVE_DISTANCE ||
                         GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 2*MOVE_DISTANCE))
         {
+            GAME.stageInstance.removeListener(escapePauseOver);
+            GAME.stageInstance.clear();
+            dispose();
+            GAME.setScreen(new Dungeon(GAME));
+        }*/
+
+        //how player enters dungeon through the portal
+        //I followed Anirudh Oruganti's method for the NPC interation in the overworld
+        if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
@@ -207,6 +223,7 @@ public class Overworld extends ScreenAdapter {
 
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+        isCollisionHandled(GAME.player, GAME.stageInstance);
     }
 
     @Override
@@ -217,6 +234,38 @@ public class Overworld extends ScreenAdapter {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
+    }
+
+    //sets boundaries in the overworld
+    //based off of Aidan Emmons boundary method for dungeon
+    public boolean isCollisionHandled(Player player, Stage stage)
+    {
+        if(player.playerIcon.getX() <= 2*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
+            player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+        else if(player.playerIcon.getY() <= 2*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
+            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+        else if(player.playerIcon.getX() >= stage.getWidth() - 2*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
+            player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+        else if(player.playerIcon.getY() >= stage.getHeight() - 2*MOVE_DISTANCE)
+        {
+            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
+            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
+            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+        }
+
+        return true;
     }
 
 }
