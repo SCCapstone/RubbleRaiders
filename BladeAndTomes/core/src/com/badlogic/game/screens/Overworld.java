@@ -7,20 +7,22 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import java.awt.*;
+import java.awt.Point;
 
 public class Overworld extends ScreenAdapter {
 
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
-    Image playerIcon;
     SpriteBatch batch;
 
     Texture background;
@@ -32,8 +34,11 @@ public class Overworld extends ScreenAdapter {
     Texture marketStall;
     Texture tavern;
 
-    BitmapFont font;
-    //Rectangle[] loadZone;
+    Window pauseMenu;
+    Label warning;
+    TextButton options[];
+    InputListener escapePauseOver;
+
     MainInventory inventory;
     Point NPC_Cords;
     boolean doTrade;
@@ -63,26 +68,55 @@ public class Overworld extends ScreenAdapter {
         tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
         NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
 
-        /*
-        loadZone = new Rectangle[] {
-          new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()
+        pauseMenu = new Window("Pause Menu", GAME.generalWindowStyle);
+        pauseMenu.setHeight(400);
+        pauseMenu.setWidth(600);
+        pauseMenu.setPosition(960, 590);
+        pauseMenu.setMovable(true);
+        pauseMenu.setKeepWithinStage(true);
+
+        escapePauseOver = new InputListener() {
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                if(keycode == Input.Keys.ESCAPE)
+                {
+                    GAME.stageInstance.setKeyboardFocus(null);
+                    GAME.stageInstance.addActor(pauseMenu);
+                    pauseMenu.add(warning).center();
+                    pauseMenu.row();
+                    pauseMenu.add(options[0], options[1]).center();
+                }
+                return true;
+            }
         };
 
-        for(int i = 0; i<4; i++) {
-            if(i%2==0) {
-                loadZone[i].setSize(GAME.MOVE_DISTANCE, GAME.stageInstance.getHeight());
-            }
-            else {
-                loadZone[i].setSize(GAME.stageInstance.getWidth(), GAME.MOVE_DISTANCE);
-            }
-            loadZone[i].setCenter(loadZone[i].getWidth()/2, loadZone[i].getHeight());
-        }
+        GAME.player.playerIcon.addListener(escapePauseOver);
 
-        loadZone[0].setPosition(0,0);
-        loadZone[1].setPosition(0,0);
-        loadZone[2].setPosition(0, GAME.stageInstance.getHeight()- GAME.MOVE_DISTANCE);
-        loadZone[3].setPosition(GAME.stageInstance.getWidth()- GAME.MOVE_DISTANCE, 0);
-        */
+        warning = new Label("Are you sure you want to Quit?", GAME.generalLabelStyle);
+
+        options = new TextButton[] {
+          new TextButton("Confirm", GAME.generalTextButtonStyle),
+          new TextButton("Cancel", GAME.generalTextButtonStyle)
+        };
+
+        options[0].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.removeListener(escapePauseOver);
+                GAME.stageInstance.clear();
+                dispose();
+                GAME.setScreen(new MainMenu(GAME));
+            }
+        });
+
+        options[1].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                pauseMenu.clear();
+                pauseMenu.remove();
+            }
+        });
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
@@ -109,7 +143,6 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.draw(questBoard, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         GAME.batch.draw(portal, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 8);
         GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y);
-
         GAME.batch.end();
 
         //Simplifying the boundaries and attaching them to constants allows for ease of player access.
@@ -118,10 +151,20 @@ public class Overworld extends ScreenAdapter {
                 (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 2*MOVE_DISTANCE ||
                         GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 2*MOVE_DISTANCE))
         {
+            GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
             GAME.setScreen(new Dungeon(GAME));
         }
+
+        //if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+        //{
+        //    GAME.stageInstance.setKeyboardFocus(null);
+          //  GAME.stageInstance.addActor(pauseMenu);
+            //pauseMenu.add(warning).center();
+            //pauseMenu.row();
+          //  pauseMenu.add(options[0], options[1]).center();
+        //}
 
         // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
         // Co-Opted for use in our Project for creating walkable areas and loading zones.
@@ -162,11 +205,8 @@ public class Overworld extends ScreenAdapter {
         }
         inventory.update();
 
-
-
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-
     }
 
     @Override

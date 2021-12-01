@@ -7,7 +7,6 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -15,7 +14,6 @@ public class Dungeon extends ScreenAdapter {
 
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
-    Image playerIcon;
     Texture background;
     Image backgroundImage;
     MainInventory inventory;
@@ -119,9 +117,9 @@ public class Dungeon extends ScreenAdapter {
         }*/
 
         //Two side rooms - one to the left and one to the right
-        //Alex Farcer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
-        //I used the resolution sizes provided by Alex Farcer and adjusted them to allow for the backgrounds to properly
-        //fit as well as so the loading zomes would be hit in the correct manner.
+        //Alex Facer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
+        //I used the resolution sizes provided by Alex Facer and adjusted them to allow for the backgrounds to properly
+        //fit as well as so the loading zones would be hit in the correct manner.
         if(roomId == 0 &&
                 (GAME.player.playerIcon.getX() <= 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) ||
                 (GAME.player.playerIcon.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300))
@@ -135,7 +133,7 @@ public class Dungeon extends ScreenAdapter {
 
             GAME.stageInstance.clear();
 
-            //I (Aidan) Estimated the size of the room based on the
+            //I (Aidan) Estimated the size of the room based on the estimations of the dimensions of Alex Facer
             backgroundImage = new Image(new Texture(Gdx.files.internal("SideDungeon.png")));
             backgroundImage.setBounds(-25, -20, 2000, 1150);
             GAME.stageInstance.addActor(backgroundImage);
@@ -144,9 +142,12 @@ public class Dungeon extends ScreenAdapter {
             GAME.stageInstance.addActor(GAME.player.playerIcon);
             GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
         }
-        else if (roomId != 0)
+        else if (roomId != 0 &&
+                (GAME.player.playerIcon.getX() >= 835 && GAME.player.playerIcon.getX() <= 1085) ||
+                (GAME.player.playerIcon.getY() >= MOVE_DISTANCE && GAME.player.playerIcon.getY() <= 0))
         {
-
+            roomId = 0;
+            GAME.stageInstance.clear();
         }
 
         isCollisionHandled(GAME.player, GAME.stageInstance);
@@ -164,13 +165,13 @@ public class Dungeon extends ScreenAdapter {
 
     public boolean isCollisionHandled(Player player, Stage stage)
     {
-        if(player.playerIcon.getX() <= 1*MOVE_DISTANCE)
+        if(player.playerIcon.getX() <= 2*MOVE_DISTANCE)
         {
             player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
         }
-        else if(player.playerIcon.getY() <= 4*MOVE_DISTANCE)
+        else if(player.playerIcon.getY() <= 2*MOVE_DISTANCE)
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);

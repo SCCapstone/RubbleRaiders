@@ -1,5 +1,6 @@
 package com.badlogic.game;
 
+import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
@@ -59,6 +60,7 @@ public class BladeAndTomes extends Game {
     public Player player;
     public Image playerIcon;
     public Inventory inventory;
+    public BackGroundMusic _bgmusic;
 
     public final int MOVE_DISTANCE = 64;
 
@@ -72,22 +74,24 @@ public class BladeAndTomes extends Game {
         player = new Player();
         inventory = new Inventory();
 
-
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
 
+        //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
+        //to fix pause menu glitch.
+        _bgmusic = new BackGroundMusic();
+        _bgmusic.playMusic();
+
         //Sets Scene2D instance
         stageInstance = new Stage(new ScreenViewport());
 
-//Sets upstate and downstate textures for texture Buttons
+        //Sets upstate and downstate textures for texture Buttons
         generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
         generalTextButtonDownState = new Texture(Gdx.files.internal("Text_Button_Down_State.jpg"));
         inventoryTextButtonState = new Texture(Gdx.files.internal("inventorySlot.png"));
         inventoryBase1 = new Texture(Gdx.files.internal("inventoryBaseImage.png"));
         inventoryBase2 = new Texture(Gdx.files.internal("inventoryBaseImage2.png"));
-
-
 
         //Sets up the region to be used
         generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);

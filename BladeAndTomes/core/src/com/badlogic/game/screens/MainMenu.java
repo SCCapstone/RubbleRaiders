@@ -1,9 +1,7 @@
 package com.badlogic.game.screens;
 
-import Sounds.BackGroundMusic;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -30,7 +28,6 @@ public class MainMenu extends ScreenAdapter {
     Slider settingsMusicSlider;
     Label settingsMusicLabel;
 
-
     @Override
     public void dispose() {
         super.dispose();
@@ -46,8 +43,8 @@ public class MainMenu extends ScreenAdapter {
     // Option Dimensions and Location
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
 
-    // BackGroundMusic
-    BackGroundMusic _bgmusic;
+    //BackGroundMusic
+    //BackGroundMusic _bgmusic;
     ButtonClickSound buttonSound;
     private SpriteBatch batch;
     private TextureAtlas torchAtlas;
@@ -68,8 +65,8 @@ public class MainMenu extends ScreenAdapter {
         newGame = 0; characters = 1; settings = 2; exitGame = 3;
 
         //TODO: Move menu sounds to backbone layer
-        _bgmusic = new BackGroundMusic();
-        _bgmusic.playMusic();
+        //_bgmusic = new BackGroundMusic();
+        //_bgmusic.playMusic();
 
         buttonSound = new ButtonClickSound();
 
@@ -98,13 +95,13 @@ public class MainMenu extends ScreenAdapter {
         //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
         settingsMusicSlider = new Slider(0f, 100f, 1f, false ,GAME.generalSliderStyle);
         settingsMusicSlider.setButton(1);
-        settingsMusicSlider.setVisualPercent(_bgmusic.getVolume());
+        settingsMusicSlider.setVisualPercent(GAME._bgmusic.getVolume());
         settingsMusicSlider.setWidth(500);
 
         settingsMusicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                _bgmusic.setVolume(settingsMusicSlider.getVisualValue());
+                GAME._bgmusic.setVolume(settingsMusicSlider.getVisualValue());
             }
         });
 
