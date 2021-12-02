@@ -66,10 +66,9 @@ public class MainInventory {
             hiddenInventory.hideInvtory();
         }
 
-
-
     }
 
+    // Put the xml parser here
     public void update() {
 
         hiddenInventory.update();

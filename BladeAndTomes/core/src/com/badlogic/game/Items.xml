@@ -66,4 +66,14 @@
 		Drinking this dark read concotion replenishes some lost health.
 		</description>
 	</item>
+	<item category = "buff">
+		<name> gold </name>
+		<appliedto> inventory </appliedto>
+		<bonus> Null </bonus>
+		<slots> 1 </slots>
+		<value> 1 </value>
+		<description>
+			Shiny, Shiny. Spend this to get better items.
+		</description>
+	</item>
 </items>

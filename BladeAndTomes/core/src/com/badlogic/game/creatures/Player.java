@@ -226,7 +226,7 @@ public class Player extends Entity {
 
     public void setSocial(int social) { this.social = social; }
 
-    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBprder)
+    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder)
     {
         return true;
     }

@@ -13,11 +13,11 @@ public class Inventory {
         swap = new ArrayList<>();
         tradeCurrency = 0;
     }
-
+    // Put parsers here
     public void updateInventory() {
 
     }
-
+    // put writer here
     public void saveInventory() {
 
     }

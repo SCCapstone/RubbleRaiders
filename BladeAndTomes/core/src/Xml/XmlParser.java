@@ -1,6 +1,7 @@
 package Xml;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /*
@@ -22,7 +23,7 @@ public class XmlParser extends DefaultHandler {
         System.out.println("Player Info");
     }
 
-    public void startElement(String uri, String localName, String qName, Attributes atrs) {
+    public void startElement(String uri, String localName, String qName, Attributes atrs) throws SAXException {
         System.out.print(qName + ":");
     }
 
@@ -34,7 +35,7 @@ public class XmlParser extends DefaultHandler {
         System.out.println(qName + ":");
     }
 
-    public void endDocument() {
+    public void endDocument() throws SAXException {
         System.out.println("End of Player Info");
     }
 }

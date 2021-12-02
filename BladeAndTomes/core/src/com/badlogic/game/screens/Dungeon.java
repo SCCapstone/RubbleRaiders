@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlay.Events;
 import ScreenOverlay.MainInventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -14,9 +17,15 @@ public class Dungeon extends ScreenAdapter {
 
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
+    Image playerIcon;
     Texture background;
+    Texture eventTex;
+    Image eventImage;
     Image backgroundImage;
     MainInventory inventory;
+    float eventX, eventY, eventSizeX, eventSizeY;
+
+    Events event;
 
     //Rectangle walkableArea;
     //Rectangle doorHitBox;
@@ -37,11 +46,26 @@ public class Dungeon extends ScreenAdapter {
         background = new Texture(Gdx.files.internal("MainDungeon.png"));
         backgroundImage = new Image(background);
 
+        // Textures rendered in for our event
+        // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
+        eventTex = new Texture(Gdx.files.internal("GoldChest.jpg"));
+        eventImage = new Image(eventTex);
+        eventSizeX = 120f;
+        eventSizeY = 120f;
+        eventX = MathUtils.random(360, 1600);
+        eventY = MathUtils.random(240, 960);
+
         // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
         backgroundImage.setSize(2000,1150);
         backgroundImage.setPosition(-25,-20);
         GAME.stageInstance.addActor(backgroundImage);
+
+        // Currently having size as a set variable here want to move it to events class
+        // This should keep it permanently in place through the dungeon right now
+        eventImage.setSize(eventSizeX, eventSizeY);
+        eventImage.setPosition(eventX, eventY);
+        GAME.stageInstance.addActor(eventImage);
 
 
         // Used dimensions of the room as a reference point thanks to Alex Farcer for providing them later in code
@@ -111,6 +135,14 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.draw();
         inventory.update();
 
+        /*if((GAME.player.moveSquare.getX() <= 3*MOVE_DISTANCE ||
+                        GAME.player.moveSquare.getY() <= 3*MOVE_DISTANCE) ||
+                (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE ||
+                        GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 3*MOVE_DISTANCE))
+        {
+            GAME.player.playerIcon.setPosition();
+        }*/
+
         //Two side rooms - one to the left and one to the right
         //Alex Facer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
         //I used the resolution sizes provided by Alex Facer and adjusted them to allow for the backgrounds to properly
@@ -129,13 +161,16 @@ public class Dungeon extends ScreenAdapter {
             GAME.stageInstance.clear();
 
             backgroundImage.remove();
-
+            eventImage.remove();
             //I (Aidan) Estimated the size of the room based on the estimations of the dimensions of Alex Facer
             backgroundImage = new Image(new Texture(Gdx.files.internal("SideDungeon.png")));
-            backgroundImage.setBounds(-25, -20, 2000, 1150);
+            // where -25, 20
+            backgroundImage.setBounds(0, 0, 2000, 1150);
             GAME.stageInstance.addActor(backgroundImage);
 
-            GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth()/2, MOVE_DISTANCE*3);
+            //GAME.stageInstance.getBatch().draw(eventTex,eventX,eventY);
+
+            GAME.player.playerIcon.setPosition(960, MOVE_DISTANCE*3);
             GAME.stageInstance.addActor(GAME.player.playerIcon);
             GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
         }
@@ -150,6 +185,10 @@ public class Dungeon extends ScreenAdapter {
             backgroundImage = new Image(new Texture(Gdx.files.internal("MainDungeon.png")));
             backgroundImage.setPosition(-25, -20);
             backgroundImage.setSize(2000, 1150);
+
+            eventImage = new Image(new Texture(Gdx.files.internal("GoldChest.jpg")));
+            eventImage.setPosition(eventX, eventY);
+            eventImage.setSize(eventSizeX, eventSizeY);
 
             GAME.stageInstance.addActor(backgroundImage);
 
@@ -167,6 +206,7 @@ public class Dungeon extends ScreenAdapter {
             }
             roomId = 0;
             GAME.stageInstance.addActor(GAME.player.playerIcon);
+            GAME.stageInstance.addActor(eventImage);
             GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
         }
 
