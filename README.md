@@ -45,3 +45,7 @@ Aidan Emmons - akemmons@email.sc.edu
 Brent Able - bpable@email.sc.edu
 
 V.N Anirudh Oruganti - oruganti@email.sc.edu
+
+Alex Facer - afacer@email.sc.edu
+
+Miller Banford - banford@email.sc.edu
