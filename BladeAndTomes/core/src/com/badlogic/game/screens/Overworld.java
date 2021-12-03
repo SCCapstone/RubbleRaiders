@@ -197,7 +197,6 @@ public class Overworld extends ScreenAdapter {
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
-        System.out.println("Image Loc: "+(GAME.player.moveSquare.getX()-NPC_Cords.getLocation().x)/100 );
         npcTraderMsg = new Label("Wanna Trade\n Press \"T\" ", GAME.BaseLabelStyle2);
 
         if((int)(GAME.player.moveSquare.getX()-NPC_Cords.getLocation().x)/200 == 0 &&(int)(GAME.player.moveSquare.getY()-NPC_Cords.getLocation().y)/100 ==0){
