@@ -17,6 +17,29 @@ To be able to run the app, please install the following programs:
 Please make sure you have a folder dedicated to containing the project as well as a willingness
 to get "down and dirty" into Gradle and Java, as well as possibly XML and JSON.
 
+**_IF YOU ARE RUNNING ON LINUX_**
+
+Please install OpenJDK 8 using the following library path typed for Ubuntu derivatives:
+
+`sudo apt install openjdk-8-jdk`
+
+If you have another version already installed, after installing OpenJDK 8, type in the following commands:
+
+* Gets all installed versions Java JDK <br>
+
+`update-java-alternatives --list`
+
+* Changes default library to selected version <br>
+
+`sudo update-java-alternatives --set /path/to/altenative/version`
+
+If the above does not work, please copy and paste the following commands into terminal before running:
+
+`export JAVA_HOME=/path/to/JDK
+export PATH=$JAVA_HOME/bin:$PATH`
+
+Please refer to [this stack overflow page (comment by snesgx)](https://stackoverflow.com/questions/55847497/how-do-i-troubleshoot-inconsistency-detected-dl-lookup-c-111-java-result-12) for further information.
+
 ## Setup
 
 To SetUp the local branch, first clone the branch to your workspace directory (let's say "~/my_work_directory").
