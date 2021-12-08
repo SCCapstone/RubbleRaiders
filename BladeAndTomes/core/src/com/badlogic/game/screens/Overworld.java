@@ -75,7 +75,7 @@ public class Overworld extends ScreenAdapter {
         pauseMenu = new Window("Pause Menu", GAME.generalWindowStyle);
         pauseMenu.setHeight(400);
         pauseMenu.setWidth(600);
-        pauseMenu.setPosition(960, 590);
+        pauseMenu.setPosition(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
@@ -130,9 +130,9 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.addActor(GAME.player.playerIcon);
         inventory = new MainInventory(GAME);
         NPC_Cords = new Point();
-        NPC_Cords.setLocation(Gdx.graphics.getWidth() /8,Gdx.graphics.getHeight() / 2);
+        NPC_Cords.setLocation(GAME.stageInstance.getWidth() /8,GAME.stageInstance.getHeight() / 2);
         Portal_Cords = new Point();
-        Portal_Cords.setLocation(Gdx.graphics.getWidth() /2,Gdx.graphics.getHeight() / 8);
+        Portal_Cords.setLocation(GAME.stageInstance.getWidth() /2,GAME.stageInstance.getHeight() / 8);
     }
 
     @Override
@@ -141,13 +141,13 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         GAME.batch.begin();
-        GAME.batch.draw(background, 0 ,0);
-        GAME.batch.draw(tavern, (float) (Gdx.graphics.getWidth() * 0.75), (float) (Gdx.graphics.getHeight() * 0.75));
-        GAME.batch.draw(marketStall, Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 5);
-        GAME.batch.draw(barracks, (float) (Gdx.graphics.getWidth() * 0.75), Gdx.graphics.getHeight() / 4);
-        GAME.batch.draw(chapel, Gdx.graphics.getWidth() / 4, (float) (Gdx.graphics.getHeight() * 0.75));
-        GAME.batch.draw(questBoard, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        GAME.batch.draw(portal, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 8);
+        GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
+        GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75), (float) (GAME.stageInstance.getHeight() * 0.75));
+        GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10);
+        GAME.batch.draw(barracks, (float) (GAME.stageInstance.getWidth()* 0.75), GAME.stageInstance.getHeight() / 4);
+        GAME.batch.draw(chapel, GAME.stageInstance.getWidth() / 4, (float) (GAME.stageInstance.getHeight() * 0.75));
+        GAME.batch.draw(questBoard, GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+        GAME.batch.draw(portal, GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y);
         GAME.batch.end();
 
@@ -223,6 +223,11 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        GAME.stageInstance.getViewport().update(width, height, true);
     }
 
     @Override

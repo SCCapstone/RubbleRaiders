@@ -214,6 +214,11 @@ public class Dungeon extends ScreenAdapter {
     }
 
     @Override
+    public void resize(int width, int height) {
+        GAME.stageInstance.getViewport().update(width, height, true);
+    }
+
+    @Override
     public void show() {
         Gdx.input.setInputProcessor(GAME.stageInstance);
     }

@@ -7,6 +7,7 @@ import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BladeAndTomes extends Game {
@@ -30,8 +32,10 @@ public class BladeAndTomes extends Game {
     public Stage stageInstance;
     public final float WINDOWWIDTH = 1920, WINDOWHIGHT = 1080;
 
-
     public enum classes {WARRIOR, CLERIC, WIZARD}
+
+    private FitViewport viewport;
+    private OrthographicCamera camera;
 
     //Defining general text button look
     public TextButtonStyle generalTextButtonStyle;
@@ -162,7 +166,12 @@ public class BladeAndTomes extends Game {
 
         this.setScreen(new MainMenu(this));
     }
+    /*
+    public void getCamera() {
+        this.camera = camera;
+    }
 
+     */
     /**
      * This function is called by OpenGL to render objects presented in the order defined below and
      * then displaying it to the user as well as acting when the program will take in input and accept
