@@ -1,6 +1,11 @@
 sourceCompatibility = 1.7
 dependencies {
+
+    //jUnit is already built into libGDX, but regardless,
+    //thanks to junit-team for their tireless work
+    //for providing their service.
     implementation 'junit:junit:4.13.1'
+
 }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
