@@ -38,6 +38,8 @@ public class Player extends Entity {
     public Rectangle rangeSquare;
     public boolean isMoved;
 
+    public InputListener playerInput;
+
     final int MOVE_DISTANCE = 64;
 
 
@@ -56,7 +58,7 @@ public class Player extends Entity {
 
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
-        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon = new Image(new Texture(Gdx.files.internal("../core/assets/PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
@@ -71,7 +73,7 @@ public class Player extends Entity {
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        playerIcon.addListener(new InputListener() {
+        playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
             public boolean keyDown(InputEvent event, int keycode)
