@@ -61,6 +61,33 @@ click "Run". This will run the game and automatically update it for IntelliJ, so
 run the game, all that needs to be done is click on the "Run" icon and the project will build and attempt to
 run.
 
+## Testing
+
+In order to properly test, please make sure that the correct branch and correct version of the code is
+available on your computer. Once everything is verified, check RubbleRaiders/BladeAndTomes/tests
+to make sure it is present as well as to make sure GdxTestRunner.java (Made by Thomas Pronold)
+(Source: https://github.com/TomGrill/gdx-testing) is within that branch as well as the
+modules 'examples', 'UnitTests', and 'BehaviorTests'. Once all files are verified, run the
+command "./gradlew tests:test" in the BladeAndTomes directory in order to run all tests at once through your CLI. The results will
+be displayed within the console output, and if there are any failures, Gradle will tell you which ones failed if you
+scroll up. If you wish to test individual methods, IntelliJ provides a simple testing GUI
+that allows you to do single tests if you open the test file in IntelliJ and left click on the
+green play button next to the method or class.
+
+### Example Test
+* Navigate to RubbleRaiders/BladeAndTomes/tests and check to see if the following are present:
+  * Modules: 'examples', 'UnitTests', 'BehaviorTests'
+  * GdxTestRunner.java above all classes
+* Run the following command in BladeAndTomes directory in terminal:
+
+`./gradlew tests:test`
+
+* Alternatively, go into IntelliJ, navigate to 'tests' folder
+* Select a test in it's modules
+* Near the line numbers, a green play button will be next to the class and the function
+* Click the class play button to run the whole class test.
+* Or click the method test to test the individual method
+
 # Authors
 
 Aidan Emmons - akemmons@email.sc.edu

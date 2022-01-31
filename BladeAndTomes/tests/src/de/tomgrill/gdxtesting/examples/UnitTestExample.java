@@ -20,6 +20,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+//GdxTestRunner written by Thomas Pronold (TomGrill) for purpose of using as a framework for Gdx testing
+//using jUnit and Mockito
+//Source: https://github.com/TomGrill/gdx-testing
+
 public class UnitTestExample {
 
 	@Test

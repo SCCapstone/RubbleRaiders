@@ -25,6 +25,9 @@ import com.badlogic.gdx.Gdx;
 
 import de.tomgrill.gdxtesting.GdxTestRunner;
 
+//GdxTestRunner written by Thomas Pronold (TomGrill) for purpose of using as a framework for Gdx testing
+//using jUnit and Mockito
+//Source: https://github.com/TomGrill/gdx-testing
 @RunWith(GdxTestRunner.class)
 public class AssetExistsExampleTest {
 

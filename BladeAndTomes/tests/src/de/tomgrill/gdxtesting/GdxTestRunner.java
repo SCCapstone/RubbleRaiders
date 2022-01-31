@@ -14,6 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
+//GdxTestRunner written by Thomas Pronold (TomGrill) for purpose of using as a framework for Gdx testing
+//using jUnit and Mockito
+//Source: https://github.com/TomGrill/gdx-testing
+
 package de.tomgrill.gdxtesting;
 
 import java.util.HashMap;
@@ -46,6 +50,7 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 
 	@Override
 	public void create() {
+
 	}
 
 	@Override

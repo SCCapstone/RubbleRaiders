@@ -1,9 +1,15 @@
-package UnitTests;
+package de.tomgrill.gdxtesting.UnitTests;
 
 import com.badlogic.game.creatures.Inventory;
+import de.tomgrill.gdxtesting.GdxTestRunner;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+//GdxTestRunner written by Thomas Pronold (TomGrill) for purpose of using as a framework for Gdx testing
+//using jUnit and Mockito
+//Source: https://github.com/TomGrill/gdx-testing
+@RunWith(GdxTestRunner.class)
 public class InventoryTest {
 
     private Inventory testInventory = new Inventory();
