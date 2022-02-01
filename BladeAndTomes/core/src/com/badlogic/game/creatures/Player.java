@@ -58,7 +58,7 @@ public class Player extends Entity {
 
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
-        playerIcon = new Image(new Texture(Gdx.files.internal("../core/assets/PlayerIcon.jpg")));
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
