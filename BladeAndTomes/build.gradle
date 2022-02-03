@@ -96,6 +96,14 @@ project(":tests") {
 
     sourceSets.test.java.srcDirs = ["src/"]
 
+    //https://stackoverflow.com/questions/42252209/is-there-any-way-to-create-integration-test-for-libgdx-application
+    //Thanks to user Sebastian on StackOverflow for providing code to assign asset directory to correct
+    //Asset directory failing to load proper images in tests and desktop
+    test {
+        project.ext.assetsDir = new File("../core/assets")
+        workingDir = project.ext.assetsDir
+    }
+
     dependencies {
 
         /**
