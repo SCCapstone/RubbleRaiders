@@ -11,8 +11,8 @@ description on the wiki [here.](https://github.com/SCCapstone/RubbleRaiders/wiki
 To be able to run the app, please install the following programs:
 
 * [Latest Version of Java](https://www.java.com/en/)
-* [JDK version 12.0.2](https://www.oracle.com/java/technologies/javase/jdk12-archive-downloads.html)
 * [IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/#section=Windows)
+* [AdoptOpen JDK 11](https://adoptopenjdk.net/)
 
 Please make sure you have a folder dedicated to containing the project as well as a willingness
 to get "down and dirty" into Gradle and Java, as well as possibly XML and JSON.

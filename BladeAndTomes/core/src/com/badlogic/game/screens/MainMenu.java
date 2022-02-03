@@ -27,6 +27,12 @@ public class MainMenu extends ScreenAdapter {
     Window settingsWindow;
     Slider settingsMusicSlider;
     Label settingsMusicLabel;
+    TextField interactKey;
+    Label interactLabel;
+    TextField attackKey;
+    Label attackLabel;
+    TextField inventoryKey;
+    Label inventoryLabel;
 
     @Override
     public void dispose() {
@@ -72,6 +78,37 @@ public class MainMenu extends ScreenAdapter {
 
         settingsMusicLabel = new Label("Music Volume", GAME.generalLabelStyle);
 
+        //keybinding for Interact on settings page
+        interactLabel = new Label("Interact Key", GAME.generalLabelStyle);
+        interactKey = new TextField("", GAME.generalTextFieldStyle);
+        interactKey.setMaxLength(1);
+        interactKey.setAlignment(1);
+        interactKey.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+            }
+        });
+        //keybinding for Attack on settings page
+        attackLabel = new Label("Attack Key", GAME.generalLabelStyle);
+        attackKey = new TextField("", GAME.generalTextFieldStyle);
+        attackKey.setMaxLength(1);
+        attackKey.setAlignment(1);
+        attackKey.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+            }
+        });
+        //keybinding for Inventory on settings page
+        inventoryLabel = new Label("Inventory Label", GAME.generalLabelStyle);
+        inventoryKey = new TextField("", GAME.generalTextFieldStyle);
+        inventoryKey.setMaxLength(1);
+        inventoryKey.setAlignment(1);
+        inventoryKey.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+            }
+        });
+
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
         MainMenuOptions = new TextButton[]{
                 new TextButton("New Game", game.generalTextButtonStyle),
@@ -83,10 +120,12 @@ public class MainMenu extends ScreenAdapter {
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
         settingsWindow = new Window("Settings", GAME.generalWindowStyle);
-        settingsWindow.setPosition(750, 590);
+        settingsWindow.getTitleLabel().setAlignment(1);
+        settingsWindow.getTitleLabel().setFontScale(2f);
+        settingsWindow.setPosition(600, 250);
         settingsWindow.setKeepWithinStage(true);
-        settingsWindow.setHeight(400);
-        settingsWindow.setWidth(400);
+        settingsWindow.setHeight(700);
+        settingsWindow.setWidth(700);
         settingsWindow.setMovable(true);
 
         //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
@@ -94,10 +133,14 @@ public class MainMenu extends ScreenAdapter {
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.html#isOver--
         //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
         settingsMusicSlider = new Slider(0f, 100f, 1f, false ,GAME.generalSliderStyle);
-        settingsMusicSlider.setButton(1);
+        settingsMusicSlider.setButton(0);
         settingsMusicSlider.setVisualPercent(GAME._bgmusic.getVolume());
         settingsMusicSlider.setWidth(500);
+        //sets the width of the slider
+        settingsMusicSlider.getStyle().knob.setMinWidth(50);
+        settingsMusicSlider.getStyle().knobDown.setMinWidth(50);
 
+        //sets the music volume based on slider value - NOT WORKING YET
         settingsMusicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -106,7 +149,6 @@ public class MainMenu extends ScreenAdapter {
         });
 
         settingsQuitOption = new TextButton("Exit Settings", GAME.generalTextButtonStyle);
-
         settingsQuitOption.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -148,8 +190,8 @@ public class MainMenu extends ScreenAdapter {
         MainMenuOptions[characters].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.addActor(loadWindow);
-                settingsWindow.add(loadQuitOption).top();
+                //GAME.stageInstance.addActor(loadWindow);
+                //settingsWindow.add(loadQuitOption).top();
             }
         });
 
@@ -162,15 +204,24 @@ public class MainMenu extends ScreenAdapter {
                 GAME.stageInstance.addActor(settingsWindow);
                 settingsWindow.setDebug(true);
 
-                settingsWindow.add();
-
                 settingsWindow.row();
-                settingsWindow.add(settingsMusicLabel).center();
+                settingsWindow.add(settingsMusicLabel);//.center();
 
                 //Example 5 on the website UseOf details how to properly size the Slider and where this code comes from.
                 //All thanks go to libGDX for providing the example as well the curators of UseOf.org
                 //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
-                settingsWindow.add(settingsMusicSlider).top().minWidth(100).colspan(3);
+                settingsWindow.add(settingsMusicSlider).top().minWidth(300).colspan(3);
+                settingsWindow.row();
+
+                //add keybind changes
+                settingsWindow.add(interactLabel).left();
+                settingsWindow.add(interactKey).left();
+                settingsWindow.row();
+                settingsWindow.add(attackLabel).left();
+                settingsWindow.add(attackKey).left();
+                settingsWindow.row();
+                settingsWindow.add(inventoryLabel).left();
+                settingsWindow.add(inventoryKey).left();
                 settingsWindow.row();
 
                 settingsWindow.add(settingsQuitOption).center();
