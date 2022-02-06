@@ -1,5 +1,7 @@
 package com.badlogic.game.creatures;
 
+import com.badlogic.game.BladeAndTomes;
+
 public class Entity {
 
     //Defines armor and hit points for creatures

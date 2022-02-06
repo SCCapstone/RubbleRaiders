@@ -85,6 +85,9 @@ tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
 
 sourceCompatibility = 1.7
+dependencies {
+    implementation 'com.fasterxml:jackson-xml-databind:0.6.2'
+}
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-html"
