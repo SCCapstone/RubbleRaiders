@@ -2,6 +2,7 @@ package com.badlogic.game.screens;
 
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.creatures.Item;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,6 +14,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.fasterxml.jackson.xml.XmlMapper;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class MainMenu extends ScreenAdapter {
 
@@ -299,4 +307,43 @@ public class MainMenu extends ScreenAdapter {
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
+
+    public static void settingsSerialize() {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            try {
+                String xmlString = xmlMapper.writeValueAsString(new Item());
+
+                File xmlOutput = new File("Settings.xml");
+                FileWriter fileWriter = new FileWriter(xmlOutput);
+                fileWriter.write(xmlString);
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void settingsDeserialize() {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            String readSettingsFile = new String(Files.readAllBytes(Paths.get("Settings.xml")));
+            MainMenu deserializeMenu = xmlMapper.readValue(readSettingsFile, MainMenu.class);
+
+            System.out.println("Rebind Settings");
+            System.out.println("Move up: " + deserializeMenu);
+            System.out.println("Move down: " + deserializeMenu);
+            System.out.println("Move left: " + deserializeMenu);
+            System.out.println("Move right: " + deserializeMenu);
+            System.out.println("Interact: " + deserializeMenu);
+            System.out.println("Menu: " + deserializeMenu);
+            System.out.println("Cursor: " + deserializeMenu);
+        } catch (IOException e) {
+            // for now use auto generated
+            e.printStackTrace();
+        }
+    }
+
 }
