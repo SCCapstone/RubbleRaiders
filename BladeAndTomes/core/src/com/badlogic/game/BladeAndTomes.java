@@ -6,6 +6,7 @@ import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,7 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BladeAndTomes extends Game {
@@ -34,8 +37,8 @@ public class BladeAndTomes extends Game {
 
     public enum classes {WARRIOR, CLERIC, WIZARD}
 
-    private FitViewport viewport;
-    private OrthographicCamera camera;
+    public ScalingViewport scaleViewport;
+    public OrthographicCamera camera;
 
     //Defining general text button look
     public TextButtonStyle generalTextButtonStyle;
@@ -82,13 +85,18 @@ public class BladeAndTomes extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
 
+        // Work for resizing of screen
+
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
         _bgmusic = new BackGroundMusic();
         _bgmusic.playMusic();
 
         //Sets Scene2D instance
-        stageInstance = new Stage(new ScreenViewport());
+        // Adjusting this to a scale viewport for now on
+        // Anri suggested checking out tabnine for libgdx. Found a solution with following line
+        // specifically changing viewport to ScalingViewport
+        stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
 
         //Sets upstate and downstate textures for texture Buttons
         generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
