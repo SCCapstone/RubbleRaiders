@@ -31,16 +31,6 @@ public class MainMenu extends ScreenAdapter {
     Texture background;
     Image backgroundImage;
     Button MainMenuOptions[];
-    TextButton settingsQuitOption;
-    Window settingsWindow;
-    Slider settingsMusicSlider;
-    Label settingsMusicLabel;
-    TextField interactKey;
-    Label interactLabel;
-    TextField attackKey;
-    Label attackLabel;
-    TextField inventoryKey;
-    Label inventoryLabel;
 
     @Override
     public void dispose() {
@@ -84,38 +74,7 @@ public class MainMenu extends ScreenAdapter {
 
         buttonSound = new ButtonClickSound();
 
-        settingsMusicLabel = new Label("Music Volume", GAME.generalLabelStyle);
 
-        //keybinding for Interact on settings page
-        interactLabel = new Label("Interact Key", GAME.generalLabelStyle);
-        interactKey = new TextField("", GAME.generalTextFieldStyle);
-        interactKey.setMaxLength(1);
-        interactKey.setAlignment(1);
-        interactKey.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-            }
-        });
-        //keybinding for Attack on settings page
-        attackLabel = new Label("Attack Key", GAME.generalLabelStyle);
-        attackKey = new TextField("", GAME.generalTextFieldStyle);
-        attackKey.setMaxLength(1);
-        attackKey.setAlignment(1);
-        attackKey.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-            }
-        });
-        //keybinding for Inventory on settings page
-        inventoryLabel = new Label("Inventory Label", GAME.generalLabelStyle);
-        inventoryKey = new TextField("", GAME.generalTextFieldStyle);
-        inventoryKey.setMaxLength(1);
-        inventoryKey.setAlignment(1);
-        inventoryKey.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-            }
-        });
 
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
         MainMenuOptions = new TextButton[]{
@@ -124,46 +83,7 @@ public class MainMenu extends ScreenAdapter {
                 new TextButton("Settings", game.generalTextButtonStyle),
                 new TextButton("Exit Game", game.generalTextButtonStyle)};
 
-        //Helpful references for how Windows work in libGDX by libGDX team
-        //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
-        //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
-        settingsWindow = new Window("Settings", GAME.generalWindowStyle);
-        settingsWindow.getTitleLabel().setAlignment(1);
-        settingsWindow.getTitleLabel().setFontScale(2f);
-        settingsWindow.setPosition(600, 250);
-        settingsWindow.setKeepWithinStage(true);
-        settingsWindow.setHeight(700);
-        settingsWindow.setWidth(700);
-        settingsWindow.setMovable(true);
 
-        //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
-        //and curators of UseOf.org
-        //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.html#isOver--
-        //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
-        settingsMusicSlider = new Slider(0f, 100f, 1f, false ,GAME.generalSliderStyle);
-        settingsMusicSlider.setButton(0);
-        settingsMusicSlider.setVisualPercent(GAME._bgmusic.getVolume());
-        settingsMusicSlider.setWidth(500);
-        //sets the width of the slider
-        settingsMusicSlider.getStyle().knob.setMinWidth(50);
-        settingsMusicSlider.getStyle().knobDown.setMinWidth(50);
-
-        //sets the music volume based on slider value - NOT WORKING YET
-        settingsMusicSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME._bgmusic.setVolume(settingsMusicSlider.getVisualValue());
-            }
-        });
-
-        settingsQuitOption = new TextButton("Exit Settings", GAME.generalTextButtonStyle);
-        settingsQuitOption.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                settingsWindow.clear();
-                settingsWindow.remove();
-            }
-        });
 
         //Helpful references for how Windows work in libGDX by libGDX team. The formatting for the style and window
         //follow the Jave documentation.
@@ -209,30 +129,7 @@ public class MainMenu extends ScreenAdapter {
         MainMenuOptions[settings].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.addActor(settingsWindow);
-                settingsWindow.setDebug(true);
-
-                settingsWindow.row();
-                settingsWindow.add(settingsMusicLabel);//.center();
-
-                //Example 5 on the website UseOf details how to properly size the Slider and where this code comes from.
-                //All thanks go to libGDX for providing the example as well the curators of UseOf.org
-                //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
-                settingsWindow.add(settingsMusicSlider).top().minWidth(300).colspan(3);
-                settingsWindow.row();
-
-                //add keybind changes
-                settingsWindow.add(interactLabel).left();
-                settingsWindow.add(interactKey).left();
-                settingsWindow.row();
-                settingsWindow.add(attackLabel).left();
-                settingsWindow.add(attackKey).left();
-                settingsWindow.row();
-                settingsWindow.add(inventoryLabel).left();
-                settingsWindow.add(inventoryKey).left();
-                settingsWindow.row();
-
-                settingsWindow.add(settingsQuitOption).center();
+                GAME.setScreen(new Settings(game));
             }
         });
 
