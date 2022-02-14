@@ -2,15 +2,20 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.Events;
 import ScreenOverlay.MainInventory;
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Dungeon extends ScreenAdapter {
@@ -20,10 +25,14 @@ public class Dungeon extends ScreenAdapter {
     Image playerIcon;
     Texture background;
     Texture eventTex;
+
     Image eventImage;
     Image backgroundImage;
+    private boolean inRoom;
     MainInventory inventory;
-    float eventX, eventY, eventSizeX, eventSizeY;
+    float eventX, eventY, eventSizeX, eventSizeY, enemyX, enemyY;
+    Goblin goblin;
+    boolean isEnemyTurn;
 
     Events event;
 
@@ -85,6 +94,11 @@ public class Dungeon extends ScreenAdapter {
 
         //Instances the player's inventory
         inventory = new MainInventory(GAME);
+
+
+        goblin = new Goblin(GAME.player, GAME);
+        isEnemyTurn = true;
+
     }
 
     @Override
@@ -98,6 +112,25 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         inventory.update();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            int hitRoll = (int)(Math.random()*(20)+1);
+            if (hitRoll >= goblin.getArmorPoints()) {
+                goblin.damageTaken(GAME.player.getPhysical());
+            }
+            if((int)(GAME.player.moveSquare.getX() - goblin.getXCord())/200 == 0 &&(int)(GAME.player.moveSquare.getY() - goblin.getYCord())/100 ==0 && isEnemyTurn == false) {
+
+                isEnemyTurn = true;
+            }
+            if(goblin.checkIfDead()) {
+                goblin.enemyImage.remove();
+            }
+        }
+        if((int)(GAME.player.moveSquare.getX() - goblin.getXCord())/200 == 0 &&(int)(GAME.player.moveSquare.getY() - goblin.getYCord())/100 ==0 && isEnemyTurn == true) {
+            //goblin.movement();
+            goblin.attackPlayer();
+            inventory.updateHealth();
+            isEnemyTurn = false;
+        }
 
         //Two side rooms - one to the left and one to the right
         //Alex Facer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
@@ -134,6 +167,7 @@ public class Dungeon extends ScreenAdapter {
                 (GAME.player.playerIcon.getX() >= 835 && GAME.player.playerIcon.getX() <= 1085) &&
                 (GAME.player.playerIcon.getY() <= MOVE_DISTANCE && GAME.player.playerIcon.getY() >= 0))
         {
+            inRoom = false;
             GAME.stageInstance.clear();
 
             backgroundImage.remove();
@@ -145,6 +179,7 @@ public class Dungeon extends ScreenAdapter {
             eventImage = new Image(new Texture(Gdx.files.internal("GoldChest.jpg")));
             eventImage.setPosition(eventX, eventY);
             eventImage.setSize(eventSizeX, eventSizeY);
+
 
             GAME.stageInstance.addActor(backgroundImage);
 
@@ -163,6 +198,12 @@ public class Dungeon extends ScreenAdapter {
             roomId = 0;
             GAME.stageInstance.addActor(GAME.player.playerIcon);
             GAME.stageInstance.addActor(eventImage);
+            goblin.reAddActor();
+            if((int)(GAME.player.moveSquare.getX()- goblin.getXCord())/200 == 0 &&(int)(GAME.player.moveSquare.getY()-goblin.getYCord())/100 ==0 && isEnemyTurn) {
+                goblin.attackPlayer();
+                inventory.updateHealth();
+                isEnemyTurn = false;
+            }
             GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
         }
 

@@ -3,12 +3,13 @@ package com.badlogic.game.creatures;
 import com.badlogic.game.BladeAndTomes;
 
 public class Entity {
+    private static int armorPoints;
 
     //Defines armor and hit points for creatures
     /**
      * Adding movement to this list also
      */
-    private int healthPoints, armorPoints, movement, height, width;
+    protected int healthPoints, movement, height, width;
 
     /**
      * Defines the generic attributes for all Entities.
@@ -34,7 +35,7 @@ public class Entity {
         this.width = width;
     }
 
-    public int getArmorPoints() {
+    public static int getArmorPoints() {
         return armorPoints;
     }
 
