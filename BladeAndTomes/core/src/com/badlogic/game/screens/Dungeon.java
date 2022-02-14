@@ -90,42 +90,6 @@ public class Dungeon extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
-        // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
-        // Co-Opted for use in our Project for creating walkable areas and loading zones.
-        //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
-        /*if (!GAME.player.moveSquare.overlaps(walkableArea)) {
-            if (GAME.player.playerIcon.getY() > (walkableArea.getY() + walkableArea.getHeight())) {
-                GAME.player.playerIcon.setPosition(xIcon, yIcon - 3*MOVE_DISTANCE);
-                GAME.player.moveSquare.setPosition(xMove, yMove - 3*MOVE_DISTANCE);
-                GAME.player.interactSquare.setPosition(xInter, yInter - 3*MOVE_DISTANCE);
-            }
-            else if (GAME.player.playerIcon.getY() < walkableArea.getY()) {
-                GAME.player.playerIcon.setPosition(xIcon, yIcon + 3*MOVE_DISTANCE);
-                GAME.player.moveSquare.setPosition(xMove, yMove + 3*MOVE_DISTANCE);
-                GAME.player.interactSquare.setPosition(xInter, yInter + 3*MOVE_DISTANCE);
-            }
-
-            if (GAME.player.playerIcon.getX() > (walkableArea.getX() + walkableArea.getWidth())) {
-                GAME.player.playerIcon.setPosition(xIcon - 3*MOVE_DISTANCE, yIcon);
-                GAME.player.moveSquare.setPosition(xMove - 3*MOVE_DISTANCE, yMove);
-                GAME.player.interactSquare.setPosition(xInter - 3*MOVE_DISTANCE, yInter);
-            }
-            else if (GAME.player.playerIcon.getX() < walkableArea.getX()) {
-                GAME.player.playerIcon.setPosition(xIcon + 3*MOVE_DISTANCE, yIcon);
-                GAME.player.moveSquare.setPosition(xMove + 3*MOVE_DISTANCE, yMove);
-                GAME.player.interactSquare.setPosition(xInter + 3*MOVE_DISTANCE, yInter);
-            }
-        }
-        else {
-            xIcon = GAME.player.playerIcon.getX();
-            yIcon = GAME.player.playerIcon.getY();
-            xMove = GAME.player.moveSquare.getX();
-            yMove = GAME.player.moveSquare.getY();
-            xInter = GAME.player.interactSquare.getX();
-            yInter = GAME.player.interactSquare.getY();
-        }*/
-
-
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
@@ -134,14 +98,6 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         inventory.update();
-
-        /*if((GAME.player.moveSquare.getX() <= 3*MOVE_DISTANCE ||
-                        GAME.player.moveSquare.getY() <= 3*MOVE_DISTANCE) ||
-                (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE ||
-                        GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 3*MOVE_DISTANCE))
-        {
-            GAME.player.playerIcon.setPosition();
-        }*/
 
         //Two side rooms - one to the left and one to the right
         //Alex Facer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.

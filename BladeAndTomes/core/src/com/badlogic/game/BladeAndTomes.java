@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+// PUT IN CLAYMORE STORM EASTER EGG
+// Put in rick roll easter egg also
 public class BladeAndTomes extends Game {
     ShapeRenderer shapeRenderer;
     public SpriteBatch batch;
@@ -204,9 +206,7 @@ public class BladeAndTomes extends Game {
      * @param height
      */
     @Override
-    public void resize(int width, int height) {
-        stageInstance.getViewport().update(width, height, true);
-    }
+    public void resize(int width, int height) { stageInstance.getViewport().update(width, height, true);}
 
     /**
      * Disposes of all instances that take space up in memory and require rendering
