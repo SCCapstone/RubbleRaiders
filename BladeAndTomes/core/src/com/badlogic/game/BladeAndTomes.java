@@ -143,7 +143,7 @@ public class BladeAndTomes extends Game {
 
         HealthLabelStyle = new LabelStyle();
         HealthLabelStyle.font = font;
-        HealthLabelStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("healthBar.jpg"))));
+        //HealthLabelStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("healthBar.jpg"))));
         HealthLabelStyle.fontColor = new Color(100f,0f,0f,1f);
 
         BaseLabelStyle1 = new LabelStyle();
