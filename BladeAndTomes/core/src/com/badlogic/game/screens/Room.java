@@ -2,6 +2,7 @@ package com.badlogic.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Room {
@@ -16,11 +17,14 @@ public class Room {
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - 3*MOVE, Gdx.graphics.getWidth()/2, 3*MOVE};
-    final public int Y_VAL[] = {Gdx.graphics.getHeight()-MOVE, Gdx.graphics.getHeight()/2, MOVE, MOVE, Gdx.graphics.getHeight()/2};
+    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - 3*MOVE, 3*MOVE, Gdx.graphics.getWidth()/2};
+    final public int Y_VAL[] = {Gdx.graphics.getHeight()-MOVE*3, Gdx.graphics.getHeight()/2,  Gdx.graphics.getHeight()/2, MOVE*3};
 
+    /**
+     * Public constructor for creating a room. Usually just a blank, default room
+     */
     public Room() {
-        this.background = new Image(new Texture(Gdx.files.internal("SideDungeon.png")));
+        this.background = new Image(new Texture(Gdx.files.internal("DungeonRooms/SRoom.png")));
         this.door = new Room[4];
         this.numOfDoors = 1;
         this.roomID = 1;
@@ -48,8 +52,10 @@ public class Room {
      * Sets the image background for the room
      * @param directory - the directory or location of image relative to the internal project
      */
-    public void setBackgroundImage(String directory) {
-        //TODO: Set the background image for the background
+    public void setBackgroundImage(String directory, Stage stage) {
+        this.background.remove();
+        this.background = new Image(new Texture(Gdx.files.internal(directory)));
+        stage.addActor(this.background);
     }
 
     /**
@@ -73,7 +79,7 @@ public class Room {
      * @return
      */
     public Room getDoorSingle(int i) {
-        return this.door[i];
+        return this.door[i-1];
     }
 
     /**
@@ -92,6 +98,10 @@ public class Room {
         return this.roomID;
     }
 
+    public Image getBackgroundImage() {
+        return this.background;
+    }
+
     /**
      * Allows the user to set the full array for links to the room
      * @param door - The array of links for differing doors
@@ -106,7 +116,7 @@ public class Room {
      * @param i - This is the doorID that leads into the next room
      */
     public void setDoorIndividual(Room door, int i) {
-        this.door[i] = door;
+        this.door[i-1] = door;
     }
 
     /**

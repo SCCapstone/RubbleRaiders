@@ -21,7 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BladeAndTomes extends Game {
@@ -88,7 +90,11 @@ public class BladeAndTomes extends Game {
         _bgmusic.playMusic();
 
         //Sets Scene2D instance
-        stageInstance = new Stage(new ScreenViewport());
+        // This was a fix implemented by Brent Able on the main branch
+        // (commit # 4874e3bc0b9c6d5d3990240572ba7399c94783e6) that Anirudh Oruganti suggested
+        // to implement. The fix was put in to allow for easier ability to test random dungeon
+        // generation
+        stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
 
         //Sets upstate and downstate textures for texture Buttons
         generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
