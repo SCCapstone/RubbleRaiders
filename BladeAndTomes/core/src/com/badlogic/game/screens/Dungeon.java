@@ -55,8 +55,8 @@ public class Dungeon extends ScreenAdapter {
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
         //Author of images Kamigeek
-        //background = new Texture(Gdx.files.internal("MainDungeon.png"));
-        //backgroundImage = new Image(background);
+        Texture background = new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png"));
+        backgroundImage = new Image(background);
 
         // Textures rendered in for our event
         // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
@@ -69,9 +69,13 @@ public class Dungeon extends ScreenAdapter {
 
         // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
-        roomHandler.level.getBackgroundImage().setSize(2000,1150);
-        roomHandler.level.getBackgroundImage().setPosition(-25,-20);
-        GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
+        //roomHandler.level.getBackgroundImage().setSize(2000,1150);
+        //roomHandler.level.getBackgroundImage().setPosition(-25,-20);
+        //GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
+
+        backgroundImage.setSize(2000, 1150);
+        backgroundImage.setPosition(-25, -20);
+        GAME.stageInstance.addActor(backgroundImage);
 
         // Currently having size as a set variable here want to move it to events class
         // This should keep it permanently in place through the dungeon right now
@@ -154,7 +158,7 @@ public class Dungeon extends ScreenAdapter {
             backgroundImage.remove();
             eventImage.remove();
             //I (Aidan) Estimated the size of the room based on the estimations of the dimensions of Alex Facer
-            backgroundImage = new Image(new Texture(Gdx.files.internal("SideDungeon.png")));
+            backgroundImage = new Image(new Texture(Gdx.files.internal("DungeonRooms/SRoom.png")));
             // where -25, 20
             backgroundImage.setBounds(0, 0, 2000, 1150);
             GAME.stageInstance.addActor(backgroundImage);
@@ -174,7 +178,7 @@ public class Dungeon extends ScreenAdapter {
 
             backgroundImage.remove();
 
-            backgroundImage = new Image(new Texture(Gdx.files.internal("MainDungeon.png")));
+            backgroundImage = new Image(new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png")));
             backgroundImage.setPosition(-25, -20);
             backgroundImage.setSize(2000, 1150);
 
