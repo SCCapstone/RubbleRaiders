@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.xml.XmlMapper;
 
 import java.io.File;
@@ -17,6 +18,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static com.badlogic.gdx.utils.Align.center;
+import static com.badlogic.gdx.utils.Align.right;
 
 public class Settings extends ScreenAdapter {
 
@@ -57,13 +61,13 @@ public class Settings extends ScreenAdapter {
     public Settings(final BladeAndTomes game){
         this.GAME = game;
         batch = new SpriteBatch();
-
+    /*
         background = new Texture(Gdx.files.internal("MainDungeon.png"));
         backgroundImage = new Image(background);
         backgroundImage.setSize(2000,1150);
         backgroundImage.setPosition(-25,-20);
         GAME.stageInstance.addActor(backgroundImage);
-
+    */
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
 
         settingsMusicLabel = new Label("Music Volume",GAME.generalLabelStyle);
@@ -179,7 +183,8 @@ public class Settings extends ScreenAdapter {
         Gdx.input.setInputProcessor(GAME.stageInstance);
 
         table = new Table();
-        table.setFillParent(true);
+        table.defaults();
+        table.setBounds(750,400,500,GAME.stageInstance.getHeight());
         table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.2f);
         table.add(settingsMusicLabel);
         table.add(settingsMusicSlider).colspan(4).width(table.getWidth()+43);
@@ -213,6 +218,7 @@ public class Settings extends ScreenAdapter {
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
+        //Gdx.gl.glClearColor(20,50,30,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.addActor(table);
