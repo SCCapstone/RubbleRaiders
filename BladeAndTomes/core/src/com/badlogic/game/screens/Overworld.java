@@ -139,30 +139,23 @@ public class Overworld extends ScreenAdapter {
     public void render(float delta){
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
         GAME.batch.begin();
         GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
-        GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75), (float) (GAME.stageInstance.getHeight() * 0.75));
-        GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10);
-        GAME.batch.draw(barracks, (float) (GAME.stageInstance.getWidth()* 0.75), GAME.stageInstance.getHeight() / 4);
-        GAME.batch.draw(chapel, GAME.stageInstance.getWidth() / 4, (float) (GAME.stageInstance.getHeight() * 0.75));
-        GAME.batch.draw(questBoard, GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-        GAME.batch.draw(portal, GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
-        GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y);
+        GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
+                (float) (GAME.stageInstance.getHeight() * 0.75), 100f, 100f);
+        GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10,
+                200f, 175f);
+        GAME.batch.draw(barracks, (float) (GAME.stageInstance.getWidth()* 0.75), (float)
+                (GAME.stageInstance.getHeight() / 4), 225f, 375f);
+        GAME.batch.draw(chapel, (float) (GAME.stageInstance.getWidth()) / 4, (float)
+                (GAME.stageInstance.getHeight() * 0.75), 225f, 225f);
+        GAME.batch.draw(questBoard, (float) (GAME.stageInstance.getWidth()) / 2, (float)
+                (GAME.stageInstance.getHeight() / 2), 75f, 75f);
+        GAME.batch.draw(portal, GAME.stageInstance.getWidth() / 2,
+                GAME.stageInstance.getHeight() / 8, 75f, 75f);
+        GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y, 64f, 64f);
         GAME.batch.end();
-
-        //Simplifying the boundaries and attaching them to constants allows for ease of player access.
-        /*
-        if((GAME.player.moveSquare.getX() <= 2*MOVE_DISTANCE ||
-                GAME.player.moveSquare.getY() <= 2*MOVE_DISTANCE) ||
-                (GAME.player.moveSquare.getX() > GAME.stageInstance.getWidth() - 2*MOVE_DISTANCE ||
-                        GAME.player.moveSquare.getY() > GAME.stageInstance.getHeight() - 2*MOVE_DISTANCE))
-        {
-            GAME.stageInstance.removeListener(escapePauseOver);
-            GAME.stageInstance.clear();
-            dispose();
-            GAME.setScreen(new Dungeon(GAME));
-        }*/
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
@@ -172,26 +165,6 @@ public class Overworld extends ScreenAdapter {
             dispose();
             GAME.setScreen(new Dungeon(GAME));
         }
-
-        //if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
-        //{
-        //    GAME.stageInstance.setKeyboardFocus(null);
-          //  GAME.stageInstance.addActor(pauseMenu);
-            //pauseMenu.add(warning).center();
-            //pauseMenu.row();
-          //  pauseMenu.add(options[0], options[1]).center();
-        //}
-
-        // Thanks to user "centenond" on StackOverflow for pointing out a useful function on using rectangle to detect.
-        // Co-Opted for use in our Project for creating walkable areas and loading zones.
-        //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
-        /*for(int i=0; i<loadZone.length; i++) {
-            if(GAME.player.moveSquare.overlaps(loadZone[i])) {
-                GAME.stageInstance.clear();
-                dispose();
-                GAME.setScreen(new Dungeon(GAME));
-            }
-        }*/
 
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main

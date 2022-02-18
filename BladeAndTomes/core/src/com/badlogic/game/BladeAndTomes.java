@@ -6,6 +6,7 @@ import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+// PUT IN CLAYMORE STORM EASTER EGG
+// Put in rick roll easter egg also
 public class BladeAndTomes extends Game {
     ShapeRenderer shapeRenderer;
     public SpriteBatch batch;
@@ -36,8 +39,8 @@ public class BladeAndTomes extends Game {
 
     public enum classes {WARRIOR, CLERIC, WIZARD}
 
-    private FitViewport viewport;
-    private OrthographicCamera camera;
+    public ScalingViewport scaleViewport;
+    public OrthographicCamera camera;
 
     //Defining general text button look
     public TextButtonStyle generalTextButtonStyle;
@@ -84,16 +87,18 @@ public class BladeAndTomes extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
 
+        // Work for resizing of screen
+
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
         _bgmusic = new BackGroundMusic();
         _bgmusic.playMusic();
 
         //Sets Scene2D instance
-        // This was a fix implemented by Brent Able on the main branch
-        // (commit # 4874e3bc0b9c6d5d3990240572ba7399c94783e6) that Anirudh Oruganti suggested
-        // to implement. The fix was put in to allow for easier ability to test random dungeon
-        // generation
+
+        // Adjusting this to a scale viewport for now on
+        // Anri suggested checking out tabnine for libgdx. Found a solution with following line
+        // specifically changing viewport to ScalingViewport
         stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
 
         //Sets upstate and downstate textures for texture Buttons
@@ -141,7 +146,7 @@ public class BladeAndTomes extends Game {
 
         HealthLabelStyle = new LabelStyle();
         HealthLabelStyle.font = font;
-        HealthLabelStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("healthBar.jpg"))));
+        //HealthLabelStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("healthBar.jpg"))));
         HealthLabelStyle.fontColor = new Color(100f,0f,0f,1f);
 
         BaseLabelStyle1 = new LabelStyle();
@@ -202,9 +207,7 @@ public class BladeAndTomes extends Game {
      * @param height
      */
     @Override
-    public void resize(int width, int height) {
-        stageInstance.getViewport().update(width, height, true);
-    }
+    public void resize(int width, int height) { stageInstance.getViewport().update(width, height, true);}
 
     /**
      * Disposes of all instances that take space up in memory and require rendering

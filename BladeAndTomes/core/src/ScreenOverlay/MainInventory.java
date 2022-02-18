@@ -112,4 +112,8 @@ public class MainInventory {
         }
     }
 
+    public void updateHealth() {
+        Health.setText("Health: " + Game.player.getHealthPoints());
+    }
+
 }
