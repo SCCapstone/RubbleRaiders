@@ -4,8 +4,11 @@ dependencies {
     //jUnit is already built into libGDX, but regardless,
     //thanks to junit-team for their tireless work
     //for providing their service.
-    implementation 'junit:junit:4.13.1'
+    implementation 'junit:junit:4.13.2'
+    implementation 'com.fasterxml:jackson-xml-databind:0.6.2'
 
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 

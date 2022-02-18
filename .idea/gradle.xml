@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/BladeAndTomes/desktop" />
             <option value="$PROJECT_DIR$/BladeAndTomes/html" />
             <option value="$PROJECT_DIR$/BladeAndTomes/ios" />
+            <option value="$PROJECT_DIR$/BladeAndTomes/tests" />
           </set>
         </option>
       </GradleProjectSettings>

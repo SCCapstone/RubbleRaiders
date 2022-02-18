@@ -17,6 +17,10 @@ sourceSets {
     
 }
 
+dependencies {
+    implementation 'com.fasterxml:jackson-xml-databind:0.6.2'
+}
+
 eclipse.project {
     name = appName + "-tests"
 }
