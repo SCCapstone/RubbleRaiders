@@ -13,7 +13,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.fasterxml.jackson.xml.XmlMapper;
 
 import java.io.File;
@@ -31,6 +35,12 @@ public class MainMenu extends ScreenAdapter {
     Texture background;
     Image backgroundImage;
     Button MainMenuOptions[];
+    Table savedGames;
+    TextButton game1;
+    TextButton game2;
+    TextButton game3;
+    TextButton game4;
+    TextButton loadBack;
 
     @Override
     public void dispose() {
@@ -90,6 +100,62 @@ public class MainMenu extends ScreenAdapter {
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
         loadWindow = new Window("Load Game", GAME.generalWindowStyle);
+        //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
+        //loadWindow.setBackground();
+        loadWindow.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight());
+        loadWindow.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
+        loadBack = new TextButton("Back", GAME.generalTextButtonStyle);
+        loadBack.setSize(100f,50f);
+        loadBack.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                GAME.setScreen(new MainMenu(GAME));
+            }
+        });
+        savedGames = new Table();
+        savedGames.setFillParent(true);
+        savedGames.defaults();
+        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
+        game1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                //TODO
+            }
+        });
+        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
+        game2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                //TODO
+            }
+        });
+        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
+        game3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                //TODO
+            }
+        });
+        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
+        game4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                //TODO
+            }
+        });
+        //Add listeners for the buttons
+        savedGames.add(loadBack).padBottom(10f);
+        savedGames.row();
+        savedGames.add(game1).padBottom(10f);
+        savedGames.row();
+        savedGames.add(game2).padBottom(10f);
+        savedGames.row();
+        savedGames.add(game3).padBottom(10f);
+        savedGames.row();
+        savedGames.add(game4);
+
+        loadWindow.addActor(savedGames);
 
         MainMenuOptions[newGame].addListener(new ChangeListener() {
             @Override
@@ -118,8 +184,9 @@ public class MainMenu extends ScreenAdapter {
         MainMenuOptions[characters].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //GAME.stageInstance.addActor(loadWindow);
-                //settingsWindow.add(loadQuitOption).top();
+                GAME.stageInstance.clear();
+                GAME.stageInstance.addActor(loadWindow);
+
             }
         });
 
@@ -129,6 +196,7 @@ public class MainMenu extends ScreenAdapter {
         MainMenuOptions[settings].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
                 GAME.setScreen(new Settings(game));
             }
         });
@@ -136,7 +204,7 @@ public class MainMenu extends ScreenAdapter {
         MainMenuOptions[exitGame].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                dispose();
+                GAME.stageInstance.dispose();
                 Gdx.app.exit();
             }
         });

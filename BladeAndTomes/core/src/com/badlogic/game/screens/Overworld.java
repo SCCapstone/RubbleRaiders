@@ -3,10 +3,7 @@ package com.badlogic.game.screens;
 import ScreenOverlay.MainInventory;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -40,6 +38,7 @@ public class Overworld extends ScreenAdapter {
     Window pauseMenu;
     Label warning;
     TextButton options[];
+    Table quitTable;
     InputListener escapePauseOver;
 
     MainInventory inventory;
@@ -72,10 +71,10 @@ public class Overworld extends ScreenAdapter {
         tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
         NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
 
-        pauseMenu = new Window("Pause Menu", GAME.generalWindowStyle);
+        pauseMenu = new Window("", GAME.generalWindowStyle);
         pauseMenu.setHeight(400);
         pauseMenu.setWidth(600);
-        pauseMenu.setPosition(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+        pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
@@ -86,7 +85,7 @@ public class Overworld extends ScreenAdapter {
                 {
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
-                    pauseMenu.add(warning).center();
+                    pauseMenu.add(warning).center().colspan(3);
                     pauseMenu.row();
                     pauseMenu.add(options[0], options[1]).center();
                 }
@@ -106,8 +105,11 @@ public class Overworld extends ScreenAdapter {
         options[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame();
                 GAME.stageInstance.removeListener(escapePauseOver);
                 GAME.stageInstance.clear();
+                pauseMenu.clear();
+                pauseMenu.remove();
                 dispose();
                 GAME.setScreen(new MainMenu(GAME));
             }
@@ -223,6 +225,25 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
+    }
+
+    //Save all player data including name, stats, inventory
+    public void saveGame(){
+        //Need to determine which game to save to
+        /*
+        Preferences prefs = Gdx.app.getPreferences("Game1");
+        prefs.putString("name", GAME.player.getName());
+        prefs.putInteger("physical", GAME.player.getPhysical());
+        prefs.putInteger("social", GAME.player.getSocial());
+        prefs.putInteger("mental", GAME.player.getMental());
+        prefs.putInteger("acrobatics", GAME.player.getAcrobatics());
+        prefs.putInteger("brute force", GAME.player.getBruteforce());
+        prefs.putInteger("bartering", GAME.player.getBarter());
+        prefs.putInteger("speech", GAME.player.getSpeech());
+        prefs.putInteger("awareness", GAME.player.getAwareness());
+        prefs.putInteger("intuition", GAME.player.getIntuition());
+        //Movement
+        prefs.put*/
     }
 
     @Override
