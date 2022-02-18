@@ -12,13 +12,12 @@ public class Room {
     private int numOfDoors;
     private int roomID;
     private int mapID;
-    private int entrance;
-    private Image background = new Image();
+    private Image background;
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - 3*MOVE, 3*MOVE, Gdx.graphics.getWidth()/2};
-    final public int Y_VAL[] = {Gdx.graphics.getHeight()-MOVE*3, Gdx.graphics.getHeight()/2,  Gdx.graphics.getHeight()/2, MOVE*3};
+    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*3, Gdx.graphics.getWidth()/2};
+    final public int Y_VAL[] = {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2,  Gdx.graphics.getHeight()/2, MOVE*2};
 
     /**
      * Public constructor for creating a room. Usually just a blank, default room

@@ -66,23 +66,23 @@ public class RoomHandler {
     public boolean movement() {
 
         // If the player enters a door, then take that player to the new room if that room exists
-        if(level.X_VAL[0] - level.MOVE <= player.playerIcon.getX() &&
-                level.X_VAL[0] + level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[0] - level.MOVE <= player.playerIcon.getY()) {
+        if(level.X_VAL[0] <= player.playerIcon.getX() &&
+                level.X_VAL[0] + 3*level.MOVE >= player.playerIcon.getX() &&
+                level.Y_VAL[0] <= player.playerIcon.getY()) {
             return moveIntoRoom(1);
         }
         else if(level.X_VAL[1] <= player.playerIcon.getX() &&
-                level.Y_VAL[1] - level.MOVE <= player.playerIcon.getY() &&
-                level.Y_VAL[1] + level.MOVE >= player.playerIcon.getY()) {
+                level.Y_VAL[1] <= player.playerIcon.getY() &&
+                level.Y_VAL[1] + 3*level.MOVE >= player.playerIcon.getY()) {
             return moveIntoRoom(2);
         }
-        else if(level.X_VAL[2] <= player.playerIcon.getX() &&
-                level.Y_VAL[2] - level.MOVE >= player.playerIcon.getY() &&
-                level.Y_VAL[2] + level.MOVE <= player.playerIcon.getY()) {
+        else if(level.X_VAL[2] >= player.playerIcon.getX() &&
+                level.Y_VAL[2] + 2*level.MOVE >= player.playerIcon.getY() &&
+                level.Y_VAL[2] <= player.playerIcon.getY()) {
             return moveIntoRoom(3);
         }
-        else if(level.X_VAL[3] - level.MOVE <= player.playerIcon.getX() &&
-                level.X_VAL[3] + level.MOVE >= player.playerIcon.getX() &&
+        else if(level.X_VAL[3] <= player.playerIcon.getX() &&
+                level.X_VAL[3] + 3*level.MOVE >= player.playerIcon.getX() &&
                 level.Y_VAL[3] >= player.playerIcon.getY()) {
             return moveIntoRoom(4);
         }
@@ -103,6 +103,7 @@ public class RoomHandler {
         //Moves onto next room
         //Room temp = level;
 
+        //
         int exit = entrance == 1 ? 4 : entrance == 2 ? 3 : entrance == 3 ? 2 : 1;
 
         boolean isDoorThere = ((level.getRoomID() >> (exit-1)) & 1) == 1;
@@ -120,7 +121,8 @@ public class RoomHandler {
             level = level.getDoorSingle(entrance);
         }
 
-        int x_offset = exit == 2 ? -2*level.MOVE : exit == 3 ? 2*level.MOVE : 0;
+        //Offset
+        int x_offset = exit == 2 ? -2*level.MOVE : exit == 3 ? 4*level.MOVE : 0;
         int y_offset = exit == 1 ? -2*level.MOVE : exit == 4 ? 2*level.MOVE : 0;
 
         player.playerIcon.setPosition(level.X_VAL[exit-1] + x_offset, level.Y_VAL[exit-1] + y_offset);
@@ -212,7 +214,7 @@ public class RoomHandler {
         int temp = baseID;
         int remainDoor = numDoor - 1;
 
-        //
+        //Generates a room id based on the locations of the doors and shifts bits accordingly
         while(remainDoor != 0) {
             int location = generator.nextInt(4);
             temp = temp | 1 << location;
@@ -222,7 +224,7 @@ public class RoomHandler {
             }
         }
 
-        //
+        //Returns the room id of the Room
         return id;
     }
 
@@ -249,25 +251,25 @@ public class RoomHandler {
      */
     public boolean isCollisionHandled()
     {
-        if(player.playerIcon.getX() <= 2*level.MOVE)
+        if(player.playerIcon.getX() <= level.X_VAL[2])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() + level.MOVE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() <= 1*level.MOVE)
+        else if(player.playerIcon.getY() <= level.Y_VAL[3])
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + level.MOVE);
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getX() >= stage.getWidth() - 3*level.MOVE)
+        else if(player.playerIcon.getX() >= level.X_VAL[1])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() - level.MOVE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() >= stage.getHeight() - 2*level.MOVE)
+        else if(player.playerIcon.getY() >= level.Y_VAL[0])
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - level.MOVE);
