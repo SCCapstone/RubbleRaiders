@@ -1,5 +1,6 @@
 package com.badlogic.game;
 
+import ScreenOverlayRework.Inventory.itemDocument;
 import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -70,6 +72,8 @@ public class BladeAndTomes extends Game {
     public Image playerIcon;
     public Inventory inventory;
     public BackGroundMusic _bgmusic;
+    public Array<itemDocument> inventoryItems;
+
 
     public final int MOVE_DISTANCE = 64;
 
@@ -94,6 +98,43 @@ public class BladeAndTomes extends Game {
         _bgmusic = new BackGroundMusic();
         _bgmusic.playMusic();
 
+        // Inventory Things
+        inventoryItems = new Array<>();
+
+        for (int i = 0; i < 19; ++i) {
+            itemDocument itemTemp = new itemDocument();
+            itemTemp.setName(String.valueOf(i));
+            itemTemp.setTargetItem("Null");
+            itemTemp.setCategory("Null");
+
+            inventoryItems.add(itemTemp);
+        }
+
+        itemDocument slot = inventoryItems.get(0);
+        slot.setDefauls = false;
+        slot.setImage(new Image(new Texture(Gdx.files.internal("InventoryItems/Wepons/sword.jpg"))));
+        slot.setLevel(2);
+        slot.setCategory("Weapon");
+        slot.setDamage(10);
+        slot.setTargetItem("Any");
+
+
+        slot = inventoryItems.get(1);
+        slot.setDefauls = false;
+        slot.setImage(new Image(new Texture(Gdx.files.internal("InventoryItems/Armor/armor.png"))));
+        slot.setLevel(2);
+        slot.setCategory("Armor");
+        slot.setDamage(10);
+        slot.setTargetItem("None");
+
+        slot = inventoryItems.get(2);
+        slot.setDefauls = false;
+        slot.setImage(new Image(new Texture(Gdx.files.internal("InventoryItems/Spells/HealSpell.png"))));
+        slot.setLevel(2);
+        slot.setCategory("Spell");
+        slot.setDamage(10);
+        slot.setTargetItem("Any");
+
         //Sets Scene2D instance
 
         // Adjusting this to a scale viewport for now on
@@ -114,7 +155,7 @@ public class BladeAndTomes extends Game {
         inventoryTextButtonRegion = new TextureRegion(inventoryTextButtonState);
 
         //Defines the style to be used in the text buttons
-        generalTextButtonStyle = new TextButtonStyle ();
+        generalTextButtonStyle = new TextButtonStyle();
         generalTextButtonStyle.up = new TextureRegionDrawable(generalTextButtonUpRegion);
         generalTextButtonStyle.down = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalTextButtonStyle.font = font;
@@ -135,35 +176,35 @@ public class BladeAndTomes extends Game {
         //Defines the style to be used for the text field
         generalTextFieldStyle = new TextFieldStyle();
         generalTextFieldStyle.font = font;
-        generalTextFieldStyle.fontColor = new Color(0f,0f,0f,1f);
+        generalTextFieldStyle.fontColor = new Color(0f, 0f, 0f, 1f);
         generalTextFieldStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 
         //Defines the style to be used for the Label
         generalLabelStyle = new LabelStyle();
         generalLabelStyle.font = font;
         generalLabelStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
-        generalLabelStyle.fontColor = new Color(0f,0f,0f,1f);
+        generalLabelStyle.fontColor = new Color(0f, 0f, 0f, 1f);
 
         HealthLabelStyle = new LabelStyle();
         HealthLabelStyle.font = font;
         //HealthLabelStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("healthBar.jpg"))));
-        HealthLabelStyle.fontColor = new Color(100f,0f,0f,1f);
+        HealthLabelStyle.fontColor = new Color(100f, 0f, 0f, 1f);
 
         BaseLabelStyle1 = new LabelStyle();
         BaseLabelStyle1.font = font;
         BaseLabelStyle1.background = new TextureRegionDrawable(new TextureRegion(inventoryTextButtonState));
-        BaseLabelStyle1.fontColor = new Color(0f,0f,0f,10f);
+        BaseLabelStyle1.fontColor = new Color(0f, 0f, 0f, 10f);
 
         BaseLabelStyle2 = new LabelStyle();
         BaseLabelStyle2.font = font;
         BaseLabelStyle2.background = new TextureRegionDrawable(new TextureRegion(inventoryBase2));
-        BaseLabelStyle2.fontColor = new Color(0f,0f,0f,10f);
+        BaseLabelStyle2.fontColor = new Color(0f, 0f, 0f, 10f);
 
         //libGDX documentation on WindowStyle and how it is to be implemented by libGDX devs
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
         generalWindowStyle = new WindowStyle();
         generalWindowStyle.titleFont = font;
-        generalWindowStyle.titleFontColor = new Color(0f,0f,0f,1f);
+        generalWindowStyle.titleFontColor = new Color(0f, 0f, 0f, 1f);
         //generalWindowStyle.stageBackground = new TextureRegionDrawable(new Texture(Gdx.files.internal("Main_Menu_Screen.jpg")));
 
         //libGDX documentation on SliderStyle and how it is to be implemented by libGDX devs
@@ -183,6 +224,7 @@ public class BladeAndTomes extends Game {
     }
 
      */
+
     /**
      * This function is called by OpenGL to render objects presented in the order defined below and
      * then displaying it to the user as well as acting when the program will take in input and accept
@@ -207,7 +249,9 @@ public class BladeAndTomes extends Game {
      * @param height
      */
     @Override
-    public void resize(int width, int height) { stageInstance.getViewport().update(width, height, true);}
+    public void resize(int width, int height) {
+        stageInstance.getViewport().update(width, height, true);
+    }
 
     /**
      * Disposes of all instances that take space up in memory and require rendering
