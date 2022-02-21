@@ -22,7 +22,7 @@ public class InventoryUI {
     private Table HiddenInventorySlots;
     private Table HiddenQuests;
     private Table HiddenSkill;
-
+    private Table table;
 
     private Array<itemSlot> slots;
     private DragAndDrop dnd;
@@ -39,6 +39,11 @@ public class InventoryUI {
         HiddenQuests = new Table();
         HiddenSkill = new Table();
 
+        // Main Table
+        table = new Table();
+//        game.stageInstance.addActor(table);
+
+
         dnd = new DragAndDrop();
         slots = new Array<>();
 
@@ -46,8 +51,8 @@ public class InventoryUI {
         makeHiddenInventory();
 
         // Adding inventory tables
-        game.stageInstance.addActor(MainInventoryTable);
-        game.stageInstance.addActor(HiddenInventoryTable);
+        table.addActor(MainInventoryTable);
+        table.addActor(HiddenInventoryTable);
 
     }
 
@@ -208,6 +213,9 @@ public class InventoryUI {
         }
         HiddenInventorySlots.add(ArmorItems).colspan(10);
 
+    }
+    public Table getUI(){
+        return table;
     }
 
 }

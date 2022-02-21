@@ -1,6 +1,7 @@
 package com.badlogic.game;
 
 import ScreenOverlayRework.Inventory.itemDocument;
+import ScreenOverlayRework.OverlayManager;
 import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
@@ -73,6 +74,8 @@ public class BladeAndTomes extends Game {
     public Inventory inventory;
     public BackGroundMusic _bgmusic;
     public Array<itemDocument> inventoryItems;
+
+    public OverlayManager overlays;
 
 
     public final int MOVE_DISTANCE = 64;
@@ -215,7 +218,9 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
 
-
+        player.setHealthPoints(10);
+        overlays = new OverlayManager(this);
+        overlays.setOverLayesVisibility(false);
         this.setScreen(new MainMenu(this));
     }
     /*

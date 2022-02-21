@@ -105,6 +105,7 @@ public class Dungeon extends ScreenAdapter {
 
         goblin = new Goblin(GAME.player, GAME);
         isEnemyTurn = true;
+        game.overlays.setOverLayesVisibility(true);
 
     }
 

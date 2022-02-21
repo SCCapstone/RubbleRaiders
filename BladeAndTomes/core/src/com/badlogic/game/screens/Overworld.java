@@ -46,8 +46,6 @@ public class Overworld extends ScreenAdapter {
     Point Portal_Cords;
     boolean doTrade;
     Label npcTraderMsg;
-    OverlayManager overlays;
-
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
@@ -82,6 +80,7 @@ public class Overworld extends ScreenAdapter {
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
+                    game.player.setHealthPoints(game.player.getHealthPoints()-1);
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
                     pauseMenu.add(warning).center().colspan(3);
@@ -135,7 +134,7 @@ public class Overworld extends ScreenAdapter {
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         // For overlays
-        overlays = new OverlayManager(game);
+        game.overlays.setOverLayesVisibility(true);
     }
 
     @Override
@@ -179,6 +178,8 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
+        GAME.overlays.updateHealth();
+
     }
 
     //Save all player data including name, stats, inventory
