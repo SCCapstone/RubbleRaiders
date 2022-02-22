@@ -35,7 +35,7 @@ public class Entity {
         this.width = width;
     }
 
-    public static int getArmorPoints() {
+    public int getArmorPoints() {
         return armorPoints;
     }
 

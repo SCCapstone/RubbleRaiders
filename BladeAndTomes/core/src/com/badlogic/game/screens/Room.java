@@ -16,7 +16,7 @@ public class Room {
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*3, Gdx.graphics.getWidth()/2};
+    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*4, Gdx.graphics.getWidth()/2};
     final public int Y_VAL[] = {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2,  Gdx.graphics.getHeight()/2, MOVE*2};
 
     /**

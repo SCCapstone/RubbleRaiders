@@ -10,20 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public abstract class Enemy extends Entity{
 
     public String itemDrop;
-    protected Player player;
     public Image enemyImage;
+    protected Player player;
     protected float xCord, yCord;
-    public InputListener playerInput;
-    public BladeAndTomes GAME;
 
     public abstract void movement();
-    public abstract void attackPlayer();
+    public abstract int attackPlayer();
 
-    public Enemy(int healthPoints, int armorPoints, int movement, int height, int width, Player player, BladeAndTomes GAME) {
+    public Enemy(int healthPoints, int armorPoints, int movement, int height, int width, Player player) {
 
         super(healthPoints,armorPoints,movement,height,width);
         this.player = player;
-        this.GAME = GAME;
 
     }
 
@@ -38,15 +35,13 @@ public abstract class Enemy extends Entity{
     }
 
     public void dropItem() {
-
-
-
+        //TODO: Implement when items are ready
     }
-
+    /*
     public void reAddActor() {
         enemyImage.setPosition(xCord, yCord);
         GAME.stageInstance.addActor(enemyImage);
-    }
+    }*/
 
     public boolean checkIfDead() {return healthPoints <= 0;}
     public float getXCord() {

@@ -31,7 +31,7 @@ public class Dungeon extends ScreenAdapter {
     private boolean inRoom;
     MainInventory inventory;
     float eventX, eventY, eventSizeX, eventSizeY, enemyX, enemyY;
-    Goblin goblin;
+    //Goblin goblin;
     boolean isEnemyTurn;
     RoomHandler roomHandler;
 
@@ -50,7 +50,7 @@ public class Dungeon extends ScreenAdapter {
 
         GAME.stageInstance.clear();
 
-        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player);
+        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, inventory);
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
@@ -69,13 +69,13 @@ public class Dungeon extends ScreenAdapter {
 
         // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
-        //roomHandler.level.getBackgroundImage().setSize(2000,1150);
-        //roomHandler.level.getBackgroundImage().setPosition(-25,-20);
-        //GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
+        roomHandler.level.getBackgroundImage().setSize(2000,1150);
+        roomHandler.level.getBackgroundImage().setPosition(-25,-20);
+        GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
 
-        backgroundImage.setSize(2000, 1150);
-        backgroundImage.setPosition(-25, -20);
-        GAME.stageInstance.addActor(backgroundImage);
+        //backgroundImage.setSize(2000, 1150);
+        //backgroundImage.setPosition(-25, -20);
+        //GAME.stageInstance.addActor(backgroundImage);
 
         // Currently having size as a set variable here want to move it to events class
         // This should keep it permanently in place through the dungeon right now
@@ -103,8 +103,8 @@ public class Dungeon extends ScreenAdapter {
         inventory = new MainInventory(GAME);
 
 
-        goblin = new Goblin(GAME.player, GAME);
-        isEnemyTurn = true;
+        //goblin = new Goblin(GAME.player);
+        //isEnemyTurn = true;
 
     }
 
@@ -119,98 +119,23 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         inventory.update();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            int hitRoll = (int)(Math.random()*(20)+1);
-            if (hitRoll >= goblin.getArmorPoints()) {
-                goblin.damageTaken(GAME.player.getPhysical());
-            }
-            if((int)(GAME.player.moveSquare.getX() - goblin.getXCord())/200 == 0 &&(int)(GAME.player.moveSquare.getY() - goblin.getYCord())/100 ==0 && isEnemyTurn == false) {
-                isEnemyTurn = true;
-            }
-            if(goblin.checkIfDead()) {
-                goblin.enemyImage.remove();
+
+        roomHandler.movement();
+
+        if(roomHandler.combatFlag) {
+            for (int i = 0; i < roomHandler.numOfGoblins; i++) {
+                if (roomHandler.goblin[i] == null) {
+                    continue;
+                }
+                roomHandler.handleCombat(roomHandler.goblin[i]);
             }
         }
-        if((int)(GAME.player.moveSquare.getX() - goblin.getXCord())/200 == 0 &&(int)(GAME.player.moveSquare.getY() - goblin.getYCord())/100 ==0 && isEnemyTurn == true) {
-            //goblin.movement();
-            goblin.attackPlayer();
-            inventory.updateHealth();
-            isEnemyTurn = false;
-        }
 
-        //Two side rooms - one to the left and one to the right
-        //Alex Facer programmed in hitbox for Dungeon Doors. Improved on it to distinguish different rooms in the dungeon.
-        //I used the resolution sizes provided by Alex Facer and adjusted them to allow for the backgrounds to properly
-        //fit as well as so the loading zones would be hit in the correct manner.
-        if(roomId == 0 &&
-                (GAME.player.playerIcon.getX() <= 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) ||
-                (GAME.player.playerIcon.getX() >= GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300))
-        {
-            if(GAME.player.playerIcon.getX() >= GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) {
-                roomId = 1;
-            }
-            else if(GAME.player.playerIcon.getX() <= 3*MOVE_DISTANCE && GAME.player.playerIcon.getY() < 550 && GAME.player.playerIcon.getY() > 300) {
-                roomId = 2;
-            }
-
+        if(GAME.player.getHealthPoints() <= 0) {
+            dispose();
             GAME.stageInstance.clear();
-
-            backgroundImage.remove();
-            eventImage.remove();
-            //I (Aidan) Estimated the size of the room based on the estimations of the dimensions of Alex Facer
-            backgroundImage = new Image(new Texture(Gdx.files.internal("DungeonRooms/SRoom.png")));
-            // where -25, 20
-            backgroundImage.setBounds(0, 0, 2000, 1150);
-            GAME.stageInstance.addActor(backgroundImage);
-
-            //GAME.stageInstance.getBatch().draw(eventTex,eventX,eventY);
-
-            GAME.player.playerIcon.setPosition(960, MOVE_DISTANCE*3);
-            GAME.stageInstance.addActor(GAME.player.playerIcon);
-            GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-        }
-        else if (roomId != 0 &&
-                (GAME.player.playerIcon.getX() >= 835 && GAME.player.playerIcon.getX() <= 1085) &&
-                (GAME.player.playerIcon.getY() <= MOVE_DISTANCE && GAME.player.playerIcon.getY() >= 0))
-        {
-            inRoom = false;
-            GAME.stageInstance.clear();
-
-            backgroundImage.remove();
-
-            backgroundImage = new Image(new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png")));
-            backgroundImage.setPosition(-25, -20);
-            backgroundImage.setSize(2000, 1150);
-
-            eventImage = new Image(new Texture(Gdx.files.internal("GoldChest.jpg")));
-            eventImage.setPosition(eventX, eventY);
-            eventImage.setSize(eventSizeX, eventSizeY);
-
-
-            GAME.stageInstance.addActor(backgroundImage);
-
-            if(roomId == 1)
-            {
-                GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth() - 4*MOVE_DISTANCE, GAME.stageInstance.getHeight()/2);
-                GAME.player.moveSquare.setPosition(GAME.stageInstance.getWidth() - 4*MOVE_DISTANCE, GAME.stageInstance.getHeight()/2);
-                GAME.player.interactSquare.setPosition(GAME.stageInstance.getWidth() - 3*MOVE_DISTANCE, GAME.stageInstance.getHeight()/2 - MOVE_DISTANCE);
-            }
-            else if(roomId == 2)
-            {
-                GAME.player.playerIcon.setPosition(4*MOVE_DISTANCE, (GAME.stageInstance.getHeight()-MOVE_DISTANCE)/2);
-                GAME.player.moveSquare.setPosition(4*MOVE_DISTANCE, (GAME.stageInstance.getHeight()-MOVE_DISTANCE)/2);
-                GAME.player.interactSquare.setPosition(3*MOVE_DISTANCE, GAME.stageInstance.getHeight()/2 - MOVE_DISTANCE);
-            }
-            roomId = 0;
-            GAME.stageInstance.addActor(GAME.player.playerIcon);
-            GAME.stageInstance.addActor(eventImage);
-            goblin.reAddActor();
-            if((int)(GAME.player.moveSquare.getX()- goblin.getXCord())/200 == 0 &&(int)(GAME.player.moveSquare.getY()-goblin.getYCord())/100 ==0 && isEnemyTurn) {
-                goblin.attackPlayer();
-                inventory.updateHealth();
-                isEnemyTurn = false;
-            }
-            GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+            //GAME.stageInstance.addActor();
+            GAME.setScreen(new MainMenu(GAME));
         }
     }
 

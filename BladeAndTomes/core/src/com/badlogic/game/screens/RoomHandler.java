@@ -1,7 +1,10 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlay.MainInventory;
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -12,6 +15,8 @@ public class RoomHandler {
 
     //Instantiates the random generator to be used within this project
     private Random generator = new Random();
+    public Goblin[] goblin = null;
+    public int numOfGoblins;
 
     //Thanks to baeldung.com for creating a tutorial based on how enum values work,
     //including section 3, which is what the following enum is based on.
@@ -44,18 +49,23 @@ public class RoomHandler {
 
     //Denotes the starting position of the player relative to where the player is entering.
     public Room level;
+    public boolean combatFlag;
     private Stage stage;
     private Player player;
     private int levelNum;
+    private MainInventory inventory;
 
     /**
      * Constructor for the "RoomHandler" or the linked list handler
      */
-    public RoomHandler(Stage stage, Player player) {
+    public RoomHandler(Stage stage, Player player, MainInventory inventory) {
         this.player = player;
         this.stage = stage;
         this.level = new Room();
         this.levelNum = 1;
+        this.combatFlag = false;
+        this.numOfGoblins = 0;
+        this.inventory = inventory;
     }
 
     /**
@@ -132,6 +142,7 @@ public class RoomHandler {
         stage.addActor(level.getBackgroundImage());
         stage.addActor(player.playerIcon);
         stage.setKeyboardFocus(player.playerIcon);
+        //inventory.reAddInventory();
 
         return true;
     }
@@ -233,16 +244,19 @@ public class RoomHandler {
      * @return error code in case the
      */
     private int generateEvent() {
-        if(generator.nextInt(12) > 7) {
-            //TODO: Initiate combat here.
+
+        int num = generator.nextInt(12) + 1;
+
+        if(num > 8) {
+            spawnGoblin();
+            combatFlag=true;
         }
 
-        else if (generator.nextInt(12) > 2) {
+        else if (num > 2) {
             //TODO: Initiate event handle here.
         }
         return 0;
     }
-
 
     /**
      * This program basically makes sure that when the player is exploring the dungeon, that it utilizes a common
@@ -277,5 +291,63 @@ public class RoomHandler {
         }
 
         return true;
+    }
+
+    public void spawnGoblin() {
+        numOfGoblins = generator.nextInt(3) + 1;
+
+        goblin = new Goblin[numOfGoblins];
+
+        for(int i=0; i<numOfGoblins; i++) {
+            goblin[i] = new Goblin(player);
+            stage.addActor(goblin[i].enemyImage);
+        }
+    }
+
+    /**
+     * Checks to make sure the player is not going into the goblin's space
+     * @param goblin - Selected goblin to check
+     */
+    public void collisionBodyHandler(Goblin goblin) {
+        float x_distance = goblin.enemyImage.getX() - player.playerIcon.getX();
+        float y_distance = goblin.enemyImage.getY() - player.playerIcon.getY();
+
+        if(x_distance < 64) {
+            player.playerIcon.setPosition(player.playerIcon.getX() - level.MOVE, player.playerIcon.getY());
+        }
+        else if(x_distance > -64) {
+            player.playerIcon.setPosition(player.playerIcon.getX() + level.MOVE, player.playerIcon.getY());
+        }
+        else if(y_distance < 64) {
+            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - level.MOVE);
+        }
+        else if(y_distance > 64) {
+            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + level.MOVE);
+        }
+    }
+
+    public void handleCombat(Goblin goblin) {
+
+        float x_distance = goblin.enemyImage.getX() - player.playerIcon.getX();
+        float y_distance = goblin.enemyImage.getY() - player.playerIcon.getY();
+
+        //Player attack based on Miller Banford's original code
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) &&
+            x_distance < 96 && x_distance > -96 &&
+            y_distance < 96 && y_distance > -96) {
+            int hitRoll = generator.nextInt(20) + 1;
+            if(hitRoll >= goblin.getArmorPoints()) {
+                goblin.damageTaken(player.getPhysical());
+            }
+        }
+
+        //Goblin Attack based on Miller Banford's original code
+        if(x_distance < 96 && x_distance > -96 &&
+                y_distance < 96 && y_distance > -96) {
+            //TODO: Goblin attack roll + damage
+        }
+        if(numOfGoblins == 0) {
+            combatFlag = false;
+        }
     }
 }
