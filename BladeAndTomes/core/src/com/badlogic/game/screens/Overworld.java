@@ -4,6 +4,7 @@ import ScreenOverlay.MainInventory;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,6 +48,14 @@ public class Overworld extends ScreenAdapter {
     boolean doTrade;
     Label npcTraderMsg;
 
+    Window saveQuit;
+    TextButton saveBack;
+    TextButton game1;
+    TextButton game2;
+    TextButton game3;
+    TextButton game4;
+    Table savedGames;
+
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
@@ -55,6 +64,13 @@ public class Overworld extends ScreenAdapter {
     public Overworld (final BladeAndTomes game) {
 
         this.GAME = game;
+
+        //Music rights
+        //The Road Home by Alexander Nakarada | https://www.serpentsoundstudios.com
+        //Music promoted by https://www.chosic.com/free-music/all/
+        //Creative Commons CC BY 4.0
+        //https://creativecommons.org/licenses/by/4.0/
+
 
         MOVE_DISTANCE = 64;
         doTrade = false;
@@ -78,6 +94,58 @@ public class Overworld extends ScreenAdapter {
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
+        saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
+        //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
+        //loadWindow.setBackground();
+        saveQuit.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight());
+        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
+        saveBack = new TextButton("Back", GAME.generalTextButtonStyle);
+        saveBack.setSize(100f,50f);
+        saveBack.setColor(Color.LIGHT_GRAY);
+        savedGames = new Table();
+        savedGames.setFillParent(true);
+        savedGames.defaults();
+        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
+        game1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(1);
+            }
+        });
+        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
+        game2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(2);
+            }
+        });
+        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
+        game3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(3);
+            }
+        });
+        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
+        game4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(4);
+            }
+        });
+        //Add listeners for the buttons
+        savedGames.add(saveBack).padBottom(3f);
+        savedGames.row();
+        savedGames.add(game1).padBottom(3f);
+        savedGames.row();
+        savedGames.add(game2).padBottom(3f);
+        savedGames.row();
+        savedGames.add(game3).padBottom(3f);
+        savedGames.row();
+        savedGames.add(game4);
+
+        saveQuit.addActor(savedGames);
+
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
             {
@@ -98,20 +166,19 @@ public class Overworld extends ScreenAdapter {
         warning = new Label("Are you sure you want to Quit?", GAME.generalLabelStyle);
 
         options = new TextButton[] {
-          new TextButton("Confirm", GAME.generalTextButtonStyle),
+          new TextButton("Save and Quit", GAME.generalTextButtonStyle),
           new TextButton("Cancel", GAME.generalTextButtonStyle)
         };
 
         options[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame();
                 GAME.stageInstance.removeListener(escapePauseOver);
                 GAME.stageInstance.clear();
                 pauseMenu.clear();
                 pauseMenu.remove();
                 dispose();
-                GAME.setScreen(new MainMenu(GAME));
+                GAME.stageInstance.addActor(saveQuit);
             }
         });
 
@@ -121,6 +188,19 @@ public class Overworld extends ScreenAdapter {
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 pauseMenu.clear();
                 pauseMenu.remove();
+            }
+        });
+
+        saveBack.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                GAME.stageInstance.setKeyboardFocus(null);
+                GAME.stageInstance.addActor(pauseMenu);
+                pauseMenu.add(warning).center().colspan(3);
+                pauseMenu.row();
+                pauseMenu.add(options[0], options[1]).center();
+                GAME.stageInstance.addActor(pauseMenu);
             }
         });
 
@@ -201,7 +281,11 @@ public class Overworld extends ScreenAdapter {
     }
 
     //Save all player data including name, stats, inventory
-    public void saveGame(){
+    public void saveGame(int id){
+        GAME.stageInstance.removeListener(escapePauseOver);
+        GAME.stageInstance.clear();
+        dispose();
+        GAME.setScreen(new MainMenu(GAME));
         //Need to determine which game to save to
         /*
         Preferences prefs = Gdx.app.getPreferences("Game1");
