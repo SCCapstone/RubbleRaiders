@@ -1,21 +1,15 @@
 package ScreenOverlayRework.Inventory;
 
-import ScreenOverlay.HiddenInventory;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
-
-import java.util.ArrayList;
 
 import static com.badlogic.gdx.utils.Align.*;
 
-public class InventoryUI {
+public class InventoryUI implements Cloneable{
     private BladeAndTomes game;
     private Table MainInventoryTable;
     private Table HiddenInventoryTable;
@@ -23,15 +17,12 @@ public class InventoryUI {
     private Table HiddenQuests;
     private Table HiddenSkill;
     private Table table;
-
     private Array<itemSlot> slots;
     private DragAndDrop dnd;
 
-    public InventoryUI(BladeAndTomes GAME) {
+    public InventoryUI(BladeAndTomes GAME,DragAndDrop dnd) {
 
         game = GAME;
-
-
         // Tables used to draw slots
         MainInventoryTable = new Table();
         HiddenInventoryTable = new Table();
@@ -44,7 +35,7 @@ public class InventoryUI {
 //        game.stageInstance.addActor(table);
 
 
-        dnd = new DragAndDrop();
+        this.dnd = dnd;
         slots = new Array<>();
 
         makeMainInventory();
@@ -80,7 +71,8 @@ public class InventoryUI {
         HiddenInventoryTable.setBackground(game.BaseLabelStyle2.background);
         HiddenInventoryTable.setDebug(true);
         HiddenInventoryTable.defaults();
-        HiddenInventoryTable.setBounds(game.stageInstance.getWidth() * 0.4f, game.stageInstance.getHeight() * 0.2f, game.stageInstance.getWidth() * 0.3f, game.stageInstance.getHeight() * 0.57f);
+        HiddenInventoryTable.setBounds(game.stageInstance.getWidth() * 0.4f, game.stageInstance.getHeight() * 0.2f,
+                game.stageInstance.getWidth() * 0.3f, game.stageInstance.getHeight() * 0.57f);
         HiddenInventoryTable.top();
 
         // Creating The three options "Inventory , Quests and Skills" as Buttons
@@ -162,16 +154,17 @@ public class InventoryUI {
         // Drawing Hidden General Inventory Slots
         Table generalItems = new Table();
         generalItems.add(new Label("\tGeneral Items", game.generalLabelStyle)).size(150, 50).colspan(3);
-        for (int i = 6; i < 15; ++i) {
-            if (i % 3 == 0) {
-                generalItems.row();
-            }
+        for (int i = 5; i < 14; ++i) {
+
             itemSlot temp = new itemSlot(game, dnd, i, "Any");
             temp.applySource();
             temp.applyTarget();
             dnd = temp.getDND();
             slots.add(temp);
-            generalItems.add(slots.get(i - 1).getSlot()).size(100, 100);
+            if ((i+1) % 3 == 0) {
+                generalItems.row();
+            }
+            generalItems.add(slots.get(i).getSlot()).size(100, 100);
         }
         HiddenInventorySlots.add(generalItems).colspan(6);
         HiddenInventorySlots.row();
@@ -181,16 +174,17 @@ public class InventoryUI {
         Table SpellItems = new Table();
         SpellItems.align(top | center);
         SpellItems.add(new Label("\tSpell Items", game.generalLabelStyle)).size(125, 50).colspan(3);
-        for (int i = 15; i < 17; ++i) {
-            if (i % 3 == 0) {
-                SpellItems.row();
-            }
+        for (int i = 14; i < 16; ++i) {
+
             itemSlot temp = new itemSlot(game, dnd, i, "Spell");
             temp.applySource();
             temp.applyTarget();
             dnd = temp.getDND();
             slots.add(temp);
-            SpellItems.add(slots.get(i - 1).getSlot()).size(100, 100);
+            if ((i+1) % 3 == 0) {
+                SpellItems.row();
+            }
+            SpellItems.add(slots.get(i).getSlot()).size(100, 100);
         }
         HiddenInventorySlots.add(SpellItems).top();
 
@@ -200,20 +194,34 @@ public class InventoryUI {
         ArmorItems.add(new Label("\tArmor Equipped", game.generalLabelStyle)).size(125, 50);
         ArmorItems.row();
 
-        for (int i = 17; i < 18; ++i) {
-            if (i % 3 == 0)
-                SpellItems.row();
+        for (int i = 16; i < 17; ++i) {
+
 
             itemSlot temp = new itemSlot(game, dnd, i, "Armor");
             temp.applySource();
             temp.applyTarget();
             dnd = temp.getDND();
             slots.add(temp);
-            ArmorItems.add(slots.get(i - 1).getSlot()).size(100, 100);
+            if ((i+1) % 3 == 0)
+                SpellItems.row();
+            ArmorItems.add(slots.get(i).getSlot()).size(100, 100);
         }
         HiddenInventorySlots.add(ArmorItems).colspan(10);
 
     }
+    public void setHiddenInventoryVisibility(boolean val){
+        HiddenInventoryTable.setVisible(val);
+    }
+    public boolean getHiddenInventoryVisibility(){
+        return HiddenInventoryTable.isVisible();
+    }
+    public void removeListens(){
+        for(int i = 0;i<slots.size;++i){
+            dnd.removeSource((slots.get(i).getSourceLister()));
+            dnd.removeTarget(slots.get(i).getTargetLister());
+        }
+    }
+
     public Table getUI(){
         return table;
     }
