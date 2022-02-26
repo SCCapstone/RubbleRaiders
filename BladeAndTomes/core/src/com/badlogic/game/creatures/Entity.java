@@ -14,8 +14,7 @@ public class Entity {
     /**
      * Defines the generic attributes for all Entities.
      */
-    public Entity()
-    {
+    public Entity() {
         this.healthPoints = 0;
         this.armorPoints = 0;
         this.movement = 0;
@@ -26,8 +25,7 @@ public class Entity {
     /**
      * Allows the user to define the generic attributes for all Entities.
      */
-    public Entity(int healthPoints, int armorPoints, int movement, int height, int width)
-    {
+    public Entity(int healthPoints, int armorPoints, int movement, int height, int width) {
         this.healthPoints = healthPoints;
         this.armorPoints = armorPoints;
         this.movement = movement;
@@ -43,11 +41,17 @@ public class Entity {
         return healthPoints;
     }
 
-    public int getMovement() { return movement; }
+    public int getMovement() {
+        return movement;
+    }
 
-    public int getHeight() { return height; }
+    public int getHeight() {
+        return height;
+    }
 
-    public int getWidth() { return width; }
+    public int getWidth() {
+        return width;
+    }
 
     public void setArmorPoints(int armorPoints) {
         this.armorPoints = armorPoints;
@@ -57,10 +61,16 @@ public class Entity {
         this.healthPoints = healthPoints;
     }
 
-    public void setMovement(int movement) { this.movement = movement; }
+    public void setMovement(int movement) {
+        this.movement = movement;
+    }
 
-    public void setHeight(int height) { this.height = height; }
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
-    public void setWidth(int width) { this.width = width; }
+    public void setWidth(int width) {
+        this.width = width;
+    }
 
 }

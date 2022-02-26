@@ -6,15 +6,18 @@ import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -26,9 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.*;
 
 // PUT IN CLAYMORE STORM EASTER EGG
 // Put in rick roll easter egg also
@@ -77,7 +78,7 @@ public class BladeAndTomes extends Game {
 
     public OverlayManager overlays;
 
-
+    public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
 
     /**
@@ -106,25 +107,25 @@ public class BladeAndTomes extends Game {
 
         for (int i = 0; i < 19; ++i) {
             itemDocument itemTemp = new itemDocument();
-            itemTemp.setName(String.valueOf(i));
+            itemTemp.setIndex(String.valueOf(i));
             itemTemp.setTargetItem("Null");
             itemTemp.setCategory("Null");
-
             inventoryItems.add(itemTemp);
         }
 
         itemDocument slot = inventoryItems.get(0);
         slot.setDefauls = false;
-        slot.setImage(new Image(new Texture(Gdx.files.internal("InventoryItems/Wepons/sword.jpg"))));
+        slot.setImageLocation("InventoryItems/Weapons/1.png");
         slot.setLevel(2);
-        slot.setCategory("Weapon");
+        slot.setCategory("Weapons");
+        slot.setName("Sword");
         slot.setDamage(10);
         slot.setTargetItem("Any");
 
 
         slot = inventoryItems.get(1);
         slot.setDefauls = false;
-        slot.setImage(new Image(new Texture(Gdx.files.internal("InventoryItems/Armor/armor.png"))));
+        slot.setImageLocation(("InventoryItems/Armor/armor.png"));
         slot.setLevel(2);
         slot.setCategory("Armor");
         slot.setDamage(10);
@@ -132,7 +133,7 @@ public class BladeAndTomes extends Game {
 
         slot = inventoryItems.get(2);
         slot.setDefauls = false;
-        slot.setImage(new Image(new Texture(Gdx.files.internal("InventoryItems/Spells/HealSpell.png"))));
+        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
         slot.setLevel(2);
         slot.setCategory("Spell");
         slot.setDamage(10);
@@ -219,8 +220,13 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
 
         player.setHealthPoints(10);
-        overlays = new OverlayManager(this);
+        try {
+            overlays = new OverlayManager(this);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         overlays.setOverLayesVisibility(false);
+
         this.setScreen(new MainMenu(this));
     }
     /*
@@ -255,7 +261,32 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void resize(int width, int height) {
-        stageInstance.getViewport().update(width, height, true);
+
+        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
+        int viewportX = (int) (width - size.x) / 2;
+        int viewportY = (int) (height - size.y) / 2;
+        int viewportWidth = (int) size.x;
+        int viewportHeight = (int) size.y;
+        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+        stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
+//        if(viewportWidth<width || viewportHeight< height){
+//            Gdx.graphics.setWindowedMode(viewportWidth,viewportHeight);
+//        }else {
+//            Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+//        }
+
+        if (width < 1280) {
+            Gdx.graphics.setWindowedMode(1280, height);
+        }
+//        else {
+//            Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+//        }
+        if (height < 720) {
+            Gdx.graphics.setWindowedMode(width, 720);
+        }
+//        System.out.println("width: "+width+"\t height: "+height);
+//        stageInstance.getViewport().update(width, height, true);
     }
 
     /**

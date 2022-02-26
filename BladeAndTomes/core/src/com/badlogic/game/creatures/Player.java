@@ -17,7 +17,9 @@ public class Player extends Entity {
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
-    private enum classes {WARRIOR, CLERIC ,WIZARD};
+    private enum classes {WARRIOR, CLERIC, WIZARD}
+
+    ;
 
     private int playerClass;
     private int physical;
@@ -29,6 +31,7 @@ public class Player extends Entity {
     private int barter;
     private int awareness;
     private int intuition;
+    private int gold;
     private String id;
     private String name;
     public Image playerIcon;
@@ -46,8 +49,7 @@ public class Player extends Entity {
     /**
      * Default constructor for player entity
      */
-    public Player()
-    {
+    public Player() {
         super();
         this.id = "player";
         this.playerClass = 1;
@@ -59,13 +61,13 @@ public class Player extends Entity {
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
         moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
 
-        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
+        interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
@@ -73,23 +75,24 @@ public class Player extends Entity {
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
+        gold = 100;
+
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;
@@ -104,17 +107,17 @@ public class Player extends Entity {
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int movement, int height, int width, BladeAndTomes game, int playerClass, String id, String name, Image image)
-    {
+    public Player(int healthPoints, int armorPoints, int movement, int height, int width, BladeAndTomes game, int playerClass, String id, String name, Image image) {
         super(healthPoints, armorPoints, movement, height, width);
         this.id = id;
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
+        gold = 100;
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
+        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
@@ -124,20 +127,19 @@ public class Player extends Entity {
         playerIcon.addListener(new InputListener() {
 
             @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;
@@ -147,95 +149,98 @@ public class Player extends Entity {
         });
     }
 
-    public int getPlayerClass()
-    {
+    public int getPlayerClass() {
         return playerClass;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public int getPhysical()
-    {
+    public int getPhysical() {
         return physical;
     }
 
-    public int getMental()
-    {
+    public int getMental() {
         return mental;
     }
 
-    public int getSocial()
-    {
+    public int getSocial() {
         return social;
     }
 
-    public int getAcrobatics()
-    {
-        acrobatics = (int)((physical * 1.25) + (mental / 2));
+    public int getAcrobatics() {
+        acrobatics = (int) ((physical * 1.25) + (mental / 2));
         return acrobatics;
     }
 
-    public int getBruteforce()
-    {
-        bruteforce = (int)(physical * 1.75);
+    public int getBruteforce() {
+        bruteforce = (int) (physical * 1.75);
         return bruteforce;
     }
 
-    public int getSpeech()
-    {
-        speech = (int)((social * 1.25) + (physical / 2));
+    public int getSpeech() {
+        speech = (int) ((social * 1.25) + (physical / 2));
         return speech;
     }
 
-    public int getBarter()
-    {
+    public int getBarter() {
         barter = social;
         return barter;
     }
 
-    public int getAwareness()
-    {
-        awareness = (int)((mental * 1.5) + (social / 2));
+    public int getAwareness() {
+        awareness = (int) ((mental * 1.5) + (social / 2));
         return awareness;
     }
 
-    public int getIntuition()
-    {
-        intuition = (int)(mental * .75);
+    public int getIntuition() {
+        intuition = (int) (mental * .75);
         return intuition;
     }
 
-    public void setPlayerClass(int playerClass)
-    {
+    public void setPlayerClass(int playerClass) {
         this.playerClass = playerClass;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setPhysical(int physical) { this.physical = physical; }
+    public void setPhysical(int physical) {
+        this.physical = physical;
+    }
 
-    public void setMental(int mental) { this.mental = mental; }
+    public void setMental(int mental) {
+        this.mental = mental;
+    }
 
-    public void setSocial(int social) { this.social = social; }
+    public void setSocial(int social) {
+        this.social = social;
+    }
 
-    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder)
-    {
+    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder) {
         return true;
     }
 
-    public boolean handleExit(Rectangle playerMove, Rectangle exitSquare)
-    {
+    public boolean handleExit(Rectangle playerMove, Rectangle exitSquare) {
         return true;
+    }
+
+    public void setGold(int val) {
+        this.gold = val;
+    }
+
+    public int getGold() {
+        return gold;
     }
 
 }

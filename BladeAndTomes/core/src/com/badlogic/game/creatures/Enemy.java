@@ -1,4 +1,5 @@
 package com.badlogic.game.creatures;
+
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
@@ -7,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-public abstract class Enemy extends Entity{
+public abstract class Enemy extends Entity {
 
     public String itemDrop;
     protected Player player;
@@ -17,11 +18,12 @@ public abstract class Enemy extends Entity{
     public BladeAndTomes GAME;
 
     public abstract void movement();
+
     public abstract void attackPlayer();
 
     public Enemy(int healthPoints, int armorPoints, int movement, int height, int width, Player player, BladeAndTomes GAME) {
 
-        super(healthPoints,armorPoints,movement,height,width);
+        super(healthPoints, armorPoints, movement, height, width);
         this.player = player;
         this.GAME = GAME;
 
@@ -31,14 +33,13 @@ public abstract class Enemy extends Entity{
     public void damageTaken(int damage) {
 
         healthPoints = healthPoints - damage;
-        if(this.getHealthPoints() <= 0) {
+        if (this.getHealthPoints() <= 0) {
             dropItem();
         }
 
     }
 
     public void dropItem() {
-
 
 
     }
@@ -48,10 +49,14 @@ public abstract class Enemy extends Entity{
         GAME.stageInstance.addActor(enemyImage);
     }
 
-    public boolean checkIfDead() {return healthPoints <= 0;}
+    public boolean checkIfDead() {
+        return healthPoints <= 0;
+    }
+
     public float getXCord() {
         return xCord;
     }
+
     public float getYCord() {
         return yCord;
     }

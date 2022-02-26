@@ -8,6 +8,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Scaling;
 
 import java.awt.Point;
 
@@ -180,6 +182,27 @@ public class Overworld extends ScreenAdapter {
         isCollisionHandled(GAME.player, GAME.stageInstance);
         GAME.overlays.updateHealth();
 
+        // Displays Hidden Inventory Table
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            GAME.overlays.setHiddenTableVisibility(!GAME.overlays.getHiddenTableVisibility());
+        GAME.player.setGold(10);
+        }
+        try {
+            if(GAME.overlays.reset()){
+                GAME.overlays.removeALL();
+            GAME.overlays = new OverlayManager(GAME);
+                GAME.refreshInventory = false;
+            }
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+//        try {
+//            GAME.overlays.updateAll();
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+//        GAME.overlays.setOverLayesVisibility(false);
+//        GAME.overlays.setOverLayesVisibility(true);
     }
 
     //Save all player data including name, stats, inventory
@@ -203,8 +226,17 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
+//        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
+//        int viewportX = (int)(width - size.x) / 2;
+//        int viewportY = (int)(height - size.y) / 2;
+//        int viewportWidth = (int)size.x;
+//        int viewportHeight = (int)size.y;
+//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+////        GAME.stageInstance.getViewport().update( viewportWidth, viewportHeight, true);
+//        GAME.stageInstance.getViewport().setScreenSize(viewportWidth,viewportHeight);
+
         GAME.stageInstance.getViewport().update(width, height, true);
-    }
+   }
 
     @Override
     public void show() {
