@@ -2,53 +2,37 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.Events;
 import ScreenOverlay.MainInventory;
-import com.badlogic.game.creatures.Goblin;
-import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Dungeon extends ScreenAdapter {
 
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
-    //Image playerIcon;
-    //Texture background;
     Texture eventTex;
 
     Image eventImage;
     Image backgroundImage;
-    private boolean inRoom;
     MainInventory inventory;
-    float eventX, eventY, eventSizeX, eventSizeY, enemyX, enemyY;
-    //Goblin goblin;
-    boolean isEnemyTurn;
+    float eventX, eventY, eventSizeX, eventSizeY;
     RoomHandler roomHandler;
-
-    Events event;
-
-    //Rectangle walkableArea;
-    //Rectangle doorHitBox;
-    //float xIcon, yIcon, xMove, yMove, xInter, yInter;
-
-    int roomId;
 
     public Dungeon(final BladeAndTomes game) {
 
+        //Initial backbone values carried over
         this.GAME = game;
         MOVE_DISTANCE = 64;
 
+        //Clears the stage instance
         GAME.stageInstance.clear();
+
+        //Instances the player's inventory
+        inventory = new MainInventory(GAME);
 
         roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, inventory);
 
@@ -73,10 +57,6 @@ public class Dungeon extends ScreenAdapter {
         roomHandler.level.getBackgroundImage().setPosition(-25,-20);
         GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
 
-        //backgroundImage.setSize(2000, 1150);
-        //backgroundImage.setPosition(-25, -20);
-        //GAME.stageInstance.addActor(backgroundImage);
-
         // Currently having size as a set variable here want to move it to events class
         // This should keep it permanently in place through the dungeon right now
         eventImage.setSize(eventSizeX, eventSizeY);
@@ -84,27 +64,12 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.addActor(eventImage);
 
 
-        // Used dimensions of the room as a reference point thanks to Alex Farcer for providing them later in code
-        // (See render function)
-        /*
-        walkableArea = new Rectangle();
-        walkableArea.setSize((int) backgroundImage.getWidth() - 3*MOVE_DISTANCE, (int) backgroundImage.getHeight() - 3*MOVE_DISTANCE);
-        walkableArea.setCenter(walkableArea.getWidth()/2, walkableArea.getHeight()/2);
-        walkableArea.setPosition(MOVE_DISTANCE*3, MOVE_DISTANCE*3);*/
-
         //Adds the player's icon to the stage.
         GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
         GAME.player.moveSquare.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
         GAME.player.interactSquare.setPosition(GAME.stageInstance.getWidth()/2 - MOVE_DISTANCE,GAME.stageInstance.getHeight()/2 - MOVE_DISTANCE);
         GAME.stageInstance.addActor(GAME.player.playerIcon);
         GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-
-        //Instances the player's inventory
-        inventory = new MainInventory(GAME);
-
-
-        //goblin = new Goblin(GAME.player);
-        //isEnemyTurn = true;
 
     }
 
@@ -120,22 +85,20 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.draw();
         inventory.update();
 
-        roomHandler.movement();
-
+        //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {
-            for (int i = 0; i < roomHandler.numOfGoblins; i++) {
-                if (roomHandler.goblin[i] == null) {
-                    continue;
-                }
-                roomHandler.handleCombat(roomHandler.goblin[i]);
-            }
+            roomHandler.handleCombat();
+        }
+        else {
+            roomHandler.movement();
         }
 
+        //If player is dead, return to the OverWorld
         if(GAME.player.getHealthPoints() <= 0) {
             dispose();
             GAME.stageInstance.clear();
-            //GAME.stageInstance.addActor();
-            GAME.setScreen(new MainMenu(GAME));
+            GAME.player.setHealthPoints(GAME.player.getFullHealth());
+            GAME.setScreen(new Overworld(GAME));
         }
     }
 

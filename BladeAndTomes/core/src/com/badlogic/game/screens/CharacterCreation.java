@@ -175,7 +175,8 @@ public class CharacterCreation extends ScreenAdapter {
                 dispose();
                 GAME.stageInstance.clear();
                 GAME.player.setHealthPoints(10);
-                GAME.player.setArmorPoints(0);
+                GAME.player.setFullHealth(10);
+                GAME.player.setArmorPoints(10);
                 GAME.player.setPlayerClass(selection);
                 GAME.player.setName(name);
                 GAME.player.setMovement(5);

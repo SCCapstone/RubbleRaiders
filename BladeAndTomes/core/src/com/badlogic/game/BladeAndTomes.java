@@ -73,26 +73,12 @@ public class BladeAndTomes extends Game {
 
     public final int MOVE_DISTANCE = 64;
 
-    //TODO: X Grid 21/22 Squares, Y Grid 8-12 Squares
-    int GRID_X_SQUARE = 21;
-    int GRID_Y_SQUARE = 12;
-    public final int [] GRID_X = new int[21];
-    public final int [] GRID_Y = new int[12];
-
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
      * the first screen.
      */
     @Override
     public void create() {
-        int x_start = 264;
-        int y_start = 152;
-        for(int i = 0; i < GRID_X_SQUARE; i++) {
-            GRID_X[i] = x_start*(i+1);
-        }
-        for(int i = 0; i < GRID_Y_SQUARE; i++) {
-            GRID_Y[i] = y_start*(i+1);
-        }
 
         player = new Player();
         inventory = new Inventory();

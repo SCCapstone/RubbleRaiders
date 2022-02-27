@@ -36,7 +36,7 @@ public class Player extends Entity {
     public Rectangle interactSquare;
     public Rectangle moveSquare;
     public Rectangle rangeSquare;
-    public boolean isMoved;
+    public boolean isTurn;
 
     public InputListener playerInput;
 
@@ -52,6 +52,7 @@ public class Player extends Entity {
         this.id = "player";
         this.playerClass = 1;
         this.name = "";
+        this.isTurn = true;
 
         moveSquare = new Rectangle();
         interactSquare = new Rectangle();
@@ -94,6 +95,7 @@ public class Player extends Entity {
                     default:
                         return false;
                 }
+                isTurn = false;
                 moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
                 interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
                 return true;
@@ -104,13 +106,14 @@ public class Player extends Entity {
     /**
      * Alternate constructor for player entity
      */
-    public Player(int healthPoints, int armorPoints, int movement, int height, int width, BladeAndTomes game, int playerClass, String id, String name, Image image)
+    public Player(int healthPoints, int fullHealth ,int armorPoints, int movement, int height, int width, int playerClass, String id, String name, Image image)
     {
-        super(healthPoints, armorPoints, movement, height, width);
+        super(healthPoints, fullHealth, armorPoints, movement, height, width);
         this.id = id;
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
+        this.isTurn = true;
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);

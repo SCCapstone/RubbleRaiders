@@ -1,6 +1,7 @@
 package com.badlogic.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,6 +14,8 @@ public class Room {
     private int roomID;
     private int mapID;
     private Image background;
+    private Texture backgroundText;
+    private AssetManager assetManager;
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
@@ -23,7 +26,14 @@ public class Room {
      * Public constructor for creating a room. Usually just a blank, default room
      */
     public Room() {
-        this.background = new Image(new Texture(Gdx.files.internal("DungeonRooms/SRoom.png")));
+
+        //Thanks to user Tenfour04 on StackOverflow for introducing a way to easily dispose of assets.
+        //https://stackoverflow.com/questions/38102499/libgdx-image-class-dispose
+        assetManager = new AssetManager();
+        assetManager.load("DungeonRooms/SRoom.png", Texture.class);
+        assetManager.finishLoading();
+        this.background = new Image(assetManager.get("DungeonRooms/SRoom.png", Texture.class));
+
         this.door = new Room[4];
         this.numOfDoors = 1;
         this.roomID = 1;
@@ -53,7 +63,15 @@ public class Room {
      */
     public void setBackgroundImage(String directory, Stage stage) {
         this.background.remove();
-        this.background = new Image(new Texture(Gdx.files.internal(directory)));
+
+        //Thanks to user Tenfour04 on StackOverflow for introducing a way to easily dispose of assets.
+        //https://stackoverflow.com/questions/38102499/libgdx-image-class-dispose
+        assetManager.clear();
+        assetManager.load(directory, Texture.class);
+        assetManager.finishLoading();
+        this.background = new Image(assetManager.get(directory, Texture.class));
+
+
         stage.addActor(this.background);
     }
 
