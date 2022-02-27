@@ -227,6 +227,18 @@ public class Player extends Entity {
         this.social = social;
     }
 
+    public void setAcrobatics(int acro) { this.acrobatics = acro; }
+
+    public void setBruteforce(int brute) { this.bruteforce = brute; }
+
+    public void setSpeech(int s) { this.speech = s; }
+
+    public void setBarter(int bart) { this.barter = bart; }
+
+    public void setAwareness(int aware) { this.awareness = aware; }
+
+    public void setIntuition(int i) { this.intuition = i; }
+
     public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder) {
         return true;
     }

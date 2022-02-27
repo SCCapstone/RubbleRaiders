@@ -3,8 +3,10 @@ package ScreenOverlayRework.Inventory;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
@@ -29,6 +31,16 @@ public class InventoryUI implements Cloneable{
     private ProgressBar quest4Progress;
     private TextureAtlas questProgressAtlas;
     private Skin questProgressSkin;
+    private Label tokenLabel;
+    private TextButton physicalButton;
+    private TextButton mentalButton;
+    private TextButton socialButton;
+    private TextButton acroButton;
+    private TextButton bruteButton;
+    private TextButton bartButton;
+    private TextButton speechButton;
+    private TextButton awareButton;
+    private TextButton intuButton;
     private Table table;
     private Array<itemSlot> slots;
     private DragAndDrop dnd;
@@ -204,7 +216,130 @@ public class InventoryUI implements Cloneable{
     }
 
     public void drawSkills() {
-        HiddenSkill.add(new Label("Hello", game.generalLabelStyle));
+        tokenLabel = new Label("Tokens: "+game.getTokens(), game.BaseLabelStyle2);
+        tokenLabel.setFontScale(2);
+        physicalButton = new TextButton("Physical: "+game.player.getPhysical(), game.generalTextButtonStyle);
+        physicalButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (game.getTokens() > 0) {
+                    game.player.setPhysical(game.player.getPhysical()+1);
+                    game.setTokens(game.getTokens()-1);
+                    physicalButton.setText("Physical: "+game.player.getPhysical());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        mentalButton = new TextButton("Mental: "+game.player.getMental(), game.generalTextButtonStyle);
+        mentalButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setMental(game.player.getMental() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    mentalButton.setText("Mental: "+game.player.getMental());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        socialButton = new TextButton("Social: "+game.player.getSocial(), game.generalTextButtonStyle);
+        socialButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setSocial(game.player.getSocial() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    socialButton.setText("Social: "+game.player.getSocial());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        acroButton = new TextButton("Acrobatics: "+game.player.getAcrobatics(), game.generalTextButtonStyle);
+        acroButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setAcrobatics(game.player.getAcrobatics() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    acroButton.setText("Acrobatics: "+game.player.getAcrobatics());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        bruteButton = new TextButton("Brute Force: "+game.player.getBruteforce(), game.generalTextButtonStyle);
+        bruteButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setBruteforce(game.player.getBruteforce() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    bruteButton.setText("Brute Force: "+game.player.getBruteforce());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        bartButton = new TextButton("Bartering: "+game.player.getBruteforce(), game.generalTextButtonStyle);
+        bartButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setBarter(game.player.getBarter() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    bartButton.setText("Bartering: "+game.player.getBarter());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        speechButton = new TextButton("Speech: "+game.player.getSpeech(), game.generalTextButtonStyle);
+        speechButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setSpeech(game.player.getSpeech() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    speechButton.setText("Speech: "+game.player.getSpeech());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        awareButton = new TextButton("Awareness: "+game.player.getAwareness(), game.generalTextButtonStyle);
+        awareButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setAwareness(game.player.getAwareness() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    awareButton.setText("Awareness: "+game.player.getAwareness());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+        intuButton = new TextButton("Intuition: "+game.player.getIntuition(), game.generalTextButtonStyle);
+        intuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if(game.getTokens() > 0) {
+                    game.player.setIntuition(game.player.getIntuition() + 1);
+                    game.setTokens(game.getTokens() - 1);
+                    intuButton.setText("Intuition: "+game.player.getIntuition());
+                    tokenLabel.setText("Tokens: "+game.getTokens());
+                }
+            }
+        });
+
+        HiddenSkill.add(tokenLabel).colspan(3);
+        HiddenSkill.row();
+        HiddenSkill.add(physicalButton);
+        HiddenSkill.add(mentalButton);
+        HiddenSkill.add(socialButton);
+        HiddenSkill.row();
+        HiddenSkill.add(acroButton);
+        HiddenSkill.add(bruteButton);
+        HiddenSkill.add(bartButton);
+        HiddenSkill.row();
+        HiddenSkill.add(speechButton);
+        HiddenSkill.add(awareButton);
+        HiddenSkill.add(intuButton);
 
     }
     // TODO THIS METHOD DRAWS SLOTS

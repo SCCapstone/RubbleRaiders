@@ -86,6 +86,8 @@ public class BladeAndTomes extends Game {
     public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
 
+    public int tokens;
+
     public static class quest {
         String goal;
         int value;
@@ -143,6 +145,9 @@ public class BladeAndTomes extends Game {
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
+
+        //tokens = 3;
+        setTokens(3);
 
         quests = new Array<>();
         usedQuests = new Array<>();
@@ -294,6 +299,13 @@ public class BladeAndTomes extends Game {
     }
 
      */
+
+    public void setTokens(int num){
+        tokens = num;
+    }
+    public int getTokens(){
+        return tokens;
+    }
 
     /**
      * This function is called by OpenGL to render objects presented in the order defined below and
