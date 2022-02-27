@@ -186,6 +186,7 @@ public class Overworld extends ScreenAdapter {
 
         // Displays Hidden Inventory Table
 
+        // COMMENT THIS CODE TO GET TRADING WORKING
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
 
