@@ -38,7 +38,11 @@ public class itemSlot extends Actor {
     private String targetSlot;
     private DragAndDrop.Source sourceLister;
     private DragAndDrop.Target targetLister;
-
+    private itemDocument doc;
+    private boolean sellingObj;
+    private String removeIndexDoc;
+    private DragAndDrop.Payload currentPayload;
+    private boolean swappingObj;
 
 
     /*
@@ -64,8 +68,34 @@ public class itemSlot extends Actor {
         slot.setSize(100,100);
         table.addActor(slot);
         setItem();
+        swappingObj = true;
+
     }
 
+    public itemSlot(BladeAndTomes game,
+                    itemDocument doc,
+                    DragAndDrop DND){
+        slotSkin = new Skin(Gdx.files.internal("SkinAssets/Inventory/Slot/SlotUI.json"),
+                new TextureAtlas(Gdx.files.internal("SkinAssets/Inventory/Slot/SlotUI.atlas")));
+        this.doc = doc;
+        slot = new ImageButton(slotSkin);
+        table = new Group();
+        slot.setSize(100,100);
+        table.addActor(slot);
+        item = new Image();
+        item.setName(doc.getName());
+        item.setSize(65,65);
+        item.setPosition(slot.getWidth()*0.15f,slot.getWidth()*0.15f);
+        table.addActor(item);
+        this.game = game;
+        dnd = DND;
+        sellingObj = false;
+        currentPayload = null;
+
+    }
+    public boolean canBuy(){
+        return sellingObj;
+    }
 
 
 
@@ -82,8 +112,9 @@ public class itemSlot extends Actor {
         item.setSize(65,65);
         item.setPosition(slot.getWidth()*0.15f,slot.getWidth()*0.15f);
         table.addActor(item);
-
     }
+
+
     // THIS METHOD CREATES AN ITEM AND SLOT
     public void setItem(){
 
@@ -124,72 +155,128 @@ public class itemSlot extends Actor {
                     ((Image) payload.getObject()).setVisible(true);
                 else
                     ((Image) payload.getObject()).setVisible(true);
-                ;            }
+
+                try{
+                    int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
+                    int sellingItemlvl = game.inventoryItems.get(sellingItemIndex).getLevel();
+                String sellingItemCategory = game.inventoryItems.get(sellingItemIndex).getCategory();
+                String sellingItemName = game.inventoryItems.get(sellingItemIndex).getName();
+
+                sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
+                        doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
+                        doc.getLevel()==sellingItemlvl;}catch (Exception e){
+                    sellingObj =false;
+                }
+            }
         });
 
     }
 
+    public DragAndDrop.Target applyBuyerTarget(){
+
+        targetLister = new DragAndDrop.Target(table) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+
+                try {
+                    int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
+                    int sellingItemlvl = game.inventoryItems.get(sellingItemIndex).getLevel();
+                    String sellingItemCategory = game.inventoryItems.get(sellingItemIndex).getCategory();
+                    String sellingItemName = game.inventoryItems.get(sellingItemIndex).getName();
+
+                    sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
+                            doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
+                            doc.getLevel()==sellingItemlvl;
+
+                    return sellingObj;
+
+                } catch (Exception e){
+                    System.out.println(e);
+
+                    sellingObj = false;
+
+                }
+
+                return sellingObj;
+            }
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
+                int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
+                int sellingItemlvl = game.inventoryItems.get(sellingItemIndex).getLevel();
+                String sellingItemCategory = game.inventoryItems.get(sellingItemIndex).getCategory();
+                String sellingItemName = game.inventoryItems.get(sellingItemIndex).getName();
+
+                sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
+                        doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
+                        doc.getLevel()==sellingItemlvl;
+                if (sellingObj) {
+                    Drawable temp = ((Image) payload.getObject()).getDrawable();
+                    ((Image) payload.getObject()).setDrawable(item.getDrawable());
+                    item.setDrawable(temp);
+                    removeIndexDoc = ((Image) payload.getObject()).getName();
+                }
+
+            }};
+        return targetLister;
+
+    }
+
+    public void removeItem(){
+        try {
+            System.out.println(removeIndexDoc);
+            int itemIndex = Integer.valueOf(removeIndexDoc);
+            itemDocument itemTemp = new itemDocument();
+            itemTemp.setIndex(String.valueOf(itemIndex));
+            itemTemp.setTargetItem("Null");
+            itemTemp.setCategory("Null");
+            item =new Image();
+            game.inventoryItems.set(itemIndex,itemTemp);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
     // THIS METHOD CHECKS IF A DRAGGING ITEM COULD BE MOVED INTO A SLOT
     public void applyTarget(){
         dnd.addTarget(targetLister = new DragAndDrop.Target(table){
             @Override
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-//                int newItem =Integer.valueOf(((Image) payload.getObject()).getName());
-//                int currentItem = Integer.valueOf(item.getName());
-//
-//                boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.inventoryItems.get(newItem).getCategory())
-//                        || targetSlot.equalsIgnoreCase("Any"));
-//                boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.inventoryItems.get(currentItem).getCategory())
-//                        || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.inventoryItems.get(currentItem).getCategory()));
-                return true;
+                    try{
+                int newItem =Integer.valueOf(((Image) payload.getObject()).getName());
+                int currentItem = Integer.valueOf(item.getName());
+
+                boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.inventoryItems.get(newItem).getCategory())
+                        || targetSlot.equalsIgnoreCase("Any"));
+                boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.inventoryItems.get(currentItem).getCategory())
+                        || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.inventoryItems.get(currentItem).getCategory()));
+                return (!game.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
+                    catch (Exception e){
+                        return true;
+                    }
             }
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
 
-                int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
-                int currentItem = Integer.valueOf(item.getName());
+                try {
+                   {
+                        int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
+                        int currentItem = Integer.valueOf(item.getName());
 
-                // Swapping Items in Array
-                game.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
-                game.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
-                game.inventoryItems.swap(newItem,currentItem);
+                        // Swapping Items in Array
+                        game.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
+                        game.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
+                        game.inventoryItems.swap(newItem, currentItem);
+                    }
+
+                }catch (Exception e){
+
+                }
 
                 // Swapping Images
+                {
                 Drawable temp = ((Image) payload.getObject()).getDrawable();
                 ((Image) payload.getObject()).setDrawable(item.getDrawable());
                 item.setDrawable(temp);
-
-//                game.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
-                game.refreshInventory = true;
-//                ((Image) payload.getObject()).setDrawable(game.inventoryItems.get(currentItem).getImage().getDrawable());
-//                item.setDrawable(game.inventoryItems.get(newItem ).getImage().getDrawable());
-//                 Setting new images in their respective places.
-//                Image temp = game.inventoryItems.get(currentItem).getImage();
-////                game.inventoryItems.get(currentItem).setImage();
-//                ((Image) payload.getObject()).setDrawable(game.inventoryItems.get(newItem).getImage().getDrawable());
-//                item.setDrawable(temp.getDrawable());
-
-//                Image currentItemImage = new Image();
-//                currentItemImage.setDrawable(item.getDrawable());
-//                currentItemImage.clearListeners();
-//
-//                Image newItemImage = new Image();
-//                newItemImage.setDrawable(((Image) payload.getObject()).getDrawable());
-//                newItemImage.clearListeners();
-
-//                game.inventoryItems.get(newItem).setImage(newItemImage);
-//                game.inventoryItems.get(currentItem).setImage(currentItemImage);
-//                ((Image) payload.getObject()).setDrawable(item.getDrawable());
-//                item.setDrawable(temp);
-
-                System.out.println(" Source: "+((Image) payload.getObject()).getName()+" Target: "+item.getName());
-
-//                itemDocument temp = game.inventoryItems.get(newItem);
-//                game.inventoryItems.set(newItem,game.inventoryItems.get(currentItem));
-
-
-                System.out.println(game.inventoryItems.get(0).getCategory());
-
+                }
             }
         });
 

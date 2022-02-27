@@ -184,18 +184,35 @@ public class Overworld extends ScreenAdapter {
 
         // Displays Hidden Inventory Table
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-            GAME.overlays.setHiddenTableVisibility(!GAME.overlays.getHiddenTableVisibility());
-        GAME.player.setGold(10);
+            GAME.showtrade =false;
+            GAME.showtradeBuyer =false;
+            GAME.showHiddenInventory =!GAME.showHiddenInventory;
+            GAME.overlays.updateOverlays();
+
         }
-        try {
-            if(GAME.overlays.reset()){
-                GAME.overlays.removeALL();
-            GAME.overlays = new OverlayManager(GAME);
-                GAME.refreshInventory = false;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+            GAME.overlays.showtradeseller(!GAME.showtrade);
+            {
+                GAME.showHiddenInventory =false;
+                GAME.showtradeBuyer =false;
+                GAME.overlays.updateOverlays();
+
             }
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
+            {
+                GAME.showtrade =false;
+                GAME.showHiddenInventory =false;
+                GAME.overlays.updateOverlays();
+
+            }
+        }
+
+            if(GAME.overlays.reset()){
+                GAME.overlays.updateOverlays();
+            }
+
 //        try {
 //            GAME.overlays.updateAll();
 //        } catch (CloneNotSupportedException e) {
@@ -226,6 +243,7 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
+        // Source: https://stackoverflow.com/questions/18495975/libgdx-window-resizing-keeping-aspect-ratio
 //        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
 //        int viewportX = (int)(width - size.x) / 2;
 //        int viewportY = (int)(height - size.y) / 2;

@@ -118,7 +118,7 @@ public class BladeAndTomes extends Game {
         itemDocument slot = inventoryItems.get(0);
         slot.setDefauls = false;
         slot.setImageLocation("InventoryItems/Weapons/1.png");
-        slot.setLevel(2);
+        slot.setLevel(1);
         slot.setCategory("Weapons");
         slot.setName("Sword");
         slot.setDamage(10);

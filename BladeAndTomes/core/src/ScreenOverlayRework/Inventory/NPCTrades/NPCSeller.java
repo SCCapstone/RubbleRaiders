@@ -20,7 +20,6 @@ public class NPCSeller extends npcUI {
     private Array<RandomItemGenerator> trade;
     private Table seller;
     private int numberOfTrades;
-    public boolean updateSlots;
     public NPCSeller(BladeAndTomes GAME, DragAndDrop dnd) {
         super(GAME, dnd, "NPC TRADER");
         seller = new Table();
@@ -80,28 +79,17 @@ public class NPCSeller extends npcUI {
                     game.player.setGold(availableGold - itemPrice);
                             gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
                             boolean availableSlot = true;
-                    Array<itemDocument> test = new Array<>();
                     for(int i =0;i<game.inventoryItems.size;++i){
                         if(game.inventoryItems.get(i).setDefauls &&availableSlot)
                                 {
                                     doc.setIndex(String.valueOf(i));
                                     doc.setDefauls = false;
                                     game.inventoryItems.set(i,doc);
-                                    test.add(doc);
                                     availableSlot = false;
-
-//                                    game.inventoryItems.get(i).setIndex(doc.getIndex());
-//                                    game.inventoryItems.get(i).setCategory(doc.getCategory());
-//                                    game.inventoryItems.get(i).setRange(doc.getRange());
-//                                    game.inventoryItems.get(i).setName(doc.getName());
-//                                    game.inventoryItems.get(i).setTargetItem(doc.getTargetItem());
-//                                    game.inventoryItems.get(i).setDamage(doc.getDamage());
-//                                    game.inventoryItems.get(i).setImage(doc.getImage());
                                     updateSlots = true;
 //                                    break;
                                 }
                                 else{
-                                    test.add(game.inventoryItems.get(i));
 
                                 }
 

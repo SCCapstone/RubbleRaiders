@@ -18,6 +18,7 @@ public class NPCBuyer extends  npcUI{
     private Table buyer;
     private int numberOfTrades;
     public boolean updateSlots;
+
     public NPCBuyer(BladeAndTomes GAME, DragAndDrop dnd) {
         super(GAME, dnd, "NPC Trader");
         buyer = new Table();
@@ -51,36 +52,31 @@ public class NPCBuyer extends  npcUI{
     }
     public Table makeitemRow(final RandomItemGenerator currentTrade){
         Table table = new Table();
+        final boolean tradeOK = false;
         final int price = (int) (currentTrade.getItemDocument().getPrice()*0.2);
-        itemDocument itemTemp = new itemDocument();
-        itemTemp.setIndex("18");
-        itemTemp.setTargetItem("Null");
-        itemTemp.setCategory("Null");
-        itemSlot slot = new itemSlot(itemTemp);
+        itemDocument doc = currentTrade.getItemDocument();
+        final itemSlot slot = new itemSlot(game,doc, dnd);
         table.add(slot.getSlot()).size(100,100);
+        slot.applySource();
+        DragAndDrop.Target target =  slot.applyBuyerTarget();
+        dnd.addTarget(target);
+
         table.add(currentTrade.getItemDocument().getImage()).size(50,50);
         TextButton button = new TextButton("Get "+String.valueOf(price)+" Gold",game.generalTextButtonStyle);
         table.add(button).size(150,70).colspan(3);
+
         button.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 int availableGold = game.player.getGold();
                 int itemPrice = price;
-                itemDocument doc = currentTrade.getItemDocument();
-                if(itemPrice<=availableGold) {
-                    game.player.setGold(availableGold - itemPrice);
+                final boolean tradeTrans = tradeOK;
+                if(slot.canBuy()) {
+                    game.player.setGold(availableGold + itemPrice);
                     gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
-                    boolean availableSlot = true;
-                    for(int i =0;i<game.inventoryItems.size;++i){
-                        if(game.inventoryItems.get(i).setDefauls &&availableSlot)
-                        {
-                            doc.setIndex(String.valueOf(i));
-                            doc.setDefauls = false;
-                            game.inventoryItems.set(i,doc);
-                            availableSlot = false;
-                            updateSlots = true;
-                        }
-                    }
+                    slot.removeItem();
+                    updateSlots = true;
+
                 }
 
             };

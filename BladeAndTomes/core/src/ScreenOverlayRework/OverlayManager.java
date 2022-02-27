@@ -19,7 +19,7 @@ public class OverlayManager {
     private NPCSeller seller;
     private NPCBuyer buyer;
     private DragAndDrop dnd;
-    public OverlayManager(BladeAndTomes Game) throws CloneNotSupportedException {
+    public OverlayManager(BladeAndTomes Game)  {
         game = Game;
         dnd = new DragAndDrop();
         table = new Table();
@@ -36,7 +36,7 @@ public class OverlayManager {
         inventory = new InventoryUI(game,dnd);
         table.align(top|left).padLeft(10);
         table.addActor(inventory.getUI());
-        setHiddenTableVisibility(false); // Initially Hidden Table is not shown.
+        setHiddenTableVisibility(game.showHiddenInventory); // Initially Hidden Table is not shown.
 
         // Health Bar
         healthBar = new Health(game);
@@ -47,14 +47,31 @@ public class OverlayManager {
         seller = new NPCSeller(game,
                 dnd);
         table.align(center).padLeft(10);
-//        table.addActor(seller.getTable());
+        table.addActor(seller.getTable());
+        seller.getTable().setVisible(game.showtrade);
 
-        // NPC Buyer
+//         NPC Buyer
         buyer = new NPCBuyer(game,
                 dnd);
         table.align(center).padLeft(10);
         table.addActor(buyer.getTable());
+        buyer.getTable().setVisible(game.showtradeBuyer);
 
+    }
+    public void setshowBuyer(boolean val){
+        game.showtradeBuyer = val;
+        buyer.getTable().setVisible(val);
+
+    }
+    public boolean isBuyerVis(){
+        return buyer.getTable().isVisible();
+    }
+    public void showtradeseller(boolean val){
+        game.showtrade = val;
+        seller.getTable().setVisible(val);
+    }
+    public boolean getTradeSellervisiabel(){
+        return  seller.getTable().isVisible();
     }
     public void setOverLayesVisibility(boolean value) {
         game.stageInstance.addActor(table);
@@ -64,9 +81,10 @@ public class OverlayManager {
         game.stageInstance.addActor(table);
     }
     public boolean reset(){
-        return seller.updateSlots;
+        return seller.updateSlots||buyer.updateSlots;
     }
     public void setHiddenTableVisibility(boolean val){
+        game.showHiddenInventory =val;
         game.stageInstance.addActor(table);
         inventory.setHiddenInventoryVisibility(val);
     }
@@ -75,6 +93,10 @@ public class OverlayManager {
     }
     public void updateHealth(){
         healthBar.update();
+    }
+    public void updateOverlays(){
+        removeALL();
+        makeOverlays();
     }
     public void  removeALL(){
         inventory.removeListens();

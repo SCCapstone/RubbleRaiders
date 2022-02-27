@@ -22,6 +22,8 @@ public class npcUI {
     protected String Title;
     protected Group tableOverlays = new Stack();
     protected Label gold;
+    public boolean updateSlots;
+
 
     public npcUI(BladeAndTomes GAME, DragAndDrop dnd, String title) {
         Title = title;
