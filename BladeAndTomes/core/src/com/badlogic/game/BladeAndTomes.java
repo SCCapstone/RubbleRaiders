@@ -77,7 +77,9 @@ public class BladeAndTomes extends Game {
     public Array<itemDocument> inventoryItems;
 
     public OverlayManager overlays;
-
+    public boolean showtrade = false;
+    public boolean showtradeBuyer = false;
+    public boolean showHiddenInventory = false;
     public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
 
@@ -222,7 +224,7 @@ public class BladeAndTomes extends Game {
         player.setHealthPoints(10);
         try {
             overlays = new OverlayManager(this);
-        } catch (CloneNotSupportedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         overlays.setOverLayesVisibility(false);
@@ -261,7 +263,7 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void resize(int width, int height) {
-
+        // Source: https://stackoverflow.com/questions/18495975/libgdx-window-resizing-keeping-aspect-ratio
         Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
         int viewportX = (int) (width - size.x) / 2;
         int viewportY = (int) (height - size.y) / 2;
