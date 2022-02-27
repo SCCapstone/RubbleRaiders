@@ -1,11 +1,14 @@
 package ScreenOverlayRework.Inventory;
 
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
+import jdk.tools.jmod.Main;
 
 import static com.badlogic.gdx.utils.Align.*;
 
@@ -16,6 +19,16 @@ public class InventoryUI implements Cloneable{
     private Table HiddenInventorySlots;
     private Table HiddenQuests;
     private Table HiddenSkill;
+    private Label quest1;
+    private Label quest2;
+    private Label quest3;
+    private Label quest4;
+    private ProgressBar questProgress;
+    private ProgressBar quest2Progress;
+    private ProgressBar quest3Progress;
+    private ProgressBar quest4Progress;
+    private TextureAtlas questProgressAtlas;
+    private Skin questProgressSkin;
     private Table table;
     private Array<itemSlot> slots;
     private DragAndDrop dnd;
@@ -23,6 +36,8 @@ public class InventoryUI implements Cloneable{
     public InventoryUI(BladeAndTomes GAME,DragAndDrop dnd) {
 
         game = GAME;
+        questProgressAtlas = new TextureAtlas(Gdx.files.internal("SkinAssets/ProgressBar/healthbarUI.atlas"));
+        questProgressSkin = new Skin((Gdx.files.internal("SkinAssets/ProgressBar/healthbarUI.json")),questProgressAtlas);
         // Tables used to draw slots
         MainInventoryTable = new Table();
         HiddenInventoryTable = new Table();
@@ -85,6 +100,7 @@ public class InventoryUI implements Cloneable{
                 HiddenInventorySlots.setVisible(true);
                 HiddenQuests.setVisible(false);
                 HiddenSkill.setVisible(false);
+
             }
         });
 
@@ -118,34 +134,77 @@ public class InventoryUI implements Cloneable{
         HiddenInventoryTable.add(optionTabs);
         HiddenInventoryTable.row();
 
+        Stack stack = new Stack();
+
         // Drawing Hidden Inventory Slots
         HiddenInventorySlots.setDebug(true);
         HiddenInventorySlots.defaults();
-        HiddenInventoryTable.add(HiddenInventorySlots);
+        stack.add(HiddenInventorySlots);
         HiddenInventorySlots.setVisible(true);
         drawHiddenInventorySlots();
 
         // HiddenQuests Inventory
         HiddenQuests.setDebug(true);
         HiddenQuests.defaults();
-        HiddenInventoryTable.add(HiddenQuests);
+        stack.add(HiddenQuests);
         HiddenQuests.setVisible(false);
         drawQuests();
 
         // HiddenSkill Inventory
         HiddenSkill.setDebug(true);
         HiddenSkill.defaults();
-        HiddenInventoryTable.add(HiddenSkill);
+        stack.add(HiddenSkill);
         HiddenSkill.setVisible(false);
+
+        stack.setBounds(25,25,500,500);
+        HiddenInventoryTable.addActor(stack);
         drawSkills();
 
     }
 
     public void drawQuests() {
+        //Sets up 4 random quests each time the game is run
+        BladeAndTomes.setQuests();
 
+        BladeAndTomes.quest q1 = BladeAndTomes.usedQuests.get(0);
+        String q1Goal = q1.getGoal();
+        int q1Val = q1.getValue();
+        q1.setUsed();
+        quest1 = new Label(q1Goal, game.generalLabelStyle);
+        BladeAndTomes.quest q2 = BladeAndTomes.usedQuests.get(1);
+        String q2Goal = q2.getGoal();
+        int q2Val = q2.getValue();
+        q2.setUsed();
+        quest2 = new Label(q2Goal, game.generalLabelStyle);
+        BladeAndTomes.quest q3 = BladeAndTomes.usedQuests.get(2);
+        String q3Goal = q3.getGoal();
+        int q3Val = q3.getValue();
+        quest3 = new Label(q3Goal, game.generalLabelStyle);
+        BladeAndTomes.quest q4 = BladeAndTomes.usedQuests.get(3);
+        String q4Goal = q4.getGoal();
+        int q4Val = q4.getValue();
+        quest4 = new Label(q4Goal, game.generalLabelStyle);
+        questProgress = new ProgressBar(0,q1Val,1,false,questProgressSkin);
+        quest2Progress = new ProgressBar(0,q2Val,1,false, questProgressSkin);
+        quest3Progress = new ProgressBar(0,q3Val,1,false,questProgressSkin);
+        quest4Progress = new ProgressBar(0,q4Val,1,false,questProgressSkin);
+
+        HiddenQuests.center();
+        HiddenQuests.add(quest1);
+        HiddenQuests.add(quest2);
+        HiddenQuests.row();
+        HiddenQuests.add(questProgress);
+        HiddenQuests.add(quest2Progress);
+        HiddenQuests.row();
+        HiddenQuests.add(quest3);
+        HiddenQuests.add(quest4);
+        HiddenQuests.row();
+        HiddenQuests.add(quest3Progress);
+        HiddenQuests.add(quest4Progress);
     }
 
     public void drawSkills() {
+        HiddenSkill.add(new Label("Hello", game.generalLabelStyle));
 
     }
     // TODO THIS METHOD DRAWS SLOTS

@@ -28,8 +28,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.*;
+
+import java.util.Random;
 
 // PUT IN CLAYMORE STORM EASTER EGG
 // Put in rick roll easter egg also
@@ -83,6 +86,50 @@ public class BladeAndTomes extends Game {
     public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
 
+    public static class quest {
+        String goal;
+        int value;
+        boolean used;
+        public quest(String s, int i, boolean b){
+            goal = s;
+            value = i;
+            used = b;
+        }
+        public String getGoal(){
+            return goal;
+        }
+        public int getValue(){
+            return value;
+        }
+        public void setUsed(){
+            used = true;
+        }
+        public boolean isUsed(){
+            return used;
+        }
+    }
+
+    public static Array<quest> quests;
+    public static Array<quest> usedQuests;
+
+
+    public static void setQuests(){
+        Random rand = new Random();
+        int randVal;
+        try {
+            while (usedQuests.size < 5) {
+                randVal = rand.nextInt(5);
+                if (quests.get(randVal).isUsed() == false) {
+                    usedQuests.add(quests.get(randVal));
+                    quests.get(randVal).setUsed();
+                    System.out.println(quests.get(randVal).getGoal());
+                }
+            }
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
+
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
      * the first screen.
@@ -96,6 +143,16 @@ public class BladeAndTomes extends Game {
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
+
+        quests = new Array<>();
+        usedQuests = new Array<>();
+
+        quests.add(new quest("Kill 5 enemies", 5, false));
+        quests.add(new quest("Open 5 chests", 5, false));
+        quests.add(new quest("Trade 1 item", 1, false));
+        quests.add(new quest("Enter the dungeon", 1, false));
+        quests.add(new quest("Explore 5 dungeon rooms", 5, false));
+        quests.add(new quest("Sell 1 item", 1, false));
 
         // Work for resizing of screen
 
@@ -117,7 +174,7 @@ public class BladeAndTomes extends Game {
 
         itemDocument slot = inventoryItems.get(0);
         slot.setDefauls = false;
-        slot.setImageLocation("InventoryItems/Weapons/1.png");
+        slot.setImageLocation("InventoryItems/Weapons/Sword/1.png");
         slot.setLevel(1);
         slot.setCategory("Weapons");
         slot.setName("Sword");
