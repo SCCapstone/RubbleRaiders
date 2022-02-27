@@ -10,24 +10,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public abstract class Enemy extends Entity{
 
     public String itemDrop;
-    protected Player player;
     public Image enemyImage;
-    protected float xCord, yCord;
-    public InputListener playerInput;
-    public BladeAndTomes GAME;
+    protected Player player;
 
-    public abstract void movement();
-    public abstract void attackPlayer();
+    public abstract boolean movement();
+    public abstract int attackPlayer();
 
-    public Enemy(int healthPoints, int armorPoints, int movement, int height, int width, Player player, BladeAndTomes GAME) {
+    public Enemy(int healthPoints, int fullHealth, int armorPoints, int movement, int height, int width, Player player) {
 
-        super(healthPoints,armorPoints,movement,height,width);
+        super(healthPoints, fullHealth, armorPoints, movement, height, width);
         this.player = player;
-        this.GAME = GAME;
 
     }
 
-
+    /**
+     * Damage keeps track of damage taken by the player, and if health is zero, proceeds to drop item
+     * @param damage - Integer representing damage taken
+     */
     public void damageTaken(int damage) {
 
         healthPoints = healthPoints - damage;
@@ -37,23 +36,23 @@ public abstract class Enemy extends Entity{
 
     }
 
+    /**
+     * Class that deals with dropping items upon death for winning
+     */
     public void dropItem() {
-
-
-
+        //TODO: Implement when items are ready
     }
 
+    /*
     public void reAddActor() {
         enemyImage.setPosition(xCord, yCord);
         GAME.stageInstance.addActor(enemyImage);
-    }
+    }*/
 
-    public boolean checkIfDead() {return healthPoints <= 0;}
-    public float getXCord() {
-        return xCord;
-    }
-    public float getYCord() {
-        return yCord;
-    }
+    /**
+     * Get function that returns the state of the enemy, that being whether or not the enemy is alive
+     * @return - returns state of the enemy whether dead or alive
+     */
+    public boolean checkIfDead() {return this.healthPoints <= 0;}
 
 }

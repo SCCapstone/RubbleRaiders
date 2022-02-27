@@ -112,6 +112,11 @@ public class MainInventory {
         }
     }
 
+    public void reAddInventory() {
+        Game.stageInstance.addActor(Map);
+        Game.stageInstance.addActor(Health);
+    }
+
     public void updateHealth() {
         Health.setText("Health: " + Game.player.getHealthPoints());
     }

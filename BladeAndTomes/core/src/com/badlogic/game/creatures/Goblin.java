@@ -14,45 +14,70 @@ public class Goblin  extends Enemy{
 
     Texture enemyTex;
     public final Image enemyImage;
+    public boolean isTurn;
 
-    public Goblin(final Player player, BladeAndTomes GAME) {
-
-        super(15,15,15,64,64,player,GAME);
-
-        this.GAME = GAME;
+    /**
+     * Paramaterized constuctor that is effectively the default constructor, which just instantiates a normal goblin
+     * @param player - player instance so as to allow for the goblin to
+     */
+    public Goblin(Player player) {
+        super(15, 15,15,15,64,64, player);
         enemyTex = new Texture(Gdx.files.internal("Goblin.png"));
         enemyImage = new Image(enemyTex);
-        enemyImage.setOrigin(enemyImage.getImageWidth()/2, enemyImage.getImageHeight()/2);
         enemyImage.setSize(64,64);
-        xCord = MathUtils.random(360, 1600);
-        yCord = MathUtils.random(240, 960);
-        enemyImage.setPosition(xCord, yCord);
-        GAME.stageInstance.addActor(enemyImage);
-
+        isTurn = false;
     }
 
-    public void movement() {
-        GAME.stageInstance.addActor(enemyImage);
-        if(player.playerIcon.getImageY() > enemyImage.getImageY()) {
+    /**
+     * Handles movement for the goblin relative to the player character (DOES NOT REGISTER WALLS)
+     * @return - Returns if movement was used or not considering turn based actions
+     */
+    public boolean movement() {
+        float x_distance = enemyImage.getX() - player.playerIcon.getX();
+        float y_distance = enemyImage.getY() - player.playerIcon.getY();
+
+        if((x_distance >= -64 && x_distance <= 64) &&
+                (y_distance >= -64 && y_distance <= 64)) {
+            return false;
+        }
+
+        if(y_distance < -64) {
             enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,0));
         }
-        else if(player.playerIcon.getImageY() < enemyImage.getImageY()) {
+        else if(y_distance > 64) {
             enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,0));
         }
-        else if(player.playerIcon.getImageX() > enemyImage.getImageX()) {
+
+        if(x_distance < -64) {
             enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),0));
         }
-        else if(player.playerIcon.getImageX() < enemyImage.getImageX()) {
+        else if(x_distance > 64) {
             enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),0));
         }
 
+        return true;
     }
 
-    public void attackPlayer() {
+    /**
+     * Handles Goblin attacks and codifying it into the goblin class.
+     * @return - return damage done by the goblin's attack
+     */
+    public int attackPlayer() {
         int hitRoll = (int)(Math.random()*(20)+1);
         if (hitRoll >= player.getArmorPoints()) {
-            GAME.player.setHealthPoints(GAME.player.getHealthPoints() - (int)(Math.random()*(3)+1));
+           return (int)(Math.random()*(3)+1);
         }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Disposes of enemy image and disposes the texture created by the enemyTex
+     */
+    public void remove() {
+        enemyImage.remove();
+        enemyTex.dispose();
     }
 
 
