@@ -137,6 +137,8 @@ public class Overworld extends ScreenAdapter {
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         // For overlays
         game.overlays.setOverLayesVisibility(true);
+
+
     }
 
     @Override
@@ -183,41 +185,48 @@ public class Overworld extends ScreenAdapter {
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-            GAME.showtrade =false;
-            GAME.showtradeBuyer =false;
-            GAME.showHiddenInventory =!GAME.showHiddenInventory;
-            GAME.overlays.updateOverlays();
 
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
-            GAME.overlays.showtradeseller(!GAME.showtrade);
-            {
-                GAME.showHiddenInventory =false;
-                GAME.showtradeBuyer =false;
-                GAME.overlays.updateOverlays();
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
 
-            }
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
-            {
-                GAME.showtrade =false;
-                GAME.showHiddenInventory =false;
-                GAME.overlays.updateOverlays();
+        // UNCOMMENT THIS CODE TO GET TRADING WORKING
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+//            GAME.showtrade =false;
+//            GAME.showtradeBuyer =false;
+//            GAME.showHiddenInventory =!GAME.showHiddenInventory;
+//            GAME.overlays.updateOverlays();
+//
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+//            GAME.overlays.showtradeseller(!GAME.showtrade);
+//            {
+//                GAME.showHiddenInventory =false;
+//                GAME.showtradeBuyer =false;
+//                GAME.overlays.updateOverlays();
+//
+//            }
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+//            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
+//            {
+//                GAME.showtrade =false;
+//                GAME.showHiddenInventory =false;
+//                GAME.overlays.updateOverlays();
+//
+//            }
+//        }
 
-            }
-        }
-
-            if(GAME.overlays.reset()){
-                GAME.overlays.updateOverlays();
-            }
+//            if(GAME.overlays.reset()){
+//                GAME.overlays.updateOverlays();
+//            }
 
 //        try {
 //            GAME.overlays.updateAll();
 //        } catch (CloneNotSupportedException e) {
 //            e.printStackTrace();
 //        }
+        // END
+
 //        GAME.overlays.setOverLayesVisibility(false);
 //        GAME.overlays.setOverLayesVisibility(true);
     }
