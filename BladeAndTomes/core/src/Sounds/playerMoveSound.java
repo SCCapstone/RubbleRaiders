@@ -18,8 +18,8 @@ public class playerMoveSound {
     }
 
     public playerMoveSound() {
-        movVolume = .8f;
-        movPitch = .2f;
+        movVolume = .6f;
+        movPitch = .1f;
         source = "Player/PlayerStep.mp3";
     }
 
