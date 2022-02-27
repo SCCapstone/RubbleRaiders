@@ -3,6 +3,7 @@ package com.badlogic.game.screens;
 import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlay.MainInventory;
 import Sounds.playerMoveSound;
+import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import org.w3c.dom.Text;
+import com.badlogic.gdx.utils.Scaling;
 
 import java.awt.Point;
 
@@ -84,7 +87,7 @@ public class Overworld extends ScreenAdapter {
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
-    public Overworld (final BladeAndTomes game) {
+    public Overworld(final BladeAndTomes game) {
 
         this.GAME = game;
 
@@ -113,7 +116,7 @@ public class Overworld extends ScreenAdapter {
         pauseMenu = new Window("", GAME.generalWindowStyle);
         pauseMenu.setHeight(400);
         pauseMenu.setWidth(600);
-        pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
+        pauseMenu.setPosition(GAME.stageInstance.getWidth() / 3, GAME.stageInstance.getHeight() / 3);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
@@ -174,10 +177,9 @@ public class Overworld extends ScreenAdapter {
         saveQuit.addActor(savedGames);
 
         escapePauseOver = new InputListener() {
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                if(keycode == Input.Keys.ESCAPE)
-                {
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE) {
+                    game.player.setHealthPoints(game.player.getHealthPoints()-1);
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
                     pauseMenu.add(warning).center().colspan(3);
@@ -237,20 +239,22 @@ public class Overworld extends ScreenAdapter {
 
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(GAME.player.playerIcon);
-        inventory = new MainInventory(GAME);
+
         NPC_Cords = new Point();
-        NPC_Cords.setLocation(GAME.stageInstance.getWidth() /8,GAME.stageInstance.getHeight() / 2);
+        NPC_Cords.setLocation(GAME.stageInstance.getWidth() / 8, GAME.stageInstance.getHeight() / 2);
         Portal_Cords = new Point();
-        Portal_Cords.setLocation(GAME.stageInstance.getWidth() /2,GAME.stageInstance.getHeight() / 8);
+        Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
+        // For overlays
+        game.overlays.setOverLayesVisibility(true);
     }
 
     @Override
-    public void render(float delta){
+    public void render(float delta) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
         GAME.batch.begin();
-        GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
+        GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0, GAME.stageInstance.getHeight() * 0);
         GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
                 (float) (GAME.stageInstance.getHeight() * 0.75), tavernHeight, tavernWidth);
         GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10,
@@ -268,7 +272,7 @@ public class Overworld extends ScreenAdapter {
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
-        if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
+        if ((int) (GAME.player.moveSquare.getX() - Portal_Cords.getLocation().x) / 100 == 0 && (int) (GAME.player.moveSquare.getY() - Portal_Cords.getLocation().y) / 100 == 0) {
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
@@ -281,30 +285,50 @@ public class Overworld extends ScreenAdapter {
         //https://libgdx.com/dev/simple-game-extended/
         npcTraderMsg = new Label("Wanna Trade\n Press \"T\" ", GAME.BaseLabelStyle2);
 
-        if((int)(GAME.player.moveSquare.getX()-NPC_Cords.getLocation().x)/200 == 0 &&(int)(GAME.player.moveSquare.getY()-NPC_Cords.getLocation().y)/100 ==0){
-            inventory.update();
-            npcTraderMsg.setHeight(100);
-            npcTraderMsg.setWidth(100);
-            npcTraderMsg.setX(NPC_Cords.getLocation().x+50);
-            npcTraderMsg.setY(NPC_Cords.getLocation().y+100);
-            GAME.stageInstance.addActor(npcTraderMsg);
-
-            if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
-            doTrade = !doTrade;
-                inventory.showNPCTradeScreen(doTrade);
-            }
-        } else {
-            if(doTrade){
-                doTrade =false;
-                inventory.showNPCTradeScreen(doTrade);
-            }
-            npcTraderMsg.addAction(Actions.removeActor());
-        }
-        inventory.update();
 
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
+        GAME.overlays.updateHealth();
+
+        // Displays Hidden Inventory Table
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            GAME.showtrade =false;
+            GAME.showtradeBuyer =false;
+            GAME.showHiddenInventory =!GAME.showHiddenInventory;
+            GAME.overlays.updateOverlays();
+
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+            GAME.overlays.showtradeseller(!GAME.showtrade);
+            {
+                GAME.showHiddenInventory =false;
+                GAME.showtradeBuyer =false;
+                GAME.overlays.updateOverlays();
+
+            }
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
+            {
+                GAME.showtrade =false;
+                GAME.showHiddenInventory =false;
+                GAME.overlays.updateOverlays();
+
+            }
+        }
+
+            if(GAME.overlays.reset()){
+                GAME.overlays.updateOverlays();
+            }
+
+//        try {
+//            GAME.overlays.updateAll();
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+//        GAME.overlays.setOverLayesVisibility(false);
+//        GAME.overlays.setOverLayesVisibility(true);
     }
 
     //Save all player data including name, stats, inventory
@@ -317,8 +341,18 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
+        // Source: https://stackoverflow.com/questions/18495975/libgdx-window-resizing-keeping-aspect-ratio
+//        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
+//        int viewportX = (int)(width - size.x) / 2;
+//        int viewportY = (int)(height - size.y) / 2;
+//        int viewportWidth = (int)size.x;
+//        int viewportHeight = (int)size.y;
+//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+////        GAME.stageInstance.getViewport().update( viewportWidth, viewportHeight, true);
+//        GAME.stageInstance.getViewport().setScreenSize(viewportWidth,viewportHeight);
+
         GAME.stageInstance.getViewport().update(width, height, true);
-    }
+   }
 
     @Override
     public void show() {
@@ -332,28 +366,20 @@ public class Overworld extends ScreenAdapter {
 
     //sets boundaries in the overworld
     //based off of Aidan Emmons boundary method for dungeon
-    public boolean isCollisionHandled(Player player, Stage stage)
-    {
-        if(player.playerIcon.getX() <= 2*MOVE_DISTANCE)
-        {
+    public boolean isCollisionHandled(Player player, Stage stage) {
+        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        else if(player.playerIcon.getY() <= 2*MOVE_DISTANCE)
-        {
+        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        else if(player.playerIcon.getX() >= stage.getWidth() - 2*MOVE_DISTANCE)
-        {
+        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        else if(player.playerIcon.getY() >= stage.getHeight() - 2*MOVE_DISTANCE)
-        {
+        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
