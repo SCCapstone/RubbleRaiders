@@ -5,6 +5,7 @@ import ScreenOverlayRework.Health.Health;
 import ScreenOverlayRework.Inventory.InventoryUI;
 import ScreenOverlayRework.Inventory.NPCTrades.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCTrades.NPCSeller;
+import ScreenOverlayRework.Map.MapUI;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -19,6 +20,7 @@ public class OverlayManager {
     private NPCSeller seller;
     private NPCBuyer buyer;
     private DragAndDrop dnd;
+    private MapUI mapUI;
     public OverlayManager(BladeAndTomes Game)  {
         game = Game;
         dnd = new DragAndDrop();
@@ -37,6 +39,12 @@ public class OverlayManager {
         table.align(top|left).padLeft(10);
         table.addActor(inventory.getUI());
         setHiddenTableVisibility(game.showHiddenInventory); // Initially Hidden Table is not shown.
+
+        // MAP UI
+        mapUI = new MapUI(game);
+        table.align(top|right).padLeft(10);
+        table.addActor(mapUI.getMapUI());
+
 
         // Health Bar
         healthBar = new Health(game);
