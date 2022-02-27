@@ -1,9 +1,9 @@
 <Settings>
 	<bindings>
-	<moveup> w </moveup>
-	<movedown> s </movedown>
-	<moveleft> a </moveleft>
-	<moveright> d </moveright>
+	<moveUp> w </moveUp>
+	<moveDown> s </moveDown>
+	<moveLeft> a </moveLeft>
+	<moveRight> d </moveRight>
 	<interact> x </interact>
 	<menu> escape </menu>
 	<cursor> mouse </cursor>

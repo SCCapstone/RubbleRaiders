@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import Keyboard_Mouse_Controls.MainMenuControls;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
 import com.badlogic.gdx.Gdx;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.xml.XmlMapper;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -25,6 +27,16 @@ import static com.badlogic.gdx.utils.Align.right;
 public class Settings extends ScreenAdapter {
 
     final BladeAndTomes GAME;
+
+    String moUp;
+    String moDown;
+    String moLeft;
+    String moRight;
+    String interAction;
+    String openMenu;
+
+    MainMenuControls menuCont = new MainMenuControls(null, null,
+            null, null, null, null);
 
     Texture background;
     Image backgroundImage;
@@ -61,13 +73,7 @@ public class Settings extends ScreenAdapter {
     public Settings(final BladeAndTomes game){
         this.GAME = game;
         batch = new SpriteBatch();
-    /*
-        background = new Texture(Gdx.files.internal("MainDungeon.png"));
-        backgroundImage = new Image(background);
-        backgroundImage.setSize(2000,1150);
-        backgroundImage.setPosition(-25,-20);
-        GAME.stageInstance.addActor(backgroundImage);
-    */
+
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
 
         settingsMusicLabel = new Label("Music Volume",GAME.generalLabelStyle);
@@ -76,7 +82,7 @@ public class Settings extends ScreenAdapter {
         //keybinding for Interact on settings page
         upLabel = new Label("Move Up", GAME.generalLabelStyle);
         upLabel.setAlignment(1,2);
-        upKey = new TextField("", GAME.generalTextFieldStyle);
+        upKey = new TextField(menuCont.getMoveUp(), GAME.generalTextFieldStyle);
         upKey.setMaxLength(1);
         upKey.setAlignment(1);
         upKey.setTextFieldListener(new TextField.TextFieldListener() {
@@ -87,7 +93,7 @@ public class Settings extends ScreenAdapter {
         //keybinding for Attack on settings page
         downLabel = new Label("Move Down", GAME.generalLabelStyle);
         downLabel.setAlignment(1,2);
-        downKey = new TextField("", GAME.generalTextFieldStyle);
+        downKey = new TextField(menuCont.getMoveDown(), GAME.generalTextFieldStyle);
         downKey.setMaxLength(1);
         downKey.setAlignment(1);
         downKey.setTextFieldListener(new TextField.TextFieldListener() {
@@ -238,7 +244,7 @@ public class Settings extends ScreenAdapter {
         try {
             XmlMapper xmlMapper = new XmlMapper();
             try {
-                String xmlString = xmlMapper.writeValueAsString(new Item());
+                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls("w", "s", "a", "d", "x", "escape"));
 
                 File xmlOutput = new File("Settings.xml");
                 FileWriter fileWriter = new FileWriter(xmlOutput);
@@ -249,6 +255,7 @@ public class Settings extends ScreenAdapter {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
     }
 
@@ -256,8 +263,15 @@ public class Settings extends ScreenAdapter {
         try {
             XmlMapper xmlMapper = new XmlMapper();
             String readSettingsFile = new String(Files.readAllBytes(Paths.get("Settings.xml")));
-            MainMenu deserializeMenu = xmlMapper.readValue(readSettingsFile, MainMenu.class);
+            MainMenuControls deserializeMenu = xmlMapper.readValue(readSettingsFile, MainMenuControls.class);
 
+            deserializeMenu.getMoveUp();
+            deserializeMenu.getMoveDown();
+            deserializeMenu.getMoveLeft();
+            deserializeMenu.getMoveRight();
+            deserializeMenu.getInteractAction();
+            deserializeMenu.getOpenPauseMenu();
+            /*
             System.out.println("Rebind Settings");
             System.out.println("Move up: " + deserializeMenu);
             System.out.println("Move down: " + deserializeMenu);
@@ -266,9 +280,11 @@ public class Settings extends ScreenAdapter {
             System.out.println("Interact: " + deserializeMenu);
             System.out.println("Menu: " + deserializeMenu);
             System.out.println("Cursor: " + deserializeMenu);
+             */
         } catch (IOException e) {
             // for now use auto generated
             e.printStackTrace();
+            return;
         }
     }
 

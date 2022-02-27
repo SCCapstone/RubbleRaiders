@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import Keyboard_Mouse_Controls.SaveLoadGame;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
@@ -30,6 +31,9 @@ public class MainMenu extends ScreenAdapter {
 
     //Definition of constant for game instance
     final BladeAndTomes GAME;
+
+    private String[] names;
+    private String[] saveTime;
 
     //All used imagery for the given examples below.
     Texture background;
@@ -120,28 +124,33 @@ public class MainMenu extends ScreenAdapter {
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //TODO
+                SaveLoadGame.LoadSaveOne();
+                // names = SaveLoadGame.Gi.getPlayerNames();
+                // saveTime = SaveLoadGame.Gi.getSaveTime();
             }
         });
         game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //TODO
+                SaveLoadGame.LoadSaveTwo();
+                // GAME.setScreen(new Overworld(GAME));
             }
         });
         game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //TODO
+                SaveLoadGame.LoadSaveThree();
+                // GAME.setScreen(new Overworld(GAME));
             }
         });
         game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //TODO
+                SaveLoadGame.LoadSaveFour();
+                // GAME.setScreen(new Overworld(GAME));
             }
         });
         //Add listeners for the buttons
@@ -225,7 +234,6 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
-
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);

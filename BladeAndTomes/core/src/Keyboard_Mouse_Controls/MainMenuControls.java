@@ -1,63 +1,89 @@
 package Keyboard_Mouse_Controls;
 
+import com.badlogic.game.creatures.Item;
+import com.badlogic.game.screens.MainMenu;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import java.io.*;
 
-public class MainMenuControls extends InputListener {
+// Needed to do some revamping of this class. Found it made the process a bit easier.
+public class MainMenuControls implements Serializable {
 
-    private int moveDown;
-    private int moveUp;
-    private int moveLeft;
-    private int moveRight;
-    private int openInventory;
-    private int openPauseMenu;
-    private int interactAction;
-    private int viewParty;
-    private int acceptOption;
+    private String moveDown;
+    private String moveUp;
+    private String moveLeft;
+    private String moveRight;
+    // private String openInventory;
+    private String openPauseMenu;
+    private String interactAction;
 
-    public MainMenuControls()
-    {
-        moveDown = Input.Keys.DOWN;
-        moveLeft = Input.Keys.LEFT;
-        moveRight = Input.Keys.RIGHT;
-        moveUp = Input.Keys.UP;
-        openInventory = Input.Keys.I;
-        openPauseMenu = Input.Keys.ESCAPE;
-        interactAction = Input.Keys.A;
-        viewParty = Input.Keys.P;
-        acceptOption = Input.Keys.ENTER;
+    public MainMenuControls() {
+        this.moveUp = "w";
+        this.moveDown = "s";
+        this.moveLeft = "a";
+        this.moveRight = "d";
+        this.interactAction = "x";
+        this.openPauseMenu = "escape";
     }
 
-    public boolean keyDown(int i) {
-        return true;
+    public MainMenuControls(String moveUp, String moveDown, String moveLeft, String moveRight,
+                            String interactAction, String openPauseMenu) {
+        this.moveUp = "w";
+        this.moveDown = "s";
+        this.moveLeft = "a";
+        this.moveRight = "d";
+        this.interactAction = "x";
+        this.openPauseMenu = "escape";
+    }
+    // private String viewParty;
+    // private String acceptOption
+    public String getMoveDown() {
+        return moveDown;
     }
 
-    public boolean keyUp(int i) {
-        return false;
+    public void setMoveDown(String moveDown) {
+        this.moveDown = moveDown;
     }
 
-    public boolean keyTyped(char c) {
-        return false;
+    public String getMoveUp() {
+        return moveUp;
     }
 
-    public boolean touchDown(int i, int i1, int i2, int i3) {
-        return false;
+    public void setMoveUp(String moveUp) {
+        this.moveUp = moveUp;
     }
 
-    public boolean touchUp(int i, int i1, int i2, int i3) {
-        return false;
+    public String getMoveLeft() {
+        return moveLeft;
     }
 
-    public boolean touchDragged(int i, int i1, int i2) {
-        return false;
+    public void setMoveLeft(String moveLeft) {
+        this.moveLeft = moveLeft;
     }
 
-    public boolean mouseMoved(int i, int i1) {
-        return false;
+    public String getMoveRight() {
+        return moveRight;
     }
 
-    public boolean scrolled(float v, float v1) {
-        return false;
+    public void setMoveRight(String moveRight) {
+        this.moveRight = moveRight;
     }
+
+    public String getOpenPauseMenu() {
+        return openPauseMenu;
+    }
+
+    public void setOpenPauseMenu(String openPauseMenu) {
+        this.openPauseMenu = openPauseMenu;
+    }
+
+    public String getInteractAction() {
+        return interactAction;
+    }
+
+    public void setInteractAction(String interactAction) {
+        this.interactAction = interactAction;
+    }
+
 }
+
+

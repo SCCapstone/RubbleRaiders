@@ -1,6 +1,8 @@
 package com.badlogic.game.screens;
 
+import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlay.MainInventory;
+import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.w3c.dom.Text;
 
 import java.awt.Point;
 
@@ -26,6 +29,10 @@ public class Overworld extends ScreenAdapter {
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
     SpriteBatch batch;
+
+    private String[] names;
+    private String[] saveTime;
+
 
     Texture background;
     Texture chapel;
@@ -41,6 +48,8 @@ public class Overworld extends ScreenAdapter {
     TextButton options[];
     Table quitTable;
     InputListener escapePauseOver;
+
+    playerMoveSound playerMovenSound;
 
     MainInventory inventory;
     Point NPC_Cords;
@@ -110,6 +119,7 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(1);
+                SaveLoadGame.saveGameOne();
             }
         });
         game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
@@ -117,6 +127,7 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(2);
+                SaveLoadGame.saveGameTwo();
             }
         });
         game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
@@ -124,6 +135,7 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(3);
+                SaveLoadGame.saveGameThree();
             }
         });
         game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
@@ -131,6 +143,7 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(4);
+                SaveLoadGame.saveGameFour();
             }
         });
         //Add listeners for the buttons
@@ -286,21 +299,6 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.clear();
         dispose();
         GAME.setScreen(new MainMenu(GAME));
-        //Need to determine which game to save to
-        /*
-        Preferences prefs = Gdx.app.getPreferences("Game1");
-        prefs.putString("name", GAME.player.getName());
-        prefs.putInteger("physical", GAME.player.getPhysical());
-        prefs.putInteger("social", GAME.player.getSocial());
-        prefs.putInteger("mental", GAME.player.getMental());
-        prefs.putInteger("acrobatics", GAME.player.getAcrobatics());
-        prefs.putInteger("brute force", GAME.player.getBruteforce());
-        prefs.putInteger("bartering", GAME.player.getBarter());
-        prefs.putInteger("speech", GAME.player.getSpeech());
-        prefs.putInteger("awareness", GAME.player.getAwareness());
-        prefs.putInteger("intuition", GAME.player.getIntuition());
-        //Movement
-        prefs.put*/
     }
 
     @Override

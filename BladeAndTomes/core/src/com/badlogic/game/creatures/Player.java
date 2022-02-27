@@ -1,5 +1,6 @@
 package com.badlogic.game.creatures;
 
+import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,6 +34,9 @@ public class Player extends Entity {
     private String name;
     public Image playerIcon;
 
+    // Movement Sound
+    playerMoveSound playerMovenSound;
+
     public Rectangle interactSquare;
     public Rectangle moveSquare;
     public Rectangle rangeSquare;
@@ -53,6 +57,7 @@ public class Player extends Entity {
         this.playerClass = 1;
         this.name = "";
 
+        playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
         interactSquare = new Rectangle();
 
@@ -81,15 +86,19 @@ public class Player extends Entity {
                 switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerMovenSound.playMoveSound();
                         break;
                     default:
                         return false;
@@ -112,6 +121,8 @@ public class Player extends Entity {
         this.name = name;
         this.playerIcon = image;
 
+        playerMovenSound = new playerMoveSound();
+
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
@@ -129,15 +140,19 @@ public class Player extends Entity {
                 switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerMovenSound.playMoveSound();
                         break;
                     default:
                         return false;
