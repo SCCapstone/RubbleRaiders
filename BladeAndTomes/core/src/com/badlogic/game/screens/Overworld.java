@@ -43,6 +43,20 @@ public class Overworld extends ScreenAdapter {
     Texture marketStall;
     Texture tavern;
 
+    // use all this for collision with buildings later
+    private float tavernWidth = 128f;
+    private float tavernHeight = 128f;
+    private float marketStallHeight = 256f;
+    private float marketStallWidth = 196f;
+    private float barracksHeight = 384f;
+    private float barracksWidth = 256f;
+    private float chapelWidth = 196f;
+    private float chapelHeight = 256f;
+    private float questBoardHeight = 64f;
+    private float questBoardWidth = 64f;
+    private float portalHeight = 64f;
+    private float portalWidth = 64f;
+
     Window pauseMenu;
     Label warning;
     TextButton options[];
@@ -238,17 +252,17 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.begin();
         GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
         GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
-                (float) (GAME.stageInstance.getHeight() * 0.75), 100f, 100f);
+                (float) (GAME.stageInstance.getHeight() * 0.75), tavernHeight, tavernWidth);
         GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10,
-                200f, 175f);
+                marketStallHeight, marketStallWidth);
         GAME.batch.draw(barracks, (float) (GAME.stageInstance.getWidth()* 0.75), (float)
-                (GAME.stageInstance.getHeight() / 4), 225f, 375f);
+                (GAME.stageInstance.getHeight() / 4), barracksWidth, barracksHeight);
         GAME.batch.draw(chapel, (float) (GAME.stageInstance.getWidth()) / 4, (float)
-                (GAME.stageInstance.getHeight() * 0.75), 225f, 225f);
+                (GAME.stageInstance.getHeight() * 0.75), chapelWidth, chapelHeight);
         GAME.batch.draw(questBoard, (float) (GAME.stageInstance.getWidth()) / 2, (float)
-                (GAME.stageInstance.getHeight() / 2), 75f, 75f);
+                (GAME.stageInstance.getHeight() / 2), questBoardWidth, questBoardHeight);
         GAME.batch.draw(portal, GAME.stageInstance.getWidth() / 2,
-                GAME.stageInstance.getHeight() / 8, 75f, 75f);
+                GAME.stageInstance.getHeight() / 8, portalWidth, portalHeight);
         GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y, 64f, 64f);
         GAME.batch.end();
 
@@ -343,7 +357,7 @@ public class Overworld extends ScreenAdapter {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
+        } // following added is for buildings in overworld by Brent Able
 
         return true;
     }

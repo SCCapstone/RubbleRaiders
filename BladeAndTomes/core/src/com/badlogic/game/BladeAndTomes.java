@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -207,7 +208,25 @@ public class BladeAndTomes extends Game {
      * @param height
      */
     @Override
-    public void resize(int width, int height) { stageInstance.getViewport().update(width, height, true);}
+    public void resize(int width, int height) {
+        // stageInstance.getViewport().update(width, height, true);
+        // following code is an update from anri, Helping to correct some minor aspect issues in the game
+        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
+        int viewportX = (int) (width - size.x) / 2;
+        int viewportY = (int) (height - size.y) / 2;
+        int viewportWidth = (int) size.x;
+        int viewportHeight = (int) size.y;
+        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+        stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
+
+        if (width < 1280) {
+            Gdx.graphics.setWindowedMode(1280, height);
+        }
+        if (height < 720) {
+            Gdx.graphics.setWindowedMode(width, 720);
+        }
+    }
 
     /**
      * Disposes of all instances that take space up in memory and require rendering

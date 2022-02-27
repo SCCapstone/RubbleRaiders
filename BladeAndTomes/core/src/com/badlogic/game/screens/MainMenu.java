@@ -272,6 +272,11 @@ public class MainMenu extends ScreenAdapter {
         // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
     }
 
+    @Override
+    public void resize(int width, int height) {
+        GAME.stageInstance.getViewport().update(width, height, true);
+    }
+
     /**
      * This needs to be on every page, as it makes sure our screens does not take input
      * when not selected on them.
