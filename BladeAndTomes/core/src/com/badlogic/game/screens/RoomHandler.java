@@ -1,6 +1,7 @@
 package com.badlogic.game.screens;
 
 import ScreenOverlay.MainInventory;
+import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
@@ -61,12 +62,12 @@ public class RoomHandler {
     private Stage stage;
     private Player player;
     private int levelNum;
-    private MainInventory inventory;
+    private OverlayManager inventory;
 
     /**
      * Constructor for the "RoomHandler" or the linked list handler
      */
-    public RoomHandler(Stage stage, Player player, MainInventory inventory) {
+    public RoomHandler(Stage stage, Player player, OverlayManager inventory) {
         this.player = player;
         this.stage = stage;
         this.level = new Room();
@@ -74,7 +75,10 @@ public class RoomHandler {
         this.combatFlag = false;
         this.numOfGoblins = 0;
         this.remainingGoblin = numOfGoblins;
-        this.inventory = inventory;
+        try{
+        this.inventory = inventory;}catch (Exception e){
+
+        }
         this.goblinTurn = false;
 
         int x_start = 264;
@@ -175,7 +179,14 @@ public class RoomHandler {
         }
 
         //Makes sure to re-add inventory UI after movement
-        inventory.reAddInventory();
+//        inventory.reAddInventory();
+        try {
+            inventory.setOverLayesVisibility(true);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E))
+                inventory.setHiddenTableVisibility(true);
+        }catch (Exception e){
+
+        }
 
         return true;
     }
@@ -435,7 +446,11 @@ public class RoomHandler {
                 if(goblins[i].isTurn && x_distance < 96 && x_distance > -96 &&
                         y_distance < 96 && y_distance > -96) {
                     player.setHealthPoints(player.getHealthPoints() - goblins[i].attackPlayer());
-                    inventory.updateHealth();
+                    try{
+                    inventory.updateHealth();}
+                    catch (Exception e){
+
+                    }
                     goblins[i].isTurn = false;
                     if(i + 1 == numOfGoblins) {
                         player.isTurn = true;

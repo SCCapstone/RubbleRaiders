@@ -18,9 +18,7 @@ public class Player extends Entity {
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
-    private enum classes {WARRIOR, CLERIC, WIZARD}
-
-    ;
+    private enum classes {WARRIOR, CLERIC ,WIZARD};
 
     private int playerClass;
     private int physical;
@@ -67,13 +65,13 @@ public class Player extends Entity {
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
-        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
         moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
         moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
 
-        interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
+        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
@@ -86,27 +84,24 @@ public class Player extends Entity {
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                switch (keycode) {
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;
@@ -125,8 +120,6 @@ public class Player extends Entity {
     public Player(int healthPoints, int fullHealth ,int armorPoints, int movement, int height, int width, int playerClass, String id, String name, Image image)
     {
         super(healthPoints, fullHealth, armorPoints, movement, height, width);
-    public Player(int healthPoints, int armorPoints, int movement, int height, int width, BladeAndTomes game, int playerClass, String id, String name, Image image) {
-        super(healthPoints, armorPoints, movement, height, width);
         this.id = id;
         this.playerClass = playerClass;
         this.name = name;
@@ -137,8 +130,8 @@ public class Player extends Entity {
         gold = 100;
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
-        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
@@ -148,27 +141,24 @@ public class Player extends Entity {
         playerIcon.addListener(new InputListener() {
 
             @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                switch (keycode) {
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
                         playerMovenSound.playMoveSound();
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;

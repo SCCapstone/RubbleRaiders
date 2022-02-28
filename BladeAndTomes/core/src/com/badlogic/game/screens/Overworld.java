@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import org.w3c.dom.Text;
 import com.badlogic.gdx.utils.Scaling;
+import org.w3c.dom.Text;
 
 import java.awt.Point;
 
@@ -87,16 +87,9 @@ public class Overworld extends ScreenAdapter {
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
-    public Overworld(final BladeAndTomes game) {
+    public Overworld (final BladeAndTomes game) {
 
         this.GAME = game;
-
-        //Music rights
-        //The Road Home by Alexander Nakarada | https://www.serpentsoundstudios.com
-        //Music promoted by https://www.chosic.com/free-music/all/
-        //Creative Commons CC BY 4.0
-        //https://creativecommons.org/licenses/by/4.0/
-
 
         MOVE_DISTANCE = 64;
         doTrade = false;
@@ -116,7 +109,7 @@ public class Overworld extends ScreenAdapter {
         pauseMenu = new Window("", GAME.generalWindowStyle);
         pauseMenu.setHeight(400);
         pauseMenu.setWidth(600);
-        pauseMenu.setPosition(GAME.stageInstance.getWidth() / 3, GAME.stageInstance.getHeight() / 3);
+        pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
@@ -177,9 +170,10 @@ public class Overworld extends ScreenAdapter {
         saveQuit.addActor(savedGames);
 
         escapePauseOver = new InputListener() {
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ESCAPE) {
-                    game.player.setHealthPoints(game.player.getHealthPoints()-1);
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                if(keycode == Input.Keys.ESCAPE)
+                {
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
                     pauseMenu.add(warning).center().colspan(3);
@@ -202,11 +196,11 @@ public class Overworld extends ScreenAdapter {
         options[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.removeListener(escapePauseOver);
-                GAME.stageInstance.clear();
+                //GAME.stageInstance.removeListener(escapePauseOver);
+                //GAME.stageInstance.clear();
                 pauseMenu.clear();
                 pauseMenu.remove();
-                dispose();
+                //dispose();
                 GAME.stageInstance.addActor(saveQuit);
             }
         });
@@ -223,7 +217,8 @@ public class Overworld extends ScreenAdapter {
         saveBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.clear();
+                saveQuit.remove();
+                //GAME.stageInstance.clear();
                 GAME.stageInstance.setKeyboardFocus(null);
                 GAME.stageInstance.addActor(pauseMenu);
                 pauseMenu.add(warning).center().colspan(3);
@@ -246,6 +241,8 @@ public class Overworld extends ScreenAdapter {
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         // For overlays
         game.overlays.setOverLayesVisibility(true);
+
+
     }
 
     @Override
@@ -254,7 +251,7 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
         GAME.batch.begin();
-        GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0, GAME.stageInstance.getHeight() * 0);
+        GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
         GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
                 (float) (GAME.stageInstance.getHeight() * 0.75), tavernHeight, tavernWidth);
         GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10,
@@ -272,7 +269,7 @@ public class Overworld extends ScreenAdapter {
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
-        if ((int) (GAME.player.moveSquare.getX() - Portal_Cords.getLocation().x) / 100 == 0 && (int) (GAME.player.moveSquare.getY() - Portal_Cords.getLocation().y) / 100 == 0) {
+        if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
@@ -292,41 +289,49 @@ public class Overworld extends ScreenAdapter {
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-            GAME.showtrade =false;
-            GAME.showtradeBuyer =false;
-            GAME.showHiddenInventory =!GAME.showHiddenInventory;
-            GAME.overlays.updateOverlays();
 
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
-            GAME.overlays.showtradeseller(!GAME.showtrade);
-            {
-                GAME.showHiddenInventory =false;
-                GAME.showtradeBuyer =false;
-                GAME.overlays.updateOverlays();
+        // COMMENT THIS CODE TO GET TRADING WORKING
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
 
-            }
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
-            {
-                GAME.showtrade =false;
-                GAME.showHiddenInventory =false;
-                GAME.overlays.updateOverlays();
+        // UNCOMMENT THIS CODE TO GET TRADING WORKING
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+//            GAME.showtrade =false;
+//            GAME.showtradeBuyer =false;
+//            GAME.showHiddenInventory =!GAME.showHiddenInventory;
+//            GAME.overlays.updateOverlays();
+//
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+//            GAME.overlays.showtradeseller(!GAME.showtrade);
+//            {
+//                GAME.showHiddenInventory =false;
+//                GAME.showtradeBuyer =false;
+//                GAME.overlays.updateOverlays();
+//
+//            }
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+//            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
+//            {
+//                GAME.showtrade =false;
+//                GAME.showHiddenInventory =false;
+//                GAME.overlays.updateOverlays();
+//
+//            }
+//        }
 
-            }
-        }
-
-            if(GAME.overlays.reset()){
-                GAME.overlays.updateOverlays();
-            }
+//            if(GAME.overlays.reset()){
+//                GAME.overlays.updateOverlays();
+//            }
 
 //        try {
 //            GAME.overlays.updateAll();
 //        } catch (CloneNotSupportedException e) {
 //            e.printStackTrace();
 //        }
+        // END
+
 //        GAME.overlays.setOverLayesVisibility(false);
 //        GAME.overlays.setOverLayesVisibility(true);
     }

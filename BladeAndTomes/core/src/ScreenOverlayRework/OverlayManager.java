@@ -22,14 +22,16 @@ public class OverlayManager {
     private DragAndDrop dnd;
     private MapUI mapUI;
     public OverlayManager(BladeAndTomes Game)  {
-        game = Game;
-        dnd = new DragAndDrop();
-        table = new Table();
-        table.setDebug(true);
-        table.defaults();
-        table.setBounds(0,0,Game.stageInstance.getWidth(),Game.stageInstance.getHeight());
-        game.stageInstance.addActor(table);
-        makeOverlays();
+
+            game = Game;
+            dnd = new DragAndDrop();
+            table = new Table();
+            table.setDebug(true);
+            table.defaults();
+            table.setBounds(0,0,Game.stageInstance.getWidth(),Game.stageInstance.getHeight());
+            game.stageInstance.addActor(table);
+            makeOverlays();
+
 
     }
     public void makeOverlays(){
