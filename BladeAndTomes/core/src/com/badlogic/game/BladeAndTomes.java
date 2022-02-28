@@ -1,13 +1,17 @@
 package com.badlogic.game;
 
+import ScreenOverlayRework.Inventory.itemDocument;
+import ScreenOverlayRework.OverlayManager;
 import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,10 +27,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.util.Random;
 
 // PUT IN CLAYMORE STORM EASTER EGG
 // Put in rick roll easter egg also
@@ -71,8 +79,60 @@ public class BladeAndTomes extends Game {
     public Image playerIcon;
     public Inventory inventory;
     public BackGroundMusic _bgmusic;
+    public Array<itemDocument> inventoryItems;
 
+    public OverlayManager overlays;
+    public boolean showtrade = false;
+    public boolean showtradeBuyer = false;
+    public boolean showHiddenInventory = false;
+    public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
+
+    public int tokens;
+
+    public static class quest {
+        String goal;
+        int value;
+        boolean used;
+        public quest(String s, int i, boolean b){
+            goal = s;
+            value = i;
+            used = b;
+        }
+        public String getGoal(){
+            return goal;
+        }
+        public int getValue(){
+            return value;
+        }
+        public void setUsed(){
+            used = true;
+        }
+        public boolean isUsed(){
+            return used;
+        }
+    }
+
+    public static Array<quest> quests;
+    public static Array<quest> usedQuests;
+
+
+    public static void setQuests(){
+        Random rand = new Random();
+        int randVal;
+        try {
+            while (usedQuests.size < 5) {
+                randVal = rand.nextInt(5);
+                if (quests.get(randVal).isUsed() == false) {
+                    usedQuests.add(quests.get(randVal));
+                    quests.get(randVal).setUsed();
+                    System.out.println(quests.get(randVal).getGoal());
+                }
+            }
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
 
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
@@ -88,12 +148,62 @@ public class BladeAndTomes extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
 
+        //tokens = 3;
+        setTokens(3);
+
+        quests = new Array<>();
+        usedQuests = new Array<>();
+
+        quests.add(new quest("Kill 5 enemies", 5, false));
+        quests.add(new quest("Open 5 chests", 5, false));
+        quests.add(new quest("Trade 1 item", 1, false));
+        quests.add(new quest("Enter the dungeon", 1, false));
+        quests.add(new quest("Explore 5 dungeon rooms", 5, false));
+        quests.add(new quest("Sell 1 item", 1, false));
+
         // Work for resizing of screen
 
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
         _bgmusic = new BackGroundMusic();
         _bgmusic.playMusic();
+
+        // Inventory Things
+        inventoryItems = new Array<>();
+
+        for (int i = 0; i < 19; ++i) {
+            itemDocument itemTemp = new itemDocument();
+            itemTemp.setIndex(String.valueOf(i));
+            itemTemp.setTargetItem("Null");
+            itemTemp.setCategory("Null");
+            inventoryItems.add(itemTemp);
+        }
+
+        itemDocument slot = inventoryItems.get(0);
+        slot.setDefauls = false;
+        slot.setImageLocation("InventoryItems/Weapons/Sword/1.png");
+        slot.setLevel(1);
+        slot.setCategory("Weapons");
+        slot.setName("Sword");
+        slot.setDamage(10);
+        slot.setTargetItem("Any");
+
+
+        slot = inventoryItems.get(1);
+        slot.setDefauls = false;
+        slot.setImageLocation(("InventoryItems/Armor/armor.png"));
+        slot.setLevel(2);
+        slot.setCategory("Armor");
+        slot.setDamage(10);
+        slot.setTargetItem("None");
+
+        slot = inventoryItems.get(2);
+        slot.setDefauls = false;
+        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
+        slot.setLevel(2);
+        slot.setCategory("Spell");
+        slot.setDamage(10);
+        slot.setTargetItem("Any");
 
         //Sets Scene2D instance
 
@@ -115,7 +225,7 @@ public class BladeAndTomes extends Game {
         inventoryTextButtonRegion = new TextureRegion(inventoryTextButtonState);
 
         //Defines the style to be used in the text buttons
-        generalTextButtonStyle = new TextButtonStyle ();
+        generalTextButtonStyle = new TextButtonStyle();
         generalTextButtonStyle.up = new TextureRegionDrawable(generalTextButtonUpRegion);
         generalTextButtonStyle.down = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalTextButtonStyle.font = font;
@@ -136,35 +246,35 @@ public class BladeAndTomes extends Game {
         //Defines the style to be used for the text field
         generalTextFieldStyle = new TextFieldStyle();
         generalTextFieldStyle.font = font;
-        generalTextFieldStyle.fontColor = new Color(0f,0f,0f,1f);
+        generalTextFieldStyle.fontColor = new Color(0f, 0f, 0f, 1f);
         generalTextFieldStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
 
         //Defines the style to be used for the Label
         generalLabelStyle = new LabelStyle();
         generalLabelStyle.font = font;
         generalLabelStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
-        generalLabelStyle.fontColor = new Color(0f,0f,0f,1f);
+        generalLabelStyle.fontColor = new Color(0f, 0f, 0f, 1f);
 
         HealthLabelStyle = new LabelStyle();
         HealthLabelStyle.font = font;
         //HealthLabelStyle.background = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("healthBar.jpg"))));
-        HealthLabelStyle.fontColor = new Color(100f,0f,0f,1f);
+        HealthLabelStyle.fontColor = new Color(100f, 0f, 0f, 1f);
 
         BaseLabelStyle1 = new LabelStyle();
         BaseLabelStyle1.font = font;
         BaseLabelStyle1.background = new TextureRegionDrawable(new TextureRegion(inventoryTextButtonState));
-        BaseLabelStyle1.fontColor = new Color(0f,0f,0f,10f);
+        BaseLabelStyle1.fontColor = new Color(0f, 0f, 0f, 10f);
 
         BaseLabelStyle2 = new LabelStyle();
         BaseLabelStyle2.font = font;
         BaseLabelStyle2.background = new TextureRegionDrawable(new TextureRegion(inventoryBase2));
-        BaseLabelStyle2.fontColor = new Color(0f,0f,0f,10f);
+        BaseLabelStyle2.fontColor = new Color(0f, 0f, 0f, 10f);
 
         //libGDX documentation on WindowStyle and how it is to be implemented by libGDX devs
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
         generalWindowStyle = new WindowStyle();
         generalWindowStyle.titleFont = font;
-        generalWindowStyle.titleFontColor = new Color(0f,0f,0f,1f);
+        generalWindowStyle.titleFontColor = new Color(0f, 0f, 0f, 1f);
         //generalWindowStyle.stageBackground = new TextureRegionDrawable(new Texture(Gdx.files.internal("Main_Menu_Screen.jpg")));
 
         //libGDX documentation on SliderStyle and how it is to be implemented by libGDX devs
@@ -175,6 +285,13 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
 
+        player.setHealthPoints(10);
+        try {
+            overlays = new OverlayManager(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        overlays.setOverLayesVisibility(false);
 
         this.setScreen(new MainMenu(this));
     }
@@ -184,6 +301,14 @@ public class BladeAndTomes extends Game {
     }
 
      */
+
+    public void setTokens(int num){
+        tokens = num;
+    }
+    public int getTokens(){
+        return tokens;
+    }
+
     /**
      * This function is called by OpenGL to render objects presented in the order defined below and
      * then displaying it to the user as well as acting when the program will take in input and accept

@@ -3,6 +3,7 @@ package com.badlogic.game.screens;
 import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlay.MainInventory;
 import Sounds.playerMoveSound;
+import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Scaling;
 import org.w3c.dom.Text;
 
 import java.awt.Point;
@@ -87,13 +90,6 @@ public class Overworld extends ScreenAdapter {
     public Overworld (final BladeAndTomes game) {
 
         this.GAME = game;
-
-        //Music rights
-        //The Road Home by Alexander Nakarada | https://www.serpentsoundstudios.com
-        //Music promoted by https://www.chosic.com/free-music/all/
-        //Creative Commons CC BY 4.0
-        //https://creativecommons.org/licenses/by/4.0/
-
 
         MOVE_DISTANCE = 64;
         doTrade = false;
@@ -200,11 +196,11 @@ public class Overworld extends ScreenAdapter {
         options[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.removeListener(escapePauseOver);
-                GAME.stageInstance.clear();
+                //GAME.stageInstance.removeListener(escapePauseOver);
+                //GAME.stageInstance.clear();
                 pauseMenu.clear();
                 pauseMenu.remove();
-                dispose();
+                //dispose();
                 GAME.stageInstance.addActor(saveQuit);
             }
         });
@@ -221,7 +217,8 @@ public class Overworld extends ScreenAdapter {
         saveBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.clear();
+                saveQuit.remove();
+                //GAME.stageInstance.clear();
                 GAME.stageInstance.setKeyboardFocus(null);
                 GAME.stageInstance.addActor(pauseMenu);
                 pauseMenu.add(warning).center().colspan(3);
@@ -237,15 +234,19 @@ public class Overworld extends ScreenAdapter {
 
         //Adds the player's icon to the stage.
         GAME.stageInstance.addActor(GAME.player.playerIcon);
-        inventory = new MainInventory(GAME);
+
         NPC_Cords = new Point();
-        NPC_Cords.setLocation(GAME.stageInstance.getWidth() /8,GAME.stageInstance.getHeight() / 2);
+        NPC_Cords.setLocation(GAME.stageInstance.getWidth() / 8, GAME.stageInstance.getHeight() / 2);
         Portal_Cords = new Point();
-        Portal_Cords.setLocation(GAME.stageInstance.getWidth() /2,GAME.stageInstance.getHeight() / 8);
+        Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
+        // For overlays
+        game.overlays.setOverLayesVisibility(true);
+
+
     }
 
     @Override
-    public void render(float delta){
+    public void render(float delta) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
@@ -281,30 +282,58 @@ public class Overworld extends ScreenAdapter {
         //https://libgdx.com/dev/simple-game-extended/
         npcTraderMsg = new Label("Wanna Trade\n Press \"T\" ", GAME.BaseLabelStyle2);
 
-        if((int)(GAME.player.moveSquare.getX()-NPC_Cords.getLocation().x)/200 == 0 &&(int)(GAME.player.moveSquare.getY()-NPC_Cords.getLocation().y)/100 ==0){
-            inventory.update();
-            npcTraderMsg.setHeight(100);
-            npcTraderMsg.setWidth(100);
-            npcTraderMsg.setX(NPC_Cords.getLocation().x+50);
-            npcTraderMsg.setY(NPC_Cords.getLocation().y+100);
-            GAME.stageInstance.addActor(npcTraderMsg);
-
-            if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
-            doTrade = !doTrade;
-                inventory.showNPCTradeScreen(doTrade);
-            }
-        } else {
-            if(doTrade){
-                doTrade =false;
-                inventory.showNPCTradeScreen(doTrade);
-            }
-            npcTraderMsg.addAction(Actions.removeActor());
-        }
-        inventory.update();
 
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
+        GAME.overlays.updateHealth();
+
+        // Displays Hidden Inventory Table
+
+        // COMMENT THIS CODE TO GET TRADING WORKING
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
+
+        // UNCOMMENT THIS CODE TO GET TRADING WORKING
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+//            GAME.showtrade =false;
+//            GAME.showtradeBuyer =false;
+//            GAME.showHiddenInventory =!GAME.showHiddenInventory;
+//            GAME.overlays.updateOverlays();
+//
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+//            GAME.overlays.showtradeseller(!GAME.showtrade);
+//            {
+//                GAME.showHiddenInventory =false;
+//                GAME.showtradeBuyer =false;
+//                GAME.overlays.updateOverlays();
+//
+//            }
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+//            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
+//            {
+//                GAME.showtrade =false;
+//                GAME.showHiddenInventory =false;
+//                GAME.overlays.updateOverlays();
+//
+//            }
+//        }
+
+//            if(GAME.overlays.reset()){
+//                GAME.overlays.updateOverlays();
+//            }
+
+//        try {
+//            GAME.overlays.updateAll();
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+        // END
+
+//        GAME.overlays.setOverLayesVisibility(false);
+//        GAME.overlays.setOverLayesVisibility(true);
     }
 
     //Save all player data including name, stats, inventory
@@ -317,8 +346,18 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
+        // Source: https://stackoverflow.com/questions/18495975/libgdx-window-resizing-keeping-aspect-ratio
+//        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
+//        int viewportX = (int)(width - size.x) / 2;
+//        int viewportY = (int)(height - size.y) / 2;
+//        int viewportWidth = (int)size.x;
+//        int viewportHeight = (int)size.y;
+//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+////        GAME.stageInstance.getViewport().update( viewportWidth, viewportHeight, true);
+//        GAME.stageInstance.getViewport().setScreenSize(viewportWidth,viewportHeight);
+
         GAME.stageInstance.getViewport().update(width, height, true);
-    }
+   }
 
     @Override
     public void show() {
@@ -332,28 +371,20 @@ public class Overworld extends ScreenAdapter {
 
     //sets boundaries in the overworld
     //based off of Aidan Emmons boundary method for dungeon
-    public boolean isCollisionHandled(Player player, Stage stage)
-    {
-        if(player.playerIcon.getX() <= 2*MOVE_DISTANCE)
-        {
+    public boolean isCollisionHandled(Player player, Stage stage) {
+        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        else if(player.playerIcon.getY() <= 2*MOVE_DISTANCE)
-        {
+        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        else if(player.playerIcon.getX() >= stage.getWidth() - 2*MOVE_DISTANCE)
-        {
+        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        else if(player.playerIcon.getY() >= stage.getHeight() - 2*MOVE_DISTANCE)
-        {
+        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);

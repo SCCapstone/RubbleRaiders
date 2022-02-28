@@ -3,6 +3,7 @@ package com.badlogic.game.screens;
 import ScreenOverlay.Events;
 import ScreenOverlay.MainInventory;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,7 +19,6 @@ public class Dungeon extends ScreenAdapter {
 
     Image eventImage;
     Image backgroundImage;
-    MainInventory inventory;
     float eventX, eventY, eventSizeX, eventSizeY;
     RoomHandler roomHandler;
 
@@ -32,9 +32,8 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.clear();
 
         //Instances the player's inventory
-        inventory = new MainInventory(GAME);
 
-        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, inventory);
+        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays);
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
@@ -71,6 +70,12 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.addActor(GAME.player.playerIcon);
         GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
 
+        //Instances the player's inventory
+//        inventory = new MainInventory(GAME);
+
+        game.overlays.setOverLayesVisibility(true);
+
+
     }
 
     @Override
@@ -83,7 +88,7 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-        inventory.update();
+//        inventory.update();
 
         //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {
@@ -100,6 +105,8 @@ public class Dungeon extends ScreenAdapter {
             GAME.player.setHealthPoints(GAME.player.getFullHealth());
             GAME.setScreen(new Overworld(GAME));
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
     }
 
     @Override

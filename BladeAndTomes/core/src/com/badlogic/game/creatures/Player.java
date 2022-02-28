@@ -30,6 +30,7 @@ public class Player extends Entity {
     private int barter;
     private int awareness;
     private int intuition;
+    private int gold;
     private String id;
     private String name;
     public Image playerIcon;
@@ -50,8 +51,7 @@ public class Player extends Entity {
     /**
      * Default constructor for player entity
      */
-    public Player()
-    {
+    public Player() {
         super();
         this.id = "player";
         this.playerClass = 1;
@@ -79,6 +79,8 @@ public class Player extends Entity {
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
+        gold = 100;
+
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
@@ -125,6 +127,7 @@ public class Player extends Entity {
         this.isTurn = true;
 
         playerMovenSound = new playerMoveSound();
+        gold = 100;
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
@@ -165,95 +168,110 @@ public class Player extends Entity {
         });
     }
 
-    public int getPlayerClass()
-    {
+    public int getPlayerClass() {
         return playerClass;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public int getPhysical()
-    {
+    public int getPhysical() {
         return physical;
     }
 
-    public int getMental()
-    {
+    public int getMental() {
         return mental;
     }
 
-    public int getSocial()
-    {
+    public int getSocial() {
         return social;
     }
 
-    public int getAcrobatics()
-    {
-        acrobatics = (int)((physical * 1.25) + (mental / 2));
+    public int getAcrobatics() {
+        acrobatics = (int) ((physical * 1.25) + (mental / 2));
         return acrobatics;
     }
 
-    public int getBruteforce()
-    {
-        bruteforce = (int)(physical * 1.75);
+    public int getBruteforce() {
+        bruteforce = (int) (physical * 1.75);
         return bruteforce;
     }
 
-    public int getSpeech()
-    {
-        speech = (int)((social * 1.25) + (physical / 2));
+    public int getSpeech() {
+        speech = (int) ((social * 1.25) + (physical / 2));
         return speech;
     }
 
-    public int getBarter()
-    {
+    public int getBarter() {
         barter = social;
         return barter;
     }
 
-    public int getAwareness()
-    {
-        awareness = (int)((mental * 1.5) + (social / 2));
+    public int getAwareness() {
+        awareness = (int) ((mental * 1.5) + (social / 2));
         return awareness;
     }
 
-    public int getIntuition()
-    {
-        intuition = (int)(mental * .75);
+    public int getIntuition() {
+        intuition = (int) (mental * .75);
         return intuition;
     }
 
-    public void setPlayerClass(int playerClass)
-    {
+    public void setPlayerClass(int playerClass) {
         this.playerClass = playerClass;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setPhysical(int physical) { this.physical = physical; }
+    public void setPhysical(int physical) {
+        this.physical = physical;
+    }
 
-    public void setMental(int mental) { this.mental = mental; }
+    public void setMental(int mental) {
+        this.mental = mental;
+    }
 
-    public void setSocial(int social) { this.social = social; }
+    public void setSocial(int social) {
+        this.social = social;
+    }
 
-    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder)
-    {
+    public void setAcrobatics(int acro) { this.acrobatics = acro; }
+
+    public void setBruteforce(int brute) { this.bruteforce = brute; }
+
+    public void setSpeech(int s) { this.speech = s; }
+
+    public void setBarter(int bart) { this.barter = bart; }
+
+    public void setAwareness(int aware) { this.awareness = aware; }
+
+    public void setIntuition(int i) { this.intuition = i; }
+
+    public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder) {
         return true;
     }
 
-    public boolean handleExit(Rectangle playerMove, Rectangle exitSquare)
-    {
+    public boolean handleExit(Rectangle playerMove, Rectangle exitSquare) {
         return true;
+    }
+
+    public void setGold(int val) {
+        this.gold = val;
+    }
+
+    public int getGold() {
+        return gold;
     }
 
 }
