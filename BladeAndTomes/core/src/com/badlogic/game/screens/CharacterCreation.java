@@ -3,15 +3,17 @@ package com.badlogic.game.screens;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.lang.String;
 
@@ -21,11 +23,18 @@ public class CharacterCreation extends ScreenAdapter {
 
     //TODO: Have indication of selection being made.
 
+    Label primaryPoints;
+    int points;
+    Label pointsMessage;
+    Label classMessage;
     TextField nameField;
-    Label[] statFields;
+    TextButton[] statFields;
     Label[] secondaryStatFields;
     TextButton[] classSelection;
     TextButton exitButton;
+    Boolean wizard;
+    Boolean cleric;
+    Boolean warrior;
 
     String name;
 
@@ -46,6 +55,12 @@ public class CharacterCreation extends ScreenAdapter {
         this.GAME = game;
         batch = new SpriteBatch();
 
+        points = 9;
+        primaryPoints = new Label("Points: "+points, game.generalLabelStyle);
+        warrior = false;
+        wizard = false;
+        cleric = false;
+
         //Text Field for the Name
         nameField = new TextField("", GAME.generalTextFieldStyle);
         nameField.setAlignment(1);
@@ -55,20 +70,105 @@ public class CharacterCreation extends ScreenAdapter {
             }
         });
         nameField.setX(960,1);
-        nameField.setY(910, 1);
+        nameField.setY(950, 1);
         GAME.stageInstance.addActor(nameField);
 
+        primaryPoints.setAlignment(1);
+        primaryPoints.setX(950, 1);
+        primaryPoints.setY(700, 1);
+        primaryPoints.setHeight(60);
+        primaryPoints.setWidth(150);
+        primaryPoints.setFontScale(1.25f);
+        primaryPoints.setColor(Color.GOLD);
+        GAME.stageInstance.addActor(primaryPoints);
+
+        pointsMessage = new Label("Allocate points to physical, mental, and social", GAME.generalLabelStyle);
+        pointsMessage.setX(860, 1);
+        pointsMessage.setY(630, 1);
+        pointsMessage.setAlignment(1, 1);
+        pointsMessage.setHeight(60);
+        pointsMessage.setWidth(500);
+        pointsMessage.setColor(Color.GOLD);
+        pointsMessage.setFontScale(1.25f);
+        GAME.stageInstance.addActor(pointsMessage);
+
+        classMessage = new Label("Please select a class", GAME.generalLabelStyle);
+        classMessage.setX(880, 1);
+        classMessage.setY(875, 1);
+        classMessage.setHeight(50);
+        classMessage.setWidth(300);
+        classMessage.setAlignment(1, 1);
+        classMessage.setFontScale(1.25f);
+        classMessage.setColor(Color.GOLD);
+        GAME.stageInstance.addActor(classMessage);
+
         //Displays for the Physical, Mental, and Social stats done in the same way as Anirudh Oruganti suggested
-        statFields = new Label[]{
-                new Label("Physical: " + GAME.player.getPhysical(), GAME.generalLabelStyle),
-                new Label("Mental: " + GAME.player.getMental(), GAME.generalLabelStyle),
-                new Label("Social: " + GAME.player.getSocial(), GAME.generalLabelStyle)
+        statFields = new TextButton[]{
+                new TextButton("Physical: " + GAME.player.getPhysical(), GAME.generalTextButtonStyle),
+                new TextButton("Mental: " + GAME.player.getMental(), GAME.generalTextButtonStyle),
+                new TextButton("Social: " + GAME.player.getSocial(), GAME.generalTextButtonStyle)
         };
+
+        //PHYSICAL
+        statFields[0].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(points>0) {
+                    /*if(warrior == false){
+                        if((cleric == true && GAME.player.getSocial()>GAME.player.getPhysical()) ||
+                                wizard == true && GAME.player.getMental()>GAME.player.getPhysical()){*/
+                            GAME.player.setPhysical(GAME.player.getPhysical() + 1);
+                            statFields[0].setText("Physical: " + GAME.player.getPhysical());
+                            points--;
+                            primaryPoints.setText("Points: " + points);
+                            setSecondaryStats();
+                      /*  }
+                    }*/
+                }
+            }
+        });
+        //MENTAL
+        statFields[1].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(points>0) {
+                    /*if(wizard == false) {
+                        if ((cleric == true && GAME.player.getSocial() > GAME.player.getMental()) ||
+                                warrior == true && GAME.player.getPhysical() > GAME.player.getMental()) {*/
+                            GAME.player.setMental(GAME.player.getMental() + 1);
+                            statFields[1].setText("Mental: " + GAME.player.getMental());
+                            points--;
+                            primaryPoints.setText("Points: " + points);
+                            setSecondaryStats();
+                       /* }
+                    }*/
+                }
+            }
+        });
+        //SOCIAL
+        statFields[2].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(points>0) {
+                    /*if(cleric == false) {
+                        if ((wizard == true && GAME.player.getMental() > GAME.player.getSocial()) ||
+                                warrior == true && GAME.player.getPhysical() > GAME.player.getSocial()) {*/
+                            GAME.player.setSocial(GAME.player.getSocial() + 1);
+                            statFields[2].setText("Social: " + GAME.player.getSocial());
+                            points--;
+                            primaryPoints.setText("Points: " + points);
+                            setSecondaryStats();
+/*                        }
+                    }*/
+                }
+            }
+        });
+
         for(int i=0; i<statFields.length; i++) {
-            statFields[i].setAlignment(1);
+            //statFields[i].setAlignment(1);
             statFields[i].setHeight(90);
             statFields[i].setX(780+i*180,1);
-            statFields[i].setY(760,1);
+            statFields[i].setY(500,1);
             GAME.stageInstance.addActor(statFields[i]);
         }
 
@@ -85,7 +185,7 @@ public class CharacterCreation extends ScreenAdapter {
             secondaryStatFields[i].setAlignment(1);
             secondaryStatFields[i].setHeight(90);
             secondaryStatFields[i].setX(560+i*180,1);
-            secondaryStatFields[i].setY(600,1);
+            secondaryStatFields[i].setY(350,1);
             GAME.stageInstance.addActor(secondaryStatFields[i]);
         }
 
@@ -93,17 +193,17 @@ public class CharacterCreation extends ScreenAdapter {
         //similar functions should be initialized, especially buttons.
         //This was modeled off of the code he pushed to MainMenu.java .
         classSelection = new TextButton[] {
-          new TextButton("Warrior", GAME.generalTextButtonStyle),
+                new TextButton("Warrior", GAME.generalTextButtonStyle),
                 new TextButton("Cleric", GAME.generalTextButtonStyle),
                 new TextButton("Wizard", GAME.generalTextButtonStyle)
         };
 
         //See above comment
         for(int i=0; i<BladeAndTomes.classes.values().length; i++) {
-            classSelection[i].setWidth(160);
-            classSelection[i].setHeight(90);
+            classSelection[i].setWidth(120);
+            classSelection[i].setHeight(75);
             classSelection[i].setX(780+i*180,1);
-            classSelection[i].setY(440,1);
+            classSelection[i].setY(750,1);
             GAME.stageInstance.addActor(classSelection[i]);
         }
 
@@ -111,11 +211,22 @@ public class CharacterCreation extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 selection = BladeAndTomes.classes.WARRIOR.ordinal();
-                GAME.player.setPhysical(10);
+                warrior = true;
+                wizard = false;
+                cleric = false;
+                GAME.player.setMental(0);
+                GAME.player.setSocial(0);
+                GAME.player.setPhysical(9);
+                points = 9;
+                classSelection[0].setColor(Color.GRAY);
+                classSelection[1].setColor(1f,1f,1f,1f);
+                classSelection[2].setColor(1f,1f,1f,1f);
+                pointsMessage.setText("Physical must be the strongest stat");
+                //GAME.player.setPhysical(10);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
-                GAME.player.setMental(7);
+                //GAME.player.setMental(7);
                 statFields[1].setText("Mental: " + GAME.player.getMental());
-                GAME.player.setSocial(5);
+                //GAME.player.setSocial(5);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
                 secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
                 secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
@@ -130,11 +241,22 @@ public class CharacterCreation extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 selection = BladeAndTomes.classes.CLERIC.ordinal();
-                GAME.player.setPhysical(7);
+                wizard = false;
+                cleric = true;
+                warrior = false;
+                GAME.player.setSocial(9);
+                GAME.player.setMental(0);
+                GAME.player.setPhysical(0);
+                points=9;
+                classSelection[0].setColor(1f,1f,1f,1f);
+                classSelection[1].setColor(Color.GRAY);
+                classSelection[2].setColor(1f,1f,1f,1f);
+                pointsMessage.setText("Social must be the strongest stat");
+                //GAME.player.setPhysical(7);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
-                GAME.player.setMental(5);
+                //GAME.player.setMental(5);
                 statFields[1].setText("Mental: " + GAME.player.getMental());
-                GAME.player.setSocial(10);
+                //GAME.player.setSocial(10);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
                 secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
                 secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
@@ -149,11 +271,22 @@ public class CharacterCreation extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 selection = BladeAndTomes.classes.WIZARD.ordinal();
-                GAME.player.setPhysical(5);
+                wizard = true;
+                cleric = false;
+                warrior = false;
+                GAME.player.setPhysical(0);
+                GAME.player.setMental(9);
+                GAME.player.setSocial(0);
+                points=18;
+                classSelection[0].setColor(1f,1f,1f,1f);
+                classSelection[1].setColor(1f,1f,1f,1f);
+                classSelection[2].setColor(Color.GRAY);
+                pointsMessage.setText("Mental must be the strongest stat");
+                //GAME.player.setPhysical(5);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
-                GAME.player.setMental(10);
+                //GAME.player.setMental(10);
                 statFields[1].setText("Mental: " + GAME.player.getMental());
-                GAME.player.setSocial(7);
+                //GAME.player.setSocial(7);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
                 secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
                 secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
@@ -164,11 +297,12 @@ public class CharacterCreation extends ScreenAdapter {
             }
         });
 
+
         exitButton = new TextButton("Begin your Adventure!!", GAME.generalTextButtonStyle);
         exitButton.setWidth(360);
         exitButton.setHeight(90);
         exitButton.setX(960,1);
-        exitButton.setY(300,1);
+        exitButton.setY(225,1);
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -184,6 +318,21 @@ public class CharacterCreation extends ScreenAdapter {
             }
         });
         GAME.stageInstance.addActor(exitButton);
+    }
+
+    public void setSecondaryStats(){
+        GAME.player.getAcrobatics();
+        GAME.player.getBruteforce();
+        GAME.player.getBarter();
+        GAME.player.getSpeech();
+        GAME.player.getIntuition();
+        GAME.player.getAwareness();
+        secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
+        secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
+        secondaryStatFields[2].setText("Speech: " + GAME.player.getSpeech());
+        secondaryStatFields[3].setText("Barter: " + GAME.player.getBarter());
+        secondaryStatFields[4].setText("Awareness: " + GAME.player.getAwareness());
+        secondaryStatFields[5].setText("Intuition: " + GAME.player.getIntuition());
     }
 
     @Override
