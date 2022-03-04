@@ -1,5 +1,6 @@
 package com.badlogic.game.creatures;
 
+import Keyboard_Mouse_Controls.MainMenuControls;
 import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
@@ -34,6 +35,7 @@ public class Player extends Entity {
     private String id;
     private String name;
     public Image playerIcon;
+    public MainMenuControls controls;
 
     // Movement Sound
     playerMoveSound playerMovenSound;
@@ -46,6 +48,10 @@ public class Player extends Entity {
     public InputListener playerInput;
 
     final int MOVE_DISTANCE = 64;
+    /*final int up = controls.getMoveUp();
+    final int down = controls.getMoveDown();
+    final int left = controls.getMoveLeft();
+    final int right = controls .getMoveRight();*/
 
 
     /**
@@ -236,14 +242,32 @@ public class Player extends Entity {
 
     public void setPhysical(int physical) {
         this.physical = physical;
+        acrobatics = (int) ((physical * 1.25) + (mental / 2));
+        bruteforce = (int) (physical * 1.75);
+        speech = (int) ((social * 1.25) + (physical / 2));
+        barter = social;
+        awareness = (int) ((mental * 1.5) + (social / 2));
+        intuition = (int) (mental * .75);
     }
 
     public void setMental(int mental) {
         this.mental = mental;
+        acrobatics = (int) ((physical * 1.25) + (mental / 2));
+        bruteforce = (int) (physical * 1.75);
+        speech = (int) ((social * 1.25) + (physical / 2));
+        barter = social;
+        awareness = (int) ((mental * 1.5) + (social / 2));
+        intuition = (int) (mental * .75);
     }
 
     public void setSocial(int social) {
         this.social = social;
+        acrobatics = (int) ((physical * 1.25) + (mental / 2));
+        bruteforce = (int) (physical * 1.75);
+        speech = (int) ((social * 1.25) + (physical / 2));
+        barter = social;
+        awareness = (int) ((mental * 1.5) + (social / 2));
+        intuition = (int) (mental * .75);
     }
 
     public void setAcrobatics(int acro) { this.acrobatics = acro; }
