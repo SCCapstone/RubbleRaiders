@@ -222,6 +222,7 @@ public class CharacterCreation extends ScreenAdapter {
                 classSelection[1].setColor(1f,1f,1f,1f);
                 classSelection[2].setColor(1f,1f,1f,1f);
                 pointsMessage.setText("Physical must be the strongest stat");
+                primaryPoints.setText("Points: "+points);
                 //GAME.player.setPhysical(10);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
                 //GAME.player.setMental(7);
@@ -248,6 +249,7 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setMental(0);
                 GAME.player.setPhysical(0);
                 points=9;
+                primaryPoints.setText("Points: "+points);
                 classSelection[0].setColor(1f,1f,1f,1f);
                 classSelection[1].setColor(Color.GRAY);
                 classSelection[2].setColor(1f,1f,1f,1f);
@@ -277,7 +279,8 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setPhysical(0);
                 GAME.player.setMental(9);
                 GAME.player.setSocial(0);
-                points=18;
+                points=9;
+                primaryPoints.setText("Points: "+points);
                 classSelection[0].setColor(1f,1f,1f,1f);
                 classSelection[1].setColor(1f,1f,1f,1f);
                 classSelection[2].setColor(Color.GRAY);
@@ -321,12 +324,12 @@ public class CharacterCreation extends ScreenAdapter {
     }
 
     public void setSecondaryStats(){
-        GAME.player.getAcrobatics();
+        /*GAME.player.getAcrobatics();
         GAME.player.getBruteforce();
         GAME.player.getBarter();
         GAME.player.getSpeech();
         GAME.player.getIntuition();
-        GAME.player.getAwareness();
+        GAME.player.getAwareness();*/
         secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
         secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
         secondaryStatFields[2].setText("Speech: " + GAME.player.getSpeech());
