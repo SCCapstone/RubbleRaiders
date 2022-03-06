@@ -8,81 +8,96 @@ import java.io.*;
 // Needed to do some revamping of this class. Found it made the process a bit easier.
 public class MainMenuControls implements Serializable {
 
-    private String moveDown;
-    private String moveUp;
-    private String moveLeft;
-    private String moveRight;
-    // private String openInventory;
-    private String openPauseMenu;
-    private String interactAction;
+    private int moveDown;
+    private int moveUp;
+    private int moveLeft;
+    private int moveRight;
+    private int tradeMenu;
+    private int openPauseMenu;
+    private int openInventory;
+    private int fightAction;
 
     public MainMenuControls() {
-        this.moveUp = "w";
-        this.moveDown = "s";
-        this.moveLeft = "a";
-        this.moveRight = "d";
-        this.interactAction = "x";
-        this.openPauseMenu = "escape";
+        this.moveUp = Input.Keys.UP;
+        this.moveDown = Input.Keys.DOWN;
+        this.moveLeft = Input.Keys.LEFT;
+        this.moveRight = Input.Keys.RIGHT;
+        this.tradeMenu = Input.Keys.T;
+        this.openPauseMenu = Input.Keys.ESCAPE;
+        this.openInventory = Input.Keys.E;
+        this.fightAction = Input.Keys.Q;
     }
 
-    public MainMenuControls(String moveUp, String moveDown, String moveLeft, String moveRight,
-                            String interactAction, String openPauseMenu) {
-        this.moveUp = "w";
-        this.moveDown = "s";
-        this.moveLeft = "a";
-        this.moveRight = "d";
-        this.interactAction = "x";
-        this.openPauseMenu = "escape";
+
+    public MainMenuControls(int moveUp, int moveDown, int moveLeft, int moveRight,
+                            int tradeMenu, int openPauseMenu, int openInventory, int fightAction) {
+        this.moveUp = moveUp;
+        this.moveDown = moveDown;
+        this.moveLeft = moveLeft;
+        this.moveRight = moveRight;
+        this.tradeMenu = tradeMenu;
+        this.openPauseMenu = openPauseMenu;
+        this.openInventory = openInventory;
+        this.fightAction = fightAction;
     }
     // private String viewParty;
     // private String acceptOption
-    public String getMoveDown() {
+    public int getMoveDown() {
         return moveDown;
     }
 
-    public void setMoveDown(String moveDown) {
+    public void setMoveDown(int moveDown) {
         this.moveDown = moveDown;
     }
 
-    public String getMoveUp() {
+    public int getMoveUp() {
         return moveUp;
     }
 
-    public void setMoveUp(String moveUp) {
+    public void setMoveUp(int moveUp) {
         this.moveUp = moveUp;
     }
 
-    public String getMoveLeft() {
+    public int getMoveLeft() {
         return moveLeft;
     }
 
-    public void setMoveLeft(String moveLeft) {
+    public void setMoveLeft(int moveLeft) {
         this.moveLeft = moveLeft;
     }
 
-    public String getMoveRight() {
+    public int getMoveRight() {
         return moveRight;
     }
 
-    public void setMoveRight(String moveRight) {
+    public void setMoveRight(int moveRight) {
         this.moveRight = moveRight;
     }
 
-    public String getOpenPauseMenu() {
+    public int getTradeMenu() {
+        return tradeMenu;
+    }
+
+    public void setTradeMenu(int tradeMenu) {
+        this.tradeMenu = tradeMenu;
+    }
+
+    public int getOpenPauseMenu() {
         return openPauseMenu;
     }
 
-    public void setOpenPauseMenu(String openPauseMenu) {
+    public void setOpenPauseMenu(int openPauseMenu) {
         this.openPauseMenu = openPauseMenu;
     }
 
-    public String getInteractAction() {
-        return interactAction;
-    }
+    public int getOpenInventory() { return openInventory; }
 
-    public void setInteractAction(String interactAction) {
-        this.interactAction = interactAction;
-    }
+    public void setOpenInventory(int openInventory) { this.openInventory = openInventory; }
+
+    public int getFightAction() { return fightAction; }
+
+    public void setFightAction(int fightAction) { this.fightAction = fightAction; }
+
 
 }
 
