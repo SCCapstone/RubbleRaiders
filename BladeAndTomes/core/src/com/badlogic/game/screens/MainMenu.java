@@ -6,6 +6,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.fasterxml.jackson.xml.XmlMapper;
 
 import java.io.File;
@@ -45,6 +45,8 @@ public class MainMenu extends ScreenAdapter {
     TextButton game3;
     TextButton game4;
     TextButton loadBack;
+    Label selectGameInfo;
+    boolean isTutorial;
 
     @Override
     public void dispose() {
@@ -56,7 +58,7 @@ public class MainMenu extends ScreenAdapter {
     Window loadWindow;
 
     // Options
-    int newGame,characters,settings,exitGame;
+    int newGame, tutorial,settings,exitGame;
 
     // Option Dimensions and Location
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
@@ -80,20 +82,25 @@ public class MainMenu extends ScreenAdapter {
 ////        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
 //        backgroundImage = new Image(background);
 //        GAME.stageInstance.addActor(backgroundImage);
-        newGame = 0; characters = 1; settings = 2; exitGame = 3;
+        newGame = 0; tutorial = 1; settings = 2; exitGame = 3;
+        isTutorial = false;
 
         //TODO: Move menu sounds to backbone layer
         //_bgmusic = new BackGroundMusic();
         //_bgmusic.playMusic();
 
         buttonSound = new ButtonClickSound();
-
+        selectGameInfo = new Label("Please select a game file to continue or start", GAME.generalLabelStyle);
+        selectGameInfo.setSize(540f, 75f);
+        selectGameInfo.setPosition(930, 750, 1);
+        selectGameInfo.setAlignment(1, 1);
+        selectGameInfo.setFontScale(1.5f);
 
 
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
         MainMenuOptions = new TextButton[]{
                 new TextButton("New Game", game.generalTextButtonStyle),
-                new TextButton("Characters", game.generalTextButtonStyle),
+                new TextButton("Tutorial", game.generalTextButtonStyle),
                 new TextButton("Settings", game.generalTextButtonStyle),
                 new TextButton("Exit Game", game.generalTextButtonStyle)};
 
@@ -103,66 +110,80 @@ public class MainMenu extends ScreenAdapter {
         //follow the Jave documentation.
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
-        loadWindow = new Window("Load Game", GAME.generalWindowStyle);
+        loadWindow = new Window("", GAME.generalWindowStyle);
         //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
         //loadWindow.setBackground();
-        loadWindow.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight());
+        loadWindow.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight()/4+75);
         loadWindow.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
-        loadBack = new TextButton("Back", GAME.generalTextButtonStyle);
-        loadBack.setSize(100f,50f);
+        loadBack = new TextButton("Back to Menu", GAME.generalTextButtonStyle);
+        loadBack.setSize(200f,65f);
+        loadBack.setPosition(810, 330);
+        loadBack.setColor(Color.LIGHT_GRAY);
         loadBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 GAME.stageInstance.clear();
+                selectGameInfo.remove();
+                loadBack.remove();
                 GAME.setScreen(new MainMenu(GAME));
             }
         });
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
-        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
+        game1 = new TextButton("Game 1", GAME.generalTextButtonStyle);
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                selectGameInfo.remove();
+                loadBack.remove();
                 SaveLoadGame.LoadSaveOne();
+
                 // names = SaveLoadGame.Gi.getPlayerNames();
                 // saveTime = SaveLoadGame.Gi.getSaveTime();
             }
         });
-        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
+        game2 = new TextButton("Game 2", GAME.generalTextButtonStyle);
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                selectGameInfo.remove();
+                loadBack.remove();
                 SaveLoadGame.LoadSaveTwo();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
-        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
+        game3 = new TextButton("Game 3", GAME.generalTextButtonStyle);
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                selectGameInfo.remove();
+                loadBack.remove();
                 SaveLoadGame.LoadSaveThree();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
-        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
+        game4 = new TextButton("Game 4", GAME.generalTextButtonStyle);
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                selectGameInfo.remove();
+                loadBack.remove();
                 SaveLoadGame.LoadSaveFour();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
         //Add listeners for the buttons
-        savedGames.add(loadBack).padBottom(10f);
+
+        savedGames.add(game1).padBottom(10f).center().padRight(10f);
+        savedGames.add(game2).padBottom(10f).center();
         savedGames.row();
-        savedGames.add(game1).padBottom(10f);
-        savedGames.row();
-        savedGames.add(game2).padBottom(10f);
-        savedGames.row();
-        savedGames.add(game3).padBottom(10f);
-        savedGames.row();
-        savedGames.add(game4);
+        savedGames.add(game3).padBottom(10f).center().padRight(10f);
+        savedGames.add(game4).padBottom(10f).center();
 
         loadWindow.addActor(savedGames);
 
@@ -173,7 +194,9 @@ public class MainMenu extends ScreenAdapter {
                     MainMenuOptions[i].remove();
                 }
                 dispose();
-                GAME.setScreen(new CharacterCreation(GAME));
+                GAME.stageInstance.addActor(selectGameInfo);
+                GAME.stageInstance.addActor(loadWindow);
+                GAME.stageInstance.addActor(loadBack);
             }
         });
 
@@ -190,12 +213,12 @@ public class MainMenu extends ScreenAdapter {
         //follow the Jave documentation.
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
-        MainMenuOptions[characters].addListener(new ChangeListener() {
+        MainMenuOptions[tutorial].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 GAME.stageInstance.clear();
-                GAME.stageInstance.addActor(loadWindow);
-
+                isTutorial = true;
+                GAME.setScreen(new Overworld(GAME));
             }
         });
 
@@ -250,6 +273,7 @@ public class MainMenu extends ScreenAdapter {
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
+        //Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();

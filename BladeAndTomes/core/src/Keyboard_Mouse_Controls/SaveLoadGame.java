@@ -3,6 +3,7 @@ package Keyboard_Mouse_Controls;
 import Xml.GameInfo;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
+import com.badlogic.game.screens.CharacterCreation;
 import com.badlogic.game.screens.MainMenu;
 import com.badlogic.game.screens.Overworld;
 import com.badlogic.gdx.Gdx;
@@ -145,6 +146,7 @@ public class SaveLoadGame implements Serializable {
         Gi = new GameInfo();
         Gi.init();
         saveGameOne();
+        GAME.setScreen(new CharacterCreation(GAME));
     }
 
     /*
