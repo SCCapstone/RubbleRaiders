@@ -3,8 +3,8 @@ package ScreenOverlayRework;
 
 import ScreenOverlayRework.Health.Health;
 import ScreenOverlayRework.Inventory.InventoryUI;
-import ScreenOverlayRework.Inventory.NPCTrades.NPCBuyer;
-import ScreenOverlayRework.Inventory.NPCTrades.NPCSeller;
+//import ScreenOverlayRework.Inventory.NPCTrades.NPCBuyer;
+//import ScreenOverlayRework.Inventory.NPCTrades.NPCSeller;
 import ScreenOverlayRework.Map.MapUI;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,8 +17,8 @@ public class OverlayManager {
     private Table table;
     private InventoryUI inventory;
     private Health healthBar;
-    private NPCSeller seller;
-    private NPCBuyer buyer;
+//    private NPCSeller seller;
+//    private NPCBuyer buyer;
     private DragAndDrop dnd;
     private MapUI mapUI;
     public OverlayManager(BladeAndTomes Game)  {
@@ -54,52 +54,37 @@ public class OverlayManager {
         table.addActor(healthBar.getHealthBar());
 
         // NPC Seller
-        seller = new NPCSeller(game,
-                dnd);
-        table.align(center).padLeft(10);
-        table.addActor(seller.getTable());
-        seller.getTable().setVisible(game.showtrade);
-
-//         NPC Buyer
-        buyer = new NPCBuyer(game,
-                dnd);
-        table.align(center).padLeft(10);
-        table.addActor(buyer.getTable());
-        buyer.getTable().setVisible(game.showtradeBuyer);
-
-    }
-    public void setshowBuyer(boolean val){
-        game.showtradeBuyer = val;
-        buyer.getTable().setVisible(val);
+//        seller = new NPCSeller(game,
+//                dnd);
+//        table.align(center).padLeft(10);
+//        table.addActor(seller.getTable());
+//        seller.getTable().setVisible(game.showtrade);
+//
+////         NPC Buyer
+//        buyer = new NPCBuyer(game,
+//                dnd);
+//        table.align(center).padLeft(10);
+//        table.addActor(buyer.getTable());
+//        buyer.getTable().setVisible(game.showtradeBuyer);
 
     }
-    public boolean isBuyerVis(){
-        return buyer.getTable().isVisible();
+
+    public void changeNPCBuyerVis(boolean val){
+
     }
-    public void showtradeseller(boolean val){
-        game.showtrade = val;
-        seller.getTable().setVisible(val);
+    public void changeNPCSeller(boolean val){
+
     }
-    public boolean getTradeSellervisiabel(){
-        return  seller.getTable().isVisible();
-    }
+
+
     public void setOverLayesVisibility(boolean value) {
         game.stageInstance.addActor(table);
         table.setVisible(value);
-    }
-    public void updateAll() throws CloneNotSupportedException {
-        game.stageInstance.addActor(table);
-    }
-    public boolean reset(){
-        return seller.updateSlots||buyer.updateSlots;
     }
     public void setHiddenTableVisibility(boolean val){
         game.showHiddenInventory =val;
         game.stageInstance.addActor(table);
         inventory.setHiddenInventoryVisibility(val);
-    }
-    public boolean getHiddenTableVisibility(){
-        return inventory.getHiddenInventoryVisibility();
     }
     public void updateHealth(){
         healthBar.update();

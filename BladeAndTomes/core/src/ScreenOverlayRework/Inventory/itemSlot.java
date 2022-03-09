@@ -296,4 +296,7 @@ public class itemSlot extends Actor {
     public Group getSlot(){
         return table;
     }
+    public Image getItem(){
+        return item;
+    }
 }

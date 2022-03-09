@@ -1,12 +1,10 @@
-package ScreenOverlayRework.Inventory.NPCTrades;
+package ScreenOverlayRework.Inventory.NPCInventoryUI;
 
 import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -16,19 +14,21 @@ import com.badlogic.gdx.utils.Array;
 
 import static com.badlogic.gdx.utils.Align.*;
 
-public class NPCSeller extends npcUI {
+public class NPCSeller extends TradeUI {
     private Array<RandomItemGenerator> trade;
     private Table seller;
     private int numberOfTrades;
-    public NPCSeller(BladeAndTomes GAME, DragAndDrop dnd) {
-        super(GAME, dnd, "NPC TRADER");
+
+    public NPCSeller(BladeAndTomes game, DragAndDrop dnd, AssetManager itemsManager, Array<itemSlot> slots) {
+        super(game, dnd, itemsManager, slots, "NPC Seller",true);
+
         seller = new Table();
         trade = new Array<>();
         numberOfTrades = 3;
         generateTrades(numberOfTrades);
         drawSeller();
-        updateSlots = false;
-
+        seller.setPosition(500,500);
+        rightStack.addActor(seller);
     }
     private void generateTrades(int numberTrades){
         for(int i = 0;i <numberTrades;++i)
@@ -42,29 +42,18 @@ public class NPCSeller extends npcUI {
         trades.defaults();
         trades.debug();
         trades.align(right|center|top);
-        trades.padBottom(100).padRight(50).padTop(200);
         trades.add(new Label("        Offers", game.BaseLabelStyle1)).size(150, 50);
         trades.row();
-
-
-//        Image temp = trade.getItemDocument().getImage();
-//        temp.setSize(20 ,20);
-//        trades.add(temp).size(100,100);
-//        trades.add(makeitemRow(trade.get(0)));
-//        trades.row();
         for (int i = 0; i <numberOfTrades;++i){
-        trades.add(makeitemRow(trade.get(i)));
-        trades.row();
+            trades.add(makeitemRow(trade.get(i)));
+            trades.row();
         }
-
-//        HiddenInventoryTable.align(center);
-        tableOverlays.addActor(trades);
+//        game.stageInstance.addActor(trades);
+        trades.setPosition(700,450);
+        seller.addActor(trades);
     }
     public Table makeitemRow(final RandomItemGenerator currentTrade){
         Table table = new Table();
-//        Image temp = currentTrade.getItemDocument().getImage();
-//        temp.setSize(20 ,20);
-//        table.add(temp).size(70,70);
         itemSlot slot = new itemSlot(currentTrade.getItemDocument());
         table.add(slot.getSlot()).size(100,100);
         TextButton button = new TextButton("Pay "+String.valueOf(currentTrade.getItemDocument().getPrice())+" Gold",game.generalTextButtonStyle);
@@ -76,26 +65,24 @@ public class NPCSeller extends npcUI {
                 int itemPrice = currentTrade.getItemDocument().getPrice();
                 itemDocument doc = currentTrade.getItemDocument();
                 if(itemPrice<=availableGold) {
-                    game.player.setGold(availableGold - itemPrice);
-                            gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
-                            boolean availableSlot = true;
+
+                    boolean availableSlot = true;
                     for(int i =0;i<game.inventoryItems.size;++i){
-                        if(game.inventoryItems.get(i).setDefauls &&availableSlot)
-                                {
-                                    doc.setIndex(String.valueOf(i));
-                                    doc.setDefauls = false;
-                                    game.inventoryItems.set(i,doc);
-                                    availableSlot = false;
-                                    updateSlots = true;
-//                                    break;
-                                }
-                                else{
+                        if(game.inventoryItems.get(i).setDefauls &&availableSlot&&i<14)
+                        {
+                            doc.setIndex(String.valueOf(i));
+                            doc.setDefauls = false;
+                            game.inventoryItems.set(i,doc);
+                            itemSlot slot = slots.get(i);
+                            slot.getItem().setDrawable(doc.getImage().getDrawable());
+                            availableSlot = false;
+                            game.player.setGold(availableGold - itemPrice);
+                            gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
+                        }
+                        else{
 
-                                }
-
+                        }
                     }
-//                    game.inventoryItems = test;
-
                 }
 
             };

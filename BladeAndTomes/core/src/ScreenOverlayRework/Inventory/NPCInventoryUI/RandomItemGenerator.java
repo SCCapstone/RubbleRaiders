@@ -1,4 +1,4 @@
-package ScreenOverlayRework.Inventory.NPCTrades;
+package ScreenOverlayRework.Inventory.NPCInventoryUI;
 
 import ScreenOverlayRework.Inventory.itemDocument;
 import com.badlogic.gdx.Gdx;

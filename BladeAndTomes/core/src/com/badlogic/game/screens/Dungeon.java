@@ -2,6 +2,7 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.Events;
 import ScreenOverlay.MainInventory;
+import ScreenOverlayRework.OverlayManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -30,7 +31,6 @@ public class Dungeon extends ScreenAdapter {
 
         //Clears the stage instance
         GAME.stageInstance.clear();
-
         //Instances the player's inventory
 
         roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays);

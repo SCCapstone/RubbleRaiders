@@ -1,8 +1,9 @@
-package ScreenOverlayRework.Inventory.NPCTrades;
+package ScreenOverlayRework.Inventory.NPCInventoryUI;
 
 import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,42 +14,40 @@ import com.badlogic.gdx.utils.Array;
 
 import static com.badlogic.gdx.utils.Align.*;
 
-public class NPCBuyer extends  npcUI{
+public class NPCBuyer extends TradeUI {
     private Array<RandomItemGenerator> trade;
     private Table buyer;
     private int numberOfTrades;
-    public boolean updateSlots;
 
-    public NPCBuyer(BladeAndTomes GAME, DragAndDrop dnd) {
-        super(GAME, dnd, "NPC Trader");
+    public NPCBuyer(BladeAndTomes game, DragAndDrop dnd, AssetManager itemsManager, Array<itemSlot> slots) {
+        super(game, dnd, itemsManager, slots, "NPC Seller",true);
+
         buyer = new Table();
         trade = new Array<>();
         numberOfTrades = 3;
         generateTrades(numberOfTrades);
         drawBuyer();
-        updateSlots = false;
+        buyer.setPosition(500,500);
+        rightStack.addActor(buyer);
     }
     private void generateTrades(int numberTrades){
         for(int i = 0;i <numberTrades;++i)
             trade.add(new RandomItemGenerator());
     }
 
-
     public void drawBuyer() {
-
         Table trades = new Table();
         trades.defaults();
         trades.debug();
         trades.align(right|center|top);
-        trades.padBottom(100).padRight(50).padTop(200);
         trades.add(new Label("        Offers", game.BaseLabelStyle1)).size(150, 50);
         trades.row();
-
         for (int i = 0; i <numberOfTrades;++i){
             trades.add(makeitemRow(trade.get(i)));
             trades.row();
         }
-        tableOverlays.addActor(trades);
+        trades.setPosition(750,450);
+        buyer.addActor(trades);
     }
     public Table makeitemRow(final RandomItemGenerator currentTrade){
         Table table = new Table();
@@ -75,8 +74,6 @@ public class NPCBuyer extends  npcUI{
                     game.player.setGold(availableGold + itemPrice);
                     gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
                     slot.removeItem();
-                    updateSlots = true;
-
                 }
 
             };
