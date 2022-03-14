@@ -36,7 +36,6 @@ public class Overworld extends ScreenAdapter {
     private String[] names;
     private String[] saveTime;
 
-
     Texture background;
     Texture chapel;
     Texture barracks;

@@ -16,6 +16,8 @@ public class Room {
     private Image background;
     private Texture backgroundText;
     private AssetManager assetManager;
+    private int roomX, roomY;
+    private boolean levelExplored;
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
@@ -32,12 +34,14 @@ public class Room {
         assetManager = new AssetManager();
         assetManager.load("DungeonRooms/SRoom.png", Texture.class);
         assetManager.finishLoading();
+        this.roomX = 0;
+        this.roomY = 0;
         this.background = new Image(assetManager.get("DungeonRooms/SRoom.png", Texture.class));
-
         this.door = new Room[4];
         this.numOfDoors = 1;
         this.roomID = 1;
         this.mapID = 0;
+        this.levelExplored = false;
     }
 
     /**
@@ -70,8 +74,6 @@ public class Room {
         assetManager.load(directory, Texture.class);
         assetManager.finishLoading();
         this.background = new Image(assetManager.get(directory, Texture.class));
-
-
         stage.addActor(this.background);
     }
 
@@ -159,5 +161,29 @@ public class Room {
      */
     public void setMapID(int mapID) {
         this.mapID = mapID;
+    }
+
+    public int getRoomX() {
+        return this.roomX;
+    }
+
+    public int getRoomY() {
+        return this.roomY;
+    }
+
+    public void setRoomX(int x) {
+        this.roomX = x;
+    }
+
+    public void setRoomY(int y) {
+        this.roomY = y;
+    }
+
+    public boolean isLevelExplored() {
+        return levelExplored;
+    }
+
+    public void setIsLevelExplored (boolean b) {
+        this.levelExplored = b;
     }
 }
