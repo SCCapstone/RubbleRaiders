@@ -6,6 +6,9 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -53,6 +56,21 @@ public class Player extends Entity {
     final int left = controls.getMoveLeft();
     final int right = controls .getMoveRight();*/
 
+    private TextureAtlas idleTextureAtlas;
+    private transient Animation<TextureRegion> idleAnimation;
+    private TextureAtlas moveDownTextureAtlas;
+    private transient Animation<TextureRegion> moveDownAnimation;
+    private TextureAtlas moveUpTextureAtlas;
+    private transient Animation<TextureRegion> moveUpAnimation;
+    private TextureAtlas moveLeftTextureAtlas;
+    private transient Animation<TextureRegion> moveLeftAnimation;
+    private TextureAtlas moveRightTextureAtlas;
+    private transient Animation<TextureRegion> moveRightAnimation;
+    private TextureAtlas attackDownTextureAtlas;
+    private transient Animation<TextureRegion> attackDownAnimation;
+    private transient Animation<TextureRegion> currentAnimation;
+    public float elapsedTime;
+
 
     /**
      * Default constructor for player entity
@@ -64,6 +82,7 @@ public class Player extends Entity {
         this.name = "";
         this.isTurn = true;
 
+
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
         interactSquare = new Rectangle();
@@ -73,20 +92,34 @@ public class Player extends Entity {
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
-        moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
-        moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+        playerIcon.setVisible(true);
+        moveSquare.setSize(64, 64);
+        moveSquare.setPosition(0, 0);
 
         interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
+
+        idleTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerIdle.atlas"));
+        idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
+        currentAnimation = idleAnimation;
+        moveDownTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerMoveDown.atlas"));
+        moveDownAnimation = new Animation<TextureRegion>(1/5f, moveDownTextureAtlas.getRegions());
+        moveUpTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerMoveUp.atlas"));
+        moveUpAnimation = new Animation<TextureRegion>(1/5f, moveUpTextureAtlas.getRegions());
+        moveLeftTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerMoveLeft.atlas"));
+        moveLeftAnimation = new Animation<TextureRegion>(1/5f, moveLeftTextureAtlas.getRegions());
+        moveRightTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerMoveRight.atlas"));
+        moveRightAnimation = new Animation<TextureRegion>(1/5f, moveRightTextureAtlas.getRegions());
+        attackDownTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerAttackDown.atlas"));
+        attackDownAnimation = new Animation<TextureRegion>(1/5f, attackDownTextureAtlas.getRegions());
+
+        gold = 100;
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        gold = 100;
-
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
@@ -94,19 +127,19 @@ public class Player extends Entity {
             {
                 switch(keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     default:
@@ -135,43 +168,54 @@ public class Player extends Entity {
         playerMovenSound = new playerMoveSound();
         gold = 100;
 
-        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
-
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        playerIcon.addListener(new InputListener() {
+        playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
                 switch(keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     default:
                         return false;
                 }
+                isTurn = false;
+                moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
                 return true;
             }
         });
+
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
+
+        idleTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerIdle.atlas"));
+        idleAnimation = new Animation(1/2f, idleTextureAtlas.getRegions());
+        moveDownTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerMoveDown.atlas"));
+        moveDownAnimation = new Animation<TextureRegion>(1/5f, moveDownTextureAtlas.getRegions());
+
+
+
     }
 
     public int getPlayerClass() {
@@ -297,5 +341,18 @@ public class Player extends Entity {
     public int getGold() {
         return gold;
     }
+
+    public void resetElapsedTime() { elapsedTime = 0; }
+
+    public void runAnimation(BladeAndTomes GAME) {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
+        GAME.batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), playerIcon.getX(), playerIcon.getY());
+    }
+    public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
+    public void runMoveUpAnimation() { currentAnimation = moveUpAnimation; }
+    public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
+    public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
+    public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
 
 }
