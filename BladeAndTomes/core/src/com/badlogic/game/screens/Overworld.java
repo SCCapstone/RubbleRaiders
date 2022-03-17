@@ -90,7 +90,7 @@ public class Overworld extends ScreenAdapter {
     public Overworld (final BladeAndTomes game) {
 
         this.GAME = game;
-
+        GAME.player.resetElapsedTime();
         MOVE_DISTANCE = 64;
         doTrade = false;
         batch = new SpriteBatch();
@@ -265,6 +265,25 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.draw(portal, GAME.stageInstance.getWidth() / 2,
                 GAME.stageInstance.getHeight() / 8, portalWidth, portalHeight);
         GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y, 64f, 64f);
+
+        GAME.player.runAnimation(GAME);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveUpAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveDownAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveLeftAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveRightAnimation();
+        }
         GAME.batch.end();
 
         //how player enters dungeon through the portal

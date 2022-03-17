@@ -27,7 +27,7 @@ public class Dungeon extends ScreenAdapter {
         //Initial backbone values carried over
         this.GAME = game;
         MOVE_DISTANCE = 64;
-
+        GAME.player.resetElapsedTime();
         //Clears the stage instance
         GAME.stageInstance.clear();
 
@@ -88,7 +88,33 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-//        inventory.update();
+        GAME.batch.begin();
+        GAME.player.runAnimation(GAME);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveUpAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveDownAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveLeftAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveRightAnimation();
+        }
+        if(roomHandler.combatFlag) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                GAME.player.resetElapsedTime();
+                GAME.player.runAttackDownAnimation();
+            }
+        }
+        GAME.batch.end();
+        //inventory.update();
 
         //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {
