@@ -1,8 +1,9 @@
 package com.badlogic.game.creatures;
 
 import Keyboard_Mouse_Controls.MainMenuControls;
+import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
+import ScreenOverlayRework.Inventory.itemDocument;
 import Sounds.playerMoveSound;
-import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,16 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 import java.lang.String;
+import java.util.HashMap;
 
 public class Player extends Entity {
+
 
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
     private enum classes {WARRIOR, CLERIC ,WIZARD};
-
+//    public static Array<quest> quests;
+//    public static Array<quest> usedQuests;
     private int playerClass;
     private int physical;
     private int mental;
@@ -34,18 +39,31 @@ public class Player extends Entity {
     private int gold;
     private String id;
     private String name;
-    public Image playerIcon;
-    public MainMenuControls controls;
+    public transient Image playerIcon;
+
+
+    public boolean updateQuest;
+    public int kAssignations;
+    public int kDeaths;
+    public int kDungeonsExplored;
+    public int kTradesNPCSeller;
+    public int kTradesNPCBuyer;
+    public int kChestsOpened;
+
 
     // Movement Sound
-    playerMoveSound playerMovenSound;
+    transient playerMoveSound playerMovenSound;
 
-    public Rectangle interactSquare;
-    public Rectangle moveSquare;
-    public Rectangle rangeSquare;
+    public transient Rectangle interactSquare;
+    public transient Rectangle moveSquare;
+    public transient Rectangle rangeSquare;
     public boolean isTurn;
+    public int tokens;
 
-    public InputListener playerInput;
+    public transient InputListener playerInput;
+    // For Inventory
+    public Array<QuestDocument> activeQuests;
+    public Array<itemDocument> inventoryItems;
 
     final int MOVE_DISTANCE = 64;
     /*final int up = controls.getMoveUp();
@@ -59,10 +77,13 @@ public class Player extends Entity {
      */
     public Player() {
         super();
+        inventoryItems = new Array<>();
+
         this.id = "player";
         this.playerClass = 1;
         this.name = "";
         this.isTurn = true;
+        tokens = 0;
 
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
@@ -118,6 +139,28 @@ public class Player extends Entity {
                 return true;
             }
         });
+        kAssignations = 0;
+        kDeaths = 0;
+        kDungeonsExplored = 0;
+        kTradesNPCSeller = 0;
+        kTradesNPCBuyer = 0;
+        kChestsOpened = 0;
+        if(activeQuests == null)
+        activeQuests = new Array<>();
+        updateQuest = false;
+        for (int i = 0; i < 19; ++i) {
+            itemDocument itemTemp = new itemDocument();
+            itemTemp.setIndex(String.valueOf(i));
+            itemTemp.setTargetItem("Null");
+            itemTemp.setCategory("Null");
+            inventoryItems.add(itemTemp);
+        }
+
+       activeQuests.add(null);
+       activeQuests.add(null);
+        activeQuests.add(null);
+       activeQuests.add(null);
+
     }
 
     /**
@@ -131,7 +174,7 @@ public class Player extends Entity {
         this.name = name;
         this.playerIcon = image;
         this.isTurn = true;
-
+        tokens = 0;
         playerMovenSound = new playerMoveSound();
         gold = 100;
 
@@ -172,6 +215,25 @@ public class Player extends Entity {
                 return true;
             }
         });
+        kAssignations = 0;
+        kDeaths = 0;
+        kDungeonsExplored = 0;
+        kTradesNPCSeller = 0;
+        kTradesNPCBuyer = 0;
+        kChestsOpened = 0;
+        activeQuests = new Array<>();
+        updateQuest = false;
+        for (int i = 0; i < 19; ++i) {
+            itemDocument itemTemp = new itemDocument();
+            itemTemp.setIndex(String.valueOf(i));
+            itemTemp.setTargetItem("Null");
+            itemTemp.setCategory("Null");
+            inventoryItems.add(itemTemp);
+        }
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
     }
 
     public int getPlayerClass() {
@@ -192,6 +254,12 @@ public class Player extends Entity {
 
     public int getSocial() {
         return social;
+    }
+    public void setTokens(int num){
+        tokens = num;
+    }
+    public int getTokens(){
+        return tokens;
     }
 
     public int getAcrobatics() {

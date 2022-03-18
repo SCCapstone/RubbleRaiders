@@ -41,7 +41,7 @@ public class GeneralItemUI {
         generalItems.add(new Label("\tGeneral Items", game.generalLabelStyle)).size(150, 50).colspan(3);
         for (int i = 5; i < 14; ++i) {
 
-            itemSlot temp = new itemSlot(game, dnd, i, "Any");
+            itemSlot temp = new itemSlot(game, dnd, i, "Any",itemsManager);
             temp.applySource();
             temp.applyTarget();
             dnd = temp.getDND();
@@ -61,7 +61,7 @@ public class GeneralItemUI {
         SpellItems.add(new Label("\tSpell Items", game.generalLabelStyle)).size(125, 50).colspan(3);
         for (int i = 14; i < 16; ++i) {
 
-            itemSlot temp = new itemSlot(game, dnd, i, "Spell");
+            itemSlot temp = new itemSlot(game, dnd, i, "Spell",itemsManager);
             temp.applySource();
             temp.applyTarget();
             dnd = temp.getDND();
@@ -81,7 +81,7 @@ public class GeneralItemUI {
 
         for (int i = 16; i < 17; ++i) {
 
-            itemSlot temp = new itemSlot(game, dnd, i, "Armor");
+            itemSlot temp = new itemSlot(game, dnd, i, "Armor",itemsManager);
             temp.applySource();
             temp.applyTarget();
             dnd = temp.getDND();

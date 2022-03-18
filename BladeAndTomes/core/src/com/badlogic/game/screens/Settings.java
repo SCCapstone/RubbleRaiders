@@ -34,7 +34,6 @@ public class Settings extends ScreenAdapter {
     String interAction;
     String openMenu;*/
 
-    MainMenuControls menuCont;
 
     Texture background;
     Image backgroundImage;
@@ -65,11 +64,11 @@ public class Settings extends ScreenAdapter {
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
 
     private SpriteBatch batch;
-
+    private MainMenuControls menuCont;
     public Settings(final BladeAndTomes game){
         this.GAME = game;
         batch = new SpriteBatch();
-        menuCont = new MainMenuControls();
+        menuCont = game.controls;
 
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
 

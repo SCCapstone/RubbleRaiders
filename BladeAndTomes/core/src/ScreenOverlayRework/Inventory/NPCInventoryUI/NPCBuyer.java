@@ -32,7 +32,7 @@ public class NPCBuyer extends TradeUI {
     }
     private void generateTrades(int numberTrades){
         for(int i = 0;i <numberTrades;++i)
-            trade.add(new RandomItemGenerator());
+            trade.add(new RandomItemGenerator(itemsManager));
     }
 
     public void drawBuyer() {
@@ -54,13 +54,12 @@ public class NPCBuyer extends TradeUI {
         final boolean tradeOK = false;
         final int price = (int) (currentTrade.getItemDocument().getPrice()*0.2);
         itemDocument doc = currentTrade.getItemDocument();
-        final itemSlot slot = new itemSlot(game,doc, dnd);
+        final SellerItemSlot slot = new SellerItemSlot(game,doc, dnd,itemsManager,slots);
         table.add(slot.getSlot()).size(100,100);
-        slot.applySource();
-        DragAndDrop.Target target =  slot.applyBuyerTarget();
-        dnd.addTarget(target);
+//        slot.applySource();
+        slot.applyTarget();
 
-        table.add(currentTrade.getItemDocument().getImage()).size(50,50);
+        table.add(currentTrade.getItemDocument().getImage(itemsManager)).size(50,50);
         TextButton button = new TextButton("Get "+String.valueOf(price)+" Gold",game.generalTextButtonStyle);
         table.add(button).size(150,70).colspan(3);
 
@@ -73,7 +72,8 @@ public class NPCBuyer extends TradeUI {
                 if(slot.canBuy()) {
                     game.player.setGold(availableGold + itemPrice);
                     gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
-                    slot.removeItem();
+                    slot.tradeComplete();
+//                    slot.removeItem();
                 }
 
             };

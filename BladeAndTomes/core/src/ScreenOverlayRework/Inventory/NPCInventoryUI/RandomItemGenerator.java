@@ -2,6 +2,7 @@ package ScreenOverlayRework.Inventory.NPCInventoryUI;
 
 import ScreenOverlayRework.Inventory.itemDocument;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -16,10 +17,11 @@ public class RandomItemGenerator {
     private String inventoryItemsPath;
     private String itemType;
     private String itemCategory;
+    private AssetManager manager;
     private int level;
 
-    public RandomItemGenerator() {
-
+    public RandomItemGenerator(AssetManager manager) {
+        this.manager = manager;
         random = new Random();
         items = new Hashtable<String, Hashtable<String,Integer>>();
         itemDocument = new itemDocument();

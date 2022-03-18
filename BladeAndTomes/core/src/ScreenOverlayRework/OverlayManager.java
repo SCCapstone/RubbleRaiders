@@ -5,23 +5,30 @@ import ScreenOverlayRework.Health.Health;
 import ScreenOverlayRework.Inventory.InventoryUI;
 //import ScreenOverlayRework.Inventory.NPCTrades.NPCBuyer;
 //import ScreenOverlayRework.Inventory.NPCTrades.NPCSeller;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
 import ScreenOverlayRework.Map.MapUI;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.utils.Disposable;
 
 import static com.badlogic.gdx.utils.Align.*;
 
-public class OverlayManager {
+public class OverlayManager implements Disposable {
     private final BladeAndTomes game;
     private Table table;
     private InventoryUI inventory;
     private Health healthBar;
-//    private NPCSeller seller;
-//    private NPCBuyer buyer;
     private DragAndDrop dnd;
     private MapUI mapUI;
+    private AssetManager manager;
+    int counter = 0;
+
     public OverlayManager(BladeAndTomes Game)  {
+        manager = Game.assets;
 
             game = Game;
             dnd = new DragAndDrop();
@@ -33,9 +40,14 @@ public class OverlayManager {
             makeOverlays();
 
 
-    }
-    public void makeOverlays(){
 
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
+    public void makeOverlays(){
         // Inventory
         inventory = new InventoryUI(game,dnd);
         table.align(top|left).padLeft(10);
@@ -43,59 +55,72 @@ public class OverlayManager {
         setHiddenTableVisibility(game.showHiddenInventory); // Initially Hidden Table is not shown.
 
         // MAP UI
-        mapUI = new MapUI(game);
-        table.align(top|right).padLeft(10);
-        table.addActor(mapUI.getMapUI());
+//        mapUI = new MapUI(game);
+//        table.align(top|right).padLeft(10);
+//        table.addActor(mapUI.getMapUI());
 
 
         // Health Bar
-        healthBar = new Health(game);
+        healthBar = new Health(game,manager,counter);
         table.align(top|right).padLeft(10);
         table.addActor(healthBar.getHealthBar());
 
-        // NPC Seller
-//        seller = new NPCSeller(game,
-//                dnd);
-//        table.align(center).padLeft(10);
-//        table.addActor(seller.getTable());
-//        seller.getTable().setVisible(game.showtrade);
-//
-////         NPC Buyer
-//        buyer = new NPCBuyer(game,
-//                dnd);
-//        table.align(center).padLeft(10);
-//        table.addActor(buyer.getTable());
-//        buyer.getTable().setVisible(game.showtradeBuyer);
 
     }
 
-    public void changeNPCBuyerVis(boolean val){
-
+    public void NPCBuyerInventory(boolean val, NPCBuyer npc){
+        inventory.Trade_Inventory_NPCBuyer(val,npc);
     }
-    public void changeNPCSeller(boolean val){
+    public void NPCSellerInventory(boolean val, NPCSeller npc){
 
+        inventory.Trade_Inventory_NPCSeller(val,npc);
+    }
+    public NPCBuyer generateNewNPCBuyer(){
+        return inventory.makeNPCBuyer();
+    }
+    public NPCSeller generateNewNPSeller(){
+
+        return inventory.makeNPCSeller();
     }
 
-
+    public void removeALlActors(){
+        table.clear();
+    }
+    public void setHiddenTableVisibility(boolean val){
+        game.showHiddenInventory =val;
+        inventory.setHiddenInventoryVisibility(val);
+    }
+    public void clearAllTextures(){
+//        table.clear();
+//        for(String s: manager.getAssetNames())
+//            manager.unload(s);
+//        inventory.clearAssetManger();
+//        inventory = null;
+    }
     public void setOverLayesVisibility(boolean value) {
         game.stageInstance.addActor(table);
         table.setVisible(value);
     }
-    public void setHiddenTableVisibility(boolean val){
-        game.showHiddenInventory =val;
-        game.stageInstance.addActor(table);
-        inventory.setHiddenInventoryVisibility(val);
-    }
-    public void updateHealth(){
-        healthBar.update();
-    }
-    public void updateOverlays(){
-        removeALL();
-        makeOverlays();
-    }
-    public void  removeALL(){
-        inventory.removeListens();
-        table.clearChildren();
+    public void setQuestBoardTradeVisibility(boolean val, TownHallQuestBoard board){
+        inventory.displayQuestBoardTradeUI(val,board);
     }
 
+    public TownHallQuestBoard generateQuestBoard(){
+        return inventory.makeQuestBoard();
+    }
+    public void updateHealth(){
+//        healthBar.update();
+    }
+
+
+    @Override
+    public void dispose() {
+//        table.clear();
+//
+//        for(String s: manager.getAssetNames())
+//            manager.unload(s);
+////        healthBar.dispose();
+//        inventory.dispose();
+//        inventory =null;
+    }
 }

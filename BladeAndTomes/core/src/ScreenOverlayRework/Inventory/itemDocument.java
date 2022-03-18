@@ -1,6 +1,7 @@
 package ScreenOverlayRework.Inventory;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import jdk.internal.jimage.ImageLocation;
@@ -9,10 +10,17 @@ public class itemDocument {
     private String category;
     private String Name;
     private String targetItem;
-    private Image image;
+    private transient Image image;
     private String index;
     private String ImageLocation;
 
+    public itemDocument(){
+        category = "Null";
+        targetItem = "Null";
+        setDefauls = true;
+        image = new Image();
+
+    }
 
     public void setImageLocation(String loc){
         ImageLocation = loc;
@@ -44,10 +52,6 @@ public class itemDocument {
 
     public boolean setDefauls;
 
-    public itemDocument() {
-        setDefauls = true;
-    }
-
     public String getCategory() {
         return category;
     }
@@ -72,20 +76,24 @@ public class itemDocument {
         Name = name;
     }
 
-    public Image getImage() {
+    public Image getImage(AssetManager manager) {
         try {
-            Texture texture = new Texture(Gdx.files.internal(ImageLocation));
-            image = new Image(texture);
+            if(manager.contains(ImageLocation,Texture.class)){
+                image = new Image(manager.get(ImageLocation,Texture.class));
+            }else{
+                manager.load(ImageLocation,Texture.class);
+                manager.finishLoading();
+                image = new Image(manager.get(ImageLocation,Texture.class));
+            }
         }catch (Exception e){
             image = new Image();
         }
-
         return image;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
-    }
+//    public void setImage(Image image) {
+//        this.image = image;
+//    }
 
     public int getLevel() {
         return level;

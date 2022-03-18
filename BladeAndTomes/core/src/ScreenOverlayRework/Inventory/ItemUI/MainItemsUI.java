@@ -40,7 +40,7 @@ public class MainItemsUI {
 
     public void create(){
         for (int i = 0; i < 5; ++i) {
-            itemSlot temp = new itemSlot(game, dnd, i, "Any");
+            itemSlot temp = new itemSlot(game, dnd, i, "Any",itemsManager);
             temp.applySource();
             temp.applyTarget();
             slots.add(temp);

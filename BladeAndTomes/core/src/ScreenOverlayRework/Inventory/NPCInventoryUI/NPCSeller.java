@@ -32,7 +32,7 @@ public class NPCSeller extends TradeUI {
     }
     private void generateTrades(int numberTrades){
         for(int i = 0;i <numberTrades;++i)
-            trade.add(new RandomItemGenerator());
+            trade.add(new RandomItemGenerator(itemsManager));
     }
 
 
@@ -54,7 +54,7 @@ public class NPCSeller extends TradeUI {
     }
     public Table makeitemRow(final RandomItemGenerator currentTrade){
         Table table = new Table();
-        itemSlot slot = new itemSlot(currentTrade.getItemDocument());
+        itemSlot slot = new itemSlot(currentTrade.getItemDocument(),itemsManager);
         table.add(slot.getSlot()).size(100,100);
         TextButton button = new TextButton("Pay "+String.valueOf(currentTrade.getItemDocument().getPrice())+" Gold",game.generalTextButtonStyle);
         table.add(button).size(150,70).colspan(3);
@@ -67,20 +67,17 @@ public class NPCSeller extends TradeUI {
                 if(itemPrice<=availableGold) {
 
                     boolean availableSlot = true;
-                    for(int i =0;i<game.inventoryItems.size;++i){
-                        if(game.inventoryItems.get(i).setDefauls &&availableSlot&&i<14)
+                    for(int i =0;i<game.player.inventoryItems.size;++i){
+                        if(game.player.inventoryItems.get(i).setDefauls &&availableSlot&&i<14)
                         {
                             doc.setIndex(String.valueOf(i));
                             doc.setDefauls = false;
-                            game.inventoryItems.set(i,doc);
+                            game.player.inventoryItems.set(i,doc);
                             itemSlot slot = slots.get(i);
-                            slot.getItem().setDrawable(doc.getImage().getDrawable());
+                            slot.getItem().setDrawable(doc.getImage(itemsManager).getDrawable());
                             availableSlot = false;
                             game.player.setGold(availableGold - itemPrice);
                             gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
-                        }
-                        else{
-
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -13,11 +14,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.fasterxml.jackson.xml.XmlMapper;
 
@@ -96,7 +99,6 @@ public class MainMenu extends ScreenAdapter {
                 new TextButton("Characters", game.generalTextButtonStyle),
                 new TextButton("Settings", game.generalTextButtonStyle),
                 new TextButton("Exit Game", game.generalTextButtonStyle)};
-
 
 
         //Helpful references for how Windows work in libGDX by libGDX team. The formatting for the style and window
@@ -256,7 +258,7 @@ public class MainMenu extends ScreenAdapter {
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
         batch.begin();
         timePassed +=Gdx.graphics.getDeltaTime();
-        batch.draw(animation.getKeyFrame(timePassed,true),1240,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),width,600);
         batch.draw(animation.getKeyFrame(timePassed,true),490,600);
 
         batch.end();
@@ -272,8 +274,11 @@ public class MainMenu extends ScreenAdapter {
         // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
     }
 
+    float width = 0, height = 0;
     @Override
     public void resize(int width, int height) {
+        this.width =width;
+        this.height=height;
         GAME.stageInstance.getViewport().update(width, height, true);
     }
 

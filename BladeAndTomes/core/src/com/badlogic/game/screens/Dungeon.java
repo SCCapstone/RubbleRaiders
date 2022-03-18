@@ -2,7 +2,9 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.Events;
 import ScreenOverlay.MainInventory;
+import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
 import ScreenOverlayRework.OverlayManager;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -11,6 +13,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Json;
+
+import java.util.HashMap;
 
 public class Dungeon extends ScreenAdapter {
 
@@ -72,8 +77,10 @@ public class Dungeon extends ScreenAdapter {
 
         //Instances the player's inventory
 //        inventory = new MainInventory(GAME);
-
+        game.player = game.loadSaveManager.loadPlayer(1);
+        game.overlays = new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
+
 
 
     }

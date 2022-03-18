@@ -19,8 +19,8 @@ public class Room {
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*4, Gdx.graphics.getWidth()/2};
-    final public int Y_VAL[] = {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2,  Gdx.graphics.getHeight()/2, MOVE*2};
+    final public int X_VAL[] = {1750/2, 1750 - MOVE, MOVE*4, 1750/2};
+    final public int Y_VAL[] = {960, 960/2,  960/2, MOVE*2};
 
     /**
      * Public constructor for creating a room. Usually just a blank, default room

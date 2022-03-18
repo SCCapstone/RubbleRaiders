@@ -5,22 +5,23 @@ import ScreenOverlayRework.Inventory.ItemUI.MainItemsUI;
 import ScreenOverlayRework.Inventory.ItemUI.QuestUI;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import jdk.tools.jmod.Main;
 
 import static com.badlogic.gdx.utils.Align.*;
 
-public class InventoryUI implements Cloneable{
+public class InventoryUI implements Disposable {
     private BladeAndTomes game;
     private Table MainInventoryTable;
     private Table HiddenInventoryTable;
@@ -32,27 +33,19 @@ public class InventoryUI implements Cloneable{
     private DragAndDrop dnd;
     private Stack stack;
 
+    private AssetManager itemManager;
     private AssetManager mainItemsUIManager;
     private MainItemsUI main_Inventory;
 
-    private AssetManager generalItemsUIManager;
     private GeneralItemUI generalItemUI;
-
-    private AssetManager NPCSellerManager;
-    private ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller NPCSeller;
-
-    private AssetManager NPCBuyerManager;
-    private ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer NPCBuyer;
-
-    private AssetManager questManager;
     private QuestUI questUI;
 
 
     TextButton InventoryButton;
     TextButton QuestButton;
     TextButton SkillButton;
+    TownHallQuestBoard questBoard;
     public InventoryUI(BladeAndTomes GAME,DragAndDrop dnd) {
-
         game = GAME;
         // Tables used to draw slots
         MainInventoryTable = new Table();
@@ -63,8 +56,6 @@ public class InventoryUI implements Cloneable{
 
         // Main Table
         table = new Table();
-//        game.stageInstance.addActor(table);
-
 
         this.dnd = dnd;
         slots = new Array<>();
@@ -72,13 +63,12 @@ public class InventoryUI implements Cloneable{
 
 
         // Making Main Inventory UI
-        mainItemsUIManager =new AssetManager();
+        mainItemsUIManager =game.assets;
         main_Inventory = new MainItemsUI(game,dnd,mainItemsUIManager,slots);
         table.addActor(main_Inventory.getTable());
 
 
         // Making General Item UI
-        generalItemsUIManager =new AssetManager();
         generalItemUI = new GeneralItemUI(game,dnd,mainItemsUIManager,slots);
         HiddenInventorySlots = generalItemUI.getTable();
 
@@ -86,34 +76,26 @@ public class InventoryUI implements Cloneable{
         InventoryButton = new TextButton("Inventory", game.generalTextButtonStyle);
         QuestButton = new TextButton("Quest", game.generalTextButtonStyle);
         SkillButton = new TextButton("Skill", game.generalTextButtonStyle);
+
+        itemManager = game.assets;
+        if(!itemManager.isLoaded("InventoryItems/Other/StoneBaseLabel/StoneBase.json",Skin.class)){
+        itemManager.load("InventoryItems/Other/StoneBaseLabel/StoneBase.json",Skin.class, (new SkinLoader.SkinParameter("InventoryItems/Other/StoneBaseLabel/StoneBase.atlas")));
+        itemManager.finishLoading();}
+        questUI = new QuestUI(game,mainItemsUIManager);
+
         makeHiddenInventory();
-
-
-        // Making NPC Seller
-        NPCSellerManager = new AssetManager();
-        NPCSeller = new NPCSeller(game,dnd,mainItemsUIManager,slots);
-        // Adding inventory tables
-
-        NPCBuyerManager = new AssetManager();
-        NPCBuyer = new NPCBuyer(game,dnd,mainItemsUIManager,slots);
-
-        questManager = new AssetManager();
-        questUI = new QuestUI(game,questManager);
-
-
-        table.addActor(NPCBuyer.getTable());
-        table.addActor(NPCSeller.getTable());
         table.addActor(HiddenInventoryTable);
-
-        HiddenQuests.add(questUI.getTable());
-
 
 
     }
 
 
+
     // TODO THIS METHOD HANDLES ALL HIDEN INVENTORY COMPONENTS
     public void makeHiddenInventory() {
+        Skin skin = itemManager.get("InventoryItems/Other/StoneBaseLabel/StoneBase.json");
+        Label label = new Label("",skin);
+
         // Specifying Hidden Inventory's Location
         HiddenInventoryTable.setBackground(game.BaseLabelStyle2.background);
         HiddenInventoryTable.setDebug(true);
@@ -138,7 +120,10 @@ public class InventoryUI implements Cloneable{
             public void clicked(InputEvent event, float x, float y) {
                 HiddenInventorySlots.setVisible(false);
                 HiddenQuests.setVisible(true);
+                HiddenQuests.setDebug(true);
                 HiddenSkill.setVisible(false);
+                drawQuests();
+
             }
         });
         SkillButton.addListener(new ClickListener() {
@@ -171,7 +156,6 @@ public class InventoryUI implements Cloneable{
         HiddenQuests.defaults();
         stack.add(HiddenQuests);
         HiddenQuests.setVisible(false);
-        drawQuests();
 
         // HiddenSkill Inventory
         HiddenSkill.setDebug(true);
@@ -179,62 +163,99 @@ public class InventoryUI implements Cloneable{
         stack.add(HiddenSkill);
         HiddenSkill.setVisible(false);
 
-        stack.setBounds(25,25,500,500);
+        stack.setBounds(25,25,500,490);
         HiddenInventoryTable.addActor(stack);
         drawSkills();
 
     }
+    public TownHallQuestBoard makeQuestBoard(){
+        TownHallQuestBoard Board = new TownHallQuestBoard(game,mainItemsUIManager, questUI);
+//        Board.addActorStack(questUI.getTable(),-75,-10);
+//        table.addActor(Board.getTable());
+        return Board;
+    }
+    public NPCSeller makeNPCSeller(){
+        NPCSeller npc = new NPCSeller(game,dnd,mainItemsUIManager,slots);
+        return npc;
+    }
+    public NPCBuyer makeNPCBuyer(){
+        ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer npc=new NPCBuyer(game,dnd,mainItemsUIManager,slots);
+        npc.getTable().setVisible(false);
+        return npc;
+    }
 
+    public void displayQuestBoardTradeUI(boolean display, TownHallQuestBoard board){
+        if(display){
+            table.addActor(board.getTable());
+            HiddenInventorySlots.setVisible(true);
+            HiddenQuests.setVisible(false);
+            HiddenSkill.setVisible(false);
+            HiddenInventoryTable.setVisible(false);
+            board.addActorStack(questUI.getTable(),-75,-10);
+            board.getTable().setVisible(true);
+        }
+        else{
+            table.removeActor(board.getTable());
+            board.getTable().setVisible(false);
+            board.getTable().removeActor(questUI.getTable());
+        }
+    }
+    public void Trade_Inventory_NPCBuyer(boolean display, NPCBuyer npc){
+        if(display){
+            table.addActor(npc.getTable());
+            HiddenInventorySlots.setVisible(true);
+            HiddenQuests.setVisible(false);
+            HiddenSkill.setVisible(false);
+            HiddenInventoryTable.setVisible(false);
+            npc.addActorStack(HiddenInventorySlots,200,240);
+            npc.getTable().setVisible(true);
+        }
+        else{
+            table.removeActor(npc.getTable());
+            npc.getTable().setVisible(false);
+            npc.getTable().removeActor(HiddenInventorySlots);
+        }
+    }
+
+    public void Trade_Inventory_NPCSeller(boolean display, NPCSeller npc){
+        if(display){
+            table.addActor(npc.getTable());
+            HiddenInventorySlots.setVisible(true);
+            HiddenQuests.setVisible(false);
+            HiddenSkill.setVisible(false);
+            HiddenInventoryTable.setVisible(false);
+            npc.addActorStack(HiddenInventorySlots,200,240);
+            npc.getTable().setVisible(true);
+        }
+        else{
+            table.removeActor(npc.getTable());
+            npc.getTable().setVisible(false);
+            npc.getTable().removeActor(HiddenInventorySlots);
+        }
+    }
     public void drawQuests() {
-
+        HiddenQuests.addActor(questUI.getTable());
     }
 
     public void drawSkills() {
     }
 
-    public void changeNPCBuyer(boolean val){
 
-    }
-    public Table changeNPCSeller(boolean val){
-        return HiddenInventorySlots;
-    }
 
-    int counter = 0;
     public void setHiddenInventoryVisibility(boolean val){
-        if (counter == 3)
-            counter = 0;
-        if(counter == 0){
+
+        if(val){
+            HiddenInventorySlots.setVisible(true);
+            HiddenQuests.setVisible(false);
+            HiddenSkill.setVisible(false);
             stack.add(HiddenInventorySlots);
+            drawQuests();
             HiddenInventoryTable.setVisible(true);
-            NPCBuyer.getTable().setVisible(false);
-            NPCSeller.getTable().setVisible(false);
-        } else if(counter == 1){
-            NPCSeller.addActorStack(HiddenInventorySlots,200,240);
-            NPCSeller.getTable().setVisible(true);
-            HiddenInventoryTable.setVisible(false);
-            NPCBuyer.getTable().setVisible(false);
-        } else if(counter == 2){
-            NPCBuyer.addActorStack(HiddenInventorySlots,200,240);
-            NPCBuyer.getTable().setVisible(true);
-            NPCSeller.getTable().setVisible(false);
-            HiddenInventoryTable.setVisible(false);
         }
-        counter++;
+        else{
+            HiddenInventoryTable.setVisible(val);
 
-
-//        if(val){
-////            NPCSeller.removeActorStack(HiddenInventorySlots);
-//            stack.add(HiddenInventorySlots);
-//        }
-//        else{
-//            stack.removeActor(HiddenInventorySlots);
-//            HiddenInventoryTable.setVisible(val);
-//            HiddenInventorySlots.setSize(10,75);
-//
-//
-//        }
-//        NPCSeller.getTable().setVisible(true);
-
+        }
     }
     public void removeListens(){
         for(int i = 0;i<slots.size;++i){
@@ -243,8 +264,28 @@ public class InventoryUI implements Cloneable{
         }
     }
 
+    public void clearAssetManger(){
+        for(String s: itemManager.getAssetNames())
+            itemManager.unload(s);
+        for(String s: mainItemsUIManager.getAssetNames())
+            mainItemsUIManager.unload(s);
+
+        itemManager.clear();
+        mainItemsUIManager.clear();
+    }
+
     public Table getUI(){
         return table;
     }
 
+    @Override
+    public void dispose() {
+//        for(String s: itemManager.getAssetNames())
+//            itemManager.unload(s);
+//        for(String s: mainItemsUIManager.getAssetNames())
+//            mainItemsUIManager.unload(s);
+//        itemManager.dispose();
+//        mainItemsUIManager.dispose();
+
+    }
 }
