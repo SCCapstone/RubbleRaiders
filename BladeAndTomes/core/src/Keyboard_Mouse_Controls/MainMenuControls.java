@@ -6,7 +6,7 @@ import com.badlogic.gdx.Input;
 import java.io.*;
 
 // Needed to do some revamping of this class. Found it made the process a bit easier.
-public class MainMenuControls implements Serializable {
+public class MainMenuControls {
 
     private int moveDown;
     private int moveUp;

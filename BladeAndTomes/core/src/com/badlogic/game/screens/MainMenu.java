@@ -7,11 +7,15 @@ import com.badlogic.game.creatures.Item;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -34,6 +38,10 @@ public class MainMenu extends ScreenAdapter {
 
     private String[] names;
     private String[] saveTime;
+
+    private TiledMap overWorldMap;
+    OrthogonalTiledMapRenderer renderer;
+    OrthographicCamera camera;
 
     //All used imagery for the given examples below.
     Texture background;
@@ -75,6 +83,7 @@ public class MainMenu extends ScreenAdapter {
     public MainMenu(final BladeAndTomes game) {
         this.GAME = game;
         batch = new SpriteBatch();
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
         torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));
         animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
 ////        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
@@ -234,6 +243,9 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
+        camera = new OrthographicCamera();
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
@@ -251,6 +263,8 @@ public class MainMenu extends ScreenAdapter {
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        renderer.setView(camera);
+        renderer.render();
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
@@ -274,6 +288,10 @@ public class MainMenu extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
+        camera.viewportHeight = height;
+        camera.viewportWidth = width;
+        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+        camera.update();
         GAME.stageInstance.getViewport().update(width, height, true);
     }
 

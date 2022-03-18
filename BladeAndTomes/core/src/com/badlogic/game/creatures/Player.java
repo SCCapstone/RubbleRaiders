@@ -9,6 +9,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -38,6 +43,7 @@ public class Player extends Entity {
     private String id;
     private String name;
     public Image playerIcon;
+    //public Texture playerIcon;
     public MainMenuControls controls;
 
     // Movement Sound
@@ -93,6 +99,7 @@ public class Player extends Entity {
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         playerIcon.setVisible(true);
+        playerBody(playerIcon);
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);
 
@@ -113,13 +120,13 @@ public class Player extends Entity {
         attackDownTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerAttackDown.atlas"));
         attackDownAnimation = new Animation<TextureRegion>(1/5f, attackDownTextureAtlas.getRegions());
 
-        gold = 100;
-
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
+        gold = 100;
+
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
@@ -208,6 +215,10 @@ public class Player extends Entity {
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
+
+        playerBody(playerIcon);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
 
         idleTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/playerIdle.atlas"));
         idleAnimation = new Animation(1/2f, idleTextureAtlas.getRegions());
@@ -354,5 +365,13 @@ public class Player extends Entity {
     public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
+
+    public BodyDef playerBody(Image player) {
+        BodyDef playerBod = new BodyDef();
+        playerBod.type = BodyDef.BodyType.DynamicBody;
+        playerBod.position.set(player.getWidth() / 2, player.getHeight() / 2);
+
+        return playerBod;
+    }
 
 }
