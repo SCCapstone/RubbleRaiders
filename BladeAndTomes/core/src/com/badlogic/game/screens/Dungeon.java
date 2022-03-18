@@ -1,7 +1,6 @@
 package com.badlogic.game.screens;
 
-import ScreenOverlay.Events;
-import ScreenOverlay.MainInventory;
+
 import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.creatures.Player;
@@ -77,7 +76,6 @@ public class Dungeon extends ScreenAdapter {
 
         //Instances the player's inventory
 //        inventory = new MainInventory(GAME);
-        game.player = game.loadSaveManager.loadPlayer(1);
         game.overlays = new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
 

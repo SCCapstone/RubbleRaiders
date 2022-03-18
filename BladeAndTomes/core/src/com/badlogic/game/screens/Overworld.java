@@ -1,7 +1,6 @@
 package com.badlogic.game.screens;
 
 import Keyboard_Mouse_Controls.SaveLoadGame;
-import ScreenOverlay.MainInventory;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
@@ -68,7 +67,6 @@ public class Overworld extends ScreenAdapter {
 
     playerMoveSound playerMovenSound;
 
-    MainInventory inventory;
     Point NPC_Cords;
     Point Portal_Cords;
     boolean doTrade;
@@ -250,9 +248,9 @@ public class Overworld extends ScreenAdapter {
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         // For overlays
-        game.player = game.loadSaveManager.loadPlayer(1);
-        game.overlays = new OverlayManager(game);
-        game.overlays.setOverLayesVisibility(true);
+//        game.player = game.loadSaveManager.loadPlayer(GAME.currentSaveIndex);
+
+        game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
 
         npcSeller = game.overlays.generateNewNPSeller();
@@ -289,6 +287,7 @@ public class Overworld extends ScreenAdapter {
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
+        System.out.println((int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 );
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
@@ -337,8 +336,7 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
         }
-        GAME.loadSaveManager.savePlayer(GAME.player,1);
-
+        GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
     }
 

@@ -1,6 +1,5 @@
 package com.badlogic.game.screens;
 
-import ScreenOverlay.MainInventory;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;

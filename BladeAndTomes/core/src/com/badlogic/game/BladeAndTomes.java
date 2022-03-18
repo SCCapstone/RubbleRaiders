@@ -77,7 +77,6 @@ public class BladeAndTomes extends Game {
     public MainMenuControls controls;
     public Player player;
     public Image playerIcon;
-    public Inventory inventory;
     public BackGroundMusic _bgmusic;
     public OverlayManager overlays;
     public boolean showtrade = false;
@@ -89,6 +88,7 @@ public class BladeAndTomes extends Game {
 
     public int currentInventorySelection;
     public int tokens;
+    public int currentSaveIndex;
 
     public LoadSaveManager loadSaveManager;
 
@@ -99,13 +99,13 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void create() {
+        currentSaveIndex = 2;
+
         controls = new MainMenuControls();
         loadSaveManager = new LoadSaveManager();
         assets = new AssetManager();
         currentInventorySelection = 0;
-        player = new Player();
-        inventory = new Inventory();
-
+        player = loadSaveManager.loadPlayer(currentSaveIndex);
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -119,32 +119,6 @@ public class BladeAndTomes extends Game {
         _bgmusic.playMusic();
 
         // Inventory Things
-
-        itemDocument slot = player.inventoryItems.get(0);
-        slot.setDefauls = false;
-        slot.setImageLocation("InventoryItems/Weapons/Sword/1.png");
-        slot.setLevel(1);
-        slot.setCategory("Weapons");
-        slot.setName("Sword");
-        slot.setDamage(10);
-        slot.setTargetItem("Any");
-
-
-        slot = player.inventoryItems.get(1);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Armor/armor.png"));
-        slot.setLevel(2);
-        slot.setCategory("Armor");
-        slot.setDamage(10);
-        slot.setTargetItem("None");
-
-        slot = player.inventoryItems.get(2);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
-        slot.setLevel(2);
-        slot.setCategory("Spell");
-        slot.setDamage(10);
-        slot.setTargetItem("Any");
 
         //Sets Scene2D instance
 

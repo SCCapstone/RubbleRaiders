@@ -40,7 +40,7 @@ public class Player extends Entity {
     private String id;
     private String name;
     public transient Image playerIcon;
-
+    public transient MainMenuControls controls;
 
     public boolean updateQuest;
     public int kAssignations;
@@ -180,14 +180,22 @@ public class Player extends Entity {
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+        moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
+        moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+
+        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
+        interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        playerIcon.addListener(new InputListener() {
+        gold = 100;
+
+        playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
             public boolean keyDown(InputEvent event, int keycode)
@@ -212,6 +220,9 @@ public class Player extends Entity {
                     default:
                         return false;
                 }
+                isTurn = false;
+                moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
                 return true;
             }
         });
@@ -221,8 +232,6 @@ public class Player extends Entity {
         kTradesNPCSeller = 0;
         kTradesNPCBuyer = 0;
         kChestsOpened = 0;
-        activeQuests = new Array<>();
-        updateQuest = false;
         for (int i = 0; i < 19; ++i) {
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(i));
