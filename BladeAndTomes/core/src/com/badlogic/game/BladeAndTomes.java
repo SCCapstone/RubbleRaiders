@@ -91,6 +91,7 @@ public class BladeAndTomes extends Game {
     public int currentSaveIndex;
 
     public LoadSaveManager loadSaveManager;
+    public itemDocument NullItemDoc;
 
 
     /**
@@ -99,13 +100,13 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void create() {
+        NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
 
         controls = new MainMenuControls();
         loadSaveManager = new LoadSaveManager();
         assets = new AssetManager();
         currentInventorySelection = 0;
-        player = loadSaveManager.loadPlayer(currentSaveIndex);
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -208,14 +209,7 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
 
-        player.setHealthPoints(10);
-        try {
-            overlays = new OverlayManager(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        overlays.setOverLayesVisibility(false);
-
+//        player.setHealthPoints(10);
         this.setScreen(new MainMenu(this));
     }
     /*

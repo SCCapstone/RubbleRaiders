@@ -8,7 +8,7 @@ import ScreenOverlayRework.Inventory.InventoryUI;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
-import ScreenOverlayRework.Map.MapUI;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -23,7 +23,6 @@ public class OverlayManager implements Disposable {
     private InventoryUI inventory;
     private Health healthBar;
     private DragAndDrop dnd;
-    private MapUI mapUI;
     private AssetManager manager;
     int counter = 0;
 
@@ -90,13 +89,8 @@ public class OverlayManager implements Disposable {
         game.showHiddenInventory =val;
         inventory.setHiddenInventoryVisibility(val);
     }
-    public void clearAllTextures(){
-//        table.clear();
-//        for(String s: manager.getAssetNames())
-//            manager.unload(s);
-//        inventory.clearAssetManger();
-//        inventory = null;
-    }
+
+
     public void setOverLayesVisibility(boolean value) {
         game.stageInstance.addActor(table);
         table.setVisible(value);
@@ -112,10 +106,16 @@ public class OverlayManager implements Disposable {
 //        healthBar.update();
     }
 
+public TreasureChestUI generateChest(){
+        return inventory.makeTreasureChest();
+}
+public void displayChest(TreasureChestUI chest){
+        inventory.displayChest(chest);
 
+}
     @Override
     public void dispose() {
-//        table.clear();
+        table.clear();
 //
 //        for(String s: manager.getAssetNames())
 //            manager.unload(s);

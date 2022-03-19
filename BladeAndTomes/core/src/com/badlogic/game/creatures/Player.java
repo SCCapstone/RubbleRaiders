@@ -148,7 +148,7 @@ public class Player extends Entity {
         if(activeQuests == null)
         activeQuests = new Array<>();
         updateQuest = false;
-        for (int i = 0; i < 19; ++i) {
+        for (int i = 0; i <(26); ++i) {
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(i));
             itemTemp.setTargetItem("Null");
@@ -232,7 +232,7 @@ public class Player extends Entity {
         kTradesNPCSeller = 0;
         kTradesNPCBuyer = 0;
         kChestsOpened = 0;
-        for (int i = 0; i < 19; ++i) {
+        for (int i = 0; i < 26; ++i) {
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(i));
             itemTemp.setTargetItem("Null");

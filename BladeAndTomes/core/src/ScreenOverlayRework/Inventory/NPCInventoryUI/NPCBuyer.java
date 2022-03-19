@@ -20,7 +20,7 @@ public class NPCBuyer extends TradeUI {
     private int numberOfTrades;
 
     public NPCBuyer(BladeAndTomes game, DragAndDrop dnd, AssetManager itemsManager, Array<itemSlot> slots) {
-        super(game, dnd, itemsManager, slots, "NPC Seller",true);
+        super(game, dnd, itemsManager, slots, "NPC Buyer",true);
 
         buyer = new Table();
         trade = new Array<>();

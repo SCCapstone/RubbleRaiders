@@ -4,6 +4,7 @@ import Keyboard_Mouse_Controls.SaveLoadGame;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
@@ -77,6 +78,8 @@ public class MainMenu extends ScreenAdapter {
      */
     public MainMenu(final BladeAndTomes game) {
         this.GAME = game;
+        game.player = new Player();
+
         batch = new SpriteBatch();
         torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));
         animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
@@ -119,6 +122,7 @@ public class MainMenu extends ScreenAdapter {
                 GAME.setScreen(new MainMenu(GAME));
             }
         });
+
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();

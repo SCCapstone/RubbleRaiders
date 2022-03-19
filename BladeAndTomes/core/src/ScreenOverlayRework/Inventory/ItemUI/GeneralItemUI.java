@@ -38,7 +38,7 @@ public class GeneralItemUI {
 
         // Drawing Hidden General Inventory Slots
         Table generalItems = new Table();
-        generalItems.add(new Label("\tGeneral Items", game.generalLabelStyle)).size(150, 50).colspan(3);
+        generalItems.add(new Label("\t\t      General Items", game.BaseLabelStyle1)).size(150, 50).colspan(3);
         for (int i = 5; i < 14; ++i) {
 
             itemSlot temp = new itemSlot(game, dnd, i, "Any",itemsManager);

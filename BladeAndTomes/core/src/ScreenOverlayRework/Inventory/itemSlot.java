@@ -114,6 +114,10 @@ public class itemSlot extends Actor {
     }
 
 
+    public void setDND(DragAndDrop dnd){
+        this.dnd = dnd;
+    }
+
 
     public itemSlot(itemDocument doc,AssetManager manager){
         BaseSlotTexturePath = "SkinAssets/Inventory/Slot/SlotUI";
@@ -195,7 +199,6 @@ public class itemSlot extends Actor {
 
     public void removeItem(){
         try {
-            System.out.println(removeIndexDoc);
             int itemIndex = Integer.valueOf(removeIndexDoc);
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(itemIndex));
@@ -216,13 +219,17 @@ public class itemSlot extends Actor {
                 int newItem =Integer.valueOf(((Image) payload.getObject()).getName());
                 int currentItem = Integer.valueOf(item.getName());
 
+                if(newItem==15||newItem==14)
+                    return game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("Spell")||(currentItem!=16&&game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("NUll"));
+                if(newItem==16)
+                    return game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("Armor")||((currentItem!=14&&currentItem!=15)&&game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("NUll"));
                 boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(newItem).getCategory())
                         || targetSlot.equalsIgnoreCase("Any"));
                 boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory())
                         || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory()));
                 return (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
                     catch (Exception e){
-                        return true;
+                        return false;
                     }
             }
             @Override
@@ -233,7 +240,6 @@ public class itemSlot extends Actor {
                         int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
                         int currentItem = Integer.valueOf(item.getName());
 
-                        // Swapping Items in Array
                         game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
                         game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
                         game.player.inventoryItems.swap(newItem, currentItem);

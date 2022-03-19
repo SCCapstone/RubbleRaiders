@@ -21,7 +21,6 @@ public class NPCSeller extends TradeUI {
 
     public NPCSeller(BladeAndTomes game, DragAndDrop dnd, AssetManager itemsManager, Array<itemSlot> slots) {
         super(game, dnd, itemsManager, slots, "NPC Seller",true);
-
         seller = new Table();
         trade = new Array<>();
         numberOfTrades = 3;

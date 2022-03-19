@@ -4,6 +4,7 @@ import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
 import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
@@ -22,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Json;
 
 import java.awt.Point;
 
@@ -88,6 +88,8 @@ public class Overworld extends ScreenAdapter {
 
     TownHallQuestBoard questBoardTrade;
     boolean isQuestBoardTradeVisible;
+
+    TreasureChestUI chest;
     int counter;
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
@@ -95,6 +97,8 @@ public class Overworld extends ScreenAdapter {
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
     public Overworld (final BladeAndTomes game) {
+        game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+
         counter = 0;
 
         this.GAME = game;
@@ -253,12 +257,14 @@ public class Overworld extends ScreenAdapter {
         game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
 
+
         npcSeller = game.overlays.generateNewNPSeller();
         isNpcSellerVisible =false;
         npcBuyer = game.overlays.generateNewNPCBuyer();
         isNpcBuyerVisible = false;
         questBoardTrade= game.overlays.generateQuestBoard();
         isQuestBoardTradeVisible = false;
+        chest = game.overlays.generateChest();
 
 
     }
@@ -287,7 +293,6 @@ public class Overworld extends ScreenAdapter {
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
-        System.out.println((int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 );
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
@@ -336,6 +341,17 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
+            isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+            chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
+            GAME.overlays.displayChest(chest);
+        }
+
+
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
     }

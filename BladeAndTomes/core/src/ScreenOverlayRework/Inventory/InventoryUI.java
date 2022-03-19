@@ -6,20 +6,15 @@ import ScreenOverlayRework.Inventory.ItemUI.QuestUI;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import jdk.tools.jmod.Main;
-
-import static com.badlogic.gdx.utils.Align.*;
 
 public class InventoryUI implements Disposable {
     private BladeAndTomes game;
@@ -174,6 +169,10 @@ public class InventoryUI implements Disposable {
 //        table.addActor(Board.getTable());
         return Board;
     }
+    public TreasureChestUI makeTreasureChest(){
+        TreasureChestUI chestUI = new TreasureChestUI(game,dnd,mainItemsUIManager,slots);
+        return chestUI;
+    }
     public NPCSeller makeNPCSeller(){
         NPCSeller npc = new NPCSeller(game,dnd,mainItemsUIManager,slots);
         return npc;
@@ -182,6 +181,22 @@ public class InventoryUI implements Disposable {
         ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer npc=new NPCBuyer(game,dnd,mainItemsUIManager,slots);
         npc.getTable().setVisible(false);
         return npc;
+    }
+    public void displayChest(TreasureChestUI chestUI){
+        if(chestUI.isTreasureChestVisible()){
+            table.addActor(chestUI.getTable());
+            HiddenInventorySlots.setVisible(true);
+            HiddenQuests.setVisible(false);
+            HiddenSkill.setVisible(false);
+            HiddenInventoryTable.setVisible(false);
+            chestUI.addActorStack(HiddenInventorySlots,200,240);
+            chestUI.getTable().setVisible(true);
+        }
+        else{
+            table.removeActor(chestUI.getTable());
+            chestUI.getTable().setVisible(false);
+            chestUI.getTable().removeActor(HiddenInventorySlots);
+        }
     }
 
     public void displayQuestBoardTradeUI(boolean display, TownHallQuestBoard board){
