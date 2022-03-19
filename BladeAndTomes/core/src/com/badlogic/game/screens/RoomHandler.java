@@ -34,6 +34,8 @@ public class RoomHandler {
     private float levelMultiplier;
 
     private final boolean roomLimit[][] = new boolean[10][10];
+    private int X_VAL[];
+    private int Y_VAL[];
 
     //Thanks to baeldung.com for creating a tutorial based on how enum values work,
     //including section 3, which is what the following enum is based on.
@@ -96,6 +98,21 @@ public class RoomHandler {
         }
         //this.goblinTurn = false;
 
+        //Arrays marking the approximate locations of the four doors
+        X_VAL = new int[4];
+        Y_VAL = new int[4];
+
+        X_VAL[0] = (int) stage.getWidth()/2;
+        X_VAL[1] = (int) stage.getWidth() - 3* level.MOVE;
+        X_VAL[2] = level.MOVE*3;
+        X_VAL[3] = (int) stage.getWidth()/2;
+
+        Y_VAL[0] = (int) stage.getHeight() - 2*level.MOVE;
+        Y_VAL[1] = (int) stage.getHeight()/2;
+        Y_VAL[2] = (int) stage.getHeight()/2;
+        Y_VAL[3] = level.MOVE*2;
+
+        //Section sets up the grid so that the player can move around correctly
         int x_start = 264;
         int y_start = 152;
         for (int i = 0; i < GRID_X_SQUARE; i++) {
@@ -105,16 +122,21 @@ public class RoomHandler {
             GRID_Y[i] = y_start + 64 * (i + 1);
         }
 
+        //Makes sure to start from the starter room and moves on from there
         generateLevelLayout(4);
 
     }
 
+    /**
+     * Continuously generates several levels so that it always ensures that the player can explore 10
+     * Rooms before moving on to the next "level".
+     * @param entrance - Where the door entrance the recursive function goes through is.
+     */
     public void generateLevelLayout(int entrance) {
         Room temp = this.level;
-        int exit = entrance == 1 ? 4 : entrance == 2 ? 3 : entrance == 3 ? 2 : 1;
         for(int i = 0; i < 4; i++) {
             if (temp.getDoorSingle(i+1) == null &&
-                    exit != (i+1) ) {
+                    ((temp.getRoomID() >> (3-i)) & 1) == 1 ) {
 
                 generateRoom(i+1, false, temp, false);
 
@@ -125,8 +147,7 @@ public class RoomHandler {
                 if(levelsGenerated >= MAX_GEN_LEVELS){
                     return;
                 }
-
-                generateLevelLayout(exit);
+                generateLevelLayout(entrance);
             }
         }
     }
@@ -139,24 +160,24 @@ public class RoomHandler {
     public boolean movement() {
 
         // If the player enters a door, then take that player to the new room if that room exists
-        if(!combatFlag && level.X_VAL[0] <= player.playerIcon.getX() &&
-                level.X_VAL[0] + 3*level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[0] <= player.playerIcon.getY()) {
+        if(!combatFlag && X_VAL[0] - level.MOVE <= player.playerIcon.getX() &&
+                X_VAL[0] + 2*level.MOVE >= player.playerIcon.getX() &&
+                Y_VAL[0] <= player.playerIcon.getY()) {
             return moveIntoRoom(1);
         }
-        else if(!combatFlag && level.X_VAL[1] <= player.playerIcon.getX() &&
-                level.Y_VAL[1] <= player.playerIcon.getY() &&
-                level.Y_VAL[1] + 3*level.MOVE >= player.playerIcon.getY()) {
+        else if(!combatFlag && X_VAL[1] <= player.playerIcon.getX() &&
+                Y_VAL[1] - 2*level.MOVE <= player.playerIcon.getY() &&
+                Y_VAL[1] + 1*level.MOVE >= player.playerIcon.getY()) {
             return moveIntoRoom(2);
         }
-        else if(!combatFlag && level.X_VAL[2] >= player.playerIcon.getX() &&
-                level.Y_VAL[2] + 2*level.MOVE >= player.playerIcon.getY() &&
-                level.Y_VAL[2] <= player.playerIcon.getY()) {
+        else if(!combatFlag && X_VAL[2] >= player.playerIcon.getX() &&
+                Y_VAL[2] + 1*level.MOVE >= player.playerIcon.getY() &&
+                Y_VAL[2] - level.MOVE*2 <= player.playerIcon.getY()) {
             return moveIntoRoom(3);
         }
-        else if(!combatFlag && level.X_VAL[3] <= player.playerIcon.getX() &&
-                level.X_VAL[3] + 3*level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[3] >= player.playerIcon.getY()) {
+        else if(!combatFlag && X_VAL[3] - level.MOVE <= player.playerIcon.getX() &&
+                X_VAL[3] + 2*level.MOVE >= player.playerIcon.getX() &&
+                Y_VAL[3] >= player.playerIcon.getY()) {
             return moveIntoRoom(4);
         }
         // Makes sure player does not leave bounds
@@ -300,6 +321,7 @@ public class RoomHandler {
         //generates event. Please see TODO
         generateEvent(chamber);
 
+        //flags level to make sure that the level is actually supposed to be moved into
         if(isGenLevel) {
             level = chamber;
         }
@@ -397,25 +419,25 @@ public class RoomHandler {
      */
     public boolean isCollisionHandled()
     {
-        if(player.playerIcon.getX() <= level.X_VAL[2])
+        if(player.playerIcon.getX() <= X_VAL[2])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() + level.MOVE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() <= level.Y_VAL[3])
+        else if(player.playerIcon.getY() <= Y_VAL[3])
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + level.MOVE);
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getX() >= level.X_VAL[1])
+        else if(player.playerIcon.getX() >= X_VAL[1])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() - level.MOVE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() >= level.Y_VAL[0])
+        else if(player.playerIcon.getY() >= Y_VAL[0])
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - level.MOVE);
@@ -442,9 +464,14 @@ public class RoomHandler {
             //Randomizes goblin positions based on "Grid"
             goblins[i].enemyImage.setPosition(GRID_X[generator.nextInt(GRID_X_SQUARE)],
                     GRID_Y[generator.nextInt(GRID_Y_SQUARE)]);
+            goblins[i].prevX = (int) goblins[i].enemyImage.getX();
+            goblins[i].prevY = (int) goblins[i].enemyImage.getY();
 
             //Adds goblins to the stage
             stage.addActor(goblins[i].enemyImage);
+            goblins[i].healthBar.setPosition(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY()-12);
+            goblins[i].healthBar.setSize(64, 12);
+            stage.addActor(goblins[i].healthBar);
         }
     }
 
@@ -457,11 +484,58 @@ public class RoomHandler {
             if(goblins[i] == null) {
                 continue;
             }
+
+            //Distance between player and goblin
             float x_distance = goblins[i].enemyImage.getX() - player.playerIcon.getX();
             float y_distance = goblins[i].enemyImage.getY() - player.playerIcon.getY();
+
+            //Pushes player back if player tries to walk into Goblin
             if(x_distance < 64 && x_distance > -64 &&
                     y_distance < 64 && y_distance > -64) {
-                player.playerIcon.setPosition(player.playerIcon.getX() - level.MOVE, player.playerIcon.getY());
+                player.playerIcon.setPosition(player.getPrevX(), player.getPrevY());
+            }
+
+            // Goes the
+            for(int j = 0; j<numOfGoblins; j++) {
+
+                //Movement directions
+                int random_dir = generator.nextInt(5);
+
+                //Skips over null values
+                if(goblins[j] == null || goblins[i] == goblins[j]) {
+                    continue;
+                }
+
+                //Checks to make sure the
+                if ((goblins[i].enemyImage.getX() == goblins[j].enemyImage.getX() &&
+                    goblins[i].enemyImage.getY() == goblins[j].enemyImage.getY()) ||
+                    goblins[i].enemyImage.getX() <= X_VAL[2] ||
+                    goblins[i].enemyImage.getX() >= X_VAL[1] ||
+                    goblins[i].enemyImage.getY() >= Y_VAL[0] ||
+                    goblins[i].enemyImage.getY() <= Y_VAL[3]) {
+
+                    //Determines direction goblin moves if they run into/overlap their teammate
+                    if(goblins[i].enemyImage.getX() + 64 <= X_VAL[1] &&
+                        random_dir == 2) {
+                        goblins[i].enemyImage.setPosition(goblins[i].prevX + 64, goblins[i].prevY);
+                        goblins[i].healthBar.setPosition(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY());
+                    }
+                    else if(goblins[i].enemyImage.getX() - 64 <= X_VAL[2] &&
+                            random_dir == 3) {
+                        goblins[i].enemyImage.setPosition(goblins[i].prevX - 64, goblins[i].prevY);
+                        goblins[i].healthBar.setPosition(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY());
+                    }
+                    else if(goblins[i].enemyImage.getY() + 64 <= Y_VAL[0] &&
+                            random_dir == 1) {
+                        goblins[i].enemyImage.setPosition(goblins[i].prevX, goblins[i].prevY + 64);
+                        goblins[i].healthBar.setPosition(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY());
+                    }
+                    else if(goblins[i].enemyImage.getY() - 64 <= Y_VAL[3] &&
+                            random_dir == 4) {
+                        goblins[i].enemyImage.setPosition(goblins[i].prevX, goblins[i].prevY-64);
+                        goblins[i].healthBar.setPosition(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY());
+                    }
+                }
             }
         }
 
@@ -475,6 +549,10 @@ public class RoomHandler {
         }*/
     }
 
+    /**
+     * Get function that returns the number of goblins killed (by the player)
+     * @return - returns the number of goblins killed
+     */
     public int getGoblinsKilled() {
         return goblinsKilled;
     }
@@ -495,8 +573,11 @@ public class RoomHandler {
      * Major method that simplifies and works through combat with enemy creatures (those being goblins).
      */
     public void handleCombat() {
+
+        //Handles player movement
         movement();
 
+        //If player moves and it's no longer his turn, make sure to flag goblin's turn
         if(!player.isTurn) {
             for(int i = 0; i<numOfGoblins; i++) {
                 if(goblins[i] == null) {
@@ -506,11 +587,16 @@ public class RoomHandler {
             }
         }
 
+        //Handles goblin collision. May move to a better position
         collisionBodyHandler();
 
         //Player attack based on Miller Banford's original code, but modified to check for squad of goblins
+        //Handles player's attack and killing goblins if the attack is successful
         for(int i = 0; i<numOfGoblins; i++) {
             if(goblins[i] == null) {
+
+                //Makes sure to label player's turn
+                //if the last goblin is dead
                 if(i + 1 == numOfGoblins) {
                     player.isTurn = true;
                 }
@@ -525,6 +611,7 @@ public class RoomHandler {
                 int hitRoll = generator.nextInt(20) + 1;
                 if (hitRoll >= goblins[i].getArmorPoints()) {
                     goblins[i].damageTaken(player.getPhysical());
+                    goblins[i].updateHealth();
                 }
                 player.isTurn = false;
 
@@ -536,6 +623,8 @@ public class RoomHandler {
                 }
             }
 
+
+            //Removes goblins that were killed in players turn
             if (goblins[i].checkIfDead()) {
                 goblins[i].remove();
                 goblins[i] = null;
@@ -544,10 +633,13 @@ public class RoomHandler {
                     combatFlag = false;
                     level.setMapID(0);
                     numOfGoblins = 0;
+                    levelsExplored++;
                     return;
                 }
             }
 
+
+            //Takes care of Goblin's turn
             if(!player.isTurn && goblins[i] != null){
 
                 if(goblins[i].movement()) {
@@ -558,16 +650,20 @@ public class RoomHandler {
                 if(goblins[i].isTurn && x_distance < 96 && x_distance > -96 &&
                         y_distance < 96 && y_distance > -96) {
                     player.setHealthPoints(player.getHealthPoints() - goblins[i].attackPlayer());
+
+                    //Update's player's health in order to keep it going
                     try {
                         inventory.updateHealth();
                     }
                     catch (Exception e){
-
                     }
+
+                    //Make's sure to mark of goblin's turn
                     goblins[i].isTurn = false;
                 }
             }
 
+            //Makes sure to end goblin's turn in order to allow for player to have a turn.
             if(i + 1 == numOfGoblins) {
                 player.isTurn = true;
             }

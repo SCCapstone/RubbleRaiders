@@ -53,6 +53,8 @@ public class Player extends Entity {
     final int left = controls.getMoveLeft();
     final int right = controls .getMoveRight();*/
 
+    private int prevX;
+    private int prevY;
 
     /**
      * Default constructor for player entity
@@ -92,6 +94,8 @@ public class Player extends Entity {
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
+                prevX = (int) playerIcon.getX();
+                prevY = (int) playerIcon.getY();
                 switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
@@ -149,6 +153,8 @@ public class Player extends Entity {
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
+                prevX = (int) playerIcon.getX();
+                prevY = (int) playerIcon.getY();
                 switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
@@ -180,6 +186,22 @@ public class Player extends Entity {
 
     public String getId() {
         return id;
+    }
+
+    public int getPrevX() {
+        return this.prevX;
+    }
+
+    public int getPrevY() {
+        return this.prevY;
+    }
+
+    public void setPrevX(int num) {
+        this.prevX = num;
+    }
+
+    public void setPrevY(int num) {
+        this.prevY = num;
     }
 
     public int getPhysical() {

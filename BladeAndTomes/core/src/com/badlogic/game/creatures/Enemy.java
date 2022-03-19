@@ -1,11 +1,16 @@
 package com.badlogic.game.creatures;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class Enemy extends Entity{
 
@@ -17,10 +22,8 @@ public abstract class Enemy extends Entity{
     public abstract int attackPlayer();
 
     public Enemy(int healthPoints, int fullHealth, int armorPoints, int movement, int height, int width, Player player) {
-
         super(healthPoints, fullHealth, armorPoints, movement, height, width);
         this.player = player;
-
     }
 
     /**

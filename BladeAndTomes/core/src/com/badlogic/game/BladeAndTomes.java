@@ -166,6 +166,7 @@ public class BladeAndTomes extends Game {
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
         _bgmusic = new BackGroundMusic();
+        //_bgmusic.setMute(true); //This is to not make my ears bleed when I do things within the project
         _bgmusic.playMusic();
 
         // Inventory Things
@@ -345,12 +346,12 @@ public class BladeAndTomes extends Game {
         stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
         stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
 
-        if (width < 1280) {
+       /* if (width < 1280) {
             Gdx.graphics.setWindowedMode(1280, height);
         }
         if (height < 720) {
             Gdx.graphics.setWindowedMode(width, 720);
-        }
+        }*/
     }
 
     /**

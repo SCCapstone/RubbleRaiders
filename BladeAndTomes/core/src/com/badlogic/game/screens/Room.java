@@ -18,11 +18,12 @@ public class Room {
     private AssetManager assetManager;
     private int roomX, roomY;
     private boolean levelExplored;
+    private Stage stage;
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    final public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*4, Gdx.graphics.getWidth()/2};
-    final public int Y_VAL[] = {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2,  Gdx.graphics.getHeight()/2, MOVE*2};
+    public int X_VAL[]; //= {(int) stage.getWidth()/2, (int) stage.getWidth() - MOVE, MOVE*4, (int) stage.getWidth()/2};
+    public int Y_VAL[]; //= {(int) stage.getHeight(), (int) stage.getHeight()/2,  (int) stage.getHeight()/2, MOVE*2};
 
     /**
      * Public constructor for creating a room. Usually just a blank, default room
@@ -42,6 +43,28 @@ public class Room {
         this.roomID = 1;
         this.mapID = 0;
         this.levelExplored = false;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        // X_VAL and Y_VAL just note the locations of the doors
+        // (because they are at the center of each side of the map)
+        X_VAL = new int[4];
+        Y_VAL = new int[4];
+
+        X_VAL[0] = (int) stage.getWidth()/2;
+        X_VAL[1] = (int) stage.getWidth() - 3*MOVE;
+        X_VAL[2] = MOVE*3;
+        X_VAL[3] = (int) stage.getWidth()/2;
+
+        Y_VAL[0] = (int) stage.getHeight() - 2*MOVE;
+        Y_VAL[1] = (int) stage.getHeight()/2;
+        Y_VAL[2] = (int) stage.getHeight()/2;
+        Y_VAL[3] = MOVE*2;
+
+       // X_VAL = {(int) stage.getWidth()/2, (int) stage.getWidth() - MOVE, MOVE*4, (int) stage.getWidth()/2};
+       // Y_VAL = {(int) stage.getHeight(), (int) stage.getHeight()/2,  (int) stage.getHeight()/2, MOVE*2};
     }
 
     /**
