@@ -2,8 +2,10 @@ package com.badlogic.game.screens;
 
 import ScreenOverlay.MainInventory;
 import ScreenOverlayRework.OverlayManager;
+import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -89,6 +91,7 @@ public class RoomHandler {
         for(int i = 0; i < GRID_Y_SQUARE; i++) {
             GRID_Y[i] = y_start + 64*(i+1);
         }
+        goblins = new Goblin[0];
     }
 
     /**
@@ -361,6 +364,8 @@ public class RoomHandler {
             stage.addActor(goblins[i].enemyImage);
         }
     }
+
+    public Goblin[] getGoblins() { return goblins; }
 
     /**
      * Checks to make sure the player is not going into the goblin's space and moves the player to be in front of the

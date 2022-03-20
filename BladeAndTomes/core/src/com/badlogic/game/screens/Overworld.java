@@ -5,6 +5,7 @@ import ScreenOverlay.MainInventory;
 import Sounds.playerMoveSound;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
@@ -303,8 +304,28 @@ public class Overworld extends ScreenAdapter {
         parseCollision();
 
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
-        /*
+
         GAME.batch.begin();
+        GAME.player.runAnimation(GAME);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveUpAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveDownAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveLeftAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            GAME.player.resetElapsedTime();
+            GAME.player.runMoveRightAnimation();
+        }
+
+        GAME.batch.end();
+        /*
         GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
         GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
                 (float) (GAME.stageInstance.getHeight() * 0.75), tavernHeight, tavernWidth);
