@@ -6,8 +6,13 @@ import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.Random;
 
@@ -36,6 +41,10 @@ public class RoomHandler {
     private final boolean roomLimit[][] = new boolean[10][10];
     private int X_VAL[];
     private int Y_VAL[];
+
+    private boolean rangedFlag;
+    private boolean magicFlag;
+    private int selectionIndex;
 
     //Thanks to baeldung.com for creating a tutorial based on how enum values work,
     //including section 3, which is what the following enum is based on.
@@ -73,6 +82,7 @@ public class RoomHandler {
     private Player player;
     private int levelNum;
     private OverlayManager inventory;
+    private Image selectionImage;
 
     /**
      * Constructor for the "RoomHandler" or the linked list handler
@@ -91,6 +101,57 @@ public class RoomHandler {
         this.goblinsKilled = 0;
         this.roomLimit[4][4] = true;
         this.remainingGoblin = numOfGoblins;
+        this.rangedFlag = false;
+        this.selectionImage = new Image(new Texture(Gdx.files.internal("selection.png")));
+        this.selectionIndex = 0;
+
+        selectionImage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+
+                switch(keycode) {
+                    case Input.Keys.RIGHT:
+                        if(selectionIndex >= numOfGoblins-1) {
+                            selectionIndex = 0;
+                        }
+                        else {
+                            ++selectionIndex;
+                        }
+
+                        while(goblins[selectionIndex] == null) {
+                            ++selectionIndex;
+                            if(selectionIndex == numOfGoblins) {
+                                selectionIndex = 0;
+                            }
+                        }
+
+                        selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
+                        break;
+                    case Input.Keys.LEFT:
+                        if(selectionIndex <= 0) {
+                            selectionIndex = numOfGoblins - 1;
+                        }
+                        else {
+                            --selectionIndex;
+                        }
+
+                        while(goblins[selectionIndex] == null) {
+                            --selectionIndex;
+                            if(selectionIndex < 0) {
+                                selectionIndex = numOfGoblins - 1;
+                            }
+                        }
+
+                        selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
+                        break;
+                    default:
+                        return false;
+                }
+
+                return true;
+            }
+        });
+
         try {
             this.inventory = inventory;
         } catch (Exception e) {
@@ -569,6 +630,75 @@ public class RoomHandler {
         return levelMultiplier;
     }
 
+    public void handleRangeCombat() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            rangedFlag = true;
+        }
+
+        if (rangedFlag) {
+            if(goblins[selectionIndex] == null) {
+                while(goblins[selectionIndex] == null) {
+                    selectionIndex++;
+                    if(selectionIndex == numOfGoblins) {
+                        selectionIndex = 0;
+                    }
+                }
+            }
+            stage.setKeyboardFocus(selectionImage);
+            selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
+            stage.addActor(selectionImage);
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !magicFlag) {
+                player.isTurn = false;
+                rangedFlag = false;
+
+                int hitRoll = generator.nextInt(20) + 1;
+                if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
+                    goblins[selectionIndex].damageTaken(1);
+                    goblins[selectionIndex].updateHealth();
+                }
+                player.isTurn = false;
+
+                for (int j = 0; j < numOfGoblins; j++) {
+                    if (goblins[selectionIndex] == null) {
+                        continue;
+                    }
+                    goblins[selectionIndex].isTurn = true;
+                }
+
+                selectionImage.remove();
+                stage.setKeyboardFocus(player.playerIcon);
+            }
+        }
+    }
+
+    public void handleMagicCombat() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C) && player.getPlayerClass() >= 1) {
+            magicFlag = true;
+        }
+
+
+        //TODO: Cast Spell
+        //Scroll equipped is checked for contents
+        //if self, then cast on self
+
+        if (magicFlag) {
+            //stage.setKeyboardFocus(selectionImage);
+            //stage.addActor(selectionImage);
+            magicFlag = false;
+            player.isTurn = false;
+
+            if(player.getPlayerClass() == 1) {
+                player.setHealthPoints(player.getHealthPoints() + generator.nextInt(4) + player.getMental()/2 + 1);
+                inventory.updateHealth();
+            }
+
+            if(player.getPlayerClass() == 2) {
+                //TODO: CAST SPELL
+            }
+        }
+    }
+
     /**
      * Major method that simplifies and works through combat with enemy creatures (those being goblins).
      */
@@ -590,6 +720,9 @@ public class RoomHandler {
         //Handles goblin collision. May move to a better position
         collisionBodyHandler();
 
+        handleRangeCombat();
+        handleMagicCombat();
+
         //Player attack based on Miller Banford's original code, but modified to check for squad of goblins
         //Handles player's attack and killing goblins if the attack is successful
         for(int i = 0; i<numOfGoblins; i++) {
@@ -607,7 +740,7 @@ public class RoomHandler {
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q) &&
                     x_distance < 96 && x_distance > -96 &&
                     y_distance < 96 && y_distance > -96 &&
-                    player.isTurn) {
+                    player.isTurn && !magicFlag && !rangedFlag) {
                 int hitRoll = generator.nextInt(20) + 1;
                 if (hitRoll >= goblins[i].getArmorPoints()) {
                     goblins[i].damageTaken(player.getPhysical());
