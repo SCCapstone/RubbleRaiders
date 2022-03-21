@@ -1,6 +1,7 @@
 package com.badlogic.game.screens;
 
 import Keyboard_Mouse_Controls.SaveLoadGame;
+import LoadAndSave.LoadSaveManager;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
@@ -130,7 +131,10 @@ public class MainMenu extends ScreenAdapter {
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveOne();
+                GAME.player = GAME.loadSaveManager.loadPlayer(0);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveOne();
                 // names = SaveLoadGame.Gi.getPlayerNames();
                 // saveTime = SaveLoadGame.Gi.getSaveTime();
             }
@@ -139,7 +143,10 @@ public class MainMenu extends ScreenAdapter {
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveTwo();
+                GAME.player = GAME.loadSaveManager.loadPlayer(1);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveTwo();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -147,7 +154,10 @@ public class MainMenu extends ScreenAdapter {
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveThree();
+                GAME.player = GAME.loadSaveManager.loadPlayer(2);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveThree();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -155,7 +165,10 @@ public class MainMenu extends ScreenAdapter {
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveFour();
+                GAME.player = GAME.loadSaveManager.loadPlayer(3);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveFour();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });

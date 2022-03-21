@@ -140,32 +140,28 @@ public class Overworld extends ScreenAdapter {
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(1);
-                SaveLoadGame.saveGameOne();
+                saveGame(0);
             }
         });
         game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(2);
-                SaveLoadGame.saveGameTwo();
+                saveGame(1);
             }
         });
         game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(3);
-                SaveLoadGame.saveGameThree();
+                saveGame(2);
             }
         });
         game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(4);
-                SaveLoadGame.saveGameFour();
+                saveGame(3);
             }
         });
         //Add listeners for the buttons
@@ -352,13 +348,13 @@ public class Overworld extends ScreenAdapter {
         }
 
 
-        GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+        //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
     }
 
     //Save all player data including name, stats, inventory
     public void saveGame(int id){
-        GAME.loadSaveManager.savePlayer(GAME.player,0);
+        GAME.loadSaveManager.savePlayer(GAME.player,id);
         GAME.stageInstance.removeListener(escapePauseOver);
         GAME.stageInstance.clear();
         dispose();
