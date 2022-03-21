@@ -46,6 +46,7 @@ public class Goblin  extends Enemy{
         enemyImage = new Image(enemyTex);
         enemyImage.setSize(64,64);
         isTurn = false;
+        enemyImage.setVisible(false);
 
         idleTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinIdle.atlas"));
         idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
