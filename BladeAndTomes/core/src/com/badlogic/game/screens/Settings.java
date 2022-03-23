@@ -57,6 +57,14 @@ public class Settings extends ScreenAdapter {
     Label inventoryLabel;
     TextField fightKey;
     Label fightLabel;
+    Label item1;
+    TextField item1Key;
+    Label item2;
+    TextField item2Key;
+    Label item3;
+    TextField item3Key;
+    Label item4;
+    TextField item4Key;
     Table volumeTable;
     Table table;
 
@@ -186,7 +194,61 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        //TODO: cursor setting?
+        item1 = new Label("Item Slot 1", GAME.generalLabelStyle);
+        item1.setAlignment(1, 2);
+        item1Key = new TextField(Input.Keys.toString(menuCont.getItem1()), GAME.generalTextFieldStyle);
+        item1Key.setMaxLength(1);
+        item1Key.setAlignment(1);
+        item1Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item1Key, keycode);
+                menuCont.setItem1(keycode);
+                return true;
+            }
+        });
+
+        item2 = new Label("Item Slot 2", GAME.generalLabelStyle);
+        item2.setAlignment(1, 2);
+        item2Key = new TextField(Input.Keys.toString(menuCont.getItem2()), GAME.generalTextFieldStyle);
+        item2Key.setMaxLength(1);
+        item2Key.setAlignment(1);
+        item2Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item2Key, keycode);
+                menuCont.setItem2(keycode);
+                return true;
+            }
+        });
+
+        item3 = new Label("Item Slot 3", GAME.generalLabelStyle);
+        item3.setAlignment(1, 2);
+        item3Key = new TextField(Input.Keys.toString(menuCont.getItem3()), GAME.generalTextFieldStyle);
+        item3Key.setMaxLength(1);
+        item3Key.setAlignment(1);
+        item3Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item3Key, keycode);
+                menuCont.setItem3(keycode);
+                return true;
+            }
+        });
+
+        item4 = new Label("Item Slot 4", GAME.generalLabelStyle);
+        item4.setAlignment(1, 2);
+        item4Key = new TextField(Input.Keys.toString(menuCont.getItem4()), GAME.generalTextFieldStyle);
+        item4Key.setMaxLength(1);
+        item4Key.setAlignment(1);
+        item4Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item4Key, keycode);
+                menuCont.setItem4(keycode);
+                return true;
+            }
+        });
 
         //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
         //and curators of UseOf.org
@@ -263,7 +325,7 @@ public class Settings extends ScreenAdapter {
         table = new Table();
         table.defaults();
         table.setBounds(750,400,500,GAME.stageInstance.getHeight());
-        table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.2f);
+        table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.25f);
         table.add(settingsMusicLabel);
         table.add(settingsMusicSlider).colspan(4).width(table.getWidth()+43);
         table.row().padTop(10f);
@@ -286,6 +348,16 @@ public class Settings extends ScreenAdapter {
         table.add(inventoryKey).left();
         table.add(fightLabel);
         table.add(fightKey).left();
+        table.row();
+        table.add(item1);
+        table.add(item1Key).left();
+        table.add(item2);
+        table.add(item2Key).left();
+        table.row();
+        table.add(item3);
+        table.add(item3Key).left();
+        table.add(item4);
+        table.add(item4Key).left();
         table.row().padTop(10f);
         table.add(settingsQuitOption).center().colspan(4).width(table.getWidth());
 
@@ -328,7 +400,7 @@ public class Settings extends ScreenAdapter {
         try {
             XmlMapper xmlMapper = new XmlMapper();
             try {
-                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.T, Input.Keys.ESCAPE, Input.Keys.E, Input.Keys.Q));
+                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.T, Input.Keys.ESCAPE, Input.Keys.E, Input.Keys.Q, Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4));
 
                 File xmlOutput = new File("Settings.xml");
                 FileWriter fileWriter = new FileWriter(xmlOutput);
