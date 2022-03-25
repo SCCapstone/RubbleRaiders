@@ -136,6 +136,35 @@ public class Overworld extends ScreenAdapter {
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
+
+        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
+        game1.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(0);
+            }
+        });
+        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
+        game2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(1);
+            }
+        });
+        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
+        game3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(2);
+            }
+        });
+        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
+        game4.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame(3);
+            }
+        });
         //Add listeners for the buttons
         savedGames.add(saveBack).padBottom(3f);
         savedGames.row();
@@ -329,6 +358,18 @@ public class Overworld extends ScreenAdapter {
 
     }
 
+        //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+
+
+
+    //Save all player data including name, stats, inventory
+    public void saveGame(int id){
+        GAME.loadSaveManager.savePlayer(GAME.player,id);
+        GAME.stageInstance.removeListener(escapePauseOver);
+        GAME.stageInstance.clear();
+        dispose();
+        GAME.setScreen(new MainMenu(GAME));
+    }
 
     @Override
     public void resize(int width, int height) {

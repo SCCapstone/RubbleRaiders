@@ -2,6 +2,7 @@ package LoadAndSave;
 
 import ScreenOverlayRework.Inventory.itemDocument;
 import com.badlogic.game.creatures.Player;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -90,6 +91,7 @@ public class Load {
              tempPlayer.inventoryItems.get(i).setIndex(String.valueOf(i));
          }
         } catch (Exception e){
+            Gdx.files.local(savePath);
             createDeafultsPlayer();
             tempPlayer = saveParser.fromJson(Player.class,fourPreSets.get(index));
         }
