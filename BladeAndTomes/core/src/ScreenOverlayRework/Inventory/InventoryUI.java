@@ -254,6 +254,9 @@ public class InventoryUI implements Disposable {
 
     public void drawSkills() {
     }
+    public void render(){
+        questUI.render();
+    }
 
 
 

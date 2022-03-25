@@ -34,6 +34,10 @@ public class Load {
         slot.setName("Sword");
         slot.setDamage(10);
         slot.setTargetItem("Any");
+        slot.setItemDescription(
+                String.valueOf(slot.getName())+'\n'+
+                        String.valueOf(slot.getRange())+'\n'+
+                        String.valueOf(slot.getLevel())+'\n');
 
 
         slot = ply.inventoryItems.get(1);
@@ -41,16 +45,26 @@ public class Load {
         slot.setImageLocation(("InventoryItems/Armor/armor.png"));
         slot.setLevel(2);
         slot.setCategory("Armor");
-        slot.setDamage(10);
-        slot.setTargetItem("None");
-
-        slot = ply.inventoryItems.get(2);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
-        slot.setLevel(2);
-        slot.setCategory("Spell");
+        slot.setName("ChestPlate");
         slot.setDamage(10);
         slot.setTargetItem("Any");
+        slot.setItemDescription(
+                String.valueOf(slot.getName())+'\n'+
+                        String.valueOf(slot.getRange())+'\n'+
+                        String.valueOf(slot.getLevel())+'\n');
+
+//        slot = ply.inventoryItems.get(2);
+//        slot.setDefauls = false;
+//        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
+//        slot.setLevel(2);
+//        slot.setCategory("Spell");
+//        slot.setName("Healing");
+//        slot.setDamage(10);
+//        slot.setTargetItem("Any");
+//        slot.setItemDescription(
+//                String.valueOf(slot.getName())+'\n'+
+//                        String.valueOf(slot.getRange())+'\n'+
+//                        String.valueOf(slot.getLevel())+'\n');
         String deafult = saveParser.toJson(ply);
 
         fourPreSets  = new Array<>();
@@ -72,6 +86,9 @@ public class Load {
         Player tempPlayer;
         try{
          tempPlayer = saveParser.fromJson(Player.class,fourPreSets.get(index));
+         for(int i = 0;i<26;++i){
+             tempPlayer.inventoryItems.get(i).setIndex(String.valueOf(i));
+         }
         } catch (Exception e){
             createDeafultsPlayer();
             tempPlayer = saveParser.fromJson(Player.class,fourPreSets.get(index));

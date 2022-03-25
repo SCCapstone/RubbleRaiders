@@ -136,38 +136,6 @@ public class Overworld extends ScreenAdapter {
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
-        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
-        game1.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(1);
-                SaveLoadGame.saveGameOne();
-            }
-        });
-        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
-        game2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(2);
-                SaveLoadGame.saveGameTwo();
-            }
-        });
-        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
-        game3.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(3);
-                SaveLoadGame.saveGameThree();
-            }
-        });
-        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
-        game4.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(4);
-                SaveLoadGame.saveGameFour();
-            }
-        });
         //Add listeners for the buttons
         savedGames.add(saveBack).padBottom(3f);
         savedGames.row();
@@ -252,12 +220,9 @@ public class Overworld extends ScreenAdapter {
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         // For overlays
-//        game.player = game.loadSaveManager.loadPlayer(GAME.currentSaveIndex);
 
         game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
-
-
         npcSeller = game.overlays.generateNewNPSeller();
         isNpcSellerVisible =false;
         npcBuyer = game.overlays.generateNewNPCBuyer();
@@ -317,7 +282,7 @@ public class Overworld extends ScreenAdapter {
         // COMMENT THIS CODE TO GET TRADING WORKING
         if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !isNpcSellerVisible && !isNpcBuyerVisible&&!isQuestBoardTradeVisible)
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.T)&& !isNpcBuyerVisible){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcBuyerVisible){
             isNpcSellerVisible =!isNpcSellerVisible;
             isQuestBoardTradeVisible =false;
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
@@ -351,19 +316,19 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.displayChest(chest);
         }
 
+        // Updates Elements for QuestBord
+        if(isQuestBoardTradeVisible){
+            questBoardTrade.render();
+        }
 
+        GAME.overlays.render();
+//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P))
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
     }
 
-    //Save all player data including name, stats, inventory
-    public void saveGame(int id){
-        GAME.loadSaveManager.savePlayer(GAME.player,0);
-        GAME.stageInstance.removeListener(escapePauseOver);
-        GAME.stageInstance.clear();
-        dispose();
-        GAME.setScreen(new MainMenu(GAME));
-    }
 
     @Override
     public void resize(int width, int height) {

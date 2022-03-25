@@ -1,6 +1,7 @@
 package ScreenOverlayRework.Inventory.ItemUI.Quest;
 
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.utils.Disposable;
 public class QuestUIElements implements Disposable {
     protected transient AssetManager manager;
     protected transient BladeAndTomes game;
+
+
     protected Table table;
     protected transient Texture questTextureBase;
     protected transient ProgressBar questProgressBar;
@@ -64,6 +67,7 @@ public class QuestUIElements implements Disposable {
         manager.load("InventoryItems/Other/QuestBaseLabel/QuestBaseLabel.json",Skin.class, new SkinLoader.SkinParameter("InventoryItems/Other/QuestBaseLabel/QuestBaseLabel.atlas"));
         manager.load("InventoryItems/Other/QuestProgressBar/ProgressBar.json",Skin.class,  new SkinLoader.SkinParameter("InventoryItems/Other/QuestProgressBar/ProgressBar.atlas"));
         manager.load("InventoryItems/Other/QuestTextButton/QuestButton.json",Skin.class,  new SkinLoader.SkinParameter("InventoryItems/Other/QuestTextButton/QuestButton.atlas"));
+
         manager.finishLoading();
         questBarSkin = manager.get("InventoryItems/Other/QuestBaseLabel/QuestBaseLabel.json");
         noQuest = new Label("NO QUEST EQUIPPED",game.BaseLabelStyle2);
@@ -88,11 +92,8 @@ public class QuestUIElements implements Disposable {
         progressBarStack = new Stack();
         baseBackGround = new Label("",questBarSkin);
 
-
         createLabel();
         addLabelActors();
-
-
 
         DisplayAndConditions();
         addQuestButtonSensors();
@@ -162,17 +163,13 @@ public class QuestUIElements implements Disposable {
             }
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(quest.getQuestStatus())
+                if(quest.getQuestStatus()&& isCompleted){
                     if(quest.getsRewardGold())
                     game.player.setGold(game.player.getGold()+reward);
-                    else
-                        game.player.tokens+=reward;
-                    baseBackGround.setText("");
-                    rewardLabel.setVisible(false);
-                    complitionBar.setVisible(false);
-                    remove_complete_button.setVisible(false);
-                    remove_complete_button.setText("");
-                    noQuest.setVisible(true);
+                    else game.player.tokens+=reward;
+                    game.player.kCompleteQuests+=1;
+                    game.player.kEarnedGoldThroughQuest+=reward;
+                }
                     baseBackGround.setText("");
                     rewardLabel.setVisible(false);
                     complitionBar.setVisible(false);
@@ -182,16 +179,35 @@ public class QuestUIElements implements Disposable {
                     isCompleted = false;
                     questAllocated =false;
                     game.player.activeQuests.set(index,null);
-//                    game.player.activeQuests.remove(index);
 
                 super.clicked(event, x, y);
             }
         });
     }
 
-    public void updateLabel(){
-    complitionBar.setValue(quest.getProgressBarVal());
-    isCompleted = quest.getQuestStatus();
+    public void render(){
+        if(questAllocated){
+
+    isCompleted = quest.getQuestStatus(
+            game.player.kAssignations,
+            game.player.kChestsOpened,
+            game.player.kTradesNPCSeller ,
+            game.player.kTradesNPCBuyer ,
+            game.player.kDungeonsExplored,
+            game.player.kUsedPositions,
+            game.player.kCompleteQuests,
+            game.player.kEarnedGoldThroughQuest,
+            game.player.kCloseRangeKills,
+            game.player.kLongRangeKills,
+            game.player.kLevelsCompleted,
+            game.player.kEarnedGoldThroughLevels
+    );
+            complitionBar.setValue(quest.getProgressBarVal());
+            if(isCompleted)
+                remove_complete_button.setText("Claim");
+
+        }
+
     }
 
     public void updateNewQuest(QuestDocument quest){

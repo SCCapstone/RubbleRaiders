@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -46,6 +46,7 @@ public class itemSlot extends Actor {
     protected DragAndDrop.Payload currentPayload;
     protected boolean swappingObj;
     protected AssetManager manager;
+    protected TextTooltip info;
 
 
     /*
@@ -63,6 +64,7 @@ public class itemSlot extends Actor {
         targetSlot - THE SLOT INFO
 
      */
+    protected String itemInfo ="";
 
     public itemSlot(BladeAndTomes GAME,
                     DragAndDrop DND,
@@ -99,15 +101,25 @@ public class itemSlot extends Actor {
             manager.finishLoading();
             toolTip = manager.get(ToolTpPath+".json",Skin.class);
         }
-        TextTooltip info = new TextTooltip("TEST",toolTip);
+        info = new TextTooltip("",toolTip);
         info.setInstant(true);
+        displayInfo();
         table.addListener(info);
 
+    }
+    public void displayInfo() {
+        info.getActor().setText(String.valueOf(game.player.inventoryItems.get(documentIndex).getItemDescription()));
+    }
+
+    public void displayInfo(itemDocument doc) {
+
+        info.getActor().setText(String.valueOf(doc.getItemDescription()));
     }
 
     public itemSlot() {
 
     }
+
 
     public boolean canBuy(){
         return sellingObj;
@@ -119,6 +131,14 @@ public class itemSlot extends Actor {
     }
 
 
+
+    public void applySelection(boolean val){
+        if(val)
+        slot.setColor(Color.DARK_GRAY);
+        else
+            slot.setColor(Color.LIGHT_GRAY);
+
+    }
     public itemSlot(itemDocument doc,AssetManager manager){
         BaseSlotTexturePath = "SkinAssets/Inventory/Slot/SlotUI";
         this.manager = manager;
@@ -130,7 +150,15 @@ public class itemSlot extends Actor {
             manager.finishLoading();
             slotSkin = manager.get(BaseSlotTexturePath+".json",Skin.class);
         }
-
+        Skin toolTip;
+        String ToolTpPath = "InventoryItems/Other/SlotTextToolTip/SlotTextToolTip";
+        if(manager.contains(ToolTpPath+".json",Skin.class)){
+            toolTip = manager.get(ToolTpPath+".json",Skin.class);
+        } else{
+            manager.load(ToolTpPath+".json",Skin.class,new SkinLoader.SkinParameter(ToolTpPath+".atlas"));
+            manager.finishLoading();
+            toolTip = manager.get(ToolTpPath+".json",Skin.class);
+        }
 
         slot = new ImageButton(slotSkin);
         table = new Group();
@@ -141,6 +169,11 @@ public class itemSlot extends Actor {
         item.setSize(65,65);
         item.setPosition(slot.getWidth()*0.15f,slot.getWidth()*0.15f);
         table.addActor(item);
+
+        info = new TextTooltip("",toolTip);
+        info.setInstant(true);
+
+        table.addListener(info);
     }
 
 
@@ -152,6 +185,15 @@ public class itemSlot extends Actor {
         item.setSize(65,65);
         item.setPosition(slot.getWidth()*0.15f,slot.getWidth()*0.15f);
         table.addActor(item);
+        try{
+        displayInfo();
+    }catch (Exception e){}
+    }
+
+    public void updateDrawable(){
+        item.setDrawable(game.player.inventoryItems.get(documentIndex).getImage(manager).getDrawable());
+        displayInfo();
+
     }
     // THIS CLASS LETS ITEM TO BE DRAGGED
     public void applySource(){
@@ -175,10 +217,8 @@ public class itemSlot extends Actor {
             public void dragStop(InputEvent event, float x, float y, int pointer,
                                  DragAndDrop.Payload payload,
                                  DragAndDrop.Target target) {
-                if(target == null)
                     ((Image) payload.getObject()).setVisible(true);
-                else
-                    ((Image) payload.getObject()).setVisible(true);
+
 
                 try{
                     int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
@@ -188,7 +228,12 @@ public class itemSlot extends Actor {
 
                 sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
                         doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
-                        doc.getLevel()==sellingItemlvl;}catch (Exception e){
+                        doc.getLevel()==sellingItemlvl;
+                    displayInfo();
+
+                }catch (Exception e){
+                    displayInfo();
+
                     sellingObj =false;
                 }
             }
@@ -199,12 +244,12 @@ public class itemSlot extends Actor {
 
     public void removeItem(){
         try {
-            int itemIndex = Integer.valueOf(removeIndexDoc);
+            int itemIndex = Integer.valueOf(documentIndex);
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(itemIndex));
             itemTemp.setTargetItem("Null");
             itemTemp.setCategory("Null");
-            item =new Image();
+            item.setDrawable((new Image()).getDrawable());
             game.player.inventoryItems.set(itemIndex,itemTemp);
         }catch (Exception e){
             System.out.println(e);
@@ -215,7 +260,8 @@ public class itemSlot extends Actor {
         dnd.addTarget(targetLister = new DragAndDrop.Target(table){
             @Override
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-                    try{
+
+                try{
                 int newItem =Integer.valueOf(((Image) payload.getObject()).getName());
                 int currentItem = Integer.valueOf(item.getName());
 
@@ -227,7 +273,7 @@ public class itemSlot extends Actor {
                         || targetSlot.equalsIgnoreCase("Any"));
                 boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory())
                         || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory()));
-                return (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
+                        return (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
                     catch (Exception e){
                         return false;
                     }
@@ -235,29 +281,25 @@ public class itemSlot extends Actor {
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
 
-                try {
-                   {
-                        int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
-                        int currentItem = Integer.valueOf(item.getName());
+                int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
+                int currentItem = Integer.valueOf(item.getName());
+                System.out.println("Before Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
+                game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
+                game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
+                game.player.inventoryItems.swap(newItem, currentItem);
+                game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
+                game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
 
-                        game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
-                        game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
-                        game.player.inventoryItems.swap(newItem, currentItem);
-                    }
-
-                }catch (Exception e){
-
-                }
-
-                // Swapping Images
-                {
                 Drawable temp = ((Image) payload.getObject()).getDrawable();
                 ((Image) payload.getObject()).setDrawable(item.getDrawable());
                 item.setDrawable(temp);
-                }
+                displayInfo();
+                System.out.println("After Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
+                if(newItem == 16 ||currentItem == 16)
+                    game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
+                    System.out.println(game.player.playerDefence );
             }
         });
-
     }
 
     public DragAndDrop.Source getSourceLister() {

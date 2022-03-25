@@ -90,6 +90,10 @@ public class OverlayManager implements Disposable {
         inventory.setHiddenInventoryVisibility(val);
     }
 
+    public void render(){
+        inventory.render();
+        healthBar.update();
+    }
 
     public void setOverLayesVisibility(boolean value) {
         game.stageInstance.addActor(table);

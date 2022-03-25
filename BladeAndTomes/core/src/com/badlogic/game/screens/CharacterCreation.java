@@ -53,6 +53,7 @@ public class CharacterCreation extends ScreenAdapter {
 
         //Instance for the game
         this.GAME = game;
+
         batch = new SpriteBatch();
 
         points = 9;
@@ -321,6 +322,7 @@ public class CharacterCreation extends ScreenAdapter {
             }
         });
         GAME.stageInstance.addActor(exitButton);
+
     }
 
     public void setSecondaryStats(){
@@ -348,6 +350,7 @@ public class CharacterCreation extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+
 
         /*
         // Need a getter for the camera class

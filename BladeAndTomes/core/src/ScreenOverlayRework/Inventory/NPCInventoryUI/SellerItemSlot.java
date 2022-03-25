@@ -91,6 +91,7 @@ public class SellerItemSlot extends itemSlot {
                 if(addBack){
 
                     slot.removeActor(cancelLabel);
+
                     tradeComplete();
                 } else{
                     cancelLabel.setText("No Slots Empty!");
@@ -108,6 +109,18 @@ public class SellerItemSlot extends itemSlot {
         });
         sellingObj = false;
         currentPayload = null;
+        Skin toolTip;
+        String ToolTpPath = "InventoryItems/Other/SlotTextToolTip/SlotTextToolTip";
+        if(manager.contains(ToolTpPath+".json",Skin.class)){
+            toolTip = manager.get(ToolTpPath+".json",Skin.class);
+        } else{
+            manager.load(ToolTpPath+".json",Skin.class,new SkinLoader.SkinParameter(ToolTpPath+".atlas"));
+            manager.finishLoading();
+            toolTip = manager.get(ToolTpPath+".json",Skin.class);
+        }
+        info = new TextTooltip("",toolTip);
+        info.setInstant(true);
+        item.addListener(info);
     }
 
     public boolean addBackToInventory(itemDocument newItemDoc){
@@ -120,6 +133,8 @@ public class SellerItemSlot extends itemSlot {
                 game.player.inventoryItems.set(i,newItemDoc);
                 itemSlot slot = slots.get(i);
                 slot.getItem().setDrawable(newItemDoc.getImage(manager).getDrawable());
+                slot.displayInfo();
+
                 return true;
             }
         }
@@ -158,9 +173,6 @@ public class SellerItemSlot extends itemSlot {
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
-                int sellingItemlvl = game.player.inventoryItems.get(sellingItemIndex).getLevel();
-//                String sellingItemCategory = game.inventoryItems.get(sellingItemIndex).getCategory();
-//                String sellingItemName = game.inventoryItems.get(sellingItemIndex).getName();
                     Drawable temp = ((Image) payload.getObject()).getDrawable();
                     ((Image) payload.getObject()).setDrawable(item.getDrawable());
                     item.setDrawable(temp);

@@ -23,8 +23,6 @@ public class QuestUI {
         currentQuests = new Array<>();
         for (int i = 0; i < 4;++i){
             QuestUIElements doc = new QuestUIElements(game,manager,game.player.activeQuests.get(i),250,25*(17-5*i),i);
-            if(game.player.activeQuests.get(i)!=null)
-           System.out.println( game.player.activeQuests.get(i).getQuestDescription());
             currentQuests.add(doc);
             table.addActor(doc.getTable());
         }
@@ -32,6 +30,13 @@ public class QuestUI {
     }
     public void updateIndex(int i){
         currentQuests.get(i).updateNewQuest(game.player.activeQuests.get(i));
+    }
+    public void render(){
+        currentQuests.get(0).render();
+        currentQuests.get(1).render();
+        currentQuests.get(2).render();
+        currentQuests.get(3).render();
+
     }
 
     public Table getTable(){

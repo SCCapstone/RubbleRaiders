@@ -36,6 +36,7 @@ public class Player extends Entity {
     private int barter;
     private int awareness;
     private int intuition;
+
     private int gold;
     private String id;
     private String name;
@@ -43,13 +44,25 @@ public class Player extends Entity {
     public transient MainMenuControls controls;
 
     public boolean updateQuest;
+
+    // Follow variables are used for quests
     public int kAssignations;
     public int kDeaths;
     public int kDungeonsExplored;
     public int kTradesNPCSeller;
     public int kTradesNPCBuyer;
     public int kChestsOpened;
+    public int kUsedPositions;
+    public int kCompleteQuests;
+    public int kEarnedGoldThroughQuest;
+    public int kCloseRangeKills;
+    public int kLongRangeKills;
+    public int kLevelsCompleted;
+    public int kEarnedGoldThroughLevels;
+    // End of variables are used for quests
 
+    // Player's Defence
+    public int playerDefence;
 
     // Movement Sound
     transient playerMoveSound playerMovenSound;
@@ -84,6 +97,7 @@ public class Player extends Entity {
         this.name = "";
         this.isTurn = true;
         tokens = 0;
+        playerDefence = 0;
 
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
@@ -116,19 +130,15 @@ public class Player extends Entity {
                 switch(keycode) {
                     case Input.Keys.UP:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
-                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
-                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
-                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
-                        playerMovenSound.playMoveSound();
                         break;
                     default:
                         return false;
@@ -145,6 +155,14 @@ public class Player extends Entity {
         kTradesNPCSeller = 0;
         kTradesNPCBuyer = 0;
         kChestsOpened = 0;
+        kUsedPositions =0;
+        kCompleteQuests =0;
+        kEarnedGoldThroughQuest = 0;
+        kCloseRangeKills = 0;
+        kLongRangeKills = 0;
+        kLevelsCompleted = 0;
+        kEarnedGoldThroughLevels = 0;
+
         if(activeQuests == null)
         activeQuests = new Array<>();
         updateQuest = false;
@@ -158,7 +176,7 @@ public class Player extends Entity {
 
        activeQuests.add(null);
        activeQuests.add(null);
-        activeQuests.add(null);
+       activeQuests.add(null);
        activeQuests.add(null);
 
     }
@@ -232,13 +250,17 @@ public class Player extends Entity {
         kTradesNPCSeller = 0;
         kTradesNPCBuyer = 0;
         kChestsOpened = 0;
-        for (int i = 0; i < 26; ++i) {
-            itemDocument itemTemp = new itemDocument();
-            itemTemp.setIndex(String.valueOf(i));
-            itemTemp.setTargetItem("Null");
-            itemTemp.setCategory("Null");
-            inventoryItems.add(itemTemp);
-        }
+        kUsedPositions =0;
+        kCompleteQuests =0;
+
+        kEarnedGoldThroughQuest = 0;
+        kCloseRangeKills = 0;
+        kLongRangeKills = 0;
+        kLevelsCompleted = 0;
+        kEarnedGoldThroughLevels = 0;
+        playerDefence = 0;
+
+
         activeQuests.add(null);
         activeQuests.add(null);
         activeQuests.add(null);

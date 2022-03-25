@@ -77,8 +77,11 @@ public class MainMenu extends ScreenAdapter {
      * @param game - Running instance of the game, holding all top level variables.
      */
     public MainMenu(final BladeAndTomes game) {
+
         this.GAME = game;
         game.player = new Player();
+        game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+
 
         batch = new SpriteBatch();
         torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));

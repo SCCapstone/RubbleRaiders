@@ -26,7 +26,7 @@ public class Health implements Disposable {
         healthBarSkin = manager.get(HealthBarPath+".json");
         healthBar = new ProgressBar(0,10,0.5f,false,healthBarSkin);
         healthBar.setValue(game.player.getHealthPoints());
-        HealthLabel = new Label("Health"+String.valueOf(counter),game.generalLabelStyle);
+        HealthLabel = new Label("Health",game.generalLabelStyle);
         HealthLabel.setSize(0,0);
 
         group = new Table();
@@ -36,9 +36,9 @@ public class Health implements Disposable {
         ColorFade();
         healthBar.setColor(change);
         healthBar.setSize(200,20);
-        HealthLabel.setPosition(50,515);
+        HealthLabel.setPosition(-1400,485);
         HealthLabel.setFontScale(1.1f);
-        healthBar.setPosition(0,500);
+        healthBar.setPosition(-1450,475);
         group.addActor(healthBar);
         group.addActor(HealthLabel);
     }

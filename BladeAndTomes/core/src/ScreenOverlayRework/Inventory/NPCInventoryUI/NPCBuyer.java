@@ -59,6 +59,7 @@ public class NPCBuyer extends TradeUI {
 //        slot.applySource();
         slot.applyTarget();
 
+        slot.displayInfo(doc);
         table.add(currentTrade.getItemDocument().getImage(itemsManager)).size(50,50);
         TextButton button = new TextButton("Get "+String.valueOf(price)+" Gold",game.generalTextButtonStyle);
         table.add(button).size(150,70).colspan(3);
@@ -73,6 +74,7 @@ public class NPCBuyer extends TradeUI {
                     game.player.setGold(availableGold + itemPrice);
                     gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
                     slot.tradeComplete();
+                    game.player.kTradesNPCBuyer+=1;
 //                    slot.removeItem();
                 }
 

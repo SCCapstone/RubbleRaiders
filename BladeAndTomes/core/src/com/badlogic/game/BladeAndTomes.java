@@ -89,10 +89,11 @@ public class BladeAndTomes extends Game {
     public int currentInventorySelection;
     public int tokens;
     public int currentSaveIndex;
+    // Resets at the end of each dung
+    public int spellDamageIncrease;
 
     public LoadSaveManager loadSaveManager;
     public itemDocument NullItemDoc;
-
 
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
@@ -100,6 +101,7 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void create() {
+        spellDamageIncrease = 0;
         NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
 

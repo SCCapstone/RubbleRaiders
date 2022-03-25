@@ -16,6 +16,7 @@ public class MainMenuControls {
     private int openPauseMenu;
     private int openInventory;
     private int fightAction;
+    private int slotSelection[];
 
     public MainMenuControls() {
         this.moveUp = Input.Keys.UP;
@@ -26,8 +27,14 @@ public class MainMenuControls {
         this.openPauseMenu = Input.Keys.ESCAPE;
         this.openInventory = Input.Keys.E;
         this.fightAction = Input.Keys.Q;
+        this.slotSelection = new int[]{
+                Input.Keys.NUM_1,
+                Input.Keys.NUM_2,
+                Input.Keys.NUM_3,
+                Input.Keys.NUM_4,
+                Input.Keys.NUM_5,
+        };
     }
-
 
     public MainMenuControls(int moveUp, int moveDown, int moveLeft, int moveRight,
                             int tradeMenu, int openPauseMenu, int openInventory, int fightAction) {
@@ -98,6 +105,9 @@ public class MainMenuControls {
 
     public void setFightAction(int fightAction) { this.fightAction = fightAction; }
 
+    public int getSelection(int index){
+        return slotSelection[index];
+    }
 
 }
 
