@@ -44,7 +44,10 @@ public class RoomHandler {
 
     private boolean rangedFlag;
     private boolean magicFlag;
+    private boolean meleeFlag;
     private int selectionIndex;
+    private float x_distance;
+    private float y_distance;
 
     //Thanks to baeldung.com for creating a tutorial based on how enum values work,
     //including section 3, which is what the following enum is based on.
@@ -87,7 +90,7 @@ public class RoomHandler {
     /**
      * Constructor for the "RoomHandler" or the linked list handler
      */
-    public RoomHandler(Stage stage, Player player, OverlayManager inventory) {
+    public RoomHandler(Stage stage, final Player player, OverlayManager inventory) {
         this.player = player;
         this.stage = stage;
         this.level = new Room();
@@ -104,6 +107,8 @@ public class RoomHandler {
         this.rangedFlag = false;
         this.selectionImage = new Image(new Texture(Gdx.files.internal("selection.png")));
         this.selectionIndex = 0;
+        this.x_distance = 0;
+        this.y_distance = 0;
 
         selectionImage.addListener(new InputListener() {
             @Override
@@ -147,6 +152,9 @@ public class RoomHandler {
                     default:
                         return false;
                 }
+
+                x_distance = goblins[selectionIndex].enemyImage.getX() - player.playerIcon.getX();
+                y_distance = goblins[selectionIndex].enemyImage.getY() - player.playerIcon.getY();
 
                 return true;
             }
@@ -631,11 +639,12 @@ public class RoomHandler {
     }
 
     public void handleRangeCombat() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.R) && !magicFlag
+            && !meleeFlag) {
             rangedFlag = true;
         }
 
-        if (rangedFlag) {
+        if (rangedFlag && !magicFlag) {
             if(goblins[selectionIndex] == null) {
                 while(goblins[selectionIndex] == null) {
                     selectionIndex++;
@@ -644,6 +653,7 @@ public class RoomHandler {
                     }
                 }
             }
+
             stage.setKeyboardFocus(selectionImage);
             selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
             stage.addActor(selectionImage);
@@ -652,7 +662,7 @@ public class RoomHandler {
                 player.isTurn = false;
                 rangedFlag = false;
 
-                int hitRoll = generator.nextInt(20) + 1;
+                int hitRoll = generator.nextInt(20) + player.getPlayerClass()/2 + 1;
                 if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
                     goblins[selectionIndex].damageTaken(1);
                     goblins[selectionIndex].updateHealth();
@@ -673,7 +683,8 @@ public class RoomHandler {
     }
 
     public void handleMagicCombat() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.C) && player.getPlayerClass() >= 1) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C) && player.getPlayerClass() >= 1
+            && !rangedFlag && !meleeFlag) {
             magicFlag = true;
         }
 
@@ -682,7 +693,7 @@ public class RoomHandler {
         //Scroll equipped is checked for contents
         //if self, then cast on self
 
-        if (magicFlag) {
+        if (magicFlag && !rangedFlag) {
             //stage.setKeyboardFocus(selectionImage);
             //stage.addActor(selectionImage);
             magicFlag = false;
@@ -696,6 +707,60 @@ public class RoomHandler {
             if(player.getPlayerClass() == 2) {
                 //TODO: CAST SPELL
             }
+        }
+    }
+
+    public void handleMeleeCombat() {
+        /*if(goblins[index] == null) {
+            //Makes sure to label player's turn
+            //if the last goblin is dead
+            if(index + 1 == numOfGoblins) {
+                player.isTurn = true;
+            }
+            return;
+        }*/
+
+        if (!magicFlag && !rangedFlag && Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+            meleeFlag = !meleeFlag;
+
+            if(goblins[selectionIndex] == null) {
+                while(goblins[selectionIndex] == null) {
+                    selectionIndex++;
+                    if(selectionIndex == numOfGoblins) {
+                        selectionIndex = 0;
+                    }
+                    x_distance = goblins[selectionIndex].enemyImage.getX() - player.playerIcon.getX();
+                    y_distance = goblins[selectionIndex].enemyImage.getY() - player.playerIcon.getY();
+                }
+            }
+            stage.setKeyboardFocus(selectionImage);
+            selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
+            stage.addActor(selectionImage);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) &&
+                !magicFlag && !rangedFlag) {
+            if (x_distance < 96 && x_distance > -96 &&
+                    y_distance < 96 && y_distance > -96) {
+                int hitRoll = generator.nextInt(20) + player.getPlayerClass()/2 + 1;
+                if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
+                    goblins[selectionIndex].damageTaken(player.getPhysical()/2 + 1);
+                    goblins[selectionIndex].updateHealth();
+                }
+
+                for (int j = 0; j < numOfGoblins; j++) {
+                    if (goblins[j] == null) {
+                        continue;
+                    }
+                    goblins[j].isTurn = true;
+                }
+            }
+
+            player.isTurn = false;
+            meleeFlag = false;
+
+            selectionImage.remove();
+            stage.setKeyboardFocus(player.playerIcon);
         }
     }
 
@@ -722,40 +787,20 @@ public class RoomHandler {
 
         handleRangeCombat();
         handleMagicCombat();
+        handleMeleeCombat();
 
         //Player attack based on Miller Banford's original code, but modified to check for squad of goblins
         //Handles player's attack and killing goblins if the attack is successful
         for(int i = 0; i<numOfGoblins; i++) {
-            if(goblins[i] == null) {
 
-                //Makes sure to label player's turn
-                //if the last goblin is dead
+            if(goblins[i] == null) {
                 if(i + 1 == numOfGoblins) {
                     player.isTurn = true;
                 }
                 continue;
             }
-            float x_distance = goblins[i].enemyImage.getX() - player.playerIcon.getX();
-            float y_distance = goblins[i].enemyImage.getY() - player.playerIcon.getY();
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) &&
-                    x_distance < 96 && x_distance > -96 &&
-                    y_distance < 96 && y_distance > -96 &&
-                    player.isTurn && !magicFlag && !rangedFlag) {
-                int hitRoll = generator.nextInt(20) + 1;
-                if (hitRoll >= goblins[i].getArmorPoints()) {
-                    goblins[i].damageTaken(player.getPhysical());
-                    goblins[i].updateHealth();
-                }
-                player.isTurn = false;
 
-                for (int j = 0; j < numOfGoblins; j++) {
-                    if (goblins[i] == null) {
-                        continue;
-                    }
-                    goblins[i].isTurn = true;
-                }
-            }
-
+            //handleMeleeCombat(i);
 
             //Removes goblins that were killed in players turn
             if (goblins[i].checkIfDead()) {
