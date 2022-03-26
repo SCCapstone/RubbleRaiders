@@ -47,7 +47,7 @@ public class itemSlot extends Actor {
     protected boolean swappingObj;
     protected AssetManager manager;
     protected TextTooltip info;
-
+    protected ImageButton imageButtonAddOn;
 
     /*
     TODO
@@ -82,7 +82,7 @@ public class itemSlot extends Actor {
             manager.load(BaseSlotTexturePath+".json",Skin.class,new SkinLoader.SkinParameter(BaseSlotTexturePath+".atlas"));
             manager.finishLoading();
         }
-            slotSkin = manager.get(BaseSlotTexturePath+".json",Skin.class);
+        slotSkin = manager.get(BaseSlotTexturePath+".json",Skin.class);
 
 
 
@@ -90,6 +90,26 @@ public class itemSlot extends Actor {
         table = new Group();
         slot.setSize(100,100);
         table.addActor(slot);
+        if(targetSlot.equalsIgnoreCase("Spell")){
+            if(!manager.contains("InventoryItems/Other/SpellArt/SpellBase"+".json",Skin.class)){
+                manager.load("InventoryItems/Other/SpellArt/SpellBase"+".json",Skin.class,new SkinLoader.SkinParameter("InventoryItems/Other/SpellArt/SpellBase"+".atlas"));
+                manager.finishLoading();
+            }
+             imageButtonAddOn = new ImageButton(manager.get("InventoryItems/Other/SpellArt/SpellBase"+".json",Skin.class));
+            imageButtonAddOn.setSize(60,60);
+            imageButtonAddOn.setPosition(20,20);
+            table.addActor(imageButtonAddOn);
+        }else if(targetSlot.equalsIgnoreCase("armor")){
+            if(!manager.contains("InventoryItems/Other/ArmorBase/ArmorBase"+".json",Skin.class)){
+                manager.load("InventoryItems/Other/ArmorBase/ArmorBase"+".json",Skin.class,new SkinLoader.SkinParameter("InventoryItems/Other/ArmorBase/ArmorBase"+".atlas"));
+                manager.finishLoading();
+            }
+            imageButtonAddOn = new ImageButton(manager.get("InventoryItems/Other/ArmorBase/ArmorBase"+".json",Skin.class));
+            imageButtonAddOn.setSize(60,60);
+            imageButtonAddOn.setPosition(20,20);
+            table.addActor(imageButtonAddOn);
+        }
+
         setItem();
         swappingObj = true;
         Skin toolTip;
@@ -102,6 +122,7 @@ public class itemSlot extends Actor {
             toolTip = manager.get(ToolTpPath+".json",Skin.class);
         }
         info = new TextTooltip("",toolTip);
+
         info.setInstant(true);
         displayInfo();
         table.addListener(info);
@@ -226,8 +247,8 @@ public class itemSlot extends Actor {
                 String sellingItemCategory = game.player.inventoryItems.get(sellingItemIndex).getCategory();
                 String sellingItemName = game.player.inventoryItems.get(sellingItemIndex).getName();
 
-                sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
-                        doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
+                    sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
+                            doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
                         doc.getLevel()==sellingItemlvl;
                     displayInfo();
 
@@ -269,11 +290,15 @@ public class itemSlot extends Actor {
                     return game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("Spell")||(currentItem!=16&&game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("NUll"));
                 if(newItem==16)
                     return game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("Armor")||((currentItem!=14&&currentItem!=15)&&game.player.inventoryItems.get(currentItem).getCategory().equalsIgnoreCase("NUll"));
-                boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(newItem).getCategory())
-                        || targetSlot.equalsIgnoreCase("Any"));
+                        if(targetSlot.equalsIgnoreCase("Spell")) {
+                            targetSlot = "Spells";
+                        }
+
+                boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(newItem).getCategory()) || targetSlot.equalsIgnoreCase("Any"));
                 boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory())
                         || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory()));
-                        return (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
+
+                        return  (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
                     catch (Exception e){
                         return false;
                     }
@@ -297,7 +322,6 @@ public class itemSlot extends Actor {
                 System.out.println("After Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
                 if(newItem == 16 ||currentItem == 16)
                     game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
-                    System.out.println(game.player.playerDefence );
             }
         });
     }

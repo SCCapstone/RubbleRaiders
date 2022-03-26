@@ -30,6 +30,8 @@ public class Player extends Entity {
     private int physical;
     private int mental;
     private int social;
+
+
     private int acrobatics;
     private int bruteforce;
     private int speech;

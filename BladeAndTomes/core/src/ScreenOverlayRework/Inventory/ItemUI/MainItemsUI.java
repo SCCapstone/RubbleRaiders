@@ -61,8 +61,8 @@ public class MainItemsUI {
                             switch (game.player.inventoryItems.get(game.currentInventorySelection).getCategory()){
                                 case "Spells":
                                     if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("HealSpell")){
-                                    game.player.setHealthPoints(game.player.inventoryItems.get(game.currentInventorySelection).getDamage());
-                                    System.out.println(game.player.inventoryItems.get(game.currentInventorySelection).getDamage());
+                                        int playerhealth = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage()+game.player.getHealthPoints(),10);
+                                    game.player.setHealthPoints(playerhealth);
                                     temp.removeItem();
                                     } else if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("StrengthSpell")){
                                     game.spellDamageIncrease = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage(),10);
@@ -73,6 +73,7 @@ public class MainItemsUI {
                                     game.player.inventoryItems.swap(finalI, 16);
                                     slots.get(finalI).updateDrawable();
                                     slots.get(16).updateDrawable();
+                                    game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
                                     break;
                             }
                         }

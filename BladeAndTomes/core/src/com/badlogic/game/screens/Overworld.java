@@ -223,19 +223,6 @@ public class Overworld extends ScreenAdapter {
             }
         });
 
-        saveBack.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveQuit.remove();
-                //GAME.stageInstance.clear();
-                GAME.stageInstance.setKeyboardFocus(null);
-                GAME.stageInstance.addActor(pauseMenu);
-                pauseMenu.add(warning).center().colspan(3);
-                pauseMenu.row();
-                pauseMenu.add(options[0], options[1]).center();
-                GAME.stageInstance.addActor(pauseMenu);
-            }
-        });
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
@@ -353,7 +340,6 @@ public class Overworld extends ScreenAdapter {
         GAME.overlays.render();
 //        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P))
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
     }

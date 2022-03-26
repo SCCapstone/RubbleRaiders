@@ -1,5 +1,6 @@
 package ScreenOverlayRework.Inventory.ItemUI;
 
+import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
@@ -15,6 +16,8 @@ public class GeneralItemUI {
     final private BladeAndTomes game;
     private transient DragAndDrop dnd;
     private Table table;
+    private Table tableMain;
+
     private AssetManager itemsManager;
     private Array<itemSlot> slots;
     public GeneralItemUI(BladeAndTomes GAME,
@@ -27,8 +30,9 @@ public class GeneralItemUI {
         this.dnd = dnd;
         this.itemsManager = itemsManager;
         this.slots = slots;
-
+        tableMain = new Table();
         table = new Table();
+        tableMain.add(table);
 
         create();
     }
@@ -58,7 +62,7 @@ public class GeneralItemUI {
 
         Table SpellItems = new Table();
         SpellItems.align(top | center);
-        SpellItems.add(new Label("\tSpell Items", game.generalLabelStyle)).size(125, 50).colspan(3);
+//        SpellItems.add(new Label("\tSpell Items", game.generalLabelStyle)).size(125, 50).colspan(3);
         for (int i = 14; i < 16; ++i) {
 
             itemSlot temp = new itemSlot(game, dnd, i, "Spell",itemsManager);
@@ -67,17 +71,17 @@ public class GeneralItemUI {
             dnd = temp.getDND();
             slots.add(temp);
             if ((i+1) % 3 == 0) {
-                SpellItems.row();
+                generalItems.row();
             }
-            SpellItems.add(slots.get(i).getSlot()).size(100, 100);
+            generalItems.add(slots.get(i).getSlot()).size(100, 100);
         }
         table.add(SpellItems).top();
 
         // Drawing Hidden Armor Inventory Slots
 
         Table ArmorItems = new Table();
-        ArmorItems.add(new Label("\tArmor Equipped", game.generalLabelStyle)).size(125, 50);
-        ArmorItems.row();
+//        ArmorItems.add(new Label("\tArmor Equipped", game.generalLabelStyle)).size(125, 50);
+//        ArmorItems.row();
 
         for (int i = 16; i < 17; ++i) {
 
@@ -88,12 +92,12 @@ public class GeneralItemUI {
             slots.add(temp);
             if ((i+1) % 3 == 0)
                 SpellItems.row();
-            ArmorItems.add(slots.get(i).getSlot()).size(100, 100);
+            generalItems.add(slots.get(i).getSlot()).size(100, 100);
         }
         table.add(ArmorItems).colspan(10);
     }
 
     public Table getTable(){
-        return table;
+        return tableMain;
     }
 }
