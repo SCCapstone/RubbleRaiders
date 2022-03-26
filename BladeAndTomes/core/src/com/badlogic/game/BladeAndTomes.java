@@ -15,9 +15,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -39,9 +42,11 @@ import java.util.Random;
 // PUT IN CLAYMORE STORM EASTER EGG
 // Put in rick roll easter egg also
 public class BladeAndTomes extends Game {
+    World world;
     ShapeRenderer shapeRenderer;
     public SpriteBatch batch;
     BitmapFont font;
+    Sprite sprite;
     Texture image;
     public Stage stageInstance;
     public final float WINDOWWIDTH = 1920, WINDOWHIGHT = 1080;
@@ -76,7 +81,7 @@ public class BladeAndTomes extends Game {
     public LabelStyle HealthLabelStyle;
 
     public Player player;
-    public Image playerIcon;
+    public Image playerImage;
     public Inventory inventory;
     public BackGroundMusic _bgmusic;
     public Array<itemDocument> inventoryItems;
@@ -147,6 +152,10 @@ public class BladeAndTomes extends Game {
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
+
+        world = new World(new Vector2(0, 0 ),true);
+
+        playerImage = player.playerIcon;
 
         //tokens = 3;
         setTokens(3);
@@ -295,12 +304,6 @@ public class BladeAndTomes extends Game {
 
         this.setScreen(new MainMenu(this));
     }
-    /*
-    public void getCamera() {
-        this.camera = camera;
-    }
-
-     */
 
     public void setTokens(int num){
         tokens = num;
@@ -362,5 +365,13 @@ public class BladeAndTomes extends Game {
         stageInstance.dispose();
         batch.dispose();
         shapeRenderer.dispose();
+    }
+
+    private BodyDef playerDef(Image player) {
+        BodyDef playerBod = new BodyDef();
+        playerBod.type = BodyDef.BodyType.DynamicBody;
+        playerBod.position.set(player.getX() + player.getWidth(),player.getY() + player.getHeight());
+
+        return playerBod;
     }
 }

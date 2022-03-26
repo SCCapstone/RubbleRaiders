@@ -133,7 +133,6 @@ public class MainMenu extends ScreenAdapter {
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveOne();
                 // names = SaveLoadGame.Gi.getPlayerNames();
                 // saveTime = SaveLoadGame.Gi.getSaveTime();
             }
@@ -142,7 +141,6 @@ public class MainMenu extends ScreenAdapter {
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveTwo();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -150,7 +148,6 @@ public class MainMenu extends ScreenAdapter {
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveThree();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -158,7 +155,6 @@ public class MainMenu extends ScreenAdapter {
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveFour();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });

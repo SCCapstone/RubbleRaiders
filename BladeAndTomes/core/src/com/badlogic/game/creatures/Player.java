@@ -3,23 +3,26 @@ package com.badlogic.game.creatures;
 import Keyboard_Mouse_Controls.MainMenuControls;
 import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.awt.geom.Rectangle2D;
 import java.lang.String;
 
 public class Player extends Entity {
@@ -43,8 +46,13 @@ public class Player extends Entity {
     private String id;
     private String name;
     public Image playerIcon;
+    private Sprite sprite;
     //public Texture playerIcon;
     public MainMenuControls controls;
+
+    private World world;
+
+    private Body playerBody;
 
     // Movement Sound
     playerMoveSound playerMovenSound;
@@ -53,6 +61,8 @@ public class Player extends Entity {
     public Rectangle moveSquare;
     public Rectangle rangeSquare;
     public boolean isTurn;
+
+    private ShapeRenderer renderer = new ShapeRenderer();
 
     public InputListener playerInput;
 
@@ -99,7 +109,9 @@ public class Player extends Entity {
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         playerIcon.setVisible(true);
-        playerBody(playerIcon);
+        sprite = new Sprite(new Texture("PlayerIcon.jpg"));
+        playerDef(sprite);
+        //draw(playerIcon, 64f);
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);
 
@@ -134,6 +146,7 @@ public class Player extends Entity {
             {
                 switch(keycode) {
                     case Input.Keys.UP:
+                        //playerIcon.addListener((EventListener) Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 1));
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
@@ -216,7 +229,7 @@ public class Player extends Entity {
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
 
-        playerBody(playerIcon);
+        //playerDef(playerIcon);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
 
@@ -366,10 +379,20 @@ public class Player extends Entity {
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
 
-    public BodyDef playerBody(Image player) {
+
+    private BodyDef playerDef(Sprite player) {
         BodyDef playerBod = new BodyDef();
         playerBod.type = BodyDef.BodyType.DynamicBody;
-        playerBod.position.set(player.getWidth() / 2, player.getHeight() / 2);
+        playerBod.position.set(player.getX() + player.getWidth(),player.getY() + player.getHeight());
+
+        //PolygonShape rectangle = new PolygonShape();
+        //EdgeShape edge = new EdgeShape();
+
+        FixtureDef fd = new FixtureDef();
+        //fd.shape = rectangle;
+        fd.density = 1;
+        fd.friction = 1.0f;
+        fd.restitution = 0.1f;
 
         return playerBod;
     }

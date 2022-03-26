@@ -1,6 +1,6 @@
+
 package Keyboard_Mouse_Controls;
 
-import Xml.GameInfo;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
@@ -15,7 +15,7 @@ public class SaveLoadGame implements Serializable {
     //final BladeAndTomes GAME;
 
     // this info is used for date of save, and other such things
-    public static GameInfo Gi;
+    //public static GameInfo Gi;
 
     // we will import our player class here
     public static Player Pl;
@@ -23,7 +23,7 @@ public class SaveLoadGame implements Serializable {
     public SaveLoadGame(BladeAndTomes game) {
         GAME = game;
     }
-
+    /*
     public static void saveGameOne() {
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("GameSave.sav"));

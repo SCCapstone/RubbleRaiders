@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -60,33 +61,6 @@ public class Overworld extends ScreenAdapter {
     boolean collidedX, collidedY;
 
     private OrthographicCamera camera;
-
-
-    Texture background;
-    Texture chapel;
-    Texture barracks;
-    Texture questBoard;
-    Texture portal;
-    Texture NPCTrader;
-    Texture marketStall;
-    Texture tavern;
-
-    /*
-    // use all this for collision with buildings later
-    private float tavernWidth = 128f;
-    private float tavernHeight = 128f;
-    private float marketStallHeight = 256f;
-    private float marketStallWidth = 196f;
-    private float barracksHeight = 384f;
-    private float barracksWidth = 256f;
-    private float chapelWidth = 196f;
-    private float chapelHeight = 256f;
-    private float questBoardHeight = 64f;
-    private float questBoardWidth = 64f;
-    private float portalHeight = 64f;
-    private float portalWidth = 64f;
-
-     */
 
     Window pauseMenu;
     Label warning;
@@ -130,6 +104,8 @@ public class Overworld extends ScreenAdapter {
         world = new World(new Vector2(0, 0),true);
         worldRender = new Box2DDebugRenderer();
 
+        //playerDef(GAME.player.playerIcon);
+
         parseCollision();
 
         MOVE_DISTANCE = 64;
@@ -138,19 +114,6 @@ public class Overworld extends ScreenAdapter {
 
         collidedX = false;
         collidedY = false;
-
-        /*
-        // Assets were obtained from below source
-        // https://merchant-shade.itch.io/16x16-mini-world-sprites
-        background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
-        chapel = new Texture(Gdx.files.internal("Chapel.jpg"));
-        barracks = new Texture(Gdx.files.internal("Barracks.jpg"));
-        marketStall = new Texture(Gdx.files.internal("MarketBuilding.jpg"));
-        portal = new Texture(Gdx.files.internal("PortalToDungeon.jpg"));
-        questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
-        tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
-        NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
-         */
 
         pauseMenu = new Window("", GAME.generalWindowStyle);
         pauseMenu.setHeight(400);
@@ -175,7 +138,6 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(1);
-                SaveLoadGame.saveGameOne();
             }
         });
         game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
@@ -183,7 +145,6 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(2);
-                SaveLoadGame.saveGameTwo();
             }
         });
         game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
@@ -191,7 +152,6 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(3);
-                SaveLoadGame.saveGameThree();
             }
         });
         game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
@@ -199,7 +159,6 @@ public class Overworld extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 saveGame(4);
-                SaveLoadGame.saveGameFour();
             }
         });
         //Add listeners for the buttons
@@ -299,47 +258,9 @@ public class Overworld extends ScreenAdapter {
 
         renderer.setView(camera);
         renderer.render();
-        //worldRender.render(world, camera.combined);
+        world.step(1f/60f, 6, 2);
+        worldRender.render(world, camera.combined);
         parseCollision();
-
-        // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
-        /*
-        GAME.batch.begin();
-        GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
-        GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
-                (float) (GAME.stageInstance.getHeight() * 0.75), tavernHeight, tavernWidth);
-        GAME.batch.draw(marketStall, GAME.stageInstance.getWidth() / 10, GAME.stageInstance.getWidth() / 10,
-                marketStallHeight, marketStallWidth);
-        GAME.batch.draw(barracks, (float) (GAME.stageInstance.getWidth()* 0.75), (float)
-                (GAME.stageInstance.getHeight() / 4), barracksWidth, barracksHeight);
-        GAME.batch.draw(chapel, (float) (GAME.stageInstance.getWidth()) / 4, (float)
-                (GAME.stageInstance.getHeight() * 0.75), chapelWidth, chapelHeight);
-        GAME.batch.draw(questBoard, (float) (GAME.stageInstance.getWidth()) / 2, (float)
-                (GAME.stageInstance.getHeight() / 2), questBoardWidth, questBoardHeight);
-        GAME.batch.draw(portal, GAME.stageInstance.getWidth() / 2,
-                GAME.stageInstance.getHeight() / 8, portalWidth, portalHeight);
-        GAME.batch.draw(NPCTrader, NPC_Cords.getLocation().x, NPC_Cords.getLocation().y, 64f, 64f);
-
-        GAME.player.runAnimation(GAME);
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveUpAnimation();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveDownAnimation();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveLeftAnimation();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveRightAnimation();
-        }
-        GAME.batch.end();
-         */
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
@@ -349,6 +270,7 @@ public class Overworld extends ScreenAdapter {
             dispose();
             GAME.setScreen(new Dungeon(GAME));
         }
+
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
@@ -373,47 +295,6 @@ public class Overworld extends ScreenAdapter {
         // COMMENT THIS CODE TO GET TRADING WORKING
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
-
-        // UNCOMMENT THIS CODE TO GET TRADING WORKING
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-//            GAME.showtrade =false;
-//            GAME.showtradeBuyer =false;
-//            GAME.showHiddenInventory =!GAME.showHiddenInventory;
-//            GAME.overlays.updateOverlays();
-//
-//        }
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
-//            GAME.overlays.showtradeseller(!GAME.showtrade);
-//            {
-//                GAME.showHiddenInventory =false;
-//                GAME.showtradeBuyer =false;
-//                GAME.overlays.updateOverlays();
-//
-//            }
-//        }
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-//            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
-//            {
-//                GAME.showtrade =false;
-//                GAME.showHiddenInventory =false;
-//                GAME.overlays.updateOverlays();
-//
-//            }
-//        }
-
-//            if(GAME.overlays.reset()){
-//                GAME.overlays.updateOverlays();
-//            }
-
-//        try {
-//            GAME.overlays.updateAll();
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
-        // END
-
-//        GAME.overlays.setOverLayesVisibility(false);
-//        GAME.overlays.setOverLayesVisibility(true);
     }
 
     //Save all player data including name, stats, inventory
@@ -458,6 +339,7 @@ public class Overworld extends ScreenAdapter {
         world.dispose();
         overWorldMap.dispose();
         renderer.dispose();
+        //GAME.stageInstance.dispose();
         //manager.dispose();
     }
 
@@ -524,7 +406,7 @@ public class Overworld extends ScreenAdapter {
                         Body body = world.createBody(bodyDef);
                         PolygonShape polygonShape = new PolygonShape();
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 0.0f);
+                        body.createFixture(polygonShape, 1.0f);
                         polygonShape.dispose();
 
                     }
@@ -539,4 +421,23 @@ public class Overworld extends ScreenAdapter {
         bodyDef.position.set(i, j);
         return bodyDef;
     }
+/*
+    private BodyDef playerDef(Image player) {
+        BodyDef playerBod = new BodyDef();
+        playerBod.type = BodyDef.BodyType.DynamicBody;
+        playerBod.position.set(player.getX() + player.getWidth(),player.getY() + player.getHeight());
+
+        //PolygonShape rectangle = new PolygonShape();
+        //EdgeShape edge = new EdgeShape();
+
+        FixtureDef fd = new FixtureDef();
+        //fd.shape = rectangle;
+        fd.density = 1;
+        fd.friction = 1.0f;
+        fd.restitution = 0.1f;
+
+        return playerBod;
+    }
+
+ */
 }
