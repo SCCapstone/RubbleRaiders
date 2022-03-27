@@ -119,64 +119,15 @@ public class Overworld extends ScreenAdapter {
         NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
 
         pauseMenu = new Window("", GAME.generalWindowStyle);
-        pauseMenu.setHeight(400);
-        pauseMenu.setWidth(600);
+        pauseMenu.setHeight(500);
+        pauseMenu.setWidth(700);
         pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
         saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
-        //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
-        //loadWindow.setBackground();
-        saveQuit.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight());
+        saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
         saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
-        saveBack = new TextButton("Back", GAME.generalTextButtonStyle);
-        saveBack.setSize(100f,50f);
-        saveBack.setColor(Color.LIGHT_GRAY);
-        savedGames = new Table();
-        savedGames.setFillParent(true);
-        savedGames.defaults();
-
-        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
-        game1.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(0);
-            }
-        });
-        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
-        game2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(1);
-            }
-        });
-        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
-        game3.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(2);
-            }
-        });
-        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
-        game4.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(3);
-            }
-        });
-        //Add listeners for the buttons
-        savedGames.add(saveBack).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game1).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game2).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game3).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game4);
-
-        saveQuit.addActor(savedGames);
 
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
@@ -185,9 +136,10 @@ public class Overworld extends ScreenAdapter {
                 {
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
-                    pauseMenu.add(warning).center().colspan(3);
+                    pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
                     pauseMenu.row();
-                    pauseMenu.add(options[0], options[1]).center();
+                    pauseMenu.row();
+                    pauseMenu.add(options[0], options[1]);
                 }
                 return true;
             }
@@ -196,21 +148,23 @@ public class Overworld extends ScreenAdapter {
         GAME.player.playerIcon.addListener(escapePauseOver);
 
         warning = new Label("Are you sure you want to Quit?", GAME.generalLabelStyle);
+        warning.setSize(300f, 200f);
+        warning.setAlignment(1,1);
 
         options = new TextButton[] {
-          new TextButton("Save and Quit", GAME.generalTextButtonStyle),
+          new TextButton("Quit", GAME.generalTextButtonStyle),
           new TextButton("Cancel", GAME.generalTextButtonStyle)
         };
 
         options[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //GAME.stageInstance.removeListener(escapePauseOver);
-                //GAME.stageInstance.clear();
+                GAME.stageInstance.clear();
                 pauseMenu.clear();
                 pauseMenu.remove();
-                //dispose();
-                GAME.stageInstance.addActor(saveQuit);
+                dispose();
+                GAME.setScreen(new MainMenu(GAME));
+
             }
         });
 

@@ -109,6 +109,10 @@ public class MainMenuControls {
         return slotSelection[index];
     }
 
+    public void setSelection(int index, int key){
+        slotSelection[index] = key;
+    }
+
 }
 
 

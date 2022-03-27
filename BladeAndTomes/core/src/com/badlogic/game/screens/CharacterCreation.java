@@ -37,6 +37,7 @@ public class CharacterCreation extends ScreenAdapter {
     Boolean warrior;
 
     String name;
+    TextButton backButton;
 
     int selection;
     /*
@@ -62,6 +63,18 @@ public class CharacterCreation extends ScreenAdapter {
         wizard = false;
         cleric = false;
 
+
+        backButton = new TextButton("Back to Menu", GAME.generalTextButtonStyle);
+        backButton.setSize(120f, 65f);
+        backButton.setPosition(50, GAME.stageInstance.getHeight()-100);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GAME.stageInstance.clear();
+                GAME.setScreen(new MainMenu(GAME));
+            }
+        });
+        GAME.stageInstance.addActor(backButton);
         //Text Field for the Name
         nameField = new TextField("", GAME.generalTextFieldStyle);
         nameField.setAlignment(1);
