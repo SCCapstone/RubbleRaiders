@@ -119,7 +119,7 @@ public class Overworld extends ScreenAdapter {
     public Overworld (final BladeAndTomes game) {
 
         this.GAME = game;
-        GAME.player.resetElapsedTime();
+        GAME.resetElapsedTime();
         objectLayerId = 2;
 
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
@@ -306,22 +306,22 @@ public class Overworld extends ScreenAdapter {
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 
         GAME.batch.begin();
-        GAME.player.runAnimation(GAME);
+        GAME.runPlayerAnimation();
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveUpAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveUpAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveDownAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveDownAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveLeftAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveLeftAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveRightAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveRightAnimation();
         }
 
         GAME.batch.end();

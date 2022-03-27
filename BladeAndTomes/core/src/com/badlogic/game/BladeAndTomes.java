@@ -10,13 +10,12 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -89,6 +88,23 @@ public class BladeAndTomes extends Game {
     public final int MOVE_DISTANCE = 64;
 
     public int tokens;
+
+    private TextureAtlas idleTextureAtlas;
+    private transient Animation<TextureRegion> idleAnimation;
+    private TextureAtlas moveDownTextureAtlas;
+    private transient Animation<TextureRegion> moveDownAnimation;
+    private TextureAtlas moveUpTextureAtlas;
+    private transient Animation<TextureRegion> moveUpAnimation;
+    private TextureAtlas moveLeftTextureAtlas;
+    private transient Animation<TextureRegion> moveLeftAnimation;
+    private TextureAtlas moveRightTextureAtlas;
+    private transient Animation<TextureRegion> moveRightAnimation;
+    private TextureAtlas attackDownTextureAtlas;
+    private transient Animation<TextureRegion> attackDownAnimation;
+    private transient Animation<TextureRegion> currentAnimation;
+    public float elapsedTime;
+
+    private final AssetManager manager = new AssetManager();
 
     public static class quest {
         String goal;
@@ -213,11 +229,36 @@ public class BladeAndTomes extends Game {
         stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
 
         //Sets upstate and downstate textures for texture Buttons
-        generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
-        generalTextButtonDownState = new Texture(Gdx.files.internal("Text_Button_Down_State.jpg"));
-        inventoryTextButtonState = new Texture(Gdx.files.internal("inventorySlot.png"));
-        inventoryBase1 = new Texture(Gdx.files.internal("inventoryBaseImage.png"));
-        inventoryBase2 = new Texture(Gdx.files.internal("inventoryBaseImage2.png"));
+        manager.load("Text_Button_Up_State.jpg", Texture.class);
+        manager.load("Text_Button_Down_State.jpg", Texture.class);
+        manager.load("inventorySlot.png", Texture.class);
+        manager.load("inventoryBaseImage.png", Texture.class);
+        manager.load("inventoryBaseImage2.png", Texture.class);
+        manager.load("AnimationFiles/playerIdle.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerMoveUp.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerMoveDown.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerMoveLeft.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerMoveRight.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerAttackDown.atlas", TextureAtlas.class);
+        manager.finishLoading();
+        generalTextButtonUpState = manager.get("Text_Button_Up_State.jpg");
+        generalTextButtonDownState = manager.get("Text_Button_Down_State.jpg");
+        inventoryTextButtonState = manager.get("inventorySlot.png");
+        inventoryBase1 = manager.get("inventoryBaseImage.png");
+        inventoryBase2 = manager.get("inventoryBaseImage2.png");
+        idleTextureAtlas = manager.get("AnimationFiles/playerIdle.atlas");
+        idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
+        currentAnimation = idleAnimation;
+        moveDownTextureAtlas = manager.get("AnimationFiles/playerMoveDown.atlas");
+        moveDownAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveDownTextureAtlas.getRegions());
+        moveUpTextureAtlas = manager.get("AnimationFiles/playerMoveUp.atlas");
+        moveUpAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveUpTextureAtlas.getRegions());
+        moveLeftTextureAtlas = manager.get("AnimationFiles/playerMoveLeft.atlas");
+        moveLeftAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveLeftTextureAtlas.getRegions());
+        moveRightTextureAtlas = manager.get("AnimationFiles/playerMoveRight.atlas");
+        moveRightAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveRightTextureAtlas.getRegions());
+        attackDownTextureAtlas = manager.get("AnimationFiles/playerAttackDown.atlas");
+        attackDownAnimation = new Animation<TextureRegion>(1/5f, attackDownTextureAtlas.getRegions());
 
         //Sets up the region to be used
         generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);
@@ -362,5 +403,25 @@ public class BladeAndTomes extends Game {
         stageInstance.dispose();
         batch.dispose();
         shapeRenderer.dispose();
+        idleTextureAtlas.dispose();
+        moveDownTextureAtlas.dispose();
+        moveLeftTextureAtlas.dispose();
+        moveRightTextureAtlas.dispose();
+        moveUpTextureAtlas.dispose();
+        attackDownTextureAtlas.dispose();
     }
+
+    public void resetElapsedTime() { elapsedTime = 0; }
+
+    public void runPlayerAnimation() {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
+    }
+
+    public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
+    public void runMoveUpAnimation() { currentAnimation = moveUpAnimation; }
+    public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
+    public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
+    public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
 }

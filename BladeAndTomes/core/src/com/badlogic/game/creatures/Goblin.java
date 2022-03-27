@@ -3,6 +3,7 @@ package com.badlogic.game.creatures;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -36,6 +37,8 @@ public class Goblin  extends Enemy{
     public boolean isAttacking = false;
     public boolean moving = false;
 
+    private final AssetManager manager = new AssetManager();
+
     /**
      * Paramaterized constuctor that is effectively the default constructor, which just instantiates a normal goblin
      * @param player - player instance so as to allow for the goblin to
@@ -47,20 +50,28 @@ public class Goblin  extends Enemy{
         enemyImage.setSize(64,64);
         isTurn = false;
         enemyImage.setVisible(false);
+        movement = .3f;
 
-        idleTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinIdle.atlas"));
+        manager.load("AnimationFiles/goblinIdle.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/goblinAttack.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/goblinMoveDown.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/goblinMoveUp.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/goblinMoveLeft.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/goblinMoveRight.atlas", TextureAtlas.class);
+        manager.finishLoading();
+        idleTextureAtlas = manager.get("AnimationFiles/goblinIdle.atlas");
         idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
         currentAnimation = idleAnimation;
-        attackTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinAttack.atlas"));
+        attackTextureAtlas = manager.get("AnimationFiles/goblinAttack.atlas");
         attackAnimation = new Animation<TextureRegion>(1/3f, attackTextureAtlas.getRegions());
-        moveDownTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinMoveDown.atlas"));
-        moveDownAnimation = new Animation<TextureRegion>(1/5f, moveDownTextureAtlas.getRegions());
-        moveUpTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinMoveUp.atlas"));
-        moveUpAnimation = new Animation<TextureRegion>(1/5f, moveUpTextureAtlas.getRegions());
-        moveLeftTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinMoveLeft.atlas"));
-        moveLeftAnimation = new Animation<TextureRegion>(1/5f, moveLeftTextureAtlas.getRegions());
-        moveRightTextureAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/goblinMoveRight.atlas"));
-        moveRightAnimation = new Animation<TextureRegion>(1/5f, moveRightTextureAtlas.getRegions());
+        moveDownTextureAtlas = manager.get("AnimationFiles/goblinMoveDown.atlas");
+        moveDownAnimation = new Animation<TextureRegion>(movement/5f, moveDownTextureAtlas.getRegions());
+        moveUpTextureAtlas = manager.get("AnimationFiles/goblinMoveUp.atlas");
+        moveUpAnimation = new Animation<TextureRegion>(movement/5f, moveUpTextureAtlas.getRegions());
+        moveLeftTextureAtlas = manager.get("AnimationFiles/goblinMoveLeft.atlas");
+        moveLeftAnimation = new Animation<TextureRegion>(movement/5f, moveLeftTextureAtlas.getRegions());
+        moveRightTextureAtlas = manager.get("AnimationFiles/goblinMoveRight.atlas");
+        moveRightAnimation = new Animation<TextureRegion>(movement/5f, moveRightTextureAtlas.getRegions());
     }
 
     /**
@@ -71,32 +82,32 @@ public class Goblin  extends Enemy{
         float x_distance = enemyImage.getX() - player.playerIcon.getX();
         float y_distance = enemyImage.getY() - player.playerIcon.getY();
 
-        if((x_distance >= -64 && x_distance <= 64) &&
-                (y_distance >= -64 && y_distance <= 64)) {
+        if((x_distance >= -128 && x_distance <= 128) &&
+                (y_distance >= -128 && y_distance <= 128)) {
             return false;
         }
 
         if(y_distance < -64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,1));
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,.3f));
             moving = true;
             resetElapsedTime();
             runMoveUpAnimation();
         }
         else if(y_distance > 64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,1));
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,.3f));
             moving = true;
             resetElapsedTime();
             runMoveDownAnimation();
         }
 
         if(x_distance < -64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),1));
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),.3f));
             moving = true;
             resetElapsedTime();
             runMoveRightAnimation();
         }
         else if(x_distance > 64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),1));
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),.3f));
             moving = true;
             resetElapsedTime();
             runMoveLeftAnimation();
@@ -128,6 +139,12 @@ public class Goblin  extends Enemy{
     public void remove() {
         enemyImage.remove();
         enemyTex.dispose();
+        idleTextureAtlas.dispose();
+        moveDownTextureAtlas.dispose();
+        moveUpTextureAtlas.dispose();
+        moveLeftTextureAtlas.dispose();
+        moveRightTextureAtlas.dispose();
+        attackTextureAtlas.dispose();
     }
 
     public void runAnimation(BladeAndTomes GAME) {
