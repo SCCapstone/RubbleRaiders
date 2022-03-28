@@ -5,6 +5,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -91,10 +92,14 @@ public class Settings extends ScreenAdapter {
         upKey.addListener(new InputListener(){
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
+                if(event.getPointer() == 0){
                 setControl(upKey, keycode);
                 menuCont.setMoveUp(keycode);
-                return true;
+                event.setPointer(-1);
+                }
+                return false;
             }
+
         });
 
                 //keybinding for Attack on settings page
