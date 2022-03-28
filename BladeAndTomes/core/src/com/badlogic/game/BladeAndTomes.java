@@ -163,6 +163,7 @@ public class BladeAndTomes extends Game {
         quests = new Array<>();
         usedQuests = new Array<>();
 
+
         quests.add(new quest("Kill 5 enemies", 5, false));
         quests.add(new quest("Open 5 chests", 5, false));
         quests.add(new quest("Trade 1 item", 1, false));

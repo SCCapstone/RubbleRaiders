@@ -8,6 +8,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TideMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -94,8 +96,16 @@ public class Overworld extends ScreenAdapter {
         this.GAME = game;
         GAME.player.resetElapsedTime();
         objectLayerId = 2;
+        /*
+        manager = new AssetManager();
+        manager.setLoader(TiledMap.class, new TideMapLoader(new InternalFileHandleResolver()));
+        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+        manager.finishLoading();
+
+         */
 
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        //overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
         collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
 
@@ -106,7 +116,7 @@ public class Overworld extends ScreenAdapter {
 
         //playerDef(GAME.player.playerIcon);
 
-        parseCollision();
+        //parseCollision();
 
         MOVE_DISTANCE = 64;
         doTrade = false;
@@ -260,7 +270,7 @@ public class Overworld extends ScreenAdapter {
         renderer.render();
         world.step(1f/60f, 6, 2);
         worldRender.render(world, camera.combined);
-        parseCollision();
+        //parseCollision();
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
@@ -316,9 +326,11 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void show() {
+        //overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
         //collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(objectLayerId);
         //overWorldMap.getLayers().get(objectLayerId).getProperties().get("blocked");
+        parseCollision();
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
@@ -408,7 +420,6 @@ public class Overworld extends ScreenAdapter {
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
                         body.createFixture(polygonShape, 1.0f);
                         polygonShape.dispose();
-
                     }
                 }
             }

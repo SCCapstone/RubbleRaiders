@@ -110,7 +110,7 @@ public class Player extends Entity {
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         playerIcon.setVisible(true);
         sprite = new Sprite(new Texture("PlayerIcon.jpg"));
-        playerDef(sprite);
+        //playerDef(sprite);
         //draw(playerIcon, 64f);
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);
@@ -379,7 +379,7 @@ public class Player extends Entity {
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
 
-
+    /*
     private BodyDef playerDef(Sprite player) {
         BodyDef playerBod = new BodyDef();
         playerBod.type = BodyDef.BodyType.DynamicBody;
@@ -396,5 +396,6 @@ public class Player extends Entity {
 
         return playerBod;
     }
+     */
 
 }
