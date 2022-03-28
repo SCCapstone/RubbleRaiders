@@ -4,6 +4,8 @@ package com.badlogic.game.screens;
 import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.creatures.Player;
+
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -27,12 +29,14 @@ public class Dungeon extends ScreenAdapter {
     float eventX, eventY, eventSizeX, eventSizeY;
     RoomHandler roomHandler;
 
+    private Goblin[] goblins;
+
     public Dungeon(final BladeAndTomes game) {
 
         //Initial backbone values carried over
         this.GAME = game;
         MOVE_DISTANCE = 64;
-
+        GAME.resetElapsedTime();
         //Clears the stage instance
         GAME.stageInstance.clear();
         //Instances the player's inventory
@@ -53,6 +57,8 @@ public class Dungeon extends ScreenAdapter {
         eventSizeY = 120f;
         eventX = MathUtils.random(360, 1600);
         eventY = MathUtils.random(240, 960);
+
+        goblins = new Goblin[0];
 
         // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
@@ -93,7 +99,49 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-//        inventory.update();
+        GAME.batch.begin();
+        GAME.runPlayerAnimation();
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveUpAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveDownAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveLeftAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveRightAnimation();
+        }
+        if(roomHandler.combatFlag) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                GAME.resetElapsedTime();
+                GAME.runAttackDownAnimation();
+            }
+        }
+        goblins = roomHandler.getGoblins();
+        if(goblins.length > 0){
+            for(Goblin goblin: goblins) {
+                if(goblin != null) {
+                    /*if(goblin.isAttacking) {
+                        goblin.resetElapsedTime();
+                        goblin.runAttackAnimation();
+                    }*/
+                    /*if(goblin.moving) {
+                        goblin.resetElapsedTime();
+                        goblin.runMovingAnimation();
+                    }*/
+                    goblin.runAnimation(GAME);
+                }
+            }
+        }
+        GAME.batch.end();
+        //inventory.update();
 
         //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {

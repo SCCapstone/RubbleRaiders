@@ -17,6 +17,10 @@ public class MainMenuControls {
     private int openInventory;
     private int fightAction;
     private int slotSelection[];
+    private int item1;
+    private int item2;
+    private int item3;
+    private int item4;
 
     public MainMenuControls() {
         this.moveUp = Input.Keys.UP;
@@ -34,10 +38,14 @@ public class MainMenuControls {
                 Input.Keys.NUM_4,
                 Input.Keys.NUM_5,
         };
+        this.item1 = Input.Keys.NUM_1;
+        this.item2 = Input.Keys.NUM_2;
+        this.item3 = Input.Keys.NUM_3;
+        this.item4 = Input.Keys.NUM_4;
     }
 
     public MainMenuControls(int moveUp, int moveDown, int moveLeft, int moveRight,
-                            int tradeMenu, int openPauseMenu, int openInventory, int fightAction) {
+                            int tradeMenu, int openPauseMenu, int openInventory, int fightAction, int item1, int item2, int item3, int item4) {
         this.moveUp = moveUp;
         this.moveDown = moveDown;
         this.moveLeft = moveLeft;
@@ -46,6 +54,17 @@ public class MainMenuControls {
         this.openPauseMenu = openPauseMenu;
         this.openInventory = openInventory;
         this.fightAction = fightAction;
+        this.item1 = item1;
+        this.item2 = item2;
+        this.item3 = item3;
+        this.item4 = item4;
+        this.slotSelection = new int[]{
+                Input.Keys.NUM_1,
+                Input.Keys.NUM_2,
+                Input.Keys.NUM_3,
+                Input.Keys.NUM_4,
+                Input.Keys.NUM_5,
+        };
     }
     // private String viewParty;
     // private String acceptOption
@@ -112,6 +131,38 @@ public class MainMenuControls {
     public void setSelection(int index, int key){
         slotSelection[index] = key;
     }
+    public int getItem1() {
+        return item1;
+    }
+
+    public void setItem1(int item1) {
+        this.item1 = item1;
+    }
+
+    public int getItem2() {
+        return item2;
+    }
+
+    public void setItem2(int item2) {
+        this.item2 = item2;
+    }
+
+    public int getItem3() {
+        return item3;
+    }
+
+    public void setItem3(int item3) {
+        this.item3 = item3;
+    }
+
+    public int getItem4() {
+        return item4;
+    }
+
+    public void setItem4(int item4) {
+        this.item4 = item4;
+    }
+
 
 }
 

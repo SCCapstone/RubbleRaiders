@@ -83,6 +83,7 @@ public class GameSelection extends ScreenAdapter {
                 loadWindow.remove();
                 GAME.stageInstance.clear();
                 GAME.currentSaveIndex = 0;
+
                 GAME.setScreen(new CharacterCreation(GAME));
             }
         });
@@ -127,6 +128,7 @@ public class GameSelection extends ScreenAdapter {
                 loadWindow.remove();
                 GAME.stageInstance.clear();
                 GAME.currentSaveIndex = 2;
+
                 //Add load/save from Inventory branch
             }
         });
@@ -149,6 +151,7 @@ public class GameSelection extends ScreenAdapter {
                 loadWindow.remove();
                 GAME.stageInstance.clear();
                 GAME.currentSaveIndex = 3;
+
                 //Add load/save from Inventory branch
             }
         });
@@ -235,3 +238,5 @@ public class GameSelection extends ScreenAdapter {
     }
 
 }
+
+

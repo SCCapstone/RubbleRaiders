@@ -9,12 +9,18 @@ import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -39,6 +45,10 @@ public class MainMenu extends ScreenAdapter {
 
     private String[] names;
     private String[] saveTime;
+
+    private TiledMap overWorldMap;
+    OrthogonalTiledMapRenderer renderer;
+    OrthographicCamera camera;
 
     //All used imagery for the given examples below.
     Texture background;
@@ -67,6 +77,7 @@ public class MainMenu extends ScreenAdapter {
     private TextureAtlas torchAtlas;
     private Animation<TextureRegion> animation;
     private float timePassed;
+    private final AssetManager manager = new AssetManager();
     /**
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
@@ -79,7 +90,10 @@ public class MainMenu extends ScreenAdapter {
 
 
         batch = new SpriteBatch();
-        torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        manager.load("AnimationFiles/Torch.atlas", TextureAtlas.class);
+        manager.finishLoading();
+        torchAtlas = manager.get("AnimationFiles/Torch.atlas");
         animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
 ////        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
 //        backgroundImage = new Image(background);
@@ -93,8 +107,6 @@ public class MainMenu extends ScreenAdapter {
 
         buttonSound = new ButtonClickSound();
 
-
-
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
         MainMenuOptions = new TextButton[]{
                 new TextButton("Play", game.generalTextButtonStyle),
@@ -107,6 +119,7 @@ public class MainMenu extends ScreenAdapter {
         //follow the Jave documentation.
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
+
 
         MainMenuOptions[newGame].addListener(new ChangeListener() {
             @Override
@@ -125,7 +138,6 @@ public class MainMenu extends ScreenAdapter {
         loadQuitOption.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-
             }
         });
 
@@ -178,6 +190,9 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
+        camera = new OrthographicCamera();
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
@@ -195,6 +210,8 @@ public class MainMenu extends ScreenAdapter {
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        renderer.setView(camera);
+        renderer.render();
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
@@ -221,6 +238,11 @@ public class MainMenu extends ScreenAdapter {
     public void resize(int width, int height) {
         this.width =width;
         this.height=height;
+        camera.viewportHeight = height;
+        camera.viewportWidth = width;
+        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+        camera.update();
+
         GAME.stageInstance.getViewport().update(width, height, true);
     }
 

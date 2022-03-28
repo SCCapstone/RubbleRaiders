@@ -35,9 +35,9 @@ public class CharacterCreation extends ScreenAdapter {
     Boolean wizard;
     Boolean cleric;
     Boolean warrior;
+    TextButton backButton;
 
     String name;
-    TextButton backButton;
 
     int selection;
     /*

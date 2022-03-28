@@ -7,6 +7,14 @@ import Sounds.playerMoveSound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -86,7 +94,6 @@ public class Player extends Entity {
     final int left = controls.getMoveLeft();
     final int right = controls .getMoveRight();*/
 
-
     /**
      * Default constructor for player entity
      */
@@ -101,6 +108,7 @@ public class Player extends Entity {
         tokens = 0;
         playerDefence = 0;
 
+
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
         interactSquare = new Rectangle();
@@ -110,9 +118,10 @@ public class Player extends Entity {
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
-        moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
-        moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+        playerIcon.setVisible(false);
+        playerBody(playerIcon);
+        moveSquare.setSize(64, 64);
+        moveSquare.setPosition(0, 0);
 
         interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
@@ -208,12 +217,14 @@ public class Player extends Entity {
         interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
+
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
         gold = 100;
+
 
         playerIcon.addListener(playerInput = new InputListener() {
 
@@ -222,19 +233,19 @@ public class Player extends Entity {
             {
                 switch(keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     default:
@@ -267,6 +278,15 @@ public class Player extends Entity {
         activeQuests.add(null);
         activeQuests.add(null);
         activeQuests.add(null);
+
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
+
+        playerBody(playerIcon);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+
     }
 
     public int getPlayerClass() {
@@ -397,6 +417,14 @@ public class Player extends Entity {
 
     public int getGold() {
         return gold;
+    }
+
+    public BodyDef playerBody(Image player) {
+        BodyDef playerBod = new BodyDef();
+        playerBod.type = BodyDef.BodyType.DynamicBody;
+        playerBod.position.set(player.getWidth() / 2, player.getHeight() / 2);
+
+        return playerBod;
     }
 
 }

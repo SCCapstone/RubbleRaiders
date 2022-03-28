@@ -56,7 +56,6 @@ public class Settings extends ScreenAdapter {
     Label inventoryLabel;
     TextField fightKey;
     Label fightLabel;
-    Table volumeTable;
     Label item1;
     TextField item1Key;
     Label item2;
@@ -199,6 +198,9 @@ public class Settings extends ScreenAdapter {
         item1 = new Label("Item Slot 1", GAME.generalLabelStyle);
         item1.setAlignment(1, 2);
         item1Key = new TextField(Input.Keys.toString(menuCont.getSelection(0)), GAME.generalTextFieldStyle);
+        item1 = new Label("Item Slot 1", GAME.generalLabelStyle);
+        item1.setAlignment(1, 2);
+        item1Key = new TextField(Input.Keys.toString(menuCont.getItem1()), GAME.generalTextFieldStyle);
         item1Key.setMaxLength(1);
         item1Key.setAlignment(1);
         item1Key.addListener(new InputListener(){
@@ -206,6 +208,7 @@ public class Settings extends ScreenAdapter {
             public boolean keyUp(InputEvent event, int keycode) {
                 setControl(item1Key, keycode);
                 menuCont.setSelection(0, keycode);
+                menuCont.setItem1(keycode);
                 return true;
             }
         });
@@ -213,6 +216,7 @@ public class Settings extends ScreenAdapter {
         item2 = new Label("Item Slot 2", GAME.generalLabelStyle);
         item2.setAlignment(1, 2);
         item2Key = new TextField(Input.Keys.toString(menuCont.getSelection(1)), GAME.generalTextFieldStyle);
+        item2Key = new TextField(Input.Keys.toString(menuCont.getItem2()), GAME.generalTextFieldStyle);
         item2Key.setMaxLength(1);
         item2Key.setAlignment(1);
         item2Key.addListener(new InputListener(){
@@ -220,6 +224,7 @@ public class Settings extends ScreenAdapter {
             public boolean keyUp(InputEvent event, int keycode) {
                 setControl(item2Key, keycode);
                 menuCont.setSelection(1, keycode);
+                menuCont.setItem2(keycode);
                 return true;
             }
         });
@@ -227,6 +232,7 @@ public class Settings extends ScreenAdapter {
         item3 = new Label("Item Slot 3", GAME.generalLabelStyle);
         item3.setAlignment(1, 2);
         item3Key = new TextField(Input.Keys.toString(menuCont.getSelection(2)), GAME.generalTextFieldStyle);
+        item3Key = new TextField(Input.Keys.toString(menuCont.getItem3()), GAME.generalTextFieldStyle);
         item3Key.setMaxLength(1);
         item3Key.setAlignment(1);
         item3Key.addListener(new InputListener(){
@@ -234,6 +240,7 @@ public class Settings extends ScreenAdapter {
             public boolean keyUp(InputEvent event, int keycode) {
                 setControl(item3Key, keycode);
                 menuCont.setSelection(2, keycode);
+                menuCont.setItem3(keycode);
                 return true;
             }
         });
@@ -241,6 +248,7 @@ public class Settings extends ScreenAdapter {
         item4 = new Label("Item Slot 4", GAME.generalLabelStyle);
         item4.setAlignment(1, 2);
         item4Key = new TextField(Input.Keys.toString(menuCont.getSelection(3)), GAME.generalTextFieldStyle);
+        item4Key = new TextField(Input.Keys.toString(menuCont.getItem4()), GAME.generalTextFieldStyle);
         item4Key.setMaxLength(1);
         item4Key.setAlignment(1);
         item4Key.addListener(new InputListener(){
@@ -265,7 +273,7 @@ public class Settings extends ScreenAdapter {
             }
         });
 
-        //TODO: cursor setting?
+
 
         //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
         //and curators of UseOf.org
@@ -344,6 +352,7 @@ public class Settings extends ScreenAdapter {
         table = new Table();
         table.defaults();
         table.setBounds(775,400,500,GAME.stageInstance.getHeight());
+        table.setBounds(750,400,500,GAME.stageInstance.getHeight());
         table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.25f);
         table.add(settingsMusicLabel);
         table.add(settingsMusicSlider).colspan(3).width(table.getWidth()+43);
@@ -377,6 +386,20 @@ public class Settings extends ScreenAdapter {
         //table.row();
         table.add(item5);
         table.add(item5Key).left();
+        table.add(inventoryLabel);
+        table.add(inventoryKey).left();
+        table.add(fightLabel);
+        table.add(fightKey).left();
+        table.row();
+        table.add(item1);
+        table.add(item1Key).left();
+        table.add(item2);
+        table.add(item2Key).left();
+        table.row();
+        table.add(item3);
+        table.add(item3Key).left();
+        table.add(item4);
+        table.add(item4Key).left();
         table.row().padTop(10f);
         //table.add(settingsQuitOption).center().colspan(8).width(table.getWidth());
         GAME.stageInstance.addActor(settingsQuitOption);
@@ -414,6 +437,57 @@ public class Settings extends ScreenAdapter {
         super.dispose();
         batch.dispose();
         GAME.stageInstance.clear();
+    }
+
+
+    public static void settingsSerialize() {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            try {
+                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.T, Input.Keys.ESCAPE, Input.Keys.E, Input.Keys.Q, Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4));
+
+                File xmlOutput = new File("Settings.xml");
+                FileWriter fileWriter = new FileWriter(xmlOutput);
+                fileWriter.write(xmlString);
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    public static void settingsDeserialize() {
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            String readSettingsFile = new String(Files.readAllBytes(Paths.get("Settings.xml")));
+            MainMenuControls deserializeMenu = xmlMapper.readValue(readSettingsFile, MainMenuControls.class);
+
+            deserializeMenu.getMoveUp();
+            deserializeMenu.getMoveDown();
+            deserializeMenu.getMoveLeft();
+            deserializeMenu.getMoveRight();
+            deserializeMenu.getTradeMenu();
+            deserializeMenu.getOpenPauseMenu();
+            deserializeMenu.getOpenInventory();
+            deserializeMenu.getFightAction();
+            /*
+            System.out.println("Rebind Settings");
+            System.out.println("Move up: " + deserializeMenu);
+            System.out.println("Move down: " + deserializeMenu);
+            System.out.println("Move left: " + deserializeMenu);
+            System.out.println("Move right: " + deserializeMenu);
+            System.out.println("Interact: " + deserializeMenu);
+            System.out.println("Menu: " + deserializeMenu);
+            System.out.println("Cursor: " + deserializeMenu);
+             */
+        } catch (IOException e) {
+            // for now use auto generated
+            e.printStackTrace();
+            return;
+        }
     }
 
 }
