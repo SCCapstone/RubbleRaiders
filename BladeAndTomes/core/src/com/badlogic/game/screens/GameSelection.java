@@ -1,7 +1,9 @@
 package com.badlogic.game.screens;
 
+import LoadAndSave.LoadSaveManager;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -73,7 +75,7 @@ public class GameSelection extends ScreenAdapter {
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
-        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
+        game1 = new TextButton(GAME.loadSaveManager.loadPlayer(0).getName().equals("") ? "Game 1" : GAME.loadSaveManager.loadPlayer(0).getName(), GAME.generalTextButtonStyle);
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -83,8 +85,7 @@ public class GameSelection extends ScreenAdapter {
                 loadWindow.remove();
                 GAME.stageInstance.clear();
                 GAME.currentSaveIndex = 0;
-
-                GAME.setScreen(new CharacterCreation(GAME));
+                checkPlayer();
             }
         });
         deleteFile1.setSize(60f, 60f);
@@ -94,9 +95,12 @@ public class GameSelection extends ScreenAdapter {
                 //delete game file 1
                 System.out.println("Delete game 1");
                 //Gdx.files.internal("GameSave.sav").delete();
+                GAME.loadSaveManager.savePlayer(new Player(), 0);
+                deleteFile1.remove();
+                game1.setText("Game 1");
             }
         });
-        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
+        game2 = new TextButton(GAME.loadSaveManager.loadPlayer(1).getName().equals("") ? "Game 2" : GAME.loadSaveManager.loadPlayer(1).getName(), GAME.generalTextButtonStyle);
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -107,136 +111,152 @@ public class GameSelection extends ScreenAdapter {
                 GAME.currentSaveIndex = 1;
                 GAME.stageInstance.clear();
                 //Add load/save from Inventory branch
+                checkPlayer();
+
+            }});
+
+                deleteFile2.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        //delete game file 2
+                        System.out.println("Delete game 2");
+                        //Gdx.files.internal("GameSaveTwo.sav").delete();
+                        GAME.loadSaveManager.savePlayer(new Player(), 1);
+                        deleteFile2.remove();
+                        game2.setText("Game 2");
+                    }
+                });
+                game3 = new TextButton(GAME.loadSaveManager.loadPlayer(2).getName().equals("") ? "Game 3" : GAME.loadSaveManager.loadPlayer(2).getName(), GAME.generalTextButtonStyle);
+                game3.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        selectGameInfo.remove();
+                        loadBack.remove();
+                        savedGames.remove();
+                        loadWindow.remove();
+                        GAME.stageInstance.clear();
+                        GAME.currentSaveIndex = 2;
+                        //Add load/save from Inventory branch
+                        checkPlayer();
+                    }
+                });
+                deleteFile3.setSize(65f, 65f);
+                deleteFile3.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        //delete game file 3
+                        System.out.println("Delete game 3");
+                        //Gdx.files.internal("GameSaveThree.sav").delete();
+                        GAME.loadSaveManager.savePlayer(new Player(), 2);
+                        deleteFile3.remove();
+                        game3.setText("Game 3");
+                    }
+                });
+                game4 = new TextButton(GAME.loadSaveManager.loadPlayer(3).getName().equals("") ? "Game 4" : GAME.loadSaveManager.loadPlayer(3).getName(), GAME.generalTextButtonStyle);
+                game4.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        selectGameInfo.remove();
+                        loadBack.remove();
+                        savedGames.remove();
+                        loadWindow.remove();
+                        GAME.stageInstance.clear();
+                        GAME.currentSaveIndex = 3;
+                        //Add load/save from Inventory branch
+                        checkPlayer();
+                    }
+                });
+                deleteFile4.setSize(65f, 65f);
+                deleteFile4.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        //delete game file 4
+                        System.out.println("Delete game 4");
+                        GAME.loadSaveManager.savePlayer(new Player(), 3);
+                        deleteFile4.remove();
+                        game4.setText("Game 4");
+                    }
+                });
+
+                //table layout
+                savedGames.add(game1).padBottom(10f).center().padRight(10f);
+                if(!GAME.loadSaveManager.loadPlayer(0).getDefault()){
+                    savedGames.add(deleteFile1);
+                }
+                savedGames.row();
+                savedGames.add(game2).padBottom(10f).center().padRight(10f);
+                if(!GAME.loadSaveManager.loadPlayer(1).getDefault()){
+                    savedGames.add(deleteFile2);
+                }
+                savedGames.row();
+                savedGames.add(game3).padBottom(10f).center().padRight(10f);
+                if(!GAME.loadSaveManager.loadPlayer(2).getDefault()){
+                    savedGames.add(deleteFile3);
+                }
+                savedGames.row();
+                savedGames.add(game4).padBottom(10f).center().padRight(10f);
+                if(!GAME.loadSaveManager.loadPlayer(3).getDefault()){
+                    savedGames.add(deleteFile4);
+                }
+
+                loadWindow.addActor(savedGames);
+                GAME.stageInstance.addActor(selectGameInfo);
+                GAME.stageInstance.addActor(loadWindow);
+                GAME.stageInstance.addActor(loadBack);
+
             }
-        });
-        deleteFile2.setSize(65f, 65f);
-        deleteFile2.addListener(new ChangeListener() {
+
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //delete game file 2
-                System.out.println("Delete game 2");
-                //Gdx.files.internal("GameSaveTwo.sav").delete();
+            public void show() {
+                Gdx.input.setInputProcessor(GAME.stageInstance);
             }
-        });
-        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
-        game3.addListener(new ChangeListener() {
+
+            //Taken from MainMenu screen and edited
             @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                selectGameInfo.remove();
-                loadBack.remove();
-                savedGames.remove();
-                loadWindow.remove();
-                GAME.stageInstance.clear();
-                GAME.currentSaveIndex = 2;
+            public void render(float delta) {
 
-                //Add load/save from Inventory branch
+
+                //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
+                //Specifically the advanced section on super.render() as well as the following section on the main
+                //game screen
+                //https://libgdx.com/dev/simple-game-extended/
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
+                GAME.stageInstance.draw();
+                // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
+                if (Gdx.input.justTouched()) {
+                    buttonSound.playClick();
+                }
+
+                //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                //GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
+                //GAME.stageInstance.draw();
+
+                // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
             }
-        });
-        deleteFile3.setSize(65f, 65f);
-        deleteFile3.addListener(new ChangeListener() {
+
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //delete game file 3
-                System.out.println("Delete game 3");
-                //Gdx.files.internal("GameSaveThree.sav").delete();
+            public void resize(int width, int height) {
+                GAME.stageInstance.getViewport().update(width, height, true);
             }
-        });
-        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
-        game4.addListener(new ChangeListener() {
+
             @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                selectGameInfo.remove();
-                loadBack.remove();
-                savedGames.remove();
-                loadWindow.remove();
-                GAME.stageInstance.clear();
-                GAME.currentSaveIndex = 3;
-
-                //Add load/save from Inventory branch
+            public void hide() {
+                Gdx.input.setInputProcessor(null);
             }
-        });
-        deleteFile4.setSize(65f, 65f);
-        deleteFile4.addListener(new ChangeListener() {
+
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //delete game file 4
-                System.out.println("Delete game 4");
-                //Gdx.files.internal("GameSaveFour.sav").delete();
+            public void dispose() {
+                super.dispose();
             }
-        });
 
-        //table layout
-        savedGames.add(game1).padBottom(10f).center().padRight(10f);
-        /*if(Gdx.files.internal("GameSave.sav").exists()) {
-            savedGames.add(deleteFile1);
-        }*/
-        savedGames.row();
-        savedGames.add(game2).padBottom(10f).center().padRight(10f);
-        /*if(Gdx.files.internal("GameSaveTwo.sav").exists()) {
-            savedGames.add(deleteFile2);
-        }*/
-        savedGames.row();
-        savedGames.add(game3).padBottom(10f).center().padRight(10f);
-        /*if(Gdx.files.internal("GameSaveThree.sav").exists()) {
-            savedGames.add(deleteFile3);
-        }*/
-        savedGames.row();
-        savedGames.add(game4).padBottom(10f).center().padRight(10f);
-        /*if(Gdx.files.internal("GameSaveFour.sav").exists()) {
-            savedGames.add(deleteFile4);
-        }*/
+            public void checkPlayer(){
+                Player p = GAME.loadSaveManager.loadPlayer(GAME.currentSaveIndex);
+                if(p.getDefault()){
+                    GAME.setScreen(new CharacterCreation(GAME));
+                } else {
+                    GAME.setScreen(new Overworld(GAME));
+                }
+            }
 
-        loadWindow.addActor(savedGames);
-        GAME.stageInstance.addActor(selectGameInfo);
-        GAME.stageInstance.addActor(loadWindow);
-        GAME.stageInstance.addActor(loadBack);
-
-    }
-
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(GAME.stageInstance);
-    }
-
-    //Taken from MainMenu screen and edited
-    @Override
-    public void render(float delta) {
-
-
-        //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
-        //Specifically the advanced section on super.render() as well as the following section on the main
-        //game screen
-        //https://libgdx.com/dev/simple-game-extended/
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
-        GAME.stageInstance.draw();
-        // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
-        if(Gdx.input.justTouched()){
-            buttonSound.playClick();
         }
-
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
-        //GAME.stageInstance.draw();
-
-        // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        GAME.stageInstance.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
-}
-
-

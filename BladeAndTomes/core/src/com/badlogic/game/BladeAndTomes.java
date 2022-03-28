@@ -146,8 +146,9 @@ public class BladeAndTomes extends Game {
         NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
 
-        controls = new MainMenuControls();
         loadSaveManager = new LoadSaveManager();
+        controls = loadSaveManager.getSettings();
+
         assets = new AssetManager();
         currentInventorySelection = 0;
         shapeRenderer = new ShapeRenderer();

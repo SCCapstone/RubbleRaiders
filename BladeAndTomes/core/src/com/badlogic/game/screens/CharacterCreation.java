@@ -81,6 +81,8 @@ public class CharacterCreation extends ScreenAdapter {
         nameField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
+                GAME.player.setName(textField.getText());
+                System.out.println(GAME.player.getName());
             }
         });
         nameField.setX(960,1);
@@ -329,8 +331,9 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setFullHealth(10);
                 GAME.player.setArmorPoints(10);
                 GAME.player.setPlayerClass(selection);
-                GAME.player.setName(name);
                 GAME.player.setMovement(5);
+                GAME.player.setDefault(false);
+                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 GAME.setScreen(new Overworld(GAME));
             }
         });

@@ -1,17 +1,20 @@
 package LoadAndSave;
 
+import Keyboard_Mouse_Controls.MainMenuControls;
 import ScreenOverlayRework.Inventory.itemDocument;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import jdk.tools.jmod.Main;
 
 public class Load {
     String savePath;
     Json saveParser;
     Array<String> fourPreSets;
     FileHandle file;
+
 
     public Load(String savePath){
         this.savePath=savePath;
@@ -73,6 +76,7 @@ public class Load {
         fourPreSets.add(deafult);
         fourPreSets.add(deafult);
         fourPreSets.add(deafult);
+        fourPreSets.add(saveParser.toJson(new MainMenuControls()));
     }
     public Array<String> getFourPlayers(){
         try {
@@ -96,5 +100,19 @@ public class Load {
             tempPlayer = saveParser.fromJson(Player.class,fourPreSets.get(index));
         }
         return  tempPlayer;
+    }
+
+    public MainMenuControls getSettings(){
+        MainMenuControls tmpSettings;
+        try{
+            tmpSettings = saveParser.fromJson(MainMenuControls.class,fourPreSets.get(4));
+
+        } catch (Exception e){
+            Gdx.files.local(savePath);
+            createDeafultsPlayer();
+            tmpSettings = new MainMenuControls();
+        }
+        return  tmpSettings;
+
     }
 }

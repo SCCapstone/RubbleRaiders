@@ -27,10 +27,10 @@ import java.util.HashMap;
 
 public class Player extends Entity {
 
-
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
+    private boolean isDefault;
     private enum classes {WARRIOR, CLERIC ,WIZARD};
 //    public static Array<quest> quests;
 //    public static Array<quest> usedQuests;
@@ -102,6 +102,7 @@ public class Player extends Entity {
         inventoryItems = new Array<>();
 
         this.id = "player";
+        isDefault = true;
         this.playerClass = 1;
         this.name = "";
         this.isTurn = true;
@@ -116,14 +117,14 @@ public class Player extends Entity {
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         playerIcon.setVisible(false);
         playerBody(playerIcon);
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);
 
-        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
+        interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
@@ -136,20 +137,19 @@ public class Player extends Entity {
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;
@@ -166,18 +166,18 @@ public class Player extends Entity {
         kTradesNPCSeller = 0;
         kTradesNPCBuyer = 0;
         kChestsOpened = 0;
-        kUsedPositions =0;
-        kCompleteQuests =0;
+        kUsedPositions = 0;
+        kCompleteQuests = 0;
         kEarnedGoldThroughQuest = 0;
         kCloseRangeKills = 0;
         kLongRangeKills = 0;
         kLevelsCompleted = 0;
         kEarnedGoldThroughLevels = 0;
 
-        if(activeQuests == null)
-        activeQuests = new Array<>();
+        if (activeQuests == null)
+            activeQuests = new Array<>();
         updateQuest = false;
-        for (int i = 0; i <(26); ++i) {
+        for (int i = 0; i < (26); ++i) {
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(i));
             itemTemp.setTargetItem("Null");
@@ -185,13 +185,13 @@ public class Player extends Entity {
             inventoryItems.add(itemTemp);
         }
 
-       activeQuests.add(null);
-       activeQuests.add(null);
-       activeQuests.add(null);
-       activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+
 
     }
-
     /**
      * Alternate constructor for player entity
      */
@@ -199,6 +199,7 @@ public class Player extends Entity {
     {
         super(healthPoints, fullHealth, armorPoints, movement, height, width);
         this.id = id;
+        isDefault = true;
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
@@ -287,6 +288,14 @@ public class Player extends Entity {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
 
+    }
+
+    public boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 
     public int getPlayerClass() {

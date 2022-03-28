@@ -303,6 +303,7 @@ public class Settings extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 //Back to main menu screen
                 dispose();
+                GAME.loadSaveManager.saveSettings(menuCont);
                 GAME.setScreen(new MainMenu(game));
                 //TODO: save keybind changes
                 /*controls.setMoveUp(upKey.getText());
@@ -352,7 +353,6 @@ public class Settings extends ScreenAdapter {
         table = new Table();
         table.defaults();
         table.setBounds(775,400,500,GAME.stageInstance.getHeight());
-        table.setBounds(750,400,500,GAME.stageInstance.getHeight());
         table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.25f);
         table.add(settingsMusicLabel);
         table.add(settingsMusicSlider).colspan(3).width(table.getWidth()+43);
@@ -383,25 +383,9 @@ public class Settings extends ScreenAdapter {
         table.add(item3Key).left().padRight(8f);
         table.add(item4);
         table.add(item4Key).left().padRight(8f);
-        //table.row();
         table.add(item5);
         table.add(item5Key).left();
-        table.add(inventoryLabel);
-        table.add(inventoryKey).left();
-        table.add(fightLabel);
-        table.add(fightKey).left();
-        table.row();
-        table.add(item1);
-        table.add(item1Key).left();
-        table.add(item2);
-        table.add(item2Key).left();
-        table.row();
-        table.add(item3);
-        table.add(item3Key).left();
-        table.add(item4);
-        table.add(item4Key).left();
         table.row().padTop(10f);
-        //table.add(settingsQuitOption).center().colspan(8).width(table.getWidth());
         GAME.stageInstance.addActor(settingsQuitOption);
 
     }
