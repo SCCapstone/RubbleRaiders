@@ -6,6 +6,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -76,6 +77,7 @@ public class MainMenu extends ScreenAdapter {
     private TextureAtlas torchAtlas;
     private Animation<TextureRegion> animation;
     private float timePassed;
+    private final AssetManager manager = new AssetManager();
     /**
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
@@ -84,7 +86,9 @@ public class MainMenu extends ScreenAdapter {
         this.GAME = game;
         batch = new SpriteBatch();
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
-        torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));
+        manager.load("AnimationFiles/Torch.atlas", TextureAtlas.class);
+        manager.finishLoading();
+        torchAtlas = manager.get("AnimationFiles/Torch.atlas");
         animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
 ////        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
 //        backgroundImage = new Image(background);

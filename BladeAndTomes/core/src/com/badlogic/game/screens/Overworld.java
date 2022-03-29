@@ -94,7 +94,7 @@ public class Overworld extends ScreenAdapter {
     public Overworld (final BladeAndTomes game) {
 
         this.GAME = game;
-        GAME.player.resetElapsedTime();
+        GAME.resetElapsedTime();
         objectLayerId = 2;
         /*
         manager = new AssetManager();
@@ -271,6 +271,25 @@ public class Overworld extends ScreenAdapter {
         world.step(1f/60f, 6, 2);
         worldRender.render(world, camera.combined);
         //parseCollision();
+
+        GAME.batch.begin();
+        GAME.runPlayerAnimation();
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveUpAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveDownAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.runMoveLeftAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveRightAnimation();
+        }
+        GAME.batch.end();
 
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld

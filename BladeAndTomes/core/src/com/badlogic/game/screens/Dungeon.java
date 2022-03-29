@@ -27,7 +27,7 @@ public class Dungeon extends ScreenAdapter {
         //Initial backbone values carried over
         this.GAME = game;
         MOVE_DISTANCE = 64;
-        GAME.player.resetElapsedTime();
+        GAME.resetElapsedTime();
         //Clears the stage instance
         GAME.stageInstance.clear();
 
@@ -89,28 +89,28 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         GAME.batch.begin();
-        GAME.player.runAnimation(GAME);
+        GAME.runPlayerAnimation();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveUpAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveUpAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveDownAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveDownAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveLeftAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveLeftAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            GAME.player.resetElapsedTime();
-            GAME.player.runMoveRightAnimation();
+            GAME.resetElapsedTime();
+            GAME.runMoveRightAnimation();
         }
         if(roomHandler.combatFlag) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-                GAME.player.resetElapsedTime();
-                GAME.player.runAttackDownAnimation();
+                GAME.resetElapsedTime();
+                GAME.runAttackDownAnimation();
             }
         }
         GAME.batch.end();
