@@ -210,8 +210,8 @@ public class MainMenu extends ScreenAdapter {
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        renderer.setView(camera);
-        renderer.render();
+//        renderer.setView(camera);
+//        renderer.render();
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM

@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Scaling;
 
 import java.awt.*;
 
@@ -374,11 +375,23 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportHeight = height;
-        camera.viewportWidth = width;
-        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-        camera.update();
-        GAME.stageInstance.getViewport().update(width, height, true);
+//        camera.viewportHeight = 1080;
+//        camera.viewportWidth = 1920;
+////        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() /);
+//        camera.update();
+        Vector2 size = Scaling.fill.apply(1920, 1080, width, height);
+        int viewportWidth = (int) size.x;
+        int viewportHeight = (int) size.y;
+        Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
+        GAME.stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+
+//        Gdx.graphics.set
+
+
+//        GAME.stageInstance.getViewport().update(1920, 1080, true);
+
+//        GAME.stageInstance.getCamera().translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2,100);
+//        GAME.stageInstance.getCamera()
    }
 
     @Override
@@ -389,7 +402,7 @@ public class Overworld extends ScreenAdapter {
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
-        camera = new OrthographicCamera();
+        camera = (OrthographicCamera) GAME.stageInstance.getCamera();
         Gdx.input.setInputProcessor(GAME.stageInstance);
     }
 

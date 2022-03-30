@@ -321,14 +321,13 @@ public class BladeAndTomes extends Game {
      * @param width
      * @param height
      */
-    public     float width = 1920, height = 1080;
+    public     float width = 1600, height = 900;
 
     @Override
     public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
-        // stageInstance.getViewport().update(width, height, true);
-        // following code is an update from anri, Helping to correct some minor aspect issues in the game
+//        this.width = width;
+//        this.height = height;
+//        // following code is an u.pdate from anri, Helping to correct some minor aspect issues in the game
         Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
         int viewportX = (int) (width - size.x) / 2;
         int viewportY = (int) (height - size.y) / 2;
@@ -336,14 +335,19 @@ public class BladeAndTomes extends Game {
         int viewportHeight = (int) size.y;
         Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
         stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
-        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
-
-        if (width < 1280) {
-            Gdx.graphics.setWindowedMode(1280, height);
-        }
-        if (height < 720) {
-            Gdx.graphics.setWindowedMode(width, 720);
-        }
+        System.out.println(Gdx.graphics.getSafeInsetTop());
+//        Gdx.graphics.setContinuousRendering(true);// = viewportHeight;
+//        Gdx.graphics.setWindowedMode(viewportWidth, viewportHeight);
+        System.out.println(viewportWidth+"\t"+viewportHeight);
+//        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
+//
+//        if (width < 1280) {
+//            Gdx.graphics.setWindowedMode(1280, height);
+//        }
+//        if (height < 720) {
+//            Gdx.graphics.setWindowedMode(width, 720);
+//        }
+//        Gdx.gl.
     }
 
     /**
