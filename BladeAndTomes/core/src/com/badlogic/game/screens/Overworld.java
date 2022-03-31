@@ -44,7 +44,7 @@ import java.awt.*;
 public class Overworld extends ScreenAdapter {
 
     final BladeAndTomes GAME;
-    final int MOVE_DISTANCE;
+    final float MOVE_DISTANCE;
     SpriteBatch batch;
 
     private World world;
@@ -62,34 +62,10 @@ public class Overworld extends ScreenAdapter {
     int tileMeasurement;
     boolean collidedX, collidedY;
 
+    int columns;
+    int rows;
+
     private OrthographicCamera camera;
-
-
-    Texture background;
-    Texture chapel;
-    Texture barracks;
-    Texture questBoard;
-    Texture portal;
-    Texture NPCTrader;
-    Texture marketStall;
-    Texture tavern;
-
-    /*
-    // use all this for collision with buildings later
-    private float tavernWidth = 128f;
-    private float tavernHeight = 128f;
-    private float marketStallHeight = 256f;
-    private float marketStallWidth = 196f;
-    private float barracksHeight = 384f;
-    private float barracksWidth = 256f;
-    private float chapelWidth = 196f;
-    private float chapelHeight = 256f;
-    private float questBoardHeight = 64f;
-    private float questBoardWidth = 64f;
-    private float portalHeight = 64f;
-    private float portalWidth = 64f;
-
-     */
 
     Window pauseMenu;
     Label warning;
@@ -141,6 +117,13 @@ public class Overworld extends ScreenAdapter {
         collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
 
+        columns = collisionLayer.getTileWidth();
+        rows = collisionLayer.getHeight();
+
+        System.out.println(columns + rows);
+
+        System.out.println(overWorldMap.getTileSets().getTileSet(1).getTile(2).getOffsetX());
+
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
         world = new World(new Vector2(0, 0),true);
@@ -148,25 +131,12 @@ public class Overworld extends ScreenAdapter {
 
         parseCollision();
 
-        MOVE_DISTANCE = 64;
+        MOVE_DISTANCE = 32f;
         doTrade = false;
         batch = new SpriteBatch();
 
         collidedX = false;
         collidedY = false;
-
-        /*
-        // Assets were obtained from below source
-        // https://merchant-shade.itch.io/16x16-mini-world-sprites
-        background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
-        chapel = new Texture(Gdx.files.internal("Chapel.jpg"));
-        barracks = new Texture(Gdx.files.internal("Barracks.jpg"));
-        marketStall = new Texture(Gdx.files.internal("MarketBuilding.jpg"));
-        portal = new Texture(Gdx.files.internal("PortalToDungeon.jpg"));
-        questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
-        tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
-        NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
-         */
 
         pauseMenu = new Window("", GAME.generalWindowStyle);
         pauseMenu.setHeight(500);
@@ -263,8 +233,7 @@ public class Overworld extends ScreenAdapter {
 
         renderer.setView(camera);
         renderer.render();
-        //worldRender.render(world, camera.combined);
-        parseCollision();
+        worldRender.render(world, camera.combined);
 
         GAME.playerMovement();
 
@@ -314,7 +283,7 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
-        //isTileCollisionHandled(GAME.player, collisionLayer);
+        //isTileCollisionHandled(GAME.player, );
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
@@ -369,40 +338,20 @@ public class Overworld extends ScreenAdapter {
 
     }
 
-        //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
-
-
-
-
-
     @Override
     public void resize(int width, int height) {
-//        camera.viewportHeight = 1080;
-//        camera.viewportWidth = 1920;
-////        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() /);
-//        camera.update();
         Vector2 size = Scaling.fill.apply(1920, 1080, width, height);
         int viewportWidth = (int) size.x;
         int viewportHeight = (int) size.y;
         Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
         GAME.stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
-
-//        Gdx.graphics.set
-
-
-//        GAME.stageInstance.getViewport().update(1920, 1080, true);
-
-//        GAME.stageInstance.getCamera().translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2,100);
-//        GAME.stageInstance.getCamera()
    }
 
     @Override
     public void show() {
-        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
-        //collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(objectLayerId);
-        //overWorldMap.getLayers().get(objectLayerId).getProperties().get("blocked");
+        //overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
 
-        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
+        //renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
         camera = (OrthographicCamera) GAME.stageInstance.getCamera();
         Gdx.input.setInputProcessor(GAME.stageInstance);
@@ -454,6 +403,25 @@ public class Overworld extends ScreenAdapter {
         return true;
     }
 
+    public boolean isTileCollisionHandled(Player player, Rectangle rectangle) {
+        Rectangle playerRec = new Rectangle();
+        playerRec.set(player.playerIcon.getX(), player.playerIcon.getY(),
+                player.playerIcon.getImageWidth(), player.playerIcon.getImageHeight());
+        if(playerRec.overlaps(rectangle)) {
+            System.out.println("yup");
+            return true;
+        }
+        return false;
+    }
+
+    public void getTileCells(TiledMapTileLayer tileLayer) {
+        for (int i = 0; i < tileLayer.getTileWidth(); i++) {
+            for (int j = 0; j < tileLayer.getTileHeight(); j++) {
+                TiledMapTileLayer.Cell cell = 
+            }
+        }
+    }
+
     // Very helpful guide on setting up tile collisions from following source
     // https://lyze.dev/2021/03/25/libGDX-Tiled-Box2D-example-tiles/
     public void parseCollision() {
@@ -477,8 +445,6 @@ public class Overworld extends ScreenAdapter {
                 if (mapObject instanceof RectangleMapObject) {
                     RectangleMapObject rectangleObject = (RectangleMapObject) mapObject;
                     Rectangle rectangle = rectangleObject.getRectangle();
-
-                    if (mapObject instanceof RectangleMapObject) {
                         BodyDef bodyDef = getBodyDef(i * tileMeasurement + tileMeasurement / 2f + rectangle.getX()
                                         - (tileMeasurement - rectangle.getWidth()) / 2f,
                                 j * tileMeasurement + tileMeasurement / 2f + rectangle.getY()
@@ -487,10 +453,13 @@ public class Overworld extends ScreenAdapter {
                         Body body = world.createBody(bodyDef);
                         PolygonShape polygonShape = new PolygonShape();
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 0.0f);
+                        body.createFixture(polygonShape, 1.0f);
                         polygonShape.dispose();
 
-                    }
+                        //System.out.println(body.getPosition());
+                        //System.out.println(GAME.player.playerIcon.getX());
+
+                        isTileCollisionHandled(GAME.player, rectangle);
                 }
             }
         }
@@ -501,5 +470,12 @@ public class Overworld extends ScreenAdapter {
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(i, j);
         return bodyDef;
+    }
+
+    private BodyDef playerBod(float i, float j) {
+        BodyDef playerBodyDef = new BodyDef();
+        playerBodyDef.type = BodyDef.BodyType.DynamicBody;
+        playerBodyDef.position.set(i, j);
+        return playerBodyDef;
     }
 }

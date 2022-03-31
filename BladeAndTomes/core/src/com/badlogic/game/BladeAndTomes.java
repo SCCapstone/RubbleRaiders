@@ -404,7 +404,7 @@ public class BladeAndTomes extends Game {
                     default:
                         return false;
                 }
-                //isTurn = false;
+                player.isTurn = false;
                 player.moveSquare.setPosition(player.playerIcon.getX(), player.playerIcon.getY());
                 player.interactSquare.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY() - MOVE_DISTANCE);
                 return true;

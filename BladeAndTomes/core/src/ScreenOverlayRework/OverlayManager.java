@@ -3,8 +3,6 @@ package ScreenOverlayRework;
 
 import ScreenOverlayRework.Health.Health;
 import ScreenOverlayRework.Inventory.InventoryUI;
-//import ScreenOverlayRework.Inventory.NPCTrades.NPCBuyer;
-//import ScreenOverlayRework.Inventory.NPCTrades.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
