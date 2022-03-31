@@ -1,11 +1,17 @@
 package com.badlogic.game;
 
+import Keyboard_Mouse_Controls.MainMenuControls;
+/*
+import LoadAndSave.LoadSaveManager;
 import ScreenOverlayRework.Inventory.itemDocument;
+
+ */
 import ScreenOverlayRework.OverlayManager;
 import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -16,10 +22,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -40,11 +48,9 @@ import java.util.Random;
 // PUT IN CLAYMORE STORM EASTER EGG
 // Put in rick roll easter egg also
 public class BladeAndTomes extends Game {
-    World world;
     ShapeRenderer shapeRenderer;
     public SpriteBatch batch;
-    BitmapFont font;
-    Sprite sprite;
+    public BitmapFont font;
     Texture image;
     public Stage stageInstance;
     public final float WINDOWWIDTH = 1920, WINDOWHIGHT = 1080;
@@ -77,21 +83,24 @@ public class BladeAndTomes extends Game {
     public LabelStyle BaseLabelStyle2;
 
     public LabelStyle HealthLabelStyle;
-
+    public MainMenuControls controls;
     public Player player;
-    public Image playerImage;
+    public Image playerIcon;
     public Inventory inventory;
     public BackGroundMusic _bgmusic;
-    public Array<itemDocument> inventoryItems;
-
     public OverlayManager overlays;
     public boolean showtrade = false;
     public boolean showtradeBuyer = false;
     public boolean showHiddenInventory = false;
     public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
+    public AssetManager assets;
 
+    public int currentInventorySelection;
     public int tokens;
+    public int currentSaveIndex;
+    // Resets at the end of each dung
+    public int spellDamageIncrease;
 
     private TextureAtlas idleTextureAtlas;
     private transient Animation<TextureRegion> idleAnimation;
@@ -160,24 +169,29 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void create() {
+        /*
+        spellDamageIncrease = 0;
+        NullItemDoc = new itemDocument();
+        currentSaveIndex = 2;
 
+        loadSaveManager = new LoadSaveManager();
+        controls = loadSaveManager.getSettings();
+
+         */
         player = new Player();
         inventory = new Inventory();
 
+        assets = new AssetManager();
+        currentInventorySelection = 0;
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
-
-        world = new World(new Vector2(0, 0 ),true);
-
-        playerImage = player.playerIcon;
 
         //tokens = 3;
         setTokens(3);
 
         quests = new Array<>();
         usedQuests = new Array<>();
-
 
         quests.add(new quest("Kill 5 enemies", 5, false));
         quests.add(new quest("Open 5 chests", 5, false));
@@ -194,6 +208,7 @@ public class BladeAndTomes extends Game {
         _bgmusic.playMusic();
 
         // Inventory Things
+        /*
         inventoryItems = new Array<>();
 
         for (int i = 0; i < 19; ++i) {
@@ -230,6 +245,8 @@ public class BladeAndTomes extends Game {
         slot.setDamage(10);
         slot.setTargetItem("Any");
 
+         */
+
         //Sets Scene2D instance
 
         // Adjusting this to a scale viewport for now on
@@ -238,14 +255,19 @@ public class BladeAndTomes extends Game {
         stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
 
         //Sets upstate and downstate textures for texture Buttons
-        /*
-        generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
-        generalTextButtonDownState = new Texture(Gdx.files.internal("Text_Button_Down_State.jpg"));
-        inventoryTextButtonState = new Texture(Gdx.files.internal("inventorySlot.png"));
-        inventoryBase1 = new Texture(Gdx.files.internal("inventoryBaseImage.png"));
-        inventoryBase2 = new Texture(Gdx.files.internal("inventoryBaseImage2.png"));
+        assets.load("Text_Button_Up_State.jpg",Texture.class);
+        assets.load("Text_Button_Down_State.jpg",Texture.class);
+        assets.load("inventorySlot.png",Texture.class);
+        assets.load("inventoryBaseImage.png",Texture.class);
+        assets.load("inventoryBaseImage2.png",Texture.class);
+        assets.finishLoading();
 
-         */
+
+        generalTextButtonUpState = assets.get("Text_Button_Up_State.jpg",Texture.class);
+        generalTextButtonDownState = assets.get("Text_Button_Down_State.jpg",Texture.class);
+        inventoryTextButtonState = assets.get("inventorySlot.png",Texture.class);
+        inventoryBase1 = assets.get("inventoryBaseImage.png",Texture.class);
+        inventoryBase2 = assets.get("inventoryBaseImage2.png",Texture.class);
 
         manager.load("Text_Button_Up_State.jpg", Texture.class);
         manager.load("Text_Button_Down_State.jpg", Texture.class);
@@ -268,13 +290,13 @@ public class BladeAndTomes extends Game {
         idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
         currentAnimation = idleAnimation;
         moveDownTextureAtlas = manager.get("AnimationFiles/playerMoveDown.atlas");
-        moveDownAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveDownTextureAtlas.getRegions());
+        moveDownAnimation = new Animation<TextureRegion>(2/5f, moveDownTextureAtlas.getRegions());
         moveUpTextureAtlas = manager.get("AnimationFiles/playerMoveUp.atlas");
-        moveUpAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveUpTextureAtlas.getRegions());
+        moveUpAnimation = new Animation<TextureRegion>(2/5f, moveUpTextureAtlas.getRegions());
         moveLeftTextureAtlas = manager.get("AnimationFiles/playerMoveLeft.atlas");
-        moveLeftAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveLeftTextureAtlas.getRegions());
+        moveLeftAnimation = new Animation<TextureRegion>(2/5f, moveLeftTextureAtlas.getRegions());
         moveRightTextureAtlas = manager.get("AnimationFiles/playerMoveRight.atlas");
-        moveRightAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveRightTextureAtlas.getRegions());
+        moveRightAnimation = new Animation<TextureRegion>(2/5f, moveRightTextureAtlas.getRegions());
         attackDownTextureAtlas = manager.get("AnimationFiles/playerAttackDown.atlas");
         attackDownAnimation = new Animation<TextureRegion>(1/5f, attackDownTextureAtlas.getRegions());
 
@@ -354,6 +376,12 @@ public class BladeAndTomes extends Game {
 
         this.setScreen(new MainMenu(this));
     }
+    /*
+    public void getCamera() {
+        this.camera = camera;
+    }
+
+     */
 
     public void setTokens(int num){
         tokens = num;
@@ -385,6 +413,8 @@ public class BladeAndTomes extends Game {
      * @param width
      * @param height
      */
+    public     float width = 1600, height = 900;
+
     @Override
     public void resize(int width, int height) {
         // stageInstance.getViewport().update(width, height, true);
@@ -396,14 +426,19 @@ public class BladeAndTomes extends Game {
         int viewportHeight = (int) size.y;
         Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
         stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
-        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
-
-        if (width < 1280) {
-            Gdx.graphics.setWindowedMode(1280, height);
-        }
-        if (height < 720) {
-            Gdx.graphics.setWindowedMode(width, 720);
-        }
+        System.out.println(Gdx.graphics.getSafeInsetTop());
+//        Gdx.graphics.setContinuousRendering(true);// = viewportHeight;
+//        Gdx.graphics.setWindowedMode(viewportWidth, viewportHeight);
+        System.out.println(viewportWidth+"\t"+viewportHeight);
+//        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
+//
+//        if (width < 1280) {
+//            Gdx.graphics.setWindowedMode(1280, height);
+//        }
+//        if (height < 720) {
+//            Gdx.graphics.setWindowedMode(width, 720);
+//        }
+//        Gdx.gl.
     }
 
     /**
@@ -437,11 +472,37 @@ public class BladeAndTomes extends Game {
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
 
-    private BodyDef playerDef(Image player) {
-        BodyDef playerBod = new BodyDef();
-        playerBod.type = BodyDef.BodyType.DynamicBody;
-        playerBod.position.set(player.getX() + player.getWidth(),player.getY() + player.getHeight());
+    public void playerMovement() {
+        player.playerIcon.addListener(player.playerInput = new InputListener() {
 
-        return playerBod;
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
+                    case Input.Keys.UP:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(),
+                                player.playerIcon.getY() + MOVE_DISTANCE,.5f));
+                        break;
+                    case Input.Keys.DOWN:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(),
+                                player.playerIcon.getY() - MOVE_DISTANCE,.5f));
+                        break;
+                    case Input.Keys.LEFT:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() - MOVE_DISTANCE,
+                                player.playerIcon.getY(),.5f));
+                        break;
+                    case Input.Keys.RIGHT:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() + MOVE_DISTANCE,
+                                player.playerIcon.getY(),.5f));
+                        break;
+                    default:
+                        return false;
+                }
+                boolean isTurn = false;
+                player.moveSquare.setPosition(player.playerIcon.getX(), player.playerIcon.getY());
+                player.interactSquare.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY() - MOVE_DISTANCE);
+                return true;
+            }
+        });
     }
 }

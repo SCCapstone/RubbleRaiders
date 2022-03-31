@@ -1,70 +1,92 @@
 package com.badlogic.game.creatures;
 
 import Keyboard_Mouse_Controls.MainMenuControls;
+import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
+import ScreenOverlayRework.Inventory.itemDocument;
 import Sounds.playerMoveSound;
-import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
-import java.awt.geom.Rectangle2D;
 import java.lang.String;
+import java.util.HashMap;
 
 public class Player extends Entity {
 
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
+    private boolean isDefault;
     private enum classes {WARRIOR, CLERIC ,WIZARD};
-
+    //    public static Array<quest> quests;
+//    public static Array<quest> usedQuests;
     private int playerClass;
     private int physical;
     private int mental;
     private int social;
+
+
     private int acrobatics;
     private int bruteforce;
     private int speech;
     private int barter;
     private int awareness;
     private int intuition;
+
     private int gold;
     private String id;
     private String name;
-    public Image playerIcon;
-    private Sprite sprite;
-    //public Texture playerIcon;
-    public MainMenuControls controls;
+    public transient Image playerIcon;
+    public transient MainMenuControls controls;
 
-    private World world;
+    public boolean updateQuest;
 
-    private Body playerBody;
+    // Follow variables are used for quests
+    public int kAssignations;
+    public int kDeaths;
+    public int kDungeonsExplored;
+    public int kTradesNPCSeller;
+    public int kTradesNPCBuyer;
+    public int kChestsOpened;
+    public int kUsedPositions;
+    public int kCompleteQuests;
+    public int kEarnedGoldThroughQuest;
+    public int kCloseRangeKills;
+    public int kLongRangeKills;
+    public int kLevelsCompleted;
+    public int kEarnedGoldThroughLevels;
+    // End of variables are used for quests
+
+    // Player's Defence
+    public int playerDefence;
 
     // Movement Sound
-    playerMoveSound playerMovenSound;
+    transient playerMoveSound playerMovenSound;
 
-    public Rectangle interactSquare;
-    public Rectangle moveSquare;
-    public Rectangle rangeSquare;
+    public transient Rectangle interactSquare;
+    public transient Rectangle moveSquare;
+    public transient Rectangle rangeSquare;
     public boolean isTurn;
+    public int tokens;
 
-    private ShapeRenderer renderer = new ShapeRenderer();
-
-    public InputListener playerInput;
+    public transient InputListener playerInput;
+    // For Inventory
+    public Array<QuestDocument> activeQuests;
+    public Array<itemDocument> inventoryItems;
 
     final int MOVE_DISTANCE = 64;
     /*final int up = controls.getMoveUp();
@@ -77,10 +99,15 @@ public class Player extends Entity {
      */
     public Player() {
         super();
+        inventoryItems = new Array<>();
+
         this.id = "player";
+        isDefault = true;
         this.playerClass = 1;
         this.name = "";
         this.isTurn = true;
+        tokens = 0;
+        playerDefence = 0;
 
 
         playerMovenSound = new playerMoveSound();
@@ -90,16 +117,14 @@ public class Player extends Entity {
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         playerIcon.setVisible(false);
-        sprite = new Sprite(new Texture("PlayerIcon.jpg"));
-        //playerDef(sprite);
-        //draw(playerIcon, 64f);
+        playerBody(playerIcon);
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);
 
-        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
+        interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
@@ -112,25 +137,19 @@ public class Player extends Entity {
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
                     case Input.Keys.UP:
-                        //playerIcon.addListener((EventListener) Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 1));
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0.5f));
-                        playerMovenSound.playMoveSound();
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0.5f));
-                        playerMovenSound.playMoveSound();
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0.5f));
-                        playerMovenSound.playMoveSound();
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0.5f));
-                        playerMovenSound.playMoveSound();
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;
@@ -141,8 +160,38 @@ public class Player extends Entity {
                 return true;
             }
         });
-    }
+        kAssignations = 0;
+        kDeaths = 0;
+        kDungeonsExplored = 0;
+        kTradesNPCSeller = 0;
+        kTradesNPCBuyer = 0;
+        kChestsOpened = 0;
+        kUsedPositions = 0;
+        kCompleteQuests = 0;
+        kEarnedGoldThroughQuest = 0;
+        kCloseRangeKills = 0;
+        kLongRangeKills = 0;
+        kLevelsCompleted = 0;
+        kEarnedGoldThroughLevels = 0;
 
+        if (activeQuests == null)
+            activeQuests = new Array<>();
+        updateQuest = false;
+        for (int i = 0; i < (26); ++i) {
+            itemDocument itemTemp = new itemDocument();
+            itemTemp.setIndex(String.valueOf(i));
+            itemTemp.setTargetItem("Null");
+            itemTemp.setCategory("Null");
+            inventoryItems.add(itemTemp);
+        }
+
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+
+
+    }
     /**
      * Alternate constructor for player entity
      */
@@ -150,59 +199,73 @@ public class Player extends Entity {
     {
         super(healthPoints, fullHealth, armorPoints, movement, height, width);
         this.id = id;
+        isDefault = true;
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
         this.isTurn = true;
-
+        tokens = 0;
         playerMovenSound = new playerMoveSound();
         gold = 100;
+
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+        moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
+        moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+
+        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
+        interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
+
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        playerIcon.addListener(playerInput = new InputListener() {
+        gold = 100;
 
-            @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
-                    case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    default:
-                        return false;
-                }
-                isTurn = false;
-                moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
-                interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
-                return true;
-            }
-        });
+
+
+        kAssignations = 0;
+        kDeaths = 0;
+        kDungeonsExplored = 0;
+        kTradesNPCSeller = 0;
+        kTradesNPCBuyer = 0;
+        kChestsOpened = 0;
+        kUsedPositions =0;
+        kCompleteQuests =0;
+
+        kEarnedGoldThroughQuest = 0;
+        kCloseRangeKills = 0;
+        kLongRangeKills = 0;
+        kLevelsCompleted = 0;
+        kEarnedGoldThroughLevels = 0;
+        playerDefence = 0;
+
+
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
 
-        //playerDef(playerIcon);
+        playerBody(playerIcon);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
 
+    }
+
+    public boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 
     public int getPlayerClass() {
@@ -223,6 +286,12 @@ public class Player extends Entity {
 
     public int getSocial() {
         return social;
+    }
+    public void setTokens(int num){
+        tokens = num;
+    }
+    public int getTokens(){
+        return tokens;
     }
 
     public int getAcrobatics() {
@@ -329,23 +398,12 @@ public class Player extends Entity {
         return gold;
     }
 
-    /*
-    private BodyDef playerDef(Sprite player) {
+    public BodyDef playerBody(Image player) {
         BodyDef playerBod = new BodyDef();
         playerBod.type = BodyDef.BodyType.DynamicBody;
-        playerBod.position.set(player.getX() + player.getWidth(),player.getY() + player.getHeight());
-
-        //PolygonShape rectangle = new PolygonShape();
-        //EdgeShape edge = new EdgeShape();
-
-        FixtureDef fd = new FixtureDef();
-        //fd.shape = rectangle;
-        fd.density = 1;
-        fd.friction = 1.0f;
-        fd.restitution = 0.1f;
+        playerBod.position.set(player.getWidth() / 2, player.getHeight() / 2);
 
         return playerBod;
     }
-     */
 
 }
