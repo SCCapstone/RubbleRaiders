@@ -263,7 +263,7 @@ public class Overworld extends ScreenAdapter {
         renderer.setView(camera);
         renderer.render();
         //worldRender.render(world, camera.combined);
-        parseCollision();
+        //parseCollision();
 
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 

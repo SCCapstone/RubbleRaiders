@@ -14,6 +14,9 @@ public class LoadSaveManager {
         load.loadFourPreSets();
         save=new Save(saveFilePath,load.getFourPlayers());
     }
+    public Player generatePlayer(){
+        return load.generateDefaultPlayer();
+    }
     public void savePlayer(Player player, int index){
         save.saveNewProgress(player,index);
     }

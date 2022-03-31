@@ -85,9 +85,7 @@ public class MainMenu extends ScreenAdapter {
     public MainMenu(final BladeAndTomes game) {
 
         this.GAME = game;
-        game.player = new Player();
-        game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
-
+        game.player = game.loadSaveManager.generatePlayer();
 
         batch = new SpriteBatch();
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
