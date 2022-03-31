@@ -20,7 +20,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -78,7 +81,6 @@ public class BladeAndTomes extends Game {
     public LabelStyle HealthLabelStyle;
     public MainMenuControls controls;
     public Player player;
-    public Image playerIcon;
     public BackGroundMusic _bgmusic;
     public OverlayManager overlays;
     public boolean showtrade = false;
@@ -380,4 +382,33 @@ public class BladeAndTomes extends Game {
     public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
+
+    public void playerMovement() {
+        player.playerIcon.addListener(player.playerInput = new InputListener() {
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
+                    case Input.Keys.UP:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE, 0));
+                        break;
+                    case Input.Keys.DOWN:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE, 0));
+                        break;
+                    case Input.Keys.LEFT:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY(), 0));
+                        break;
+                    case Input.Keys.RIGHT:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY(), 0));
+                        break;
+                    default:
+                        return false;
+                }
+                //isTurn = false;
+                player.moveSquare.setPosition(player.playerIcon.getX(), player.playerIcon.getY());
+                player.interactSquare.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY() - MOVE_DISTANCE);
+                return true;
+            }
+        });
+    }
 }

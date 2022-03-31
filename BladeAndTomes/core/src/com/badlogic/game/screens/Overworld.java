@@ -266,6 +266,8 @@ public class Overworld extends ScreenAdapter {
         //worldRender.render(world, camera.combined);
         parseCollision();
 
+        GAME.playerMovement();
+
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 
         GAME.batch.begin();
