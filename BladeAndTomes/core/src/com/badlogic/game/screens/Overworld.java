@@ -25,6 +25,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -140,12 +141,16 @@ public class Overworld extends ScreenAdapter {
         collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
 
-        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
+// there are several other types, Rectangle is probably the most common one
+
+
+        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
         worldRender = new Box2DDebugRenderer();
 
         parseCollision();
+//        worldRender.VELOCITY_COLOR.b=
 
         MOVE_DISTANCE = 64;
         doTrade = false;
@@ -262,6 +267,22 @@ public class Overworld extends ScreenAdapter {
 
         renderer.setView(camera);
         renderer.render();
+//        MapObjects objects = collisionLayer.getProperties().getKeys().toString();
+//        System.out.println(collisionLaye);
+
+//
+//        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+//            System.out.println("working");
+//
+//            Rectangle rectangle = rectangleObject.getRectangle();
+//            Rectangle player = new Rectangle(GAME.player.playerIcon.getX(),GAME.player.playerIcon.getY(),
+//                    GAME.player.playerIcon.getImageWidth(),GAME.player.playerIcon.getImageHeight());
+//            if (Intersector.overlaps(rectangle,player)) {
+//
+//            }else {
+//            }
+//            // collision happened
+//        }
         //worldRender.render(world, camera.combined);
         //parseCollision();
 
@@ -311,7 +332,7 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
-        //isTileCollisionHandled(GAME.player, collisionLayer);
+//        isTileCollisionHandled(GAME.player, collisionLayer);
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
@@ -346,7 +367,6 @@ public class Overworld extends ScreenAdapter {
         if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
             isQuestBoardTradeVisible =     //Save all player data including name, stats, inventory
             !isQuestBoardTradeVisible;
-            GAME.overlays.NPCSellerInventory(false,npcSeller);
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
@@ -388,7 +408,6 @@ public class Overworld extends ScreenAdapter {
         //overWorldMap.getLayers().get(objectLayerId).getProperties().get("blocked");
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
-
         camera = new OrthographicCamera();
         Gdx.input.setInputProcessor(GAME.stageInstance);
     }
@@ -464,6 +483,8 @@ public class Overworld extends ScreenAdapter {
                     Rectangle rectangle = rectangleObject.getRectangle();
 
                     if (mapObject instanceof RectangleMapObject) {
+                        System.out.println(rectangle.x);
+//                        rectangle.x
                         BodyDef bodyDef = getBodyDef(i * tileMeasurement + tileMeasurement / 2f + rectangle.getX()
                                         - (tileMeasurement - rectangle.getWidth()) / 2f,
                                 j * tileMeasurement + tileMeasurement / 2f + rectangle.getY()
@@ -472,7 +493,7 @@ public class Overworld extends ScreenAdapter {
                         Body body = world.createBody(bodyDef);
                         PolygonShape polygonShape = new PolygonShape();
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 0.0f);
+                        body.createFixture(polygonShape, 1f);
                         polygonShape.dispose();
 
                     }
