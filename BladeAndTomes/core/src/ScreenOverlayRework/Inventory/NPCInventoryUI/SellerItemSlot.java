@@ -22,8 +22,7 @@ public class SellerItemSlot extends itemSlot {
     public SellerItemSlot(BladeAndTomes game,
                     itemDocument doc,
                     DragAndDrop DND,
-                    AssetManager manager,
-                        Array<itemSlot> slots){
+                    AssetManager manager, Array<itemSlot> slots){
         super();
         this.slots=slots;
         this.manager=manager;
