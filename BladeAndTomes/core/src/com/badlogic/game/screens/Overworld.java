@@ -1,23 +1,26 @@
 package com.badlogic.game.screens;
 
 import Keyboard_Mouse_Controls.SaveLoadGame;
-import ScreenOverlay.MainInventory;
-import Sounds.playerMoveSound;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
+import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TideMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -29,15 +32,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
-import org.w3c.dom.Text;
 
 import java.awt.*;
 
@@ -64,6 +64,33 @@ public class Overworld extends ScreenAdapter {
 
     private OrthographicCamera camera;
 
+
+    Texture background;
+    Texture chapel;
+    Texture barracks;
+    Texture questBoard;
+    Texture portal;
+    Texture NPCTrader;
+    Texture marketStall;
+    Texture tavern;
+
+    /*
+    // use all this for collision with buildings later
+    private float tavernWidth = 128f;
+    private float tavernHeight = 128f;
+    private float marketStallHeight = 256f;
+    private float marketStallWidth = 196f;
+    private float barracksHeight = 384f;
+    private float barracksWidth = 256f;
+    private float chapelWidth = 196f;
+    private float chapelHeight = 256f;
+    private float questBoardHeight = 64f;
+    private float questBoardWidth = 64f;
+    private float portalHeight = 64f;
+    private float portalWidth = 64f;
+
+     */
+
     Window pauseMenu;
     Label warning;
     TextButton options[];
@@ -72,7 +99,6 @@ public class Overworld extends ScreenAdapter {
 
     playerMoveSound playerMovenSound;
 
-    MainInventory inventory;
     Point NPC_Cords;
     Point Portal_Cords;
     boolean doTrade;
@@ -86,26 +112,32 @@ public class Overworld extends ScreenAdapter {
     TextButton game4;
     Table savedGames;
 
+    NPCSeller npcSeller;
+    boolean isNpcSellerVisible;
+
+    NPCBuyer npcBuyer;
+    boolean isNpcBuyerVisible;
+
+    TownHallQuestBoard questBoardTrade;
+    boolean isQuestBoardTradeVisible;
+
+    TreasureChestUI chest;
+    int counter;
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
     public Overworld (final BladeAndTomes game) {
+        game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+
+        counter = 0;
 
         this.GAME = game;
         GAME.resetElapsedTime();
         objectLayerId = 2;
-        /*
-        manager = new AssetManager();
-        manager.setLoader(TiledMap.class, new TideMapLoader(new InternalFileHandleResolver()));
-        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
-        manager.finishLoading();
-
-         */
 
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
-        //overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
         collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
 
@@ -114,9 +146,7 @@ public class Overworld extends ScreenAdapter {
         world = new World(new Vector2(0, 0),true);
         worldRender = new Box2DDebugRenderer();
 
-        //playerDef(GAME.player.playerIcon);
-
-        //parseCollision();
+        parseCollision();
 
         MOVE_DISTANCE = 64;
         doTrade = false;
@@ -125,64 +155,29 @@ public class Overworld extends ScreenAdapter {
         collidedX = false;
         collidedY = false;
 
+        /*
+        // Assets were obtained from below source
+        // https://merchant-shade.itch.io/16x16-mini-world-sprites
+        background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
+        chapel = new Texture(Gdx.files.internal("Chapel.jpg"));
+        barracks = new Texture(Gdx.files.internal("Barracks.jpg"));
+        marketStall = new Texture(Gdx.files.internal("MarketBuilding.jpg"));
+        portal = new Texture(Gdx.files.internal("PortalToDungeon.jpg"));
+        questBoard = new Texture(Gdx.files.internal("Quests_Board.jpg"));
+        tavern = new Texture(Gdx.files.internal("Tavern.jpg"));
+        NPCTrader = new Texture(Gdx.files.internal("NPC_Trader.png"));
+         */
+
         pauseMenu = new Window("", GAME.generalWindowStyle);
-        pauseMenu.setHeight(400);
-        pauseMenu.setWidth(600);
+        pauseMenu.setHeight(500);
+        pauseMenu.setWidth(700);
         pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
         saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
-        //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
-        //loadWindow.setBackground();
-        saveQuit.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight());
+        saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
         saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
-        saveBack = new TextButton("Back", GAME.generalTextButtonStyle);
-        saveBack.setSize(100f,50f);
-        saveBack.setColor(Color.LIGHT_GRAY);
-        savedGames = new Table();
-        savedGames.setFillParent(true);
-        savedGames.defaults();
-        game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
-        game1.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(1);
-            }
-        });
-        game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
-        game2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(2);
-            }
-        });
-        game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
-        game3.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(3);
-            }
-        });
-        game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
-        game4.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(4);
-            }
-        });
-        //Add listeners for the buttons
-        savedGames.add(saveBack).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game1).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game2).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game3).padBottom(3f);
-        savedGames.row();
-        savedGames.add(game4);
-
-        saveQuit.addActor(savedGames);
 
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
@@ -191,9 +186,10 @@ public class Overworld extends ScreenAdapter {
                 {
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
-                    pauseMenu.add(warning).center().colspan(3);
+                    pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
                     pauseMenu.row();
-                    pauseMenu.add(options[0], options[1]).center();
+                    pauseMenu.row();
+                    pauseMenu.add(options[0], options[1]);
                 }
                 return true;
             }
@@ -202,21 +198,23 @@ public class Overworld extends ScreenAdapter {
         GAME.player.playerIcon.addListener(escapePauseOver);
 
         warning = new Label("Are you sure you want to Quit?", GAME.generalLabelStyle);
+        warning.setSize(300f, 200f);
+        warning.setAlignment(1,1);
 
         options = new TextButton[] {
-          new TextButton("Save and Quit", GAME.generalTextButtonStyle),
+          new TextButton("Quit", GAME.generalTextButtonStyle),
           new TextButton("Cancel", GAME.generalTextButtonStyle)
         };
 
         options[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //GAME.stageInstance.removeListener(escapePauseOver);
-                //GAME.stageInstance.clear();
+                GAME.stageInstance.clear();
                 pauseMenu.clear();
                 pauseMenu.remove();
-                //dispose();
-                GAME.stageInstance.addActor(saveQuit);
+                dispose();
+                GAME.setScreen(new MainMenu(GAME));
+
             }
         });
 
@@ -229,19 +227,6 @@ public class Overworld extends ScreenAdapter {
             }
         });
 
-        saveBack.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveQuit.remove();
-                //GAME.stageInstance.clear();
-                GAME.stageInstance.setKeyboardFocus(null);
-                GAME.stageInstance.addActor(pauseMenu);
-                pauseMenu.add(warning).center().colspan(3);
-                pauseMenu.row();
-                pauseMenu.add(options[0], options[1]).center();
-                GAME.stageInstance.addActor(pauseMenu);
-            }
-        });
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
@@ -255,7 +240,16 @@ public class Overworld extends ScreenAdapter {
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
         // For overlays
+
+        game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
+        npcSeller = game.overlays.generateNewNPSeller();
+        isNpcSellerVisible =false;
+        npcBuyer = game.overlays.generateNewNPCBuyer();
+        isNpcBuyerVisible = false;
+        questBoardTrade= game.overlays.generateQuestBoard();
+        isQuestBoardTradeVisible = false;
+        chest = game.overlays.generateChest();
 
 
     }
@@ -263,16 +257,19 @@ public class Overworld extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.setView(camera);
         renderer.render();
-        world.step(1f/60f, 6, 2);
-        worldRender.render(world, camera.combined);
-        //parseCollision();
+        //worldRender.render(world, camera.combined);
+        parseCollision();
+
+        // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 
         GAME.batch.begin();
+
         GAME.runPlayerAnimation();
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             GAME.resetElapsedTime();
@@ -283,6 +280,7 @@ public class Overworld extends ScreenAdapter {
             GAME.runMoveDownAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.resetElapsedTime();
             GAME.runMoveLeftAnimation();
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
@@ -290,7 +288,6 @@ public class Overworld extends ScreenAdapter {
             GAME.runMoveRightAnimation();
         }
         GAME.batch.end();
-
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
         if(GAME.player.playerIcon.equals(overWorldMap.getTileSets().getTileSet("130"))) {
@@ -299,7 +296,6 @@ public class Overworld extends ScreenAdapter {
             dispose();
             GAME.setScreen(new Dungeon(GAME));
         }
-
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
@@ -322,38 +318,91 @@ public class Overworld extends ScreenAdapter {
         // Displays Hidden Inventory Table
 
         // COMMENT THIS CODE TO GET TRADING WORKING
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !isNpcSellerVisible && !isNpcBuyerVisible&&!isQuestBoardTradeVisible)
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcBuyerVisible){
+            isNpcSellerVisible =!isNpcSellerVisible;
+            isQuestBoardTradeVisible =false;
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)&& !isNpcSellerVisible){
+            isNpcBuyerVisible =!isNpcBuyerVisible;
+            isQuestBoardTradeVisible =false;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)&& !isNpcSellerVisible){
+            isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
+            isQuestBoardTradeVisible =     //Save all player data including name, stats, inventory
+            !isQuestBoardTradeVisible;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+            chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
+            GAME.overlays.displayChest(chest);
+        }
+
+        // Updates Elements for QuestBord
+        if(isQuestBoardTradeVisible){
+            questBoardTrade.render();
+        }
+
+        GAME.overlays.render();
+//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
+
+        GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+
     }
 
-    //Save all player data including name, stats, inventory
-    public void saveGame(int id){
-        GAME.stageInstance.removeListener(escapePauseOver);
-        GAME.stageInstance.clear();
-        dispose();
-        GAME.setScreen(new MainMenu(GAME));
-    }
+        //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+
+
+
+
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportHeight = height;
-        camera.viewportWidth = width;
-        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-        camera.update();
-        GAME.stageInstance.getViewport().update(width, height, true);
+//        camera.viewportHeight = 1080;
+//        camera.viewportWidth = 1920;
+////        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() /);
+//        camera.update();
+        Vector2 size = Scaling.fill.apply(1920, 1080, width, height);
+        int viewportWidth = (int) size.x;
+        int viewportHeight = (int) size.y;
+        Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
+        GAME.stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+
+//        Gdx.graphics.set
+
+
+//        GAME.stageInstance.getViewport().update(1920, 1080, true);
+
+//        GAME.stageInstance.getCamera().translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2,100);
+//        GAME.stageInstance.getCamera()
    }
 
     @Override
     public void show() {
-        //overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
         //collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(objectLayerId);
         //overWorldMap.getLayers().get(objectLayerId).getProperties().get("blocked");
-        parseCollision();
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
-        camera = new OrthographicCamera();
+        camera = (OrthographicCamera) GAME.stageInstance.getCamera();
         Gdx.input.setInputProcessor(GAME.stageInstance);
     }
 
@@ -370,7 +419,6 @@ public class Overworld extends ScreenAdapter {
         world.dispose();
         overWorldMap.dispose();
         renderer.dispose();
-        //GAME.stageInstance.dispose();
         //manager.dispose();
     }
 
@@ -437,8 +485,9 @@ public class Overworld extends ScreenAdapter {
                         Body body = world.createBody(bodyDef);
                         PolygonShape polygonShape = new PolygonShape();
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 1.0f);
+                        body.createFixture(polygonShape, 0.0f);
                         polygonShape.dispose();
+
                     }
                 }
             }
@@ -451,23 +500,4 @@ public class Overworld extends ScreenAdapter {
         bodyDef.position.set(i, j);
         return bodyDef;
     }
-/*
-    private BodyDef playerDef(Image player) {
-        BodyDef playerBod = new BodyDef();
-        playerBod.type = BodyDef.BodyType.DynamicBody;
-        playerBod.position.set(player.getX() + player.getWidth(),player.getY() + player.getHeight());
-
-        //PolygonShape rectangle = new PolygonShape();
-        //EdgeShape edge = new EdgeShape();
-
-        FixtureDef fd = new FixtureDef();
-        //fd.shape = rectangle;
-        fd.density = 1;
-        fd.friction = 1.0f;
-        fd.restitution = 0.1f;
-
-        return playerBod;
-    }
-
- */
 }

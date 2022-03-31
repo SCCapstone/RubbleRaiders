@@ -26,7 +26,7 @@ public class Entity {
         this.healthPoints = 0;
         this.fullHealth = 0;
         this.armorPoints = 0;
-        this.movement = 0.5f;
+        this.movement = .5f;
         this.height = 64;
         this.width = 64;
 

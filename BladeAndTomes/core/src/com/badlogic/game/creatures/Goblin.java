@@ -19,6 +19,7 @@ public class Goblin  extends Enemy{
     Texture enemyTex;
     public final Image enemyImage;
     public boolean isTurn;
+
     private TextureAtlas idleTextureAtlas;
     private transient Animation<TextureRegion> idleAnimation;
     private TextureAtlas attackTextureAtlas;
@@ -38,7 +39,6 @@ public class Goblin  extends Enemy{
 
     private final AssetManager manager = new AssetManager();
 
-
     /**
      * Paramaterized constuctor that is effectively the default constructor, which just instantiates a normal goblin
      * @param player - player instance so as to allow for the goblin to
@@ -49,7 +49,7 @@ public class Goblin  extends Enemy{
         enemyImage = new Image(enemyTex);
         enemyImage.setSize(64,64);
         isTurn = false;
-
+        enemyImage.setVisible(false);
         movement = .3f;
 
         manager.load("AnimationFiles/goblinIdle.atlas", TextureAtlas.class);
@@ -59,14 +59,11 @@ public class Goblin  extends Enemy{
         manager.load("AnimationFiles/goblinMoveLeft.atlas", TextureAtlas.class);
         manager.load("AnimationFiles/goblinMoveRight.atlas", TextureAtlas.class);
         manager.finishLoading();
-
         idleTextureAtlas = manager.get("AnimationFiles/goblinIdle.atlas");
         idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
-
         currentAnimation = idleAnimation;
         attackTextureAtlas = manager.get("AnimationFiles/goblinAttack.atlas");
         attackAnimation = new Animation<TextureRegion>(1/3f, attackTextureAtlas.getRegions());
-
         moveDownTextureAtlas = manager.get("AnimationFiles/goblinMoveDown.atlas");
         moveDownAnimation = new Animation<TextureRegion>(movement/5f, moveDownTextureAtlas.getRegions());
         moveUpTextureAtlas = manager.get("AnimationFiles/goblinMoveUp.atlas");
@@ -85,81 +82,87 @@ public class Goblin  extends Enemy{
         float x_distance = enemyImage.getX() - player.playerIcon.getX();
         float y_distance = enemyImage.getY() - player.playerIcon.getY();
 
-            if((x_distance >= -128 && x_distance <= 128) &&
-                    (y_distance >= -128 && y_distance <= 128)) {
-                return false;
-            }
-
-            if(y_distance < -64) {
-                enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,.3f));
-                moving = true;
-                resetElapsedTime();
-                runMoveUpAnimation();
-            }
-            else if(y_distance > 64) {
-                enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,.3f));
-                moving = true;
-                resetElapsedTime();
-                runMoveDownAnimation();
-            }
-
-            if(x_distance < -64) {
-                enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),.3f));
-                moving = true;
-                resetElapsedTime();
-                runMoveRightAnimation();
-            }
-            else if(x_distance > 64) {
-                enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),.3f));
-                moving = true;
-                resetElapsedTime();
-                runMoveLeftAnimation();
-            }
-            return true;
+        if((x_distance >= -128 && x_distance <= 128) &&
+                (y_distance >= -128 && y_distance <= 128)) {
+            return false;
         }
-        /**
-         * Handles Goblin attacks and codifying it into the goblin class.
-         * @return - return damage done by the goblin's attack
-         */
-        public int attackPlayer() {
-            isAttacking = true;
+
+        if(y_distance < -64) {
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,.3f));
+            moving = true;
             resetElapsedTime();
-            runAttackAnimation();
-            int hitRoll = (int)(Math.random()*(20)+1);
-            if (hitRoll >= player.getArmorPoints()) {
-                return (int)(Math.random()*(3)+1);
-            }
-            else {
-                return 0;
-            }
+            runMoveUpAnimation();
         }
-        /**
-         * Disposes of enemy image and disposes the texture created by the enemyTex
-         */
-        public void remove() {
-            enemyImage.remove();
-            enemyTex.dispose();
-            idleTextureAtlas.dispose();
-            moveDownTextureAtlas.dispose();
-            moveUpTextureAtlas.dispose();
-            moveLeftTextureAtlas.dispose();
-            moveRightTextureAtlas.dispose();
-            attackTextureAtlas.dispose();
+        else if(y_distance > 64) {
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,.3f));
+            moving = true;
+            resetElapsedTime();
+            runMoveDownAnimation();
         }
 
-        public void runAnimation(BladeAndTomes GAME) {
-            elapsedTime += Gdx.graphics.getDeltaTime();
-            if(currentAnimation.isAnimationFinished(elapsedTime)){
-                currentAnimation = idleAnimation;
-                isAttacking = false;
-                moving = false;
-            }
-            GAME.batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), enemyImage.getX(), enemyImage.getY());
+        if(x_distance < -64) {
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),.3f));
+            moving = true;
+            resetElapsedTime();
+            runMoveRightAnimation();
         }
-        public void runAttackAnimation() { currentAnimation = attackAnimation; }
-        public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
-        public void runMoveUpAnimation() { currentAnimation = moveUpAnimation; }
-        public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
-        public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
-        public void resetElapsedTime() { elapsedTime = 0; }
+        else if(x_distance > 64) {
+            enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),.3f));
+            moving = true;
+            resetElapsedTime();
+            runMoveLeftAnimation();
+        }
+
+        return true;
+    }
+
+    /**
+     * Handles Goblin attacks and codifying it into the goblin class.
+     * @return - return damage done by the goblin's attack
+     */
+    public int attackPlayer() {
+        isAttacking = true;
+        resetElapsedTime();
+        runAttackAnimation();
+        int hitRoll = (int)(Math.random()*(20)+1);
+        if (hitRoll >= player.getArmorPoints()) {
+           return (int)(Math.random()*(3)+1);
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Disposes of enemy image and disposes the texture created by the enemyTex
+     */
+    public void remove() {
+        enemyImage.remove();
+        enemyTex.dispose();
+        idleTextureAtlas.dispose();
+        moveDownTextureAtlas.dispose();
+        moveUpTextureAtlas.dispose();
+        moveLeftTextureAtlas.dispose();
+        moveRightTextureAtlas.dispose();
+        attackTextureAtlas.dispose();
+    }
+
+    public void runAnimation(BladeAndTomes GAME) {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        if(currentAnimation.isAnimationFinished(elapsedTime)){
+            currentAnimation = idleAnimation;
+            isAttacking = false;
+            moving = false;
+        }
+        GAME.batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), enemyImage.getX(), enemyImage.getY());
+    }
+
+    public void runAttackAnimation() { currentAnimation = attackAnimation; }
+    public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
+    public void runMoveUpAnimation() { currentAnimation = moveUpAnimation; }
+    public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
+    public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
+    public void resetElapsedTime() { elapsedTime = 0; }
+
+
 }

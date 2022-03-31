@@ -1,11 +1,8 @@
 package com.badlogic.game;
 
 import Keyboard_Mouse_Controls.MainMenuControls;
-/*
 import LoadAndSave.LoadSaveManager;
 import ScreenOverlayRework.Inventory.itemDocument;
-
- */
 import ScreenOverlayRework.OverlayManager;
 import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
@@ -22,12 +19,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -86,7 +79,6 @@ public class BladeAndTomes extends Game {
     public MainMenuControls controls;
     public Player player;
     public Image playerIcon;
-    public Inventory inventory;
     public BackGroundMusic _bgmusic;
     public OverlayManager overlays;
     public boolean showtrade = false;
@@ -102,6 +94,8 @@ public class BladeAndTomes extends Game {
     // Resets at the end of each dung
     public int spellDamageIncrease;
 
+    public LoadSaveManager loadSaveManager;
+    public itemDocument NullItemDoc;
     private TextureAtlas idleTextureAtlas;
     private transient Animation<TextureRegion> idleAnimation;
     private TextureAtlas moveDownTextureAtlas;
@@ -142,34 +136,12 @@ public class BladeAndTomes extends Game {
         }
     }
 
-    public static Array<quest> quests;
-    public static Array<quest> usedQuests;
-
-
-    public static void setQuests(){
-        Random rand = new Random();
-        int randVal;
-        try {
-            while (usedQuests.size < 5) {
-                randVal = rand.nextInt(5);
-                if (quests.get(randVal).isUsed() == false) {
-                    usedQuests.add(quests.get(randVal));
-                    quests.get(randVal).setUsed();
-                    System.out.println(quests.get(randVal).getGoal());
-                }
-            }
-        } catch(Exception e){
-            System.out.println(e);
-        }
-    }
-
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
      * the first screen.
      */
     @Override
     public void create() {
-        /*
         spellDamageIncrease = 0;
         NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
@@ -177,28 +149,12 @@ public class BladeAndTomes extends Game {
         loadSaveManager = new LoadSaveManager();
         controls = loadSaveManager.getSettings();
 
-         */
-        player = new Player();
-        inventory = new Inventory();
-
         assets = new AssetManager();
         currentInventorySelection = 0;
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
 
-        //tokens = 3;
-        setTokens(3);
-
-        quests = new Array<>();
-        usedQuests = new Array<>();
-
-        quests.add(new quest("Kill 5 enemies", 5, false));
-        quests.add(new quest("Open 5 chests", 5, false));
-        quests.add(new quest("Trade 1 item", 1, false));
-        quests.add(new quest("Enter the dungeon", 1, false));
-        quests.add(new quest("Explore 5 dungeon rooms", 5, false));
-        quests.add(new quest("Sell 1 item", 1, false));
 
         // Work for resizing of screen
 
@@ -208,44 +164,6 @@ public class BladeAndTomes extends Game {
         _bgmusic.playMusic();
 
         // Inventory Things
-        /*
-        inventoryItems = new Array<>();
-
-        for (int i = 0; i < 19; ++i) {
-            itemDocument itemTemp = new itemDocument();
-            itemTemp.setIndex(String.valueOf(i));
-            itemTemp.setTargetItem("Null");
-            itemTemp.setCategory("Null");
-            inventoryItems.add(itemTemp);
-        }
-
-        itemDocument slot = inventoryItems.get(0);
-        slot.setDefauls = false;
-        slot.setImageLocation("InventoryItems/Weapons/Sword/1.png");
-        slot.setLevel(1);
-        slot.setCategory("Weapons");
-        slot.setName("Sword");
-        slot.setDamage(10);
-        slot.setTargetItem("Any");
-
-
-        slot = inventoryItems.get(1);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Armor/armor.png"));
-        slot.setLevel(2);
-        slot.setCategory("Armor");
-        slot.setDamage(10);
-        slot.setTargetItem("None");
-
-        slot = inventoryItems.get(2);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
-        slot.setLevel(2);
-        slot.setCategory("Spell");
-        slot.setDamage(10);
-        slot.setTargetItem("Any");
-
-         */
 
         //Sets Scene2D instance
 
@@ -281,6 +199,7 @@ public class BladeAndTomes extends Game {
         manager.load("AnimationFiles/playerMoveRight.atlas", TextureAtlas.class);
         manager.load("AnimationFiles/playerAttackDown.atlas", TextureAtlas.class);
         manager.finishLoading();
+
         generalTextButtonUpState = manager.get("Text_Button_Up_State.jpg");
         generalTextButtonDownState = manager.get("Text_Button_Down_State.jpg");
         inventoryTextButtonState = manager.get("inventorySlot.png");
@@ -366,14 +285,7 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
 
-        player.setHealthPoints(10);
-        try {
-            overlays = new OverlayManager(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        overlays.setOverLayesVisibility(false);
-
+//        player.setHealthPoints(10);
         this.setScreen(new MainMenu(this));
     }
     /*
@@ -383,12 +295,7 @@ public class BladeAndTomes extends Game {
 
      */
 
-    public void setTokens(int num){
-        tokens = num;
-    }
-    public int getTokens(){
-        return tokens;
-    }
+
 
     /**
      * This function is called by OpenGL to render objects presented in the order defined below and
@@ -396,6 +303,7 @@ public class BladeAndTomes extends Game {
      * that input.
      */
     @Override
+
     public void render() {
 
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
@@ -417,8 +325,9 @@ public class BladeAndTomes extends Game {
 
     @Override
     public void resize(int width, int height) {
-        // stageInstance.getViewport().update(width, height, true);
-        // following code is an update from anri, Helping to correct some minor aspect issues in the game
+//        this.width = width;
+//        this.height = height;
+//        // following code is an u.pdate from anri, Helping to correct some minor aspect issues in the game
         Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
         int viewportX = (int) (width - size.x) / 2;
         int viewportY = (int) (height - size.y) / 2;
@@ -471,38 +380,4 @@ public class BladeAndTomes extends Game {
     public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
-
-    public void playerMovement() {
-        player.playerIcon.addListener(player.playerInput = new InputListener() {
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
-                    case Input.Keys.UP:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(),
-                                player.playerIcon.getY() + MOVE_DISTANCE,.5f));
-                        break;
-                    case Input.Keys.DOWN:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(),
-                                player.playerIcon.getY() - MOVE_DISTANCE,.5f));
-                        break;
-                    case Input.Keys.LEFT:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() - MOVE_DISTANCE,
-                                player.playerIcon.getY(),.5f));
-                        break;
-                    case Input.Keys.RIGHT:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() + MOVE_DISTANCE,
-                                player.playerIcon.getY(),.5f));
-                        break;
-                    default:
-                        return false;
-                }
-                boolean isTurn = false;
-                player.moveSquare.setPosition(player.playerIcon.getX(), player.playerIcon.getY());
-                player.interactSquare.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY() - MOVE_DISTANCE);
-                return true;
-            }
-        });
-    }
 }

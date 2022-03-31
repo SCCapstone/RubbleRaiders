@@ -32,7 +32,7 @@ public class Player extends Entity {
     //TODO: Maybe make this a public enum in backbone?
     private boolean isDefault;
     private enum classes {WARRIOR, CLERIC ,WIZARD};
-    //    public static Array<quest> quests;
+//    public static Array<quest> quests;
 //    public static Array<quest> usedQuests;
     private int playerClass;
     private int physical;
@@ -227,7 +227,37 @@ public class Player extends Entity {
         gold = 100;
 
 
+        playerIcon.addListener(playerInput = new InputListener() {
 
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
+                    case Input.Keys.UP:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
+                        playerMovenSound.playMoveSound();
+                        break;
+                    case Input.Keys.DOWN:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
+                        playerMovenSound.playMoveSound();
+                        break;
+                    case Input.Keys.LEFT:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
+                        playerMovenSound.playMoveSound();
+                        break;
+                    case Input.Keys.RIGHT:
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
+                        playerMovenSound.playMoveSound();
+                        break;
+                    default:
+                        return false;
+                }
+                isTurn = false;
+                moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
+                return true;
+            }
+        });
         kAssignations = 0;
         kDeaths = 0;
         kDungeonsExplored = 0;

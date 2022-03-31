@@ -1,7 +1,11 @@
 package com.badlogic.game.screens;
 
-import ScreenOverlay.Events;
-import ScreenOverlay.MainInventory;
+
+import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
+import ScreenOverlayRework.OverlayManager;
+import com.badlogic.game.creatures.Player;
+
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -10,6 +14,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Json;
+
+import java.util.HashMap;
 
 public class Dungeon extends ScreenAdapter {
 
@@ -22,6 +29,8 @@ public class Dungeon extends ScreenAdapter {
     float eventX, eventY, eventSizeX, eventSizeY;
     RoomHandler roomHandler;
 
+    private Goblin[] goblins;
+
     public Dungeon(final BladeAndTomes game) {
 
         //Initial backbone values carried over
@@ -30,7 +39,6 @@ public class Dungeon extends ScreenAdapter {
         GAME.resetElapsedTime();
         //Clears the stage instance
         GAME.stageInstance.clear();
-
         //Instances the player's inventory
 
         roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays);
@@ -49,6 +57,8 @@ public class Dungeon extends ScreenAdapter {
         eventSizeY = 120f;
         eventX = MathUtils.random(360, 1600);
         eventY = MathUtils.random(240, 960);
+
+        goblins = new Goblin[0];
 
         // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
@@ -72,8 +82,9 @@ public class Dungeon extends ScreenAdapter {
 
         //Instances the player's inventory
 //        inventory = new MainInventory(GAME);
-
+        game.overlays = new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
+
 
 
     }
@@ -111,6 +122,22 @@ public class Dungeon extends ScreenAdapter {
             if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
                 GAME.resetElapsedTime();
                 GAME.runAttackDownAnimation();
+            }
+        }
+        goblins = roomHandler.getGoblins();
+        if(goblins.length > 0){
+            for(Goblin goblin: goblins) {
+                if(goblin != null) {
+                    /*if(goblin.isAttacking) {
+                        goblin.resetElapsedTime();
+                        goblin.runAttackAnimation();
+                    }*/
+                    /*if(goblin.moving) {
+                        goblin.resetElapsedTime();
+                        goblin.runMovingAnimation();
+                    }*/
+                    goblin.runAnimation(GAME);
+                }
             }
         }
         GAME.batch.end();

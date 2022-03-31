@@ -1,6 +1,8 @@
 package ScreenOverlayRework.Inventory;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import jdk.internal.jimage.ImageLocation;
@@ -9,10 +11,39 @@ public class itemDocument {
     private String category;
     private String Name;
     private String targetItem;
-    private Image image;
+    private transient Image image;
     private String index;
     private String ImageLocation;
 
+    private int level;
+    private int range;
+    private int damage;
+    private int price;
+    public Color color;
+    public boolean isDefaultColor=true;
+
+    private String itemDescription;
+
+    public String getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
+    }
+
+    public itemDocument(){
+        category = "Null";
+        targetItem = "Any";
+        setDefauls = true;
+        image = new Image();
+
+        range = 0;
+        damage = 0;
+        level = 0;
+
+        itemDescription = "";
+    }
 
     public void setImageLocation(String loc){
         ImageLocation = loc;
@@ -25,10 +56,7 @@ public class itemDocument {
         this.index = index;
     }
 
-    private int level;
-    private int range;
-    private int damage;
-    private int price;
+
 
     public int getPrice() {
         return price;
@@ -43,10 +71,6 @@ public class itemDocument {
     }
 
     public boolean setDefauls;
-
-    public itemDocument() {
-        setDefauls = true;
-    }
 
     public String getCategory() {
         return category;
@@ -72,19 +96,25 @@ public class itemDocument {
         Name = name;
     }
 
-    public Image getImage() {
+    public Image getImage(AssetManager manager) {
         try {
-            Texture texture = new Texture(Gdx.files.internal(ImageLocation));
-            image = new Image(texture);
+            if(manager.contains(ImageLocation,Texture.class)){
+                image = new Image(manager.get(ImageLocation,Texture.class));
+
+//                if(isDefaultColor)
+//                    image.setColor(color);
+            }else{
+                manager.load(ImageLocation,Texture.class);
+                manager.finishLoading();
+                image = new Image(manager.get(ImageLocation,Texture.class));
+//                if(isDefaultColor)
+//                    image.setColor(color);
+            }
         }catch (Exception e){
             image = new Image();
+
         }
-
         return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
     }
 
     public int getLevel() {
@@ -106,7 +136,6 @@ public class itemDocument {
     public int getDamage() {
         return damage;
     }
-
     public void setDamage(int damage) {
         this.damage = damage;
     }
