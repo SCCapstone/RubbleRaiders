@@ -1,0 +1,55 @@
+
+Torch.jpg
+size: 2048, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Torch2-0
+  rotate: false
+  xy: 142, 2
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
+Torch2-1
+  rotate: false
+  xy: 946, 2
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
+Torch2-2
+  rotate: false
+  xy: 544, 2
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
+Torch2-3
+  rotate: false
+  xy: 142, 404
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
+Torch2-4
+  rotate: false
+  xy: 946, 404
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
+Torch2-5
+  rotate: false
+  xy: 544, 404
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
+Torch2-6
+  rotate: false
+  xy: 1348, 404
+  size: 120, 400
+  orig: 120, 400
+  offset: 0, 0
+  index: -1
