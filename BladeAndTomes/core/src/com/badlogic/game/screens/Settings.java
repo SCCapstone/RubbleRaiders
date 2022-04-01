@@ -261,6 +261,7 @@ public class Settings extends ScreenAdapter {
             public boolean keyUp(InputEvent event, int keycode) {
                 setControl(item4Key, keycode);
                 menuCont.setSelection(3, keycode);
+
                 return true;
             }
         });
@@ -274,6 +275,7 @@ public class Settings extends ScreenAdapter {
             public boolean keyUp(InputEvent event, int keycode) {
                 setControl(item5Key, keycode);
                 menuCont.setSelection(4, keycode);
+
                 return true;
             }
         });
