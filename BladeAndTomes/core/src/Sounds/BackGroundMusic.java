@@ -10,14 +10,20 @@ public class BackGroundMusic {
     private boolean isMute;
     private String[] playList;
     private Music music;
+    public int musicType;
+    public Music test;
     public BackGroundMusic(String[] customPlayList, float customVolume,boolean muted){
         playList = customPlayList;
+        musicType = new Random().nextInt(playList.length);
+        test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
         volume  =   customVolume;
         isMute = muted;
     }
    public BackGroundMusic(){
         playList = new String[]{"new_main_menu_theme.mp3"};
-        volume  =   1f;
+       musicType = new Random().nextInt(playList.length);
+       test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
+        volume  =   0.5f;
         isMute = true;
     }
 
@@ -25,6 +31,8 @@ public class BackGroundMusic {
 
     public void setVolume(float newVolume){
         volume = newVolume;
+        test.setVolume(volume);
+        test.play();
     }
 
     public void setMute(boolean mute){
@@ -32,8 +40,6 @@ public class BackGroundMusic {
     }
 
     public void playMusic(){
-        int musicType = new Random().nextInt(playList.length);
-        Music test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
         test.play();
         test.setLooping(true);
         test.setVolume(volume);

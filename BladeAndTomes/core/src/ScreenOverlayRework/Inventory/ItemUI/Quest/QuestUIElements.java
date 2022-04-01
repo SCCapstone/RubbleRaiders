@@ -164,7 +164,7 @@ public class QuestUIElements implements Disposable {
                 if(quest.getQuestStatus()&& isCompleted){
                     if(quest.getsRewardGold())
                     game.player.setGold(game.player.getGold()+reward);
-                    else game.player.tokens+=reward;
+                    else game.player.tokens.getAndAdd(reward);
                     game.player.kCompleteQuests+=1;
                     game.player.kEarnedGoldThroughQuest+=reward;
                 }

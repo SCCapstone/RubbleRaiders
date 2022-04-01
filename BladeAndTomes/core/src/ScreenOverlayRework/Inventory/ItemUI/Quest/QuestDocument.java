@@ -1,11 +1,13 @@
 package ScreenOverlayRework.Inventory.ItemUI.Quest;
 
+import com.badlogic.gdx.utils.Array;
+
 import java.util.Hashtable;
 import java.util.Random;
 
 public class QuestDocument {
     private String difficulty;
-    private Hashtable<Integer,String> availableQuests;
+    private Array<String> availableQuests;
     private int currentQuestIndex = 0;
     private boolean isRewardGold;
     private transient Random randomNumber;
@@ -13,6 +15,7 @@ public class QuestDocument {
     private int kObj;
     private int kQuestObtainAmount;
     private transient int progressBarVal;
+    private String info;
 
 
     // Initial User Stats
@@ -37,51 +40,49 @@ public class QuestDocument {
 
 
     public QuestDocument(){
-        availableQuests = new Hashtable<>();
+        availableQuests = new Array<>();
 //        rewardAmount = 0;
 //        kQuestObtainAmount = 0;
 
-        availableQuests.put(0,"Kill Enemies");
-        availableQuests.put(1,"Open Chests");
-        availableQuests.put(2,"Trade Items with NPC");
-        availableQuests.put(3,"Explore Dungeon Rooms");
-        availableQuests.put(4,"Sell Items to NPC");
-        availableQuests.put(5,"Consume potions");
-        availableQuests.put(6,"Complete quests");
-        availableQuests.put(7,"Buy Items From NPC");
-        availableQuests.put(8,"Kill Enemies Using Close \n\t\t\t\t  Range Weapons");
-        availableQuests.put(9,"Kill Enemies Using Long \n\t\t\t\t  Range Weapons");
-        availableQuests.put(10,"Complete Level(s)");
-        availableQuests.put(11,"Earn Gold Through Levels");
+        availableQuests.add("Kill Enemies");
+        availableQuests.add("Open Chests");
+        availableQuests.add("Trade Items with NPC");
+        availableQuests.add("Explore Dungeon Rooms");
+        availableQuests.add("Sell Items to NPC");
+        availableQuests.add("Consume potions");
+        availableQuests.add("Complete quests");
+        availableQuests.add("Buy Items From NPC");
+        availableQuests.add("Kill Enemies Using Close \n\t\t\t\t  Range Weapons");
+        availableQuests.add("Kill Enemies Using Long \n\t\t\t\t  Range Weapons");
+        availableQuests.add("Complete Level(s)");
+        availableQuests.add("Earn Gold Through Levels");
     }
     public QuestDocument(String difficulty){
         this.difficulty = difficulty;
-        availableQuests = new Hashtable<>();
+        availableQuests = new Array<>();
         randomNumber = new Random();
         rewardAmount = 0;
         kQuestObtainAmount = 0;
-        availableQuests.put(0,"Kill Enemies");
-        availableQuests.put(1,"Open Chests");
-        availableQuests.put(2,"Trade Items with NPC");
-        availableQuests.put(3,"Explore Dungeon Rooms");
-        availableQuests.put(4,"Sell Items to NPC");
-        availableQuests.put(5,"Consume potions");
-        availableQuests.put(6,"Complete quests");
-        availableQuests.put(7,"Buy Items From NPC");
-        availableQuests.put(8,"Kill Enemies Using Close \n\t\t\t\t  Range Weapons");
-        availableQuests.put(9,"Kill Enemies Using Long \n\t\t\t\t  Range Weapons");
-        availableQuests.put(10,"Complete Level(s)");
-        availableQuests.put(11,"Earn Gold Through\n\t\t\t\t  Levels");
-
-
+        availableQuests.add("Kill Enemies");
+        availableQuests.add("Open Chests");
+        availableQuests.add("Trade Items with NPC");
+        availableQuests.add("Explore Dungeon Rooms");
+        availableQuests.add("Sell Items to NPC");
+        availableQuests.add("Consume potions");
+        availableQuests.add("Complete quests");
+        availableQuests.add("Buy Items From NPC");
+        availableQuests.add("Kill Enemies Using Close \n\t\t\t\t  Range Weapons");
+        availableQuests.add("Kill Enemies Using Long \n\t\t\t\t  Range Weapons");
+        availableQuests.add("Complete Level(s)");
+        availableQuests.add("Earn Gold Through Levels");
 
         generateQuest(difficulty);
     }
     public void generateQuest(String diff){
         switch (diff){
             case "HARD":
-                currentQuestIndex = randomNumber.nextInt(availableQuests.size());
-                System.out.println(availableQuests.size()+"  "+currentQuestIndex);
+                currentQuestIndex = randomNumber.nextInt(availableQuests.size);
+                info = availableQuests.get(currentQuestIndex);
                 isRewardGold = (randomNumber.nextInt(2) == 1)? true:false;
                 rewardAmount = (isRewardGold)?( randomNumber.nextInt(5)+15):(randomNumber.nextInt(2));
                 ++rewardAmount;
@@ -89,7 +90,7 @@ public class QuestDocument {
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4)+randomNumber.nextInt(4);
                 break;
             case "MEDIUM":
-                currentQuestIndex = randomNumber.nextInt(availableQuests.size());
+                currentQuestIndex = randomNumber.nextInt(availableQuests.size);
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5)+7;
                 ++rewardAmount;
@@ -98,7 +99,7 @@ public class QuestDocument {
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4);
                 break;
             case "EASY":
-                currentQuestIndex = randomNumber.nextInt(availableQuests.size());
+                currentQuestIndex = randomNumber.nextInt(availableQuests.size);
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5)+1;
                 ++rewardAmount;

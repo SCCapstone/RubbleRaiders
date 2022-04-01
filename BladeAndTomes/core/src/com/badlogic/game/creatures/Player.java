@@ -7,6 +7,14 @@ import Sounds.playerMoveSound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -15,13 +23,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 import java.lang.String;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Entity {
-
 
     //https://www.youtube.com/watch?v=5VyDsO0mFDU
     //Very helpful tutorial on enums by Margret Posch
     //TODO: Maybe make this a public enum in backbone?
+    private boolean isDefault;
     private enum classes {WARRIOR, CLERIC ,WIZARD};
 //    public static Array<quest> quests;
 //    public static Array<quest> usedQuests;
@@ -29,12 +39,14 @@ public class Player extends Entity {
     private int physical;
     private int mental;
     private int social;
-    private int acrobatics;
-    private int bruteforce;
-    private int speech;
-    private int barter;
-    private int awareness;
-    private int intuition;
+
+
+    public AtomicInteger acrobatics;
+    public AtomicInteger bruteforce;
+    public AtomicInteger speech;
+    public AtomicInteger barter;
+    public AtomicInteger awareness;
+    public AtomicInteger intuition;
 
     private int gold;
     private String id;
@@ -70,7 +82,7 @@ public class Player extends Entity {
     public transient Rectangle moveSquare;
     public transient Rectangle rangeSquare;
     public boolean isTurn;
-    public int tokens;
+    public AtomicInteger tokens;
 
     public transient InputListener playerInput;
     // For Inventory
@@ -94,11 +106,13 @@ public class Player extends Entity {
         inventoryItems = new Array<>();
 
         this.id = "player";
+        isDefault = true;
         this.playerClass = 1;
         this.name = "";
         this.isTurn = true;
-        tokens = 0;
+        tokens = new AtomicInteger(0);
         playerDefence = 0;
+
 
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
@@ -107,13 +121,14 @@ public class Player extends Entity {
         //TODO: Simplify all of this into Player class?
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        playerIcon.setVisible(false);
+        playerBody(playerIcon);
+        moveSquare.setSize(64, 64);
+        moveSquare.setPosition(0, 0);
 
-        moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
-        moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
-
-        interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
+        interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
@@ -132,16 +147,16 @@ public class Player extends Entity {
                 prevY = (int) playerIcon.getY();
                 switch(keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0));
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0));
                         break;
                     default:
                         return false;
@@ -163,6 +178,9 @@ public class Player extends Entity {
         kTradesNPCBuyer = 0;
         kUsedPositions =0;
         kCompleteQuests =0;
+        kChestsOpened = 0;
+        kUsedPositions = 0;
+        kCompleteQuests = 0;
         kEarnedGoldThroughQuest = 0;
 
         //Already done
@@ -172,10 +190,10 @@ public class Player extends Entity {
         kLevelsCompleted = 0;
         kEarnedGoldThroughLevels = 0;
 
-        if(activeQuests == null)
-        activeQuests = new Array<>();
+        if (activeQuests == null)
+            activeQuests = new Array<>();
         updateQuest = false;
-        for (int i = 0; i <(26); ++i) {
+        for (int i = 0; i < (26); ++i) {
             itemDocument itemTemp = new itemDocument();
             itemTemp.setIndex(String.valueOf(i));
             itemTemp.setTargetItem("Null");
@@ -183,13 +201,22 @@ public class Player extends Entity {
             inventoryItems.add(itemTemp);
         }
 
-       activeQuests.add(null);
-       activeQuests.add(null);
-       activeQuests.add(null);
-       activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+        activeQuests.add(null);
+
+
+
+         acrobatics = new AtomicInteger(0);
+        bruteforce = new AtomicInteger(0);
+        speech = new AtomicInteger(0);
+        barter = new AtomicInteger(0);
+        awareness = new AtomicInteger(0);
+        intuition = new AtomicInteger(0);
+
 
     }
-
     /**
      * Alternate constructor for player entity
      */
@@ -197,11 +224,12 @@ public class Player extends Entity {
     {
         super(healthPoints, fullHealth, armorPoints, movement, height, width);
         this.id = id;
+        isDefault = true;
         this.playerClass = playerClass;
         this.name = name;
         this.playerIcon = image;
         this.isTurn = true;
-        tokens = 0;
+        tokens = new AtomicInteger(0);
         playerMovenSound = new playerMoveSound();
         gold = 100;
 
@@ -215,12 +243,14 @@ public class Player extends Entity {
         interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
+
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
         gold = 100;
+
 
         playerIcon.addListener(playerInput = new InputListener() {
 
@@ -231,19 +261,19 @@ public class Player extends Entity {
                 prevY = (int) playerIcon.getY();
                 switch(keycode) {
                     case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),0));
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
                         playerMovenSound.playMoveSound();
                         break;
                     default:
@@ -276,6 +306,30 @@ public class Player extends Entity {
         activeQuests.add(null);
         activeQuests.add(null);
         activeQuests.add(null);
+
+        playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
+        playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
+
+        playerBody(playerIcon);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
+
+        acrobatics = new AtomicInteger(0);
+        bruteforce = new AtomicInteger(0);
+        speech = new AtomicInteger(0);
+        barter = new AtomicInteger(0);
+        awareness = new AtomicInteger(0);
+        intuition = new AtomicInteger(0);
+
+    }
+
+    public boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 
     public int getPlayerClass() {
@@ -313,41 +367,43 @@ public class Player extends Entity {
     public int getSocial() {
         return social;
     }
-    public void setTokens(int num){
-        tokens = num;
-    }
-    public int getTokens(){
-        return tokens;
-    }
+
+
 
     public int getAcrobatics() {
+        return acrobatics.get();
         //acrobatics = (int) ((physical * 1.25) + (mental / 2));
-        return acrobatics;
+        //return acrobatics;
     }
 
     public int getBruteforce() {
         //bruteforce = (int) (physical * 1.75);
-        return bruteforce;
+        //return bruteforce;
+        return bruteforce.get();
     }
 
     public int getSpeech() {
         //speech = (int) ((social * 1.25) + (physical / 2));
-        return speech;
+        //return speech;
+        return speech.get();
     }
 
     public int getBarter() {
         //barter = social;
-        return barter;
+        //return barter;
+        return barter.get();
     }
 
     public int getAwareness() {
         //awareness = (int) ((mental * 1.5) + (social / 2));
-        return awareness;
+        //return awareness;
+        return awareness.get();
     }
 
     public int getIntuition() {
         //intuition = (int) (mental * .75);
-        return intuition;
+        //return intuition;
+        return intuition.get();
     }
 
     public void setPlayerClass(int playerClass) {
@@ -368,45 +424,46 @@ public class Player extends Entity {
 
     public void setPhysical(int physical) {
         this.physical = physical;
-        acrobatics = (int) ((physical * 1.25) + (mental / 2));
-        bruteforce = (int) (physical * 1.75);
-        speech = (int) ((social * 1.25) + (physical / 2));
-        //barter = social;
-        //awareness = (int) ((mental * 1.5) + (social / 2));
-        //intuition = (int) (mental * .75);
+        acrobatics.set((int) ((physical * 1.25) + (mental / 2)));
+        bruteforce.set((int) (physical * 1.75));
+        speech.set( (int) ((social * 1.25) + (physical / 2)));
+        awareness.set((int) ((mental * 1.5) + (social / 2)));
+        barter.set(social);
+        intuition.set((int) (mental * .75));
+
     }
 
     public void setMental(int mental) {
         this.mental = mental;
-        acrobatics = (int) ((physical * 1.25) + (mental / 2));
-        //bruteforce = (int) (physical * 1.75);
-        //speech = (int) ((social * 1.25) + (physical / 2));
-        //barter = social;
-        awareness = (int) ((mental * 1.5) + (social / 2));
-        intuition = (int) (mental * .75);
+        acrobatics.set((int) ((physical * 1.25) + (mental / 2)));
+        bruteforce.set((int) (physical * 1.75));
+        speech.set( (int) ((social * 1.25) + (physical / 2)));
+        awareness.set((int) ((mental * 1.5) + (social / 2)));
+        barter.set(social);
+        intuition.set((int) (mental * .75));
     }
 
     public void setSocial(int social) {
         this.social = social;
-        //acrobatics = (int) ((physical * 1.25) + (mental / 2));
-        //bruteforce = (int) (physical * 1.75);
-        speech = (int) ((social * 1.25) + (physical / 2));
-        barter = social;
-        awareness = (int) ((mental * 1.5) + (social / 2));
-        //intuition = (int) (mental * .75);
+        acrobatics.set((int) ((physical * 1.25) + (mental / 2)));
+        bruteforce.set((int) (physical * 1.75));
+        speech.set( (int) ((social * 1.25) + (physical / 2)));
+        awareness.set((int) ((mental * 1.5) + (social / 2)));
+        barter.set(social);
+        intuition.set((int) (mental * .75));
     }
 
-    public void setAcrobatics(int acro) { this.acrobatics = acro; }
+    public void setAcrobatics(int acro) { this.acrobatics.set( acro); }
 
-    public void setBruteforce(int brute) { this.bruteforce = brute; }
+    public void setBruteforce(int brute) { this.bruteforce.set(brute); }
 
-    public void setSpeech(int s) { this.speech = s; }
+    public void setSpeech(int s) { this.speech.set(s); }
 
-    public void setBarter(int bart) { this.barter = bart; }
+    public void setBarter(int bart) { this.barter.set(bart); }
 
-    public void setAwareness(int aware) { this.awareness = aware; }
+    public void setAwareness(int aware) { this.awareness.set(aware); }
 
-    public void setIntuition(int i) { this.intuition = i; }
+    public void setIntuition(int i) { this.intuition.set(i); }
 
     public boolean handleMovement(Rectangle playerMove, Rectangle walkableBorder) {
         return true;
@@ -422,6 +479,14 @@ public class Player extends Entity {
 
     public int getGold() {
         return gold;
+    }
+
+    public BodyDef playerBody(Image player) {
+        BodyDef playerBod = new BodyDef();
+        playerBod.type = BodyDef.BodyType.DynamicBody;
+        playerBod.position.set(player.getWidth() / 2, player.getHeight() / 2);
+
+        return playerBod;
     }
 
 }

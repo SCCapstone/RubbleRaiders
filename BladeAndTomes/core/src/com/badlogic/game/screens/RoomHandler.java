@@ -244,6 +244,7 @@ public class RoomHandler {
                 generateLevelLayout();
             }
         }
+        goblins = new Goblin[0];
     }
 
     /**
@@ -524,8 +525,11 @@ public class RoomHandler {
 
             eventX = GRID_X[generator.nextInt(GRID_X_SQUARE)];
             eventY = GRID_Y[generator.nextInt(GRID_Y_SQUARE)];
+            try {
+                chest = game.overlays.generateChest();
+            } catch(Exception e) {
 
-            chest = game.overlays.generateChest();
+            }
 
             chamber.setMapID(2);
         }
@@ -617,6 +621,8 @@ public class RoomHandler {
             return false;
         }
     }
+
+    public Goblin[] getGoblins() { return goblins; }
 
     /**
      * Checks to make sure the player is not going into the goblin's space and moves the player to be in front of the

@@ -3,6 +3,7 @@ package ScreenOverlayRework.Inventory;
 import ScreenOverlayRework.Inventory.ItemUI.GeneralItemUI;
 import ScreenOverlayRework.Inventory.ItemUI.MainItemsUI;
 import ScreenOverlayRework.Inventory.ItemUI.QuestUI;
+import ScreenOverlayRework.Inventory.ItemUI.SkillUI;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
@@ -34,6 +35,7 @@ public class InventoryUI implements Disposable {
 
     private GeneralItemUI generalItemUI;
     private QuestUI questUI;
+    private SkillUI skillUIs;
 
 
     TextButton InventoryButton;
@@ -61,6 +63,8 @@ public class InventoryUI implements Disposable {
         mainItemsUIManager =game.assets;
         main_Inventory = new MainItemsUI(game,dnd,mainItemsUIManager,slots);
         table.addActor(main_Inventory.getTable());
+
+        skillUIs = new SkillUI(game,mainItemsUIManager);
 
 
         // Making General Item UI
@@ -127,7 +131,6 @@ public class InventoryUI implements Disposable {
                 HiddenInventorySlots.setVisible(false);
                 HiddenQuests.setVisible(false);
                 HiddenSkill.setVisible(true);
-
             }
         });
 
@@ -253,9 +256,12 @@ public class InventoryUI implements Disposable {
     }
 
     public void drawSkills() {
+        HiddenSkill.add(skillUIs.getTable());
     }
     public void render(){
         questUI.render();
+        skillUIs.render();
+
     }
 
 

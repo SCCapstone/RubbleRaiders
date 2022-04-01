@@ -5,6 +5,7 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -56,7 +57,16 @@ public class Settings extends ScreenAdapter {
     Label inventoryLabel;
     TextField fightKey;
     Label fightLabel;
-    Table volumeTable;
+    Label item1;
+    TextField item1Key;
+    Label item2;
+    TextField item2Key;
+    Label item3;
+    TextField item3Key;
+    Label item4;
+    TextField item4Key;
+    Label item5;
+    TextField item5Key;
     Table table;
 
 
@@ -82,10 +92,14 @@ public class Settings extends ScreenAdapter {
         upKey.addListener(new InputListener(){
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
+                if(event.getPointer() == 0){
                 setControl(upKey, keycode);
                 menuCont.setMoveUp(keycode);
-                return true;
+                event.setPointer(-1);
+                }
+                return false;
             }
+
         });
 
                 //keybinding for Attack on settings page
@@ -172,7 +186,7 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        fightLabel = new Label("Combat", GAME.generalLabelStyle);
+        fightLabel = new Label("Quests and\nCombat", GAME.generalLabelStyle);
         fightLabel.setAlignment(1,2);
         fightKey = new TextField(Input.Keys.toString(menuCont.getFightAction()), GAME.generalTextFieldStyle);
         fightKey.setMaxLength(1);
@@ -185,13 +199,93 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        //TODO: cursor setting?
+
+        item1 = new Label("Item Slot 1", GAME.generalLabelStyle);
+        item1.setAlignment(1, 2);
+        item1Key = new TextField(Input.Keys.toString(menuCont.getSelection(0)), GAME.generalTextFieldStyle);
+        item1 = new Label("Item Slot 1", GAME.generalLabelStyle);
+        item1.setAlignment(1, 2);
+        item1Key = new TextField(Input.Keys.toString(menuCont.getItem1()), GAME.generalTextFieldStyle);
+        item1Key.setMaxLength(1);
+        item1Key.setAlignment(1);
+        item1Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item1Key, keycode);
+                menuCont.setSelection(0, keycode);
+                menuCont.setItem1(keycode);
+                return true;
+            }
+        });
+
+        item2 = new Label("Item Slot 2", GAME.generalLabelStyle);
+        item2.setAlignment(1, 2);
+        item2Key = new TextField(Input.Keys.toString(menuCont.getSelection(1)), GAME.generalTextFieldStyle);
+        item2Key = new TextField(Input.Keys.toString(menuCont.getItem2()), GAME.generalTextFieldStyle);
+        item2Key.setMaxLength(1);
+        item2Key.setAlignment(1);
+        item2Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item2Key, keycode);
+                menuCont.setSelection(1, keycode);
+                menuCont.setItem2(keycode);
+                return true;
+            }
+        });
+
+        item3 = new Label("Item Slot 3", GAME.generalLabelStyle);
+        item3.setAlignment(1, 2);
+        item3Key = new TextField(Input.Keys.toString(menuCont.getSelection(2)), GAME.generalTextFieldStyle);
+        item3Key = new TextField(Input.Keys.toString(menuCont.getItem3()), GAME.generalTextFieldStyle);
+        item3Key.setMaxLength(1);
+        item3Key.setAlignment(1);
+        item3Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item3Key, keycode);
+                menuCont.setSelection(2, keycode);
+                menuCont.setItem3(keycode);
+                return true;
+            }
+        });
+
+        item4 = new Label("Item Slot 4", GAME.generalLabelStyle);
+        item4.setAlignment(1, 2);
+        item4Key = new TextField(Input.Keys.toString(menuCont.getSelection(3)), GAME.generalTextFieldStyle);
+        item4Key = new TextField(Input.Keys.toString(menuCont.getItem4()), GAME.generalTextFieldStyle);
+        item4Key.setMaxLength(1);
+        item4Key.setAlignment(1);
+        item4Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item4Key, keycode);
+                menuCont.setSelection(3, keycode);
+
+                return true;
+            }
+        });
+        item5 = new Label("Item Slot 5", GAME.generalLabelStyle);
+        item5.setAlignment(1, 2);
+        item5Key = new TextField(Input.Keys.toString(menuCont.getSelection(4)), GAME.generalTextFieldStyle);
+        item5Key.setMaxLength(1);
+        item5Key.setAlignment(1);
+        item5Key.addListener(new InputListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                setControl(item5Key, keycode);
+                menuCont.setSelection(4, keycode);
+                return true;
+            }
+        });
+
+
 
         //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
         //and curators of UseOf.org
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.html#isOver--
         //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
-        settingsMusicSlider = new Slider(0f, 100f, 1f, false ,GAME.generalSliderStyle);
+        settingsMusicSlider = new Slider(0f, 1f, 0.05f, false ,GAME.generalSliderStyle);
         settingsMusicSlider.setButton(0);
         settingsMusicSlider.setVisualPercent(GAME._bgmusic.getVolume());
         settingsMusicSlider.setWidth(500);
@@ -208,11 +302,14 @@ public class Settings extends ScreenAdapter {
         });
 
         settingsQuitOption = new TextButton("Exit Settings", GAME.generalTextButtonStyle);
+        settingsQuitOption.setPosition(25f,GAME.stageInstance.getHeight()-125);
+        settingsQuitOption.setSize(150f,100f);
         settingsQuitOption.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 //Back to main menu screen
                 dispose();
+                GAME.loadSaveManager.saveSettings(menuCont);
                 GAME.setScreen(new MainMenu(game));
                 //TODO: save keybind changes
                 /*controls.setMoveUp(upKey.getText());
@@ -261,32 +358,41 @@ public class Settings extends ScreenAdapter {
 
         table = new Table();
         table.defaults();
-        table.setBounds(750,400,500,GAME.stageInstance.getHeight());
-        table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.2f);
+        table.setBounds(775,400,500,GAME.stageInstance.getHeight());
+        table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.25f);
         table.add(settingsMusicLabel);
-        table.add(settingsMusicSlider).colspan(4).width(table.getWidth()+43);
+        table.add(settingsMusicSlider).colspan(3).width(table.getWidth()+43);
         table.row().padTop(10f);
-        table.add(upLabel);
-        table.add(upKey).left();
-        table.add(downLabel);
-        table.add(downKey).left();
+        table.add(upLabel).padBottom(8f);
+        table.add(upKey).left().padBottom(8f).padRight(8f);
+        table.add(downLabel).padBottom(8f);
+        table.add(downKey).left().padBottom(8f).padRight(8f);
+        table.add(leftLabel).padBottom(8f);
+        table.add(leftKey).left().padBottom(8f).padRight(8f);
+        table.add(rightLabel).padBottom(8f);
+        table.add(rightKey).left().padBottom(8f).padRight(8f);
         table.row();
-        table.add(leftLabel);
-        table.add(leftKey).left();
-        table.add(rightLabel);
-        table.add(rightKey).left();
+        table.add(tradeLabel).padBottom(8f);
+        table.add(tradeKey).left().padBottom(8f).padRight(8f);
+        table.add(menuLabel).padBottom(8f);
+        table.add(menuKey).left().padBottom(8f).padRight(8f);
+        table.add(inventoryLabel).padBottom(8f);
+        table.add(inventoryKey).left().padBottom(8f).padRight(8f);
+        table.add(fightLabel).padBottom(8f);
+        table.add(fightKey).left().padBottom(8f).padRight(8f);
         table.row();
-        table.add(tradeLabel);
-        table.add(tradeKey).left();
-        table.add(menuLabel);
-        table.add(menuKey).left();
-        table.row();
-        table.add(inventoryLabel);
-        table.add(inventoryKey).left();
-        table.add(fightLabel);
-        table.add(fightKey).left();
+        table.add(item1);
+        table.add(item1Key).left().padRight(8f);
+        table.add(item2);
+        table.add(item2Key).left().padRight(8f);
+        table.add(item3);
+        table.add(item3Key).left().padRight(8f);
+        table.add(item4);
+        table.add(item4Key).left().padRight(8f);
+        table.add(item5);
+        table.add(item5Key).left();
         table.row().padTop(10f);
-        table.add(settingsQuitOption).center().colspan(4).width(table.getWidth());
+        GAME.stageInstance.addActor(settingsQuitOption);
 
     }
 
@@ -323,11 +429,12 @@ public class Settings extends ScreenAdapter {
         GAME.stageInstance.clear();
     }
 
+
     public static void settingsSerialize() {
         try {
             XmlMapper xmlMapper = new XmlMapper();
             try {
-                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.T, Input.Keys.ESCAPE, Input.Keys.E, Input.Keys.Q));
+                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.T, Input.Keys.ESCAPE, Input.Keys.E, Input.Keys.Q, Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4));
 
                 File xmlOutput = new File("Settings.xml");
                 FileWriter fileWriter = new FileWriter(xmlOutput);

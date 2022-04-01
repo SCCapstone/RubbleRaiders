@@ -4,6 +4,7 @@ package com.badlogic.game.screens;
 import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
 import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -36,6 +37,8 @@ public class Dungeon extends ScreenAdapter {
     Label returnWarning;
     boolean safeGuard;
 
+    Goblin[] goblins;
+
 
 
     public Dungeon(final BladeAndTomes game) {
@@ -43,7 +46,7 @@ public class Dungeon extends ScreenAdapter {
         //Initial backbone values carried over
         this.GAME = game;
         MOVE_DISTANCE = 64;
-
+        GAME.resetElapsedTime();
         //Clears the stage instance
         GAME.stageInstance.clear();
         //Instances the player's inventory
@@ -137,6 +140,7 @@ public class Dungeon extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
@@ -171,6 +175,49 @@ public class Dungeon extends ScreenAdapter {
             //GAME.chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
             //GAME.overlays.displayChest(chest);
         }
+        GAME.batch.begin();
+        GAME.runPlayerAnimation();
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveUpAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveDownAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveLeftAnimation();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            GAME.resetElapsedTime();
+            GAME.runMoveRightAnimation();
+        }
+        if(roomHandler.combatFlag) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                GAME.resetElapsedTime();
+                GAME.runAttackDownAnimation();
+            }
+        }
+        goblins = roomHandler.getGoblins();
+        if(goblins.length > 0){
+            for(Goblin goblin: goblins) {
+                if(goblin != null) {
+                    /*if(goblin.isAttacking) {
+                        goblin.resetElapsedTime();
+                        goblin.runAttackAnimation();
+                    }*/
+                    /*if(goblin.moving) {
+                        goblin.resetElapsedTime();
+                        goblin.runMovingAnimation();
+                    }*/
+                    goblin.runAnimation(GAME);
+                }
+            }
+        }
+        GAME.batch.end();
+        //inventory.update();
 
         //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {

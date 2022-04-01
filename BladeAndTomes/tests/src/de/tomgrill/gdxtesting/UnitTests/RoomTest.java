@@ -1,6 +1,6 @@
 package de.tomgrill.gdxtesting.UnitTests;
 
-import ScreenOverlay.MainInventory;
+//import ScreenOverlay.MainInventory;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;

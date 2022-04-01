@@ -1,5 +1,6 @@
 package LoadAndSave;
 
+import Keyboard_Mouse_Controls.MainMenuControls;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -23,6 +24,11 @@ public class Save {
 public void addToGeneralSave(){}
     public void saveNewProgress(Player player,int index){
         fourPreSets.set(index,saveParser.toJson(player,Player.class));
+        file = Gdx.files.local(savePath);
+        file.writeString(saveParser.toJson(fourPreSets), false);
+    }
+    public void setSettings(MainMenuControls controls){
+        fourPreSets.set(4,saveParser.toJson(controls,MainMenuControls.class));
         file = Gdx.files.local(savePath);
         file.writeString(saveParser.toJson(fourPreSets), false);
     }

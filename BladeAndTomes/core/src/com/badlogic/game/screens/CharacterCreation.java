@@ -35,6 +35,7 @@ public class CharacterCreation extends ScreenAdapter {
     Boolean wizard;
     Boolean cleric;
     Boolean warrior;
+    TextButton backButton;
 
     String name;
 
@@ -53,7 +54,6 @@ public class CharacterCreation extends ScreenAdapter {
 
         //Instance for the game
         this.GAME = game;
-
         batch = new SpriteBatch();
 
         points = 9;
@@ -62,12 +62,26 @@ public class CharacterCreation extends ScreenAdapter {
         wizard = false;
         cleric = false;
 
+
+        backButton = new TextButton("Back to Menu", GAME.generalTextButtonStyle);
+        backButton.setSize(120f, 65f);
+        backButton.setPosition(50, GAME.stageInstance.getHeight()-100);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GAME.stageInstance.clear();
+                GAME.setScreen(new MainMenu(GAME));
+            }
+        });
+        GAME.stageInstance.addActor(backButton);
         //Text Field for the Name
         nameField = new TextField("", GAME.generalTextFieldStyle);
         nameField.setAlignment(1);
         nameField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
+                GAME.player.setName(textField.getText());
+                System.out.println(GAME.player.getName());
             }
         });
         nameField.setX(960,1);
@@ -316,8 +330,9 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setFullHealth(10);
                 GAME.player.setArmorPoints(10);
                 GAME.player.setPlayerClass(selection);
-                GAME.player.setName(name);
                 GAME.player.setMovement(5);
+                GAME.player.setDefault(false);
+                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 GAME.setScreen(new Overworld(GAME));
             }
         });

@@ -1,0 +1,41 @@
+
+player.png
+size: 360, 576
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Player01
+  rotate: false
+  xy: 0, 65
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Player02
+  rotate: false
+  xy: 64, 65
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Player03
+  rotate: false
+  xy: 128, 65
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Player04
+    rotate: false
+    xy: 192, 65
+    size: 64, 64
+    orig: 64, 64
+    offset: 0, 0
+    index: -1
+Player05
+  rotate: false
+  xy: 256, 65
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
