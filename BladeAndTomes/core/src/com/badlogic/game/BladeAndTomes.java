@@ -1,15 +1,15 @@
 package com.badlogic.game;
 
+import Keyboard_Mouse_Controls.MainMenuControls;
+import LoadAndSave.LoadSaveManager;
 import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.OverlayManager;
 import Sounds.BackGroundMusic;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -41,7 +41,7 @@ import java.util.Random;
 public class BladeAndTomes extends Game {
     ShapeRenderer shapeRenderer;
     public SpriteBatch batch;
-    BitmapFont font;
+    public BitmapFont font;
     Texture image;
     public Stage stageInstance;
     public final float WINDOWWIDTH = 1920, WINDOWHIGHT = 1080;
@@ -74,65 +74,26 @@ public class BladeAndTomes extends Game {
     public LabelStyle BaseLabelStyle2;
 
     public LabelStyle HealthLabelStyle;
-
+    public MainMenuControls controls;
     public Player player;
     public Image playerIcon;
-    public Inventory inventory;
     public BackGroundMusic _bgmusic;
-    public Array<itemDocument> inventoryItems;
-
     public OverlayManager overlays;
     public boolean showtrade = false;
     public boolean showtradeBuyer = false;
     public boolean showHiddenInventory = false;
     public boolean refreshInventory = false;
     public final int MOVE_DISTANCE = 64;
+    public AssetManager assets;
 
+    public int currentInventorySelection;
     public int tokens;
+    public int currentSaveIndex;
+    // Resets at the end of each dung
+    public int spellDamageIncrease;
 
-    public static class quest {
-        String goal;
-        int value;
-        boolean used;
-        public quest(String s, int i, boolean b){
-            goal = s;
-            value = i;
-            used = b;
-        }
-        public String getGoal(){
-            return goal;
-        }
-        public int getValue(){
-            return value;
-        }
-        public void setUsed(){
-            used = true;
-        }
-        public boolean isUsed(){
-            return used;
-        }
-    }
-
-    public static Array<quest> quests;
-    public static Array<quest> usedQuests;
-
-
-    public static void setQuests(){
-        Random rand = new Random();
-        int randVal;
-        try {
-            while (usedQuests.size < 5) {
-                randVal = rand.nextInt(5);
-                if (quests.get(randVal).isUsed() == false) {
-                    usedQuests.add(quests.get(randVal));
-                    quests.get(randVal).setUsed();
-                    System.out.println(quests.get(randVal).getGoal());
-                }
-            }
-        } catch(Exception e){
-            System.out.println(e);
-        }
-    }
+    public LoadSaveManager loadSaveManager;
+    public itemDocument NullItemDoc;
 
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
@@ -140,26 +101,18 @@ public class BladeAndTomes extends Game {
      */
     @Override
     public void create() {
+        spellDamageIncrease = 0;
+        NullItemDoc = new itemDocument();
+        currentSaveIndex = 2;
 
-        player = new Player();
-        inventory = new Inventory();
-
+        controls = new MainMenuControls();
+        loadSaveManager = new LoadSaveManager();
+        assets = new AssetManager();
+        currentInventorySelection = 0;
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
 
-        //tokens = 3;
-        setTokens(3);
-
-        quests = new Array<>();
-        usedQuests = new Array<>();
-
-        quests.add(new quest("Kill 5 enemies", 5, false));
-        quests.add(new quest("Open 5 chests", 5, false));
-        quests.add(new quest("Trade 1 item", 1, false));
-        quests.add(new quest("Enter the dungeon", 1, false));
-        quests.add(new quest("Explore 5 dungeon rooms", 5, false));
-        quests.add(new quest("Sell 1 item", 1, false));
 
         // Work for resizing of screen
 
@@ -170,41 +123,6 @@ public class BladeAndTomes extends Game {
         _bgmusic.playMusic();
 
         // Inventory Things
-        inventoryItems = new Array<>();
-
-        for (int i = 0; i < 19; ++i) {
-            itemDocument itemTemp = new itemDocument();
-            itemTemp.setIndex(String.valueOf(i));
-            itemTemp.setTargetItem("Null");
-            itemTemp.setCategory("Null");
-            inventoryItems.add(itemTemp);
-        }
-
-        itemDocument slot = inventoryItems.get(0);
-        slot.setDefauls = false;
-        slot.setImageLocation("InventoryItems/Weapons/Sword/1.png");
-        slot.setLevel(1);
-        slot.setCategory("Weapons");
-        slot.setName("Sword");
-        slot.setDamage(10);
-        slot.setTargetItem("Any");
-
-
-        slot = inventoryItems.get(1);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Armor/armor.png"));
-        slot.setLevel(2);
-        slot.setCategory("Armor");
-        slot.setDamage(10);
-        slot.setTargetItem("None");
-
-        slot = inventoryItems.get(2);
-        slot.setDefauls = false;
-        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
-        slot.setLevel(2);
-        slot.setCategory("Spell");
-        slot.setDamage(10);
-        slot.setTargetItem("Any");
 
         //Sets Scene2D instance
 
@@ -214,11 +132,19 @@ public class BladeAndTomes extends Game {
         stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
 
         //Sets upstate and downstate textures for texture Buttons
-        generalTextButtonUpState = new Texture(Gdx.files.internal("Text_Button_Up_State.jpg"));
-        generalTextButtonDownState = new Texture(Gdx.files.internal("Text_Button_Down_State.jpg"));
-        inventoryTextButtonState = new Texture(Gdx.files.internal("inventorySlot.png"));
-        inventoryBase1 = new Texture(Gdx.files.internal("inventoryBaseImage.png"));
-        inventoryBase2 = new Texture(Gdx.files.internal("inventoryBaseImage2.png"));
+        assets.load("Text_Button_Up_State.jpg",Texture.class);
+        assets.load("Text_Button_Down_State.jpg",Texture.class);
+        assets.load("inventorySlot.png",Texture.class);
+        assets.load("inventoryBaseImage.png",Texture.class);
+        assets.load("inventoryBaseImage2.png",Texture.class);
+        assets.finishLoading();
+
+
+        generalTextButtonUpState = assets.get("Text_Button_Up_State.jpg",Texture.class);
+        generalTextButtonDownState = assets.get("Text_Button_Down_State.jpg",Texture.class);
+        inventoryTextButtonState = assets.get("inventorySlot.png",Texture.class);
+        inventoryBase1 = assets.get("inventoryBaseImage.png",Texture.class);
+        inventoryBase2 = assets.get("inventoryBaseImage2.png",Texture.class);
 
         //Sets up the region to be used
         generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);
@@ -286,14 +212,7 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
 
-        player.setHealthPoints(10);
-        try {
-            overlays = new OverlayManager(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        overlays.setOverLayesVisibility(false);
-
+//        player.setHealthPoints(10);
         this.setScreen(new MainMenu(this));
     }
     /*
@@ -303,12 +222,7 @@ public class BladeAndTomes extends Game {
 
      */
 
-    public void setTokens(int num){
-        tokens = num;
-    }
-    public int getTokens(){
-        return tokens;
-    }
+
 
     /**
      * This function is called by OpenGL to render objects presented in the order defined below and
@@ -316,6 +230,7 @@ public class BladeAndTomes extends Game {
      * that input.
      */
     @Override
+
     public void render() {
 
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
@@ -333,8 +248,12 @@ public class BladeAndTomes extends Game {
      * @param width
      * @param height
      */
+    public     float width = 1920, height = 1080;
+
     @Override
     public void resize(int width, int height) {
+        this.width = width;
+        this.height = height;
         // stageInstance.getViewport().update(width, height, true);
         // following code is an update from anri, Helping to correct some minor aspect issues in the game
         Vector2 size = Scaling.fit.apply(1920, 1080, width, height);

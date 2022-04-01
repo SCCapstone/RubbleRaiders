@@ -1,9 +1,12 @@
 package com.badlogic.game.screens;
 
 import Keyboard_Mouse_Controls.SaveLoadGame;
-import ScreenOverlay.MainInventory;
-import Sounds.playerMoveSound;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
+import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
+import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
@@ -11,19 +14,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Scaling;
-import org.w3c.dom.Text;
 
 import java.awt.Point;
 
@@ -67,7 +66,6 @@ public class Overworld extends ScreenAdapter {
 
     playerMoveSound playerMovenSound;
 
-    MainInventory inventory;
     Point NPC_Cords;
     Point Portal_Cords;
     boolean doTrade;
@@ -81,12 +79,26 @@ public class Overworld extends ScreenAdapter {
     TextButton game4;
     Table savedGames;
 
+    NPCSeller npcSeller;
+    boolean isNpcSellerVisible;
+
+    NPCBuyer npcBuyer;
+    boolean isNpcBuyerVisible;
+
+    TownHallQuestBoard questBoardTrade;
+    boolean isQuestBoardTradeVisible;
+
+    TreasureChestUI chest;
+    int counter;
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
     public Overworld (final BladeAndTomes game) {
+        //game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+
+        counter = 0;
 
         this.GAME = game;
 
@@ -123,36 +135,33 @@ public class Overworld extends ScreenAdapter {
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
+
         game1 = new TextButton("Saved Game 1", GAME.generalTextButtonStyle);
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(1);
-                SaveLoadGame.saveGameOne();
+                saveGame(0);
             }
         });
         game2 = new TextButton("Saved Game 2", GAME.generalTextButtonStyle);
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(2);
-                SaveLoadGame.saveGameTwo();
+                saveGame(1);
             }
         });
         game3 = new TextButton("Saved Game 3", GAME.generalTextButtonStyle);
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(3);
-                SaveLoadGame.saveGameThree();
+                saveGame(2);
             }
         });
         game4 = new TextButton("Saved Game 4", GAME.generalTextButtonStyle);
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                saveGame(4);
-                SaveLoadGame.saveGameFour();
+                saveGame(3);
             }
         });
         //Add listeners for the buttons
@@ -238,18 +247,25 @@ public class Overworld extends ScreenAdapter {
         NPC_Cords.setLocation(GAME.stageInstance.getWidth() / 8, GAME.stageInstance.getHeight() / 2);
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
+
         // For overlays
+        game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
-
-
+        npcSeller = game.overlays.generateNewNPSeller();
+        isNpcSellerVisible =false;
+        npcBuyer = game.overlays.generateNewNPCBuyer();
+        isNpcBuyerVisible = false;
+        questBoardTrade= game.overlays.generateQuestBoard();
+        isQuestBoardTradeVisible = false;
+        chest = game.overlays.generateChest();
     }
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
         GAME.batch.begin();
+
         GAME.batch.draw(background, GAME.stageInstance.getWidth() * 0 ,GAME.stageInstance.getHeight() * 0);
         GAME.batch.draw(tavern, (float) (GAME.stageInstance.getWidth() * 0.75),
                 (float) (GAME.stageInstance.getHeight() * 0.75), tavernHeight, tavernWidth);
@@ -290,53 +306,63 @@ public class Overworld extends ScreenAdapter {
         // Displays Hidden Inventory Table
 
         // COMMENT THIS CODE TO GET TRADING WORKING
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !isNpcSellerVisible && !isNpcBuyerVisible && !isQuestBoardTradeVisible) {
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
+        }
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcBuyerVisible){
+            isNpcSellerVisible =!isNpcSellerVisible;
+            isQuestBoardTradeVisible =false;
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)&& !isNpcSellerVisible){
+            isNpcBuyerVisible =!isNpcBuyerVisible;
+            isQuestBoardTradeVisible =false;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)&& !isNpcSellerVisible){
+            isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
+            isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
+            GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.setHiddenTableVisibility(false);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+            chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
+            GAME.overlays.displayChest(chest);
+        }
 
-        // UNCOMMENT THIS CODE TO GET TRADING WORKING
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
-//            GAME.showtrade =false;
-//            GAME.showtradeBuyer =false;
-//            GAME.showHiddenInventory =!GAME.showHiddenInventory;
-//            GAME.overlays.updateOverlays();
-//
-//        }
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
-//            GAME.overlays.showtradeseller(!GAME.showtrade);
-//            {
-//                GAME.showHiddenInventory =false;
-//                GAME.showtradeBuyer =false;
-//                GAME.overlays.updateOverlays();
-//
-//            }
-//        }
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-//            GAME.overlays.setshowBuyer(!GAME.showtradeBuyer);
-//            {
-//                GAME.showtrade =false;
-//                GAME.showHiddenInventory =false;
-//                GAME.overlays.updateOverlays();
-//
-//            }
-//        }
+        // Updates Elements for QuestBord
+        if(isQuestBoardTradeVisible){
+            questBoardTrade.render();
+        }
 
-//            if(GAME.overlays.reset()){
-//                GAME.overlays.updateOverlays();
-//            }
+        GAME.overlays.render();
+//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
 
-//        try {
-//            GAME.overlays.updateAll();
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
-        // END
+        //if(Gdx.input.isKeyJustPressed(Input.Keys.P))
+        GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
-//        GAME.overlays.setOverLayesVisibility(false);
-//        GAME.overlays.setOverLayesVisibility(true);
     }
+
+        //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+
+
 
     //Save all player data including name, stats, inventory
     public void saveGame(int id){
+        GAME.loadSaveManager.savePlayer(GAME.player,id);
         GAME.stageInstance.removeListener(escapePauseOver);
         GAME.stageInstance.clear();
         dispose();
@@ -345,16 +371,6 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // Source: https://stackoverflow.com/questions/18495975/libgdx-window-resizing-keeping-aspect-ratio
-//        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
-//        int viewportX = (int)(width - size.x) / 2;
-//        int viewportY = (int)(height - size.y) / 2;
-//        int viewportWidth = (int)size.x;
-//        int viewportHeight = (int)size.y;
-//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-////        GAME.stageInstance.getViewport().update( viewportWidth, viewportHeight, true);
-//        GAME.stageInstance.getViewport().setScreenSize(viewportWidth,viewportHeight);
-
         GAME.stageInstance.getViewport().update(width, height, true);
    }
 

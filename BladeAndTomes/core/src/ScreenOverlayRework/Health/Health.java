@@ -1,40 +1,46 @@
 package ScreenOverlayRework.Health;
 
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Health {
+public class Health implements Disposable {
     private final BladeAndTomes game;
     private ProgressBar healthBar;
-    private TextureAtlas healthBarAtlas;
     private Skin healthBarSkin;
-    private Group group;
+    private Table group;
     private Color change;
-    public Health(BladeAndTomes game)  {
+    private Label HealthLabel;
+    private AssetManager manager;
+    private String HealthBarPath;
+    public Health(BladeAndTomes game, AssetManager manager, int counter)  {
         this.game = game;
-        healthBarAtlas = new TextureAtlas(Gdx.files.internal("SkinAssets/ProgressBar/healthbarUI.atlas"));
-        healthBarSkin = new Skin((Gdx.files.internal("SkinAssets/ProgressBar/healthbarUI.json")),healthBarAtlas);
+        HealthBarPath = "SkinAssets/ProgressBar/healthbarUI";
+        this.manager = manager;
+        if(!manager.isLoaded(HealthBarPath+".json",Skin.class));{
+        manager.load(HealthBarPath+".json",Skin.class,new SkinLoader.SkinParameter(HealthBarPath+".atlas"));
+        manager.finishLoading();}
+        healthBarSkin = manager.get(HealthBarPath+".json");
         healthBar = new ProgressBar(0,10,0.5f,false,healthBarSkin);
         healthBar.setValue(game.player.getHealthPoints());
+        HealthLabel = new Label("Health",game.generalLabelStyle);
+        HealthLabel.setSize(0,0);
 
-        group = new Stack();
+        group = new Table();
         group.setBounds(game.stageInstance.getWidth()/1.3f, game.stageInstance.getHeight()/2.3f,
                 game.stageInstance.getWidth()/10f, game.stageInstance.getHeight());
         change = new Color();
         ColorFade();
         healthBar.setColor(change);
+        healthBar.setSize(200,20);
+        HealthLabel.setPosition(-1400,485);
+        HealthLabel.setFontScale(1.1f);
+        healthBar.setPosition(-1450,475);
         group.addActor(healthBar);
-
+        group.addActor(HealthLabel);
     }
 
     public void ColorFade(){
@@ -48,13 +54,27 @@ public class Health {
         healthBar.setColor(change);
         healthBar.setValue(game.player.getHealthPoints());
     }
-    public Group getHealthBar() {
+    public Table getHealthBar() {
         return group;
     }
+
+
     public void incrementHealth(){
     }
     public void decrementHealth(){
 
+    }
+    public void clearAssetManger(){
+        manager.unload("SkinAssets/ProgressBar/healthbarUI.json");
+        manager.unload("SkinAssets/ProgressBar/healthbarUI.atlas");
+        manager.clear();
+    }
+
+    @Override
+    public void dispose() {
+        manager.unload("SkinAssets/ProgressBar/healthbarUI.json");
+        manager.unload("SkinAssets/ProgressBar/healthbarUI.atlas");
+        manager.dispose();
     }
 
 }

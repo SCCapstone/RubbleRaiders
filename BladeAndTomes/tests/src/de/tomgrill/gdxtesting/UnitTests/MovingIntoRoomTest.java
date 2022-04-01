@@ -1,6 +1,7 @@
 package de.tomgrill.gdxtesting.UnitTests;
 
 import ScreenOverlayRework.OverlayManager;
+import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.RoomHandler;
 import com.badlogic.gdx.Gdx;
@@ -24,9 +25,9 @@ public class MovingIntoRoomTest {
 
         Player testPlayer = new Player();
 
-        RoomHandler testHandle = new RoomHandler(test, testPlayer, mock(OverlayManager.class));
+        RoomHandler testHandle = new RoomHandler(test, testPlayer, mock(OverlayManager.class), mock(BladeAndTomes.class));
 
-        testHandle.generateLevelLayout(4);
+        testHandle.generateLevelLayout();
         testPlayer.playerInput.keyDown(new InputEvent(), Input.Keys.DOWN);
         testHandle.movement();
     }

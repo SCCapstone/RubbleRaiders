@@ -32,7 +32,7 @@ public class RoomTest {
 //        MainInventory inventory = new MainInventory(mock(BladeAndTomes.class));
         test.addActor(testPlayer.playerIcon);
 
-        RoomHandler testHandle = new RoomHandler(test, testPlayer, null);
+        RoomHandler testHandle = new RoomHandler(test, testPlayer, null, null);
         Room temp = testHandle.level;
         testPlayer.playerInput.keyDown(new InputEvent(), Input.Keys.LEFT);
         testHandle.movement();

@@ -1,11 +1,14 @@
 package com.badlogic.game.screens;
 
 import Keyboard_Mouse_Controls.SaveLoadGame;
+import LoadAndSave.LoadSaveManager;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Item;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -13,11 +16,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.fasterxml.jackson.xml.XmlMapper;
 
@@ -73,7 +78,12 @@ public class MainMenu extends ScreenAdapter {
      * @param game - Running instance of the game, holding all top level variables.
      */
     public MainMenu(final BladeAndTomes game) {
+
         this.GAME = game;
+        game.player = new Player();
+        game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+
+
         batch = new SpriteBatch();
         torchAtlas = new TextureAtlas(Gdx.files.internal("AnimationFiles/Torch.atlas"));
         animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
@@ -98,7 +108,6 @@ public class MainMenu extends ScreenAdapter {
                 new TextButton("Exit Game", game.generalTextButtonStyle)};
 
 
-
         //Helpful references for how Windows work in libGDX by libGDX team. The formatting for the style and window
         //follow the Jave documentation.
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
@@ -117,6 +126,7 @@ public class MainMenu extends ScreenAdapter {
                 GAME.setScreen(new MainMenu(GAME));
             }
         });
+
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
@@ -124,7 +134,10 @@ public class MainMenu extends ScreenAdapter {
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveOne();
+                GAME.player = GAME.loadSaveManager.loadPlayer(0);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveOne();
                 // names = SaveLoadGame.Gi.getPlayerNames();
                 // saveTime = SaveLoadGame.Gi.getSaveTime();
             }
@@ -133,7 +146,10 @@ public class MainMenu extends ScreenAdapter {
         game2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveTwo();
+                GAME.player = GAME.loadSaveManager.loadPlayer(1);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveTwo();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -141,7 +157,10 @@ public class MainMenu extends ScreenAdapter {
         game3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveThree();
+                GAME.player = GAME.loadSaveManager.loadPlayer(2);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveThree();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -149,7 +168,10 @@ public class MainMenu extends ScreenAdapter {
         game4.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                SaveLoadGame.LoadSaveFour();
+                GAME.player = GAME.loadSaveManager.loadPlayer(3);
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+                //SaveLoadGame.LoadSaveFour();
                 // GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -256,7 +278,7 @@ public class MainMenu extends ScreenAdapter {
         // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
         batch.begin();
         timePassed +=Gdx.graphics.getDeltaTime();
-        batch.draw(animation.getKeyFrame(timePassed,true),1240,600);
+        batch.draw(animation.getKeyFrame(timePassed,true),width,600);
         batch.draw(animation.getKeyFrame(timePassed,true),490,600);
 
         batch.end();
@@ -272,8 +294,11 @@ public class MainMenu extends ScreenAdapter {
         // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
     }
 
+    float width = 0, height = 0;
     @Override
     public void resize(int width, int height) {
+        this.width =width;
+        this.height=height;
         GAME.stageInstance.getViewport().update(width, height, true);
     }
 

@@ -1,5 +1,10 @@
 package com.badlogic.game.screens;
 
+
+import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
+import ScreenOverlayRework.OverlayManager;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -13,22 +18,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Json;
+
+import java.util.HashMap;
 
 public class Dungeon extends ScreenAdapter {
 
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
-    Texture eventTex;
 
-    Image eventImage;
     Image backgroundImage;
-    float eventX, eventY, eventSizeX, eventSizeY;
+
     RoomHandler roomHandler;
 
     Window returnMenu;
     TextButton returnChoices[];
     Label returnWarning;
     boolean safeGuard;
+
+
 
     public Dungeon(final BladeAndTomes game) {
 
@@ -38,10 +46,9 @@ public class Dungeon extends ScreenAdapter {
 
         //Clears the stage instance
         GAME.stageInstance.clear();
-
         //Instances the player's inventory
 
-        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays);
+        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays, GAME);
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
@@ -49,26 +56,11 @@ public class Dungeon extends ScreenAdapter {
         Texture background = new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png"));
         backgroundImage = new Image(background);
 
-        // Textures rendered in for our event
-        // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
-        eventTex = new Texture(Gdx.files.internal("GoldChest.jpg"));
-        eventImage = new Image(eventTex);
-        eventSizeX = 120f;
-        eventSizeY = 120f;
-        eventX = MathUtils.random(360, 1600);
-        eventY = MathUtils.random(240, 960);
-
         // Thanks to Alex Facer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
         roomHandler.level.getBackgroundImage().setSize(2000,1150);
         roomHandler.level.getBackgroundImage().setPosition(-25,-20);
         GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
-
-        // Currently having size as a set variable here want to move it to events class
-        // This should keep it permanently in place through the dungeon right now
-        eventImage.setSize(eventSizeX, eventSizeY);
-        eventImage.setPosition(eventX, eventY);
-        GAME.stageInstance.addActor(eventImage);
 
         //Adds the player's icon to the stage.
         GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
@@ -79,8 +71,7 @@ public class Dungeon extends ScreenAdapter {
 
         //Instances the player's inventory
         //inventory = new MainInventory(GAME);
-
-        //Adds the overlays through Anirudh's code for overlays
+        game.overlays = new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
 
         //Based off of Window code in Dungeon for Save & Quit menu by Brent Able & Alex Facer
@@ -137,6 +128,7 @@ public class Dungeon extends ScreenAdapter {
                 dispose();
                 GAME.stageInstance.clear();
                 GAME.player.setGold((int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier()));
+                GAME.player.kEarnedGoldThroughLevels = GAME.player.getGold();
                 GAME.setScreen(new Overworld(GAME));
                 safeGuard = false;
             }
@@ -145,7 +137,6 @@ public class Dungeon extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
@@ -170,7 +161,15 @@ public class Dungeon extends ScreenAdapter {
             returnMenu.add(returnWarning).center().colspan(3);
             returnMenu.row();
             returnMenu.add(returnChoices[0], returnChoices[1]).center();
+            GAME.player.kDungeonsExplored++;
             safeGuard = true;
+        }
+
+        if(roomHandler.level.getMapID() == 2 &&
+                roomHandler.checkTouchChest()) {
+            //TODO: Set up chest properly
+            //GAME.chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
+            //GAME.overlays.displayChest(chest);
         }
 
         //Decides if combat movement or normal movement will be used
@@ -184,12 +183,18 @@ public class Dungeon extends ScreenAdapter {
         //If player is dead, return to the OverWorld
         if(GAME.player.getHealthPoints() <= 0) {
             dispose();
+            GAME.player.kDeaths++;
             GAME.stageInstance.clear();
             GAME.player.setHealthPoints(GAME.player.getFullHealth());
             GAME.setScreen(new Overworld(GAME));
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
+            //GAME.overlays.setHiddenTableVisibility(true);
+        }
+
+        GAME.overlays.render();
     }
 
     @Override

@@ -17,8 +17,8 @@ public class BackGroundMusic {
     }
    public BackGroundMusic(){
         playList = new String[]{"new_main_menu_theme.mp3"};
-        volume  =   0.5f;
-        isMute = false;
+        volume  =   1f;
+        isMute = true;
     }
 
     public float getVolume() { return volume; }
@@ -34,11 +34,11 @@ public class BackGroundMusic {
     public void playMusic(){
         int musicType = new Random().nextInt(playList.length);
         Music test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
-        //test.play();
+        test.play();
         test.setLooping(true);
         test.setVolume(volume);
         if(!isMute)
-            test.play();
+        test.play();
     }
 
 }
