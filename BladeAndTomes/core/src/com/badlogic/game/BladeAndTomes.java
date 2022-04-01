@@ -111,6 +111,9 @@ public class BladeAndTomes extends Game {
     private transient Animation<TextureRegion> currentAnimation;
     public float elapsedTime;
 
+    public static boolean enterDungeon;
+    public static boolean exitDungeon;
+
     private final AssetManager manager = new AssetManager();
 
     public static class quest {
@@ -145,6 +148,8 @@ public class BladeAndTomes extends Game {
         spellDamageIncrease = 0;
         NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
+        enterDungeon = false;
+        exitDungeon = false;
 
         loadSaveManager = new LoadSaveManager();
         controls = loadSaveManager.getSettings();

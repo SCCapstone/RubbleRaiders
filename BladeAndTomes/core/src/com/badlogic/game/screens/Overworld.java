@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import jdk.tools.jmod.Main;
 
 import java.awt.*;
 
@@ -111,6 +112,10 @@ public class Overworld extends ScreenAdapter {
     TextButton game3;
     TextButton game4;
     Table savedGames;
+
+    Label tutorialMessage;
+    TextButton next;
+    int tutorialStep;
 
     NPCSeller npcSeller;
     boolean isNpcSellerVisible;
@@ -231,6 +236,10 @@ public class Overworld extends ScreenAdapter {
             }
         });
 
+        pauseMenu.setZIndex(1);
+        options[0].setZIndex(1);
+        options[1].setZIndex(1);
+
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
@@ -255,7 +264,89 @@ public class Overworld extends ScreenAdapter {
         isQuestBoardTradeVisible = false;
         chest = game.overlays.generateChest();
 
+        //Tutorial
+        tutorialStep = 1;
+        tutorialMessage = new Label("Welcome to Blade and Tomes!\n\nThis tutorial will help you understand" +
+                "\nhow to play the game.\n\nClick Next to continue.", GAME.generalLabelStyle);
+        tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2);
+        tutorialMessage.setSize(300f, 200f);
+        tutorialMessage.setAlignment(1,1);
+        tutorialMessage.setZIndex(1);
+        next = new TextButton("Next", GAME.generalTextButtonStyle);
+        next.setSize(100f, 50f);
+        next.setZIndex(1);
+        next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
+        next.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tutorialStep++;
+                nextTutorial();
+            }
+        });
+        if(MainMenu.isTutorial){
+            GAME.player.setHealthPoints(10);
+            if(BladeAndTomes.exitDungeon){
+                tutorialStep = 8;
+                nextTutorial();
+            }
+            else {
+                nextTutorial();
+                GAME.stageInstance.setKeyboardFocus(next);
+            }
+        }
 
+
+    }
+
+    public void nextTutorial() {
+        switch (tutorialStep) {
+            case 1:
+                GAME.stageInstance.addActor(tutorialMessage);
+                GAME.stageInstance.addActor(next);
+                break;
+            case 2: //Inventory screen
+                tutorialMessage.setText("Click 'E' to access your Inventory.\n\n Here you can view your items\n and equip armour or potions by\n" +
+                        "dragging them into the bottom slots.\n\nDrag an item from the 5 slots\nin the upper left hand corner into\na slot in this Inventory.");
+                tutorialMessage.setSize(300f, 300f);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 4 - 50, GAME.stageInstance.getHeight() / 2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
+                break;
+            case 3: //Equipped Quests
+                tutorialMessage.setText("Click on the 'Quests' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
+                        " Buying quests will \nbe explained soon.");
+                tutorialMessage.setSize(300f, 200f);
+                break;
+            case 4: //Upgrading skills
+                tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
+                break;
+            case 5: //Quests Buying and Selling
+                tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
+                        "\n\nClick 'Q' to exit quests.");
+                tutorialMessage.setPosition(80, GAME.stageInstance.getHeight()/2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
+                break;
+            case 6: //Buy items
+                tutorialMessage.setText("Click 'T' to buy items\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
+                break;
+            case 7: //enter dungeon
+                tutorialMessage.setText("Now it's time to fight!\n\nUsing the arrow keys, walk into\nthe portal at the bottom of town\n to enter the dungeon.");
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
+                tutorialMessage.setSize(300f, 200f);
+                next.remove();
+                break;
+            case 8: //final explanation
+                GAME.stageInstance.addActor(tutorialMessage);
+                GAME.stageInstance.addActor(next);
+                next.setText("Exit");
+                tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
+                break;
+            case 9:
+                GAME.stageInstance.clear();
+                dispose();
+                GAME.setScreen(new MainMenu(GAME));
+                break;
+        }
     }
 
     @Override
@@ -314,12 +405,16 @@ public class Overworld extends ScreenAdapter {
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
+            BladeAndTomes.enterDungeon = true;
+            BladeAndTomes.exitDungeon = false;
             GAME.setScreen(new Dungeon(GAME));
         }
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
+            BladeAndTomes.enterDungeon = true;
+            BladeAndTomes.exitDungeon = false;
             GAME.setScreen(new Dungeon(GAME));
         }
 

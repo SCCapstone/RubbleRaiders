@@ -54,7 +54,7 @@ public class MainMenu extends ScreenAdapter {
     Texture background;
     Image backgroundImage;
     Button MainMenuOptions[];
-    boolean isTutorial;
+    public static boolean isTutorial;
 
     @Override
     public void dispose() {

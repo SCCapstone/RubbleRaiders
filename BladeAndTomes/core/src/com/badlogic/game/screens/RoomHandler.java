@@ -59,7 +59,7 @@ public class RoomHandler {
 
     //Denotes the starting position of the player relative to where the player is entering.
     public Room level;
-    public boolean combatFlag;
+    public static boolean combatFlag;
     private Stage stage;
     private Player player;
     private int levelNum;
