@@ -356,7 +356,7 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.setView(camera);
+        renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         renderer.render();
 //        MapObjects objects = collisionLayer.getProperties().getKeys().toString();
 //        System.out.println(collisionLaye);
@@ -478,22 +478,38 @@ public class Overworld extends ScreenAdapter {
 //        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
 
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
-
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)<450)
+            GAME.vec.add(0,GAME.speed);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)<450)
+                GAME.vec.add(0,-GAME.speed);
+        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)<628)
+                GAME.vec.add(-GAME.speed,0);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)<628)
+                GAME.vec.add(GAME.speed,0);
+        }
+        System.out.println(GAME.vec.x+"\t\t"+GAME.vec.y+"\t\t\t"+ GAME.stageInstance.getViewport().getScreenWidth());
     }
 
         //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
 
 
-
+int width,height;
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportHeight = height;
-        camera.viewportWidth = width;
-        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-        camera.update();
-        GAME.stageInstance.getViewport().update(width, height, true);
+        this.width = width;
+        this.height = height;
+        GAME.stageInstance.getViewport().update(width, height);
+//        camera.viewportHeight = height;
+//        camera.viewportWidth = width;
+//        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+//        camera.update();
+//        GAME.stageInstance.getViewport().update(width, height, true);
    }
 
     @Override
@@ -526,31 +542,31 @@ public class Overworld extends ScreenAdapter {
     //sets boundaries in the overworld
     //based off of Aidan Emmons boundary method for dungeon
     public boolean isCollisionHandled(Player player, Stage stage) {
-        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
-            player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-
-        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
-            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-
-        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
-            player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-
-        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
-            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        return true;
+//        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
+//            player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//
+//        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
+//            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//
+//        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
+//            player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//
+//        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
+//            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//        }
+        return false;
     }
 
     // Very helpful guide on setting up tile collisions from following source

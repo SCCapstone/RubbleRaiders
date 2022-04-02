@@ -89,7 +89,7 @@ public class Player extends Entity {
     public Array<QuestDocument> activeQuests;
     public Array<itemDocument> inventoryItems;
 
-    final int MOVE_DISTANCE = 64;
+    final int MOVE_DISTANCE = 32;
     /*final int up = controls.getMoveUp();
     final int down = controls.getMoveDown();
     final int left = controls.getMoveLeft();
@@ -119,7 +119,7 @@ public class Player extends Entity {
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
-        playerIcon.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        playerIcon.setPosition( 500, 500);
         playerIcon.setVisible(false);
         playerBody(playerIcon);
         moveSquare.setSize(64, 64);
@@ -220,7 +220,7 @@ public class Player extends Entity {
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        playerIcon.setPosition( 1920/2, 1080/2);
 
         moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
         moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
@@ -291,6 +291,7 @@ public class Player extends Entity {
         activeQuests.add(null);
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
+        playerIcon.setSize(64,64);
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
 
