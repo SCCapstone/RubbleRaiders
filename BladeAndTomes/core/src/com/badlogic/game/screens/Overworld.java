@@ -474,6 +474,7 @@ public class Overworld extends ScreenAdapter {
             questBoardTrade.render();
         }
 
+        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getRange());
         GAME.overlays.render();
 //        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
 

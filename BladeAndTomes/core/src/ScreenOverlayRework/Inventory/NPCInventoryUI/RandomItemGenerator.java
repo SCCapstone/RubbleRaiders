@@ -122,7 +122,8 @@ public class RandomItemGenerator {
                           "Item Level: "+String.valueOf(itemLevel)+"\n"+
                           "Item Damage: "+itemDamage+"\n"+
                             ((isMagic)? "*** Magic Item ***":"");
-
+        String rangeType  = (String) itemsFinal.get("Weapons").get(RandomItemName);
+        range = (rangeType.equalsIgnoreCase("Ranged"))?1:0;
         itemDocument doc = new itemDocument();
         doc.setImageLocation(inventoryItemsPath + RandomItemType
                 + "/"+ String.valueOf(RandomItemName) + ".jpg");
