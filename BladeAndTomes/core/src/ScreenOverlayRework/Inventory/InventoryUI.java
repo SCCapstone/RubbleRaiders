@@ -131,8 +131,6 @@ public class InventoryUI implements Disposable {
                 HiddenInventorySlots.setVisible(false);
                 HiddenQuests.setVisible(false);
                 HiddenSkill.setVisible(true);
-                drawSkills();
-
             }
         });
 

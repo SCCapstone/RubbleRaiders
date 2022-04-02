@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
@@ -7,11 +8,14 @@ import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
 import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.maps.MapLayer;
@@ -23,6 +27,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -35,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import jdk.tools.jmod.Main;
 import com.badlogic.gdx.utils.Scaling;
 
 import java.awt.*;
@@ -42,7 +48,7 @@ import java.awt.*;
 public class Overworld extends ScreenAdapter {
 
     final BladeAndTomes GAME;
-    final float MOVE_DISTANCE;
+    final int MOVE_DISTANCE;
     SpriteBatch batch;
 
     private World world;
@@ -66,6 +72,33 @@ public class Overworld extends ScreenAdapter {
 
     private OrthographicCamera camera;
 
+
+    Texture background;
+    Texture chapel;
+    Texture barracks;
+    Texture questBoard;
+    Texture portal;
+    Texture NPCTrader;
+    Texture marketStall;
+    Texture tavern;
+
+    /*
+    // use all this for collision with buildings later
+    private float tavernWidth = 128f;
+    private float tavernHeight = 128f;
+    private float marketStallHeight = 256f;
+    private float marketStallWidth = 196f;
+    private float barracksHeight = 384f;
+    private float barracksWidth = 256f;
+    private float chapelWidth = 196f;
+    private float chapelHeight = 256f;
+    private float questBoardHeight = 64f;
+    private float questBoardWidth = 64f;
+    private float portalHeight = 64f;
+    private float portalWidth = 64f;
+
+     */
+
     Window pauseMenu;
     Label warning;
     TextButton options[];
@@ -86,6 +119,10 @@ public class Overworld extends ScreenAdapter {
     TextButton game3;
     TextButton game4;
     Table savedGames;
+
+    Label tutorialMessage;
+    TextButton next;
+    int tutorialStep;
 
     NPCSeller npcSeller;
     boolean isNpcSellerVisible;
@@ -133,13 +170,13 @@ public class Overworld extends ScreenAdapter {
         //System.out.println(overWorldMap.getTileSets().getTileSet(1).getTile(2).getOffsetX());
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
-
         world = new World(new Vector2(0, 0),true);
         worldRender = new Box2DDebugRenderer();
 
         parseCollision();
+//        worldRender.VELOCITY_COLOR.b=
 
-        MOVE_DISTANCE = 32f;
+        MOVE_DISTANCE = 64;
         doTrade = false;
         batch = new SpriteBatch();
 
@@ -205,6 +242,10 @@ public class Overworld extends ScreenAdapter {
             }
         });
 
+        pauseMenu.setZIndex(1);
+        options[0].setZIndex(1);
+        options[1].setZIndex(1);
+
 
         //Reference page that referred to how to set up Keyboard Focus by the libGDX developers
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/Stage.html#setKeyboardFocus-com.badlogic.gdx.scenes.scene2d.Actor-
@@ -229,7 +270,89 @@ public class Overworld extends ScreenAdapter {
         isQuestBoardTradeVisible = false;
         chest = game.overlays.generateChest();
 
+        //Tutorial
+        tutorialStep = 1;
+        tutorialMessage = new Label("Welcome to Blade and Tomes!\n\nThis tutorial will help you understand" +
+                "\nhow to play the game.\n\nClick Next to continue.", GAME.generalLabelStyle);
+        tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2);
+        tutorialMessage.setSize(300f, 200f);
+        tutorialMessage.setAlignment(1,1);
+        tutorialMessage.setZIndex(1);
+        next = new TextButton("Next", GAME.generalTextButtonStyle);
+        next.setSize(100f, 50f);
+        next.setZIndex(1);
+        next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
+        next.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tutorialStep++;
+                nextTutorial();
+            }
+        });
+        if(MainMenu.isTutorial){
+            GAME.player.setHealthPoints(10);
+            if(BladeAndTomes.exitDungeon){
+                tutorialStep = 8;
+                nextTutorial();
+            }
+            else {
+                nextTutorial();
+                GAME.stageInstance.setKeyboardFocus(next);
+            }
+        }
 
+
+    }
+
+    public void nextTutorial() {
+        switch (tutorialStep) {
+            case 1:
+                GAME.stageInstance.addActor(tutorialMessage);
+                GAME.stageInstance.addActor(next);
+                break;
+            case 2: //Inventory screen
+                tutorialMessage.setText("Click 'E' to access your Inventory.\n\n Here you can view your items\n and equip armour or potions by\n" +
+                        "dragging them into the bottom slots.\n\nDrag an item from the 5 slots\nin the upper left hand corner into\na slot in this Inventory.");
+                tutorialMessage.setSize(300f, 300f);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 4 - 50, GAME.stageInstance.getHeight() / 2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
+                break;
+            case 3: //Equipped Quests
+                tutorialMessage.setText("Click on the 'Quests' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
+                        " Buying quests will \nbe explained soon.");
+                tutorialMessage.setSize(300f, 200f);
+                break;
+            case 4: //Upgrading skills
+                tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
+                break;
+            case 5: //Quests Buying and Selling
+                tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
+                        "\n\nClick 'Q' to exit quests.");
+                tutorialMessage.setPosition(80, GAME.stageInstance.getHeight()/2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
+                break;
+            case 6: //Buy items
+                tutorialMessage.setText("Click 'T' to buy items\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
+                break;
+            case 7: //enter dungeon
+                tutorialMessage.setText("Now it's time to fight!\n\nUsing the arrow keys, walk into\nthe portal at the bottom of town\n to enter the dungeon.");
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
+                tutorialMessage.setSize(300f, 200f);
+                next.remove();
+                break;
+            case 8: //final explanation
+                GAME.stageInstance.addActor(tutorialMessage);
+                GAME.stageInstance.addActor(next);
+                next.setText("Exit");
+                tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
+                break;
+            case 9:
+                GAME.stageInstance.clear();
+                dispose();
+                GAME.setScreen(new MainMenu(GAME));
+                break;
+        }
     }
 
     @Override
@@ -239,7 +362,7 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.setView(camera);
+        renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         renderer.render();
         renderer.getBatch().begin();
         //renderer.renderTileLayer(backgroundLayer);
@@ -279,12 +402,16 @@ public class Overworld extends ScreenAdapter {
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
+            BladeAndTomes.enterDungeon = true;
+            BladeAndTomes.exitDungeon = false;
             GAME.setScreen(new Dungeon(GAME));
         }
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
+            BladeAndTomes.enterDungeon = true;
+            BladeAndTomes.exitDungeon = false;
             GAME.setScreen(new Dungeon(GAME));
         }
 
@@ -297,7 +424,7 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
-        //isTileCollisionHandled(GAME.player, GAME.player.moveSquare);
+//        isTileCollisionHandled(GAME.player, collisionLayer);
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
@@ -349,25 +476,46 @@ public class Overworld extends ScreenAdapter {
 //        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
 
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
-
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)<450)
+            GAME.vec.add(0,GAME.speed);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)<450)
+                GAME.vec.add(0,-GAME.speed);
+        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)<628)
+                GAME.vec.add(-GAME.speed,0);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)<628)
+                GAME.vec.add(GAME.speed,0);
+        }
+        System.out.println(GAME.vec.x+"\t\t"+GAME.vec.y+"\t\t\t"+ GAME.stageInstance.getViewport().getScreenWidth());
     }
+
+        //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+
+
+
+int width,height;
 
     @Override
     public void resize(int width, int height) {
-        Vector2 size = Scaling.fill.apply(1920, 1080, width, height);
-        int viewportWidth = (int) size.x;
-        int viewportHeight = (int) size.y;
-        Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
-        GAME.stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+        this.width = width;
+        this.height = height;
+        GAME.stageInstance.getViewport().update(width, height);
+//        camera.viewportHeight = height;
+//        camera.viewportWidth = width;
+//        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+//        camera.update();
+//        GAME.stageInstance.getViewport().update(width, height, true);
    }
 
     @Override
     public void show() {
         //overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
 
-        //renderer = new OrthogonalTiledMapRenderer(overWorldMap);
-
-        camera = (OrthographicCamera) GAME.stageInstance.getCamera();
+        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
+        camera = new OrthographicCamera();
         Gdx.input.setInputProcessor(GAME.stageInstance);
     }
 
@@ -387,31 +535,31 @@ public class Overworld extends ScreenAdapter {
     //sets boundaries in the overworld
     //based off of Aidan Emmons boundary method for dungeon
     public boolean isCollisionHandled(Player player, Stage stage) {
-        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
-            player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-
-        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
-            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-
-        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
-            player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-
-        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
-
-            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
-            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
-            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
-        }
-        return true;
+//        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
+//            player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//
+//        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
+//            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//
+//        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
+//            player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//
+//        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
+//
+//            player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
+//            player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
+//            player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
+//        }
+        return false;
     }
 
     public boolean isTileCollisionHandled(Player player, Rectangle rectangle) {
@@ -454,6 +602,10 @@ public class Overworld extends ScreenAdapter {
                 if (mapObject instanceof RectangleMapObject) {
                     RectangleMapObject rectangleObject = (RectangleMapObject) mapObject;
                     Rectangle rectangle = rectangleObject.getRectangle();
+
+                    if (mapObject instanceof RectangleMapObject) {
+                        System.out.println(rectangle.x);
+//                        rectangle.x
                         BodyDef bodyDef = getBodyDef(i * tileMeasurement + tileMeasurement / 2f + rectangle.getX()
                                         - (tileMeasurement - rectangle.getWidth()) / 2f,
                                 j * tileMeasurement + tileMeasurement / 2f + rectangle.getY()
@@ -462,13 +614,10 @@ public class Overworld extends ScreenAdapter {
                         Body body = world.createBody(bodyDef);
                         PolygonShape polygonShape = new PolygonShape();
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 1.0f);
+                        body.createFixture(polygonShape, 1f);
                         polygonShape.dispose();
 
-                        //System.out.println(body.getPosition());
-                        //System.out.println(GAME.player.playerIcon.getX());
-
-                        //isTileCollisionHandled(GAME.player, rectangle);
+                    }
                 }
             }
         }

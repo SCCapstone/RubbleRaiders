@@ -129,12 +129,27 @@ public class itemSlot extends Actor {
 
     }
     public void displayInfo() {
-        info.getActor().setText(String.valueOf(game.player.inventoryItems.get(documentIndex).getItemDescription()));
+        info.getActor().setText(String.valueOf(game.player.inventoryItems.get(documentIndex).getItemDescription()).toUpperCase());
+        if(String.valueOf(game.player.inventoryItems.get(documentIndex).getItemDescription()).equalsIgnoreCase("")){
+            table.removeListener(info);
+            info.setInstant(false);
+        }
+        else {
+            info.setInstant(true);
+
+            table.addListener(info);
+        }
     }
 
     public void displayInfo(itemDocument doc) {
 
-        info.getActor().setText(String.valueOf(doc.getItemDescription()));
+        info.getActor().setText(String.valueOf(doc.getItemDescription()).toUpperCase());
+        if(doc.getItemDescription().equalsIgnoreCase("")){
+            table.removeListener(info);
+        }
+        else {
+            table.addListener(info);
+        }
     }
 
     public itemSlot() {

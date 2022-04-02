@@ -54,7 +54,6 @@ public class CharacterCreation extends ScreenAdapter {
 
         //Instance for the game
         this.GAME = game;
-
         batch = new SpriteBatch();
 
         points = 9;

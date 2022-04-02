@@ -35,9 +35,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.*;
 
 import java.util.Random;
 
@@ -112,6 +110,11 @@ public class BladeAndTomes extends Game {
     private transient Animation<TextureRegion> attackDownAnimation;
     private transient Animation<TextureRegion> currentAnimation;
     public float elapsedTime;
+    public Vector2 vec = new Vector2(0,0);
+    public int speed = 32;
+
+    public static boolean enterDungeon;
+    public static boolean exitDungeon;
 
     private final AssetManager manager = new AssetManager();
 
@@ -147,6 +150,8 @@ public class BladeAndTomes extends Game {
         spellDamageIncrease = 0;
         NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
+        enterDungeon = false;
+        exitDungeon = false;
 
         loadSaveManager = new LoadSaveManager();
         controls = loadSaveManager.getSettings();
@@ -172,7 +177,10 @@ public class BladeAndTomes extends Game {
         // Adjusting this to a scale viewport for now on
         // Anri suggested checking out tabnine for libgdx. Found a solution with following line
         // specifically changing viewport to ScalingViewport
-        stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
+        stageInstance = new Stage(new FitViewport(1920,1080));
+        stageInstance.getViewport().setScreenX(0);
+        stageInstance.getViewport().setScreenY(0);
+        stageInstance.getViewport().apply();
 
         //Sets upstate and downstate textures for texture Buttons
         assets.load("Text_Button_Up_State.jpg",Texture.class);
@@ -323,33 +331,11 @@ public class BladeAndTomes extends Game {
      * @param width
      * @param height
      */
-    public     float width = 1600, height = 900;
+    public     float width = 1920, height = 1080;
 
     @Override
     public void resize(int width, int height) {
-//        this.width = width;
-//        this.height = height;
-//        // following code is an u.pdate from anri, Helping to correct some minor aspect issues in the game
-        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
-        int viewportX = (int) (width - size.x) / 2;
-        int viewportY = (int) (height - size.y) / 2;
-        int viewportWidth = (int) size.x;
-        int viewportHeight = (int) size.y;
-        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-        stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
-        System.out.println(Gdx.graphics.getSafeInsetTop());
-//        Gdx.graphics.setContinuousRendering(true);// = viewportHeight;
-//        Gdx.graphics.setWindowedMode(viewportWidth, viewportHeight);
-        System.out.println(viewportWidth+"\t"+viewportHeight);
-//        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
-//
-//        if (width < 1280) {
-//            Gdx.graphics.setWindowedMode(1280, height);
-//        }
-//        if (height < 720) {
-//            Gdx.graphics.setWindowedMode(width, 720);
-//        }
-//        Gdx.gl.
+        stageInstance.getViewport().update(width,height,true);
     }
 
     /**
@@ -374,7 +360,8 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), vec.x, vec.y,24,24);
+//        System.out.println("Player X:\t"+player.playerIcon.getX()+"\tPlayer Y:"+player.playerIcon.getY());
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }

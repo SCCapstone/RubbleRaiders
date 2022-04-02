@@ -35,7 +35,6 @@ public class GameSelection extends ScreenAdapter {
 
     public GameSelection(final BladeAndTomes game){
         this.GAME = game;
-
         background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
         backgroundImage = new Image(background);
         GAME.stageInstance.addActor(backgroundImage);
@@ -75,7 +74,9 @@ public class GameSelection extends ScreenAdapter {
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
-        game1 = new TextButton(GAME.loadSaveManager.loadPlayer(0).getName().equals("") ? "Game 1" : GAME.loadSaveManager.loadPlayer(0).getName(), GAME.generalTextButtonStyle);
+        game1 = new TextButton(GAME.loadSaveManager.loadPlayer(0).getName().equals("") ?
+                "Game 1" :
+                GAME.loadSaveManager.loadPlayer(0).getName(), GAME.generalTextButtonStyle);
         game1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {

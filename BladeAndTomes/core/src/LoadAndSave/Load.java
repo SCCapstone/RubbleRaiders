@@ -28,7 +28,7 @@ public class Load {
                 createDeafultsPlayer();
             }
     }
-    public void createDeafultsPlayer(){
+    public Player generateDefaultPlayer(){
         Player ply = new Player();
         itemDocument slot = ply.inventoryItems.get(0);
         slot.setDefauls = false;
@@ -36,39 +36,37 @@ public class Load {
         slot.setLevel(1);
         slot.setCategory("Weapons");
         slot.setName("Sword");
-        slot.setDamage(10);
+        slot.setDamage(1);
+        slot.setRange(0);
         slot.setTargetItem("Any");
-        slot.setItemDescription(
-                String.valueOf(slot.getName())+'\n'+
-                        String.valueOf(slot.getRange())+'\n'+
-                        String.valueOf(slot.getLevel())+'\n');
 
+        String ItemInfo = "Item Type: "+"Sword"+"\n"+
+                "Item Level: "+String.valueOf("1")+"\n"+
+                "Item Damage: "+"1"+"\n"+
+                ((false)? "*** Magic Item ***":"");
+        slot.setItemDescription(ItemInfo);
 
         slot = ply.inventoryItems.get(1);
         slot.setDefauls = false;
         slot.setImageLocation(("InventoryItems/Armor/armor.png"));
-        slot.setLevel(2);
+        slot.setLevel(1);
         slot.setCategory("Armor");
         slot.setName("ChestPlate");
-        slot.setDamage(10);
+        slot.setDamage(1);
+        slot.setRange(0);
+        String info =  "***  Armor ***"+"\n"+
+                "Armor Level: "+String.valueOf(1)+"\n"+
+                "Armor Defence: "+String.valueOf(1)+"\n"+
+                ((false)? "*** Magic Item ***":"");
         slot.setTargetItem("Any");
-        slot.setItemDescription(
-                String.valueOf(slot.getName())+'\n'+
-                        String.valueOf(slot.getRange())+'\n'+
-                        String.valueOf(slot.getLevel())+'\n');
+        slot.setItemDescription(info);
+        slot.setDefauls = false;
+        slot.isDefaultColor = true;
+        return ply;
 
-//        slot = ply.inventoryItems.get(2);
-//        slot.setDefauls = false;
-//        slot.setImageLocation(("InventoryItems/Spells/HealSpell.png"));
-//        slot.setLevel(2);
-//        slot.setCategory("Spell");
-//        slot.setName("Healing");
-//        slot.setDamage(10);
-//        slot.setTargetItem("Any");
-//        slot.setItemDescription(
-//                String.valueOf(slot.getName())+'\n'+
-//                        String.valueOf(slot.getRange())+'\n'+
-//                        String.valueOf(slot.getLevel())+'\n');
+    }
+    public void createDeafultsPlayer(){
+        Player ply = generateDefaultPlayer();
         String deafult = saveParser.toJson(ply);
 
         fourPreSets  = new Array<>();

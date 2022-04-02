@@ -10,11 +10,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Json;
+import jdk.tools.jmod.Main;
 
 import java.util.HashMap;
 
@@ -28,6 +34,12 @@ public class Dungeon extends ScreenAdapter {
     Image backgroundImage;
     float eventX, eventY, eventSizeX, eventSizeY;
     RoomHandler roomHandler;
+
+    Label tutorialMessage;
+    TextButton next;
+    int tutorialStep;
+    boolean combatExplained;
+    boolean chestExplained;
 
     private Goblin[] goblins;
 
@@ -85,8 +97,58 @@ public class Dungeon extends ScreenAdapter {
         game.overlays = new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
 
+        //Tutorial
+        tutorialStep = 1;
+        combatExplained = false;
+        chestExplained = false;
+        tutorialMessage = new Label("This is the dungeon!\n\nExplore rooms of the dungeon to find\n a goblin to fight.", GAME.generalLabelStyle);
+        tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2);
+        tutorialMessage.setSize(300f, 200f);
+        tutorialMessage.setAlignment(1,1);
+        tutorialMessage.setZIndex(1);
+        next = new TextButton("Next", GAME.generalTextButtonStyle);
+        next.setSize(100f, 50f);
+        next.setZIndex(1);
+        next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
+        next.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tutorialStep++;
+                nextTutorial();
+            }
+        });
+        if(MainMenu.isTutorial){
+            nextTutorial();
+            //if goblin in room, set step to 2 to explain combat
+        }
 
+    }
 
+    public void nextTutorial(){
+        switch(tutorialStep){
+            case 1:
+                GAME.stageInstance.addActor(tutorialMessage);
+                break;
+            case 2: //if goblin appears in room, explain combat
+                GAME.stageInstance.addActor(tutorialMessage);
+                tutorialMessage.setText("Goblins are in this room!\nMove to a goblin and use 'Q'\n to attack!\n\nThere is also ranged combat items\nSelect the enemy to attack\n using XXXX and use 'Q' to attack.");
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
+                next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
+                break;
+            case 5: //if chest appears, explain events
+                tutorialMessage.setText("There is a chest in this room.\n...");
+                chestExplained = true;
+                break;
+            case 6: //find the exit portal
+                tutorialMessage.setText("Continue exploring the dungeon\nand find the portal to exit.");
+                BladeAndTomes.exitDungeon = true;
+                BladeAndTomes.enterDungeon = false;
+                break;
+        }
+    }
+
+    public void setTutorial(int step){
+        this.tutorialStep = step;
     }
 
     @Override
@@ -101,6 +163,15 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.draw();
         GAME.batch.begin();
         GAME.runPlayerAnimation();
+        //Tutorial checks
+        if(MainMenu.isTutorial && eventImage.isVisible() && tutorialStep != 1){
+            setTutorial(5);
+            nextTutorial();
+        }
+        if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) {
+            setTutorial(2);
+            nextTutorial();
+        }
 
         GAME.playerMovement();
 
@@ -158,6 +229,8 @@ public class Dungeon extends ScreenAdapter {
             dispose();
             GAME.stageInstance.clear();
             GAME.player.setHealthPoints(GAME.player.getFullHealth());
+            BladeAndTomes.exitDungeon = true;
+            BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
