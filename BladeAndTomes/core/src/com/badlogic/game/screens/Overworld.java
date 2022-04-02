@@ -1,6 +1,5 @@
 package com.badlogic.game.screens;
 
-import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
@@ -8,16 +7,15 @@ import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
 import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -113,8 +111,16 @@ public class Overworld extends ScreenAdapter {
         GAME.resetElapsedTime();
         objectLayerId = 2;
 
-        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
-        collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
+        manager = new AssetManager();
+        manager.setLoader(TiledMap.class, new TmxMapLoader());
+        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+        manager.finishLoading();
+        overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
+
+        //overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+
+        MapLayers mapLayers = overWorldMap.getLayers();
+        collisionLayer = (TiledMapTileLayer) mapLayers.get("Buildings");
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
 
         columns = collisionLayer.getTileWidth();
@@ -235,6 +241,8 @@ public class Overworld extends ScreenAdapter {
         renderer.render();
         worldRender.render(world, camera.combined);
 
+        //getTileCells(collisionLayer);
+
         GAME.playerMovement();
 
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
@@ -283,7 +291,7 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
-        //isTileCollisionHandled(GAME.player, );
+        //isTileCollisionHandled(GAME.player, GAME.player.moveSquare);
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
@@ -404,6 +412,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public boolean isTileCollisionHandled(Player player, Rectangle rectangle) {
+        //getTileCells(collisionLayer);
         Rectangle playerRec = new Rectangle();
         playerRec.set(player.playerIcon.getX(), player.playerIcon.getY(),
                 player.playerIcon.getImageWidth(), player.playerIcon.getImageHeight());
@@ -415,11 +424,8 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void getTileCells(TiledMapTileLayer tileLayer) {
-        for (int i = 0; i < tileLayer.getTileWidth(); i++) {
-            for (int j = 0; j < tileLayer.getTileHeight(); j++) {
-                TiledMapTileLayer.Cell cell = 
-            }
-        }
+        MapLayers mapLayer = overWorldMap.getLayers();
+        tileLayer = (TiledMapTileLayer) mapLayer.get("Buildings");
     }
 
     // Very helpful guide on setting up tile collisions from following source
@@ -459,7 +465,7 @@ public class Overworld extends ScreenAdapter {
                         //System.out.println(body.getPosition());
                         //System.out.println(GAME.player.playerIcon.getX());
 
-                        isTileCollisionHandled(GAME.player, rectangle);
+                        //isTileCollisionHandled(GAME.player, rectangle);
                 }
             }
         }
