@@ -55,7 +55,8 @@ public class Overworld extends ScreenAdapter {
     private String blocked;
     private String tilePortal;
 
-    TiledMapTileLayer collisionLayer;
+    private TiledMapTileLayer collisionLayer;
+    private TiledMapTileLayer backgroundLayer;
     int objectLayerId;
     int tileMeasurement;
     boolean collidedX, collidedY;
@@ -121,14 +122,15 @@ public class Overworld extends ScreenAdapter {
 
         MapLayers mapLayers = overWorldMap.getLayers();
         collisionLayer = (TiledMapTileLayer) mapLayers.get("Buildings");
+        backgroundLayer = (TiledMapTileLayer) mapLayers.get("Background");
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
 
-        columns = collisionLayer.getTileWidth();
-        rows = collisionLayer.getHeight();
+        //columns = collisionLayer.getTileWidth();
+        //rows = collisionLayer.getHeight();
 
-        System.out.println(columns + rows);
+        //System.out.println(columns + rows);
 
-        System.out.println(overWorldMap.getTileSets().getTileSet(1).getTile(2).getOffsetX());
+        //System.out.println(overWorldMap.getTileSets().getTileSet(1).getTile(2).getOffsetX());
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
 
@@ -239,6 +241,10 @@ public class Overworld extends ScreenAdapter {
 
         renderer.setView(camera);
         renderer.render();
+        renderer.getBatch().begin();
+        //renderer.renderTileLayer(backgroundLayer);
+        renderer.renderTileLayer(collisionLayer);
+        renderer.getBatch().end();
         worldRender.render(world, camera.combined);
 
         //getTileCells(collisionLayer);
@@ -367,9 +373,6 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void hide() {
-        //overWorldMap.dispose();
-        //renderer.dispose();
-        //manager.dispose();
         Gdx.input.setInputProcessor(null);
     }
 
@@ -378,7 +381,7 @@ public class Overworld extends ScreenAdapter {
         world.dispose();
         overWorldMap.dispose();
         renderer.dispose();
-        //manager.dispose();
+        manager.dispose();
     }
 
     //sets boundaries in the overworld
