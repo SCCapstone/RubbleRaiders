@@ -305,12 +305,15 @@ public class Overworld extends ScreenAdapter {
         prePlayerLocX = GAME.player.playerIcon.getX();
         prePlayerLocY = GAME.player.playerIcon.getY();
         GAME.stageInstance.addActor(townHallMSG);
+        townHallMSG.setZIndex(0);
         townHallMSG.setPosition(townHall.getX()+ townHall.width-200,townHall.getY()+ townHall.height-200);
         townHallMSG.setVisible(false);
         GAME.stageInstance.addActor(questBoardMSG);
+        questBoardMSG.setZIndex(0);
         questBoardMSG.setPosition(questBoard.getX() + questBoard.width - 64, questBoard.getY() + questBoard.height + 64f);
         questBoardMSG.setVisible(false);
         GAME.stageInstance.addActor(traderMSG);
+        traderMSG.setZIndex(0);
         traderMSG.setPosition(marketStall.getX() + marketStall.width - 160, marketStall.getY() + marketStall.height - 64f);
         traderMSG.setVisible(false);
     }
