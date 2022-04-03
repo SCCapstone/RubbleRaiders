@@ -28,7 +28,7 @@ public class OverlayManager implements Disposable {
         manager = Game.assets;
 
             game = Game;
-            dnd = new DragAndDrop();
+            dnd = game.dnd;
             table = new Table();
             table.setDebug(true);
             table.defaults();
@@ -105,7 +105,7 @@ public class OverlayManager implements Disposable {
         return inventory.makeQuestBoard();
     }
     public void updateHealth(){
-//        healthBar.update();
+        healthBar.update();
     }
 
 public TreasureChestUI generateChest(){

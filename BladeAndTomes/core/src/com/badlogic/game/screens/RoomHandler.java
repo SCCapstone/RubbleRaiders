@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Goblin;
@@ -8,9 +9,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.Random;
 
@@ -18,15 +24,36 @@ public class RoomHandler {
 
     //Instantiates the random generator to be used within this project
     private Random generator = new Random();
-    private boolean goblinTurn;
     public Goblin[] goblins = null;
     public int numOfGoblins;
-    public int GRID_X_SQUARE = 21;
-    public int GRID_Y_SQUARE = 12;
-    public final int[] GRID_X = new int[GRID_X_SQUARE];
-    public final int[] GRID_Y = new int[GRID_Y_SQUARE];
+    public final int MAX_GEN_LEVELS = 5;
+    private int goblinsKilled;
+
     private int remainingGoblin;
-    private Texture backgroundText;
+    private int levelsGenerated;
+    private int levelsExplored;
+
+    private boolean exitAvailable;
+    private boolean endOfLevel;
+    private boolean chestVisible;
+
+    private float levelMultiplier;
+
+    //private boolean roomLimit[][] = new boolean[10][10];
+    private int X_VAL[];
+    private int Y_VAL[];
+
+    private boolean rangedFlag;
+    private boolean magicFlag;
+    private boolean meleeFlag;
+    private int selectionIndex;
+    private float x_distance;
+    private float y_distance;
+
+    float eventX, eventY, eventSizeX, eventSizeY;
+
+    Texture eventTex;
+    Image eventImage;
 
     //Thanks to baeldung.com for creating a tutorial based on how enum values work,
     //including section 3, which is what the following enum is based on.
@@ -64,31 +91,143 @@ public class RoomHandler {
     private Player player;
     private int levelNum;
     private OverlayManager inventory;
+    private Image selectionImage;
+
+    private TreasureChestUI chest;
+    private BladeAndTomes game;
 
     /**
      * Constructor for the "RoomHandler" or the linked list handler
      */
-    public RoomHandler(Stage stage, Player player, OverlayManager inventory) {
+    public RoomHandler(Stage stage, final Player player, OverlayManager inventory, BladeAndTomes game) {
         this.player = player;
         this.stage = stage;
+        this.game = game;
         this.level = new Room();
+        this.levelMultiplier = 1;
         this.levelNum = 1;
+        this.exitAvailable = false;
         this.combatFlag = false;
         this.numOfGoblins = 0;
+        this.levelsGenerated = 0;
+        this.levelsExplored = 0;
+        this.goblinsKilled = 0;
+        //this.roomLimit[4][4] = true;
         this.remainingGoblin = numOfGoblins;
-        try{
-        this.inventory = inventory;}catch (Exception e){
+        this.rangedFlag = false;
+        //this.roomLimit[4][5] = true;
+        this.selectionImage = new Image(new Texture(Gdx.files.internal("selection.png")));
+
+        // Textures rendered in for our event
+        // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
+        eventTex = new Texture(Gdx.files.internal("GoldChest.jpg"));
+        eventImage = new Image(eventTex);
+
+        eventSizeX = 64f;
+        eventSizeY = 64f;
+        eventImage.setSize(eventSizeX, eventSizeY);
+
+        //Determining distance and selections to open chest
+        this.selectionIndex = 0;
+        this.x_distance = 0;
+        this.y_distance = 0;
+
+        selectionImage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch(keycode) {
+                    case Input.Keys.RIGHT:
+                        if(selectionIndex >= numOfGoblins-1) {
+                            selectionIndex = 0;
+                        }
+                        else {
+                            ++selectionIndex;
+                        }
+
+                        while(goblins[selectionIndex] == null) {
+                            ++selectionIndex;
+                            if(selectionIndex == numOfGoblins) {
+                                selectionIndex = 0;
+                            }
+                        }
+
+                        selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
+                        break;
+                    case Input.Keys.LEFT:
+                        if(selectionIndex <= 0) {
+                            selectionIndex = numOfGoblins - 1;
+                        }
+                        else {
+                            --selectionIndex;
+                        }
+
+                        while(goblins[selectionIndex] == null) {
+                            --selectionIndex;
+                            if(selectionIndex < 0) {
+                                selectionIndex = numOfGoblins - 1;
+                            }
+                        }
+
+                        selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
+                        break;
+                    default:
+                        return false;
+                }
+
+                x_distance = goblins[selectionIndex].enemyImage.getX() - player.playerIcon.getX();
+                y_distance = goblins[selectionIndex].enemyImage.getY() - player.playerIcon.getY();
+
+                return true;
+            }
+        });
+
+        try {
+            this.inventory = inventory;
+        } catch (Exception e) {
 
         }
-        this.goblinTurn = false;
+        //this.goblinTurn = false;
 
-        int x_start = 264;
-        int y_start = 152;
-        for(int i = 0; i < GRID_X_SQUARE; i++) {
-            GRID_X[i] = x_start + 64*(i+1);
-        }
-        for(int i = 0; i < GRID_Y_SQUARE; i++) {
-            GRID_Y[i] = y_start + 64*(i+1);
+        //Arrays marking the approximate locations of the four doors
+        X_VAL = new int[4];
+        Y_VAL = new int[4];
+
+        X_VAL[0] = (int) stage.getWidth()/2;
+        X_VAL[1] = (int) stage.getWidth() - 3* level.MOVE;
+        X_VAL[2] = level.MOVE*3;
+        X_VAL[3] = (int) stage.getWidth()/2;
+
+        Y_VAL[0] = (int) stage.getHeight() - 2*level.MOVE;
+        Y_VAL[1] = (int) stage.getHeight()/2;
+        Y_VAL[2] = (int) stage.getHeight()/2;
+        Y_VAL[3] = level.MOVE*2;
+
+        //Makes sure to start from the starter room and moves on from there
+        generateLevelLayout();
+    }
+
+    /**
+     * Continuously generates several levels so that it always ensures that the player can explore 10
+     * Rooms before moving on to the next "level".
+     *  - Where the door entrance the recursive function goes through is.
+     */
+    public void generateLevelLayout() {
+        Room temp = this.level;
+        for(int i = 0; i < 4; i++) {
+            if (temp.getDoorSingle(i+1) == null &&
+                    ((temp.getRoomID() >> (3-i)) & 1) == 1 ) {
+
+                generateRoom(i+1, false, temp, false);
+
+                temp = temp.getDoorSingle(i+1);
+
+                levelsGenerated++;
+
+                if(levelsGenerated >= MAX_GEN_LEVELS){
+                    return;
+                }
+                generateLevelLayout();
+            }
         }
         goblins = new Goblin[0];
     }
@@ -99,29 +238,28 @@ public class RoomHandler {
      * @return - Returns if the process was successful or not.
      */
     public boolean movement() {
-
+        //System.out.println(player.playerIcon.getX() + "\t" + player.playerIcon.getY());
         // If the player enters a door, then take that player to the new room if that room exists
-        if(!combatFlag && level.X_VAL[0] <= player.playerIcon.getX() &&
-                level.X_VAL[0] + 3*level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[0] <= player.playerIcon.getY()) {
+        if(!combatFlag && X_VAL[0] - level.MOVE <= player.playerIcon.getX() &&
+                X_VAL[0] + 2*level.MOVE >= player.playerIcon.getX() &&
+                Y_VAL[0] <= player.playerIcon.getY()) {
             return moveIntoRoom(1);
         }
-        else if(!combatFlag && level.X_VAL[1] <= player.playerIcon.getX() &&
-                level.Y_VAL[1] <= player.playerIcon.getY() &&
-                level.Y_VAL[1] + 3*level.MOVE >= player.playerIcon.getY()) {
+        else if(!combatFlag && X_VAL[1] <= player.playerIcon.getX() &&
+                Y_VAL[1] - 2*level.MOVE <= player.playerIcon.getY() &&
+                Y_VAL[1] + 1*level.MOVE >= player.playerIcon.getY()) {
             return moveIntoRoom(2);
         }
-        else if(!combatFlag && level.X_VAL[2] >= player.playerIcon.getX() &&
-                level.Y_VAL[2] + 2*level.MOVE >= player.playerIcon.getY() &&
-                level.Y_VAL[2] <= player.playerIcon.getY()) {
+        else if(!combatFlag && X_VAL[2] >= player.playerIcon.getX() &&
+                Y_VAL[2] + 1*level.MOVE >= player.playerIcon.getY() &&
+                Y_VAL[2] - level.MOVE*2 <= player.playerIcon.getY()) {
             return moveIntoRoom(3);
         }
-        else if(!combatFlag && level.X_VAL[3] <= player.playerIcon.getX() &&
-                level.X_VAL[3] + 3*level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[3] >= player.playerIcon.getY()) {
+        else if(!combatFlag && X_VAL[3] - level.MOVE <= player.playerIcon.getX() &&
+                X_VAL[3] + 2*level.MOVE >= player.playerIcon.getX() &&
+                Y_VAL[3] >= player.playerIcon.getY()) {
             return moveIntoRoom(4);
         }
-
         // Makes sure player does not leave bounds
         else {
             return isCollisionHandled();
@@ -148,7 +286,7 @@ public class RoomHandler {
 
         //If a door exists and room is not generated
         if(level.getDoorSingle(entrance) == null && isDoorThere) {
-            generateRoom(entrance);
+            generateRoom(entrance, true, level, true);
         }
 
         //Else if there is no door there, handle collision with wall
@@ -162,8 +300,8 @@ public class RoomHandler {
         }
 
         //Determines exit point of the player
-        int x_offset = exit == 2 ? GRID_X[20] : exit == 3 ? GRID_X[0] : GRID_X[10];
-        int y_offset = exit == 1 ? GRID_Y[11] : exit == 4 ? GRID_Y[0] : GRID_Y[5];
+        int x_offset = exit == 2 ? game.GRID_X[20] : exit == 3 ? game.GRID_X[0] : game.GRID_X[10];
+        int y_offset = exit == 1 ? game.GRID_Y[11] : exit == 4 ? game.GRID_Y[0] : game.GRID_Y[5];
 
 
         //Clears out the stage and re-adds everything
@@ -175,17 +313,44 @@ public class RoomHandler {
         stage.addActor(player.playerIcon);
         stage.setKeyboardFocus(player.playerIcon);
 
+        if (level.getMapID() == 10) {
+            Image portal = new Image(new Texture(Gdx.files.internal("PortalToDungeon.jpg")));
+            portal.setPosition(game.GRID_X[10], game.GRID_Y[5]);
+            stage.addActor(portal);
+        }
+
         //If generated combat, spawn the goblins
-        if(combatFlag) {
+        if(level.getMapID() == 1) {
+            combatFlag = true;
             spawnGoblin();
         }
 
+        if(level.getMapID() == 2) {
+            // Currently having size as a set variable here want to move it to events class
+            // This should keep it permanently in place through the dungeon right now
+            // Based off of Brent Able's simple code in Dungeon.Java where eventImage is the chest image
+            eventImage.setPosition(level.getChestX(), level.getChestY());
+            stage.addActor(eventImage);
+        }
+
+        //this.levelsExplored = level.getMapID() == 0 && !level.isLevelExplored() ? this.levelsExplored + 1 : this.levelsExplored;
+
+        if(!level.isLevelExplored()) {
+            this.levelsExplored++;
+            player.kDungeonsExplored++;
+            level.setIsLevelExplored(true);
+        }
+
         //Makes sure to re-add inventory UI after movement
-//        inventory.reAddInventory();
+        //inventory.reAddInventory();
         try {
-            inventory.setOverLayesVisibility(true);
+            //inventory.setOverLayesVisibility(true);
             if (Gdx.input.isKeyJustPressed(Input.Keys.E))
                 inventory.setHiddenTableVisibility(true);
+
+            //Based off of Anirudh's suggestion to fix the inventory and allow for selection within the dungeon
+            game.overlays = new OverlayManager(game);
+            game.overlays.setOverLayesVisibility(true);
         }catch (Exception e){
 
         }
@@ -199,42 +364,65 @@ public class RoomHandler {
      * @param entrance - Indicates the entrance the player went into
      * @return - returns if generation was successful or not
      */
-    private boolean generateRoom(int entrance) {
+    private boolean generateRoom(int entrance, boolean moveIn, Room chamber, boolean isGenLevel) {
 
         // Creates placeholder for creating doubly linked list
-        Room temp = level;
+        Room temp = chamber;
 
         //Create default room
-        level.setDoorIndividual(new Room(), entrance);
-        level = level.getDoorSingle(entrance);
+        chamber.setDoorIndividual(new Room(), entrance);
+        chamber = chamber.getDoorSingle(entrance);
 
+        if(!moveIn) {
+            switch (entrance) {
+                case 1:
+                    chamber.setRoomY(temp.getRoomX() + 1);
+                    break;
+                case 2:
+                    chamber.setRoomX(temp.getRoomX() + 1);
+                    break;
+                case 3:
+                    chamber.setRoomX(temp.getRoomX() - 1);
+                    break;
+                case 4:
+                    chamber.setRoomY(temp.getRoomX() - 1);
+                    break;
+                default:
+                    break;
+            }
+        }
 
         //Generate exit point based on entrance
         int exit = entrance == 1 ? 4 : entrance == 2 ? 3 :
                         entrance == 3 ? 2 : 1;
 
         //temp.setDoorIndividual(level, entrance);
-        level.setDoorIndividual(temp, exit);
+        chamber.setDoorIndividual(temp, exit);
 
         //Randomly generate number of doors and set it for room
-        int numOfDoors = generator.nextInt(4) + 1;
-        level.setNumOfDoors(numOfDoors);
+        int numOfDoors = levelsGenerated >= 10 ? generator.nextInt(4) + 1 : generator.nextInt(3) + 2;
+        chamber.setNumOfDoors(numOfDoors);
 
         int baseID = 1 << (entrance - 1);
 
         //Using the number of doors in that room, find the appropriate roomID
-        level.setRoomID(generateRoomID(baseID, numOfDoors));
+        chamber.setRoomID(generateRoomID(baseID, numOfDoors));
 
         //For each loop dedicated to getting each different type of room
         ROOMS[] superRoom = ROOMS.values();
         for(ROOMS room : superRoom) {
-            if(room.id == level.getRoomID()) {
-                level.setBackgroundImage(room.filename, stage);
+            if(room.id == chamber.getRoomID()) {
+                chamber.setBackgroundImage(room.filename, stage);
             }
         }
 
         //generates event. Please see TODO
-        generateEvent();
+        generateEvent(chamber);
+
+        //flags level to make sure that the level is actually supposed to be moved into
+        if(isGenLevel) {
+            level = chamber;
+        }
 
         //Return true upon successful completion of room creation
         return true;
@@ -245,13 +433,20 @@ public class RoomHandler {
      * @param EOL - Denotes End of the level
      */
     public void deconstruct(boolean EOL) {
-        if (EOL) {
+        if (!EOL) {
             levelNum++;
+            levelMultiplier += 0.5;
+            levelsExplored = 0;
             level = new Room();
         }
         else {
-            //TODO: Save current level to Save file, including all explored and unexplored rooms
+            levelNum = 0;
+            levelMultiplier = 3;
+            endOfLevel = true;
         }
+
+        player.kLevelsCompleted++;
+        player.kEarnedGoldThroughLevels++;
     }
 
     /**
@@ -263,8 +458,9 @@ public class RoomHandler {
     private int generateRoomID(int baseID, int numDoor) {
 
         //Checks to make sure that it's not a single room
-        if(numDoor == 1)
+        if(numDoor == 1 && levelsGenerated >= MAX_GEN_LEVELS) {
             return baseID;
+        }
 
         //Initializing internal function variables
         int id = baseID;
@@ -289,19 +485,42 @@ public class RoomHandler {
      * Generates the event needed for the program to work
      * @return error code in case the
      */
-    private int generateEvent() {
+    private int generateEvent(Room chamber) {
 
         //Roll a d12 to determine if combat occurred
         int num = generator.nextInt(12) + 1;
 
-        //If above 8, declare that combat has occured
-        if(num > 8) {
-            combatFlag = true;
+        if(levelsExplored >= 5 && !exitAvailable) {
+            chamber.setMapID(10);
+            exitAvailable = true;
         }
 
-        //Generates events
-        else if (num > 2) {
-            //TODO: Initiate event handle here.
+        else if(levelsExplored >= 4 &&
+        levelNum == 3) {
+            // TODO: Create simple boss
+        }
+
+        //If above 8, declare that combat has occured
+        else if(num > 7) {
+            //combatFlag = true;
+            chamber.setMapID(1);
+        } //Generates events
+        /*else if (num > 2) {
+
+        }*/
+        else if (num < 2) {
+            //eventX = MathUtils.random(360, 1600);
+            //eventY = MathUtils.random(240, 960);
+
+            chamber.setChestX(game.GRID_X[generator.nextInt(game.GRID_X_SQUARE)]);
+            chamber.setChestY(game.GRID_Y[generator.nextInt(game.GRID_Y_SQUARE)]);
+            try {
+                chamber.setChest(game.overlays.generateChest());
+            } catch(Exception e) {
+
+            }
+
+            chamber.setMapID(2);
         }
         return 0;
     }
@@ -313,25 +532,25 @@ public class RoomHandler {
      */
     public boolean isCollisionHandled()
     {
-        if(player.playerIcon.getX() <= level.X_VAL[2])
+        if(player.playerIcon.getX() <= X_VAL[2])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() + level.MOVE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() <= level.Y_VAL[3])
+        else if(player.playerIcon.getY() <= Y_VAL[3])
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + level.MOVE);
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getX() >= level.X_VAL[1])
+        else if(player.playerIcon.getX() >= X_VAL[1])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() - level.MOVE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() >= level.Y_VAL[0])
+        else if(player.playerIcon.getY() >= Y_VAL[0])
         {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - level.MOVE);
@@ -344,23 +563,54 @@ public class RoomHandler {
     /**
      * Method Spawns Goblins to be used in the moveIntoRoom() function.
      */
-    public void spawnGoblin() {
+    public void spawnGoblin(){
         numOfGoblins = generator.nextInt(3) + 1;
+        player.setNumGoblins(numOfGoblins);
         remainingGoblin = numOfGoblins;
 
         goblins = new Goblin[numOfGoblins];
+        player.setGoblins(goblins);
 
         for(int i=0; i<numOfGoblins; i++) {
-
             //Creates a new goblin
-            goblins[i] = new Goblin(player);
+            goblins[i] = new Goblin(player, game.GRID_X, game.GRID_Y);
+
+            //goblins[i].enemyImage.setVisible(true);
 
             //Randomizes goblin positions based on "Grid"
-            goblins[i].enemyImage.setPosition(GRID_X[generator.nextInt(GRID_X_SQUARE)],
-                    GRID_Y[generator.nextInt(GRID_Y_SQUARE)]);
+            goblins[i].enemyImage.setPosition(game.GRID_X[generator.nextInt(game.GRID_X_SQUARE)],
+                    game.GRID_Y[generator.nextInt(game.GRID_Y_SQUARE)]);
+            goblins[i].prevX = (int) goblins[i].enemyImage.getX();
+            goblins[i].prevY = (int) goblins[i].enemyImage.getY();
 
             //Adds goblins to the stage
             stage.addActor(goblins[i].enemyImage);
+            goblins[i].healthBar.setPosition(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY()-12);
+            goblins[i].healthBar.setSize(64, 12);
+            stage.addActor(goblins[i].healthBar);
+        }
+    }
+
+    /**
+     * Based off of Anirudh Oruganti's code in Overworld.java to test the chest and make sure it works
+     * Allows the user to open the chest and look at the contents inside of it.
+     * @return - Makes sure that the program goes through the complete aspect of opening a chest
+     */
+    public boolean checkTouchChest() {
+        x_distance = player.playerIcon.getX() - eventImage.getX();
+        y_distance = player.playerIcon.getY() - eventImage.getY();
+
+        //Based off of Anirudh Oruganti's code in Overworld for getting the chest to display
+        if(Gdx.input.isKeyJustPressed(game.controls.getTradeMenu()) &&
+                x_distance < 96 && x_distance > -96 &&
+                y_distance < 96 && y_distance > -96) {
+            level.getChest().setTreasureChestVisible(!level.getChest().isTreasureChestVisible());
+            game.overlays.setHiddenTableVisibility(false);
+            game.overlays.displayChest(level.getChest());
+            player.kChestsOpened++;
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -375,12 +625,222 @@ public class RoomHandler {
             if(goblins[i] == null) {
                 continue;
             }
+
+            //Distance between player and goblin
             float x_distance = goblins[i].enemyImage.getX() - player.playerIcon.getX();
             float y_distance = goblins[i].enemyImage.getY() - player.playerIcon.getY();
+
+            //Pushes player back if player tries to walk into Goblin
             if(x_distance < 64 && x_distance > -64 &&
                     y_distance < 64 && y_distance > -64) {
-                player.playerIcon.setPosition(player.playerIcon.getX() - level.MOVE, player.playerIcon.getY());
+                player.playerIcon.setPosition(player.getPrevX(), player.getPrevY());
             }
+
+            /*
+            int changeInX = (int) goblins[i].enemyImage.getX() - goblins[i].prevX;
+            int changeInY = (int) goblins[i].enemyImage.getY() - goblins[i].prevY;
+
+            if(goblins[i].enemyImage.getX() != (goblins[i].prevX + changeInX) ||
+                goblins[i].enemyImage.getY() != (goblins[i].prevY + changeInY)) {
+                goblins[i].enemyImage.setPosition(goblins[i].prevX + changeInX, goblins[i].prevY + changeInY);
+            }*/
+
+            // Goes through each goblin and makes sure to use their action
+            for(int j = 0; j<numOfGoblins; j++) {
+
+                //Movement directions
+                int random_dir = generator.nextInt(5);
+
+                //Skips over null values
+                if(goblins[j] == null || goblins[i] == goblins[j]) {
+                    continue;
+                }
+
+                //Checks to make sure the goblins do not collide with one another or the walls of the arena
+                if ((goblins[i].enemyImage.getX() == goblins[j].enemyImage.getX() &&
+                    goblins[i].enemyImage.getY() == goblins[j].enemyImage.getY()) ||
+                    goblins[i].enemyImage.getX() <= X_VAL[2] ||
+                    goblins[i].enemyImage.getX() >= X_VAL[1] ||
+                    goblins[i].enemyImage.getY() >= Y_VAL[0] ||
+                    goblins[i].enemyImage.getY() <= Y_VAL[3]) {
+
+                    //Determines direction goblin moves if they run into/overlap their teammate
+                    if(goblins[i].enemyImage.getX() + 64 <= X_VAL[1] &&
+                        random_dir == 2) {
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX + 64, goblins[i].prevY, 0.3f));
+                    }
+                    else if(goblins[i].enemyImage.getX() - 64 <= X_VAL[2] &&
+                            random_dir == 3) {
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX - 64, goblins[i].prevY, 0.3f));
+                    }
+                    else if(goblins[i].enemyImage.getY() + 64 <= Y_VAL[0] &&
+                            random_dir == 1) {
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX, goblins[i].prevY + 64, 0.3f));
+                    }
+                    else if(goblins[i].enemyImage.getY() - 64 <= Y_VAL[3] &&
+                            random_dir == 4) {
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX, goblins[i].prevY - 64, 0.3f));
+                    }
+                    goblins[i].healthBar.addAction(Actions.moveTo(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY(), 0.3f));
+                }
+            }
+        }
+    }
+
+    /**
+     * Get function that returns the number of goblins killed (by the player)
+     * @return - returns the number of goblins killed
+     */
+    public int getGoblinsKilled() {
+        return goblinsKilled;
+    }
+
+    public boolean isExitAvailable() {
+        return exitAvailable;
+    }
+
+    public void setExitAvailability(boolean b) {
+        exitAvailable = b;
+    }
+
+    public float getLevelMultiplier() {
+        return levelMultiplier;
+    }
+
+    public void handleRangeCombat() {
+        //System.out.println(player.inventoryItems.get(game.currentInventorySelection).getRange() == 1);
+        if(Gdx.input.isKeyJustPressed(game.controls.getFightAction()) && !magicFlag
+            && !meleeFlag && player.inventoryItems.get(game.currentInventorySelection).getRange() == 1) {
+            rangedFlag = true;
+        }
+
+        if(selectionIndex >= numOfGoblins) {
+            selectionIndex = 0;
+        }
+
+        if (rangedFlag && !magicFlag) {
+            if(goblins[selectionIndex] == null) {
+                while(goblins[selectionIndex] == null) {
+                    selectionIndex++;
+                    if(selectionIndex >= numOfGoblins) {
+                        selectionIndex = 0;
+                    }
+                }
+            }
+
+            stage.setKeyboardFocus(selectionImage);
+            selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
+            stage.addActor(selectionImage);
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !magicFlag)  {
+                player.isTurn = false;
+                rangedFlag = false;
+
+                int hitRoll = generator.nextInt(20) + player.getAcrobatics()/2 + 1;
+                if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
+                    goblins[selectionIndex].damageTaken(player.inventoryItems.get(game.currentInventorySelection).getDamage());
+                    goblins[selectionIndex].updateHealth();
+                }
+                player.isTurn = false;
+
+                for (int j = 0; j < numOfGoblins; j++) {
+                    if (goblins[selectionIndex] == null) {
+                        continue;
+                    }
+                    goblins[selectionIndex].isTurn = true;
+                }
+
+                if(goblins[selectionIndex].getHealthPoints() <= 0) {
+                    player.kLongRangeKills++;
+                }
+
+                selectionImage.remove();
+                stage.setKeyboardFocus(player.playerIcon);
+            }
+        }
+    }
+
+    /*
+    public void handleMagicCombat() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C) && player.getPlayerClass() >= 1
+            && !rangedFlag && !meleeFlag && player.inventoryItems.get(game.currentInventorySelection).getCategory() == "spell") {
+            magicFlag = true;
+        }
+
+
+        //TODO: Cast Spell
+        //Scroll equipped is checked for contents
+        //if self, then cast on self
+
+        if (magicFlag && !rangedFlag) {
+            //stage.setKeyboardFocus(selectionImage);
+            //stage.addActor(selectionImage);
+            magicFlag = false;
+            player.isTurn = false;
+
+            if(player.getPlayerClass() == 1) {
+                player.setHealthPoints(player.getHealthPoints() + generator.nextInt(4) + player.getMental()/2 + 1);
+                inventory.updateHealth();
+            }
+
+            if(player.getPlayerClass() == 2) {
+                //TODO: CAST SPELL
+            }
+        }
+    }*/
+
+    public void handleMeleeCombat() {
+
+        if (!magicFlag && !rangedFlag && Gdx.input.isKeyJustPressed(game.controls.getFightAction())
+            && !(player.inventoryItems.get(game.currentInventorySelection).getRange() == 1)){
+            meleeFlag = !meleeFlag;
+
+            if(selectionIndex >= numOfGoblins) {
+                selectionIndex = 0;
+            }
+
+            if(goblins[selectionIndex] == null) {
+                while(goblins[selectionIndex] == null) {
+                    selectionIndex++;
+                    if(selectionIndex == numOfGoblins) {
+                        selectionIndex = 0;
+                    }
+                }
+                x_distance = goblins[selectionIndex].enemyImage.getX() - player.playerIcon.getX();
+                y_distance = goblins[selectionIndex].enemyImage.getY() - player.playerIcon.getY();
+            }
+            stage.setKeyboardFocus(selectionImage);
+            selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
+            stage.addActor(selectionImage);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) &&
+                !magicFlag && !rangedFlag) {
+            if (x_distance < 96 && x_distance > -96 &&
+                    y_distance < 96 && y_distance > -96) {
+                int hitRoll = generator.nextInt(20) + player.getBruteforce()/2 + 1;
+                if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
+                    goblins[selectionIndex].damageTaken(player.getPhysical()/2 + 1 + player.inventoryItems.get(game.currentInventorySelection).getDamage());
+                    goblins[selectionIndex].updateHealth();
+                }
+
+                for (int j = 0; j < numOfGoblins; j++) {
+                    if (goblins[j] == null) {
+                        continue;
+                    }
+                    goblins[j].isTurn = true;
+                }
+            }
+
+            if(goblins[selectionIndex].getHealthPoints() <= 0) {
+                player.kCloseRangeKills++;
+            }
+
+            player.isTurn = false;
+            meleeFlag = false;
+
+            selectionImage.remove();
+            stage.setKeyboardFocus(player.playerIcon);
         }
     }
 
@@ -388,8 +848,11 @@ public class RoomHandler {
      * Major method that simplifies and works through combat with enemy creatures (those being goblins).
      */
     public void handleCombat() {
+
+        //Handles player movement
         movement();
 
+        //If player moves and it's no longer his turn, make sure to flag goblin's turn
         if(!player.isTurn) {
             for(int i = 0; i<numOfGoblins; i++) {
                 if(goblins[i] == null) {
@@ -399,50 +862,49 @@ public class RoomHandler {
             }
         }
 
+        //Handles goblin collision. May move to a better position
         collisionBodyHandler();
 
+        handleRangeCombat();
+        //handleMagicCombat();
+        handleMeleeCombat();
+
         //Player attack based on Miller Banford's original code, but modified to check for squad of goblins
+        //Handles player's attack and killing goblins if the attack is successful
         for(int i = 0; i<numOfGoblins; i++) {
+
             if(goblins[i] == null) {
+                if(i + 1 == numOfGoblins) {
+                    player.isTurn = true;
+                }
                 continue;
             }
-            float x_distance = goblins[i].enemyImage.getX() - player.playerIcon.getX();
-            float y_distance = goblins[i].enemyImage.getY() - player.playerIcon.getY();
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q) &&
-                    x_distance < 96 && x_distance > -96 &&
-                    y_distance < 96 && y_distance > -96 &&
-                    player.isTurn) {
-                int hitRoll = generator.nextInt(20) + 1;
-                if (hitRoll >= goblins[i].getArmorPoints()) {
-                    goblins[i].damageTaken(player.getPhysical());
-                }
-                player.isTurn = false;
 
-                for (int j = 0; j < numOfGoblins; j++) {
-                    if (goblins[i] == null) {
-                        continue;
-                    }
-                    goblins[i].isTurn = true;
-                }
-            }
+            //handleMeleeCombat(i);
 
+            //Removes goblins that were killed in players turn
             if (goblins[i].checkIfDead()) {
                 goblins[i].remove();
                 goblins[i] = null;
+                player.setGoblins(null);
                 remainingGoblin--;
+                player.kAssassinations++;
                 if(remainingGoblin == 0) {
+                    //player.kAssassinations++;
                     combatFlag = false;
+                    level.setMapID(0);
                     numOfGoblins = 0;
+                    player.setNumGoblins(0);
+                    levelsExplored++;
                     return;
                 }
             }
 
+
+            //Takes care of Goblin's turn
             if(!player.isTurn && goblins[i] != null){
 
                 if(goblins[i].movement()) {
-                    if(i + 1 == numOfGoblins) {
-                        player.isTurn = true;
-                    }
                     goblins[i].isTurn = false;
                 }
 
@@ -450,16 +912,24 @@ public class RoomHandler {
                 if(goblins[i].isTurn && x_distance < 96 && x_distance > -96 &&
                         y_distance < 96 && y_distance > -96) {
                     player.setHealthPoints(player.getHealthPoints() - goblins[i].attackPlayer());
-                    try{
-                    inventory.updateHealth();}
-                    catch (Exception e){
 
+                    //Update's player's health in order to keep it going
+                    try {
+                        inventory.updateHealth();
                     }
+                    catch (Exception e){
+                    }
+
+                    //Make's sure to mark of goblin's turn
                     goblins[i].isTurn = false;
-                    if(i + 1 == numOfGoblins) {
-                        player.isTurn = true;
-                    }
                 }
+            }
+
+            //Makes sure to end goblin's turn in order to allow for player to have a turn.
+            //&& goblins[i].getCurrentAnimation().isAnimationFinished(game.elapsedTime)
+            if(i + 1 == numOfGoblins) {
+                player.isTurn = true;
+                player.hasMoved = false;
             }
         }
 

@@ -5,7 +5,6 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -90,7 +89,7 @@ public class QuestTradeElements extends QuestUIElements{
                     for (int i =0;i<game.player.activeQuests.size;++i)
                         if(game.player.activeQuests.get(i) == null){
                             quest.setInitialValues(
-                                    game.player.kAssignations,
+                                    game.player.kAssassinations,
                                     game.player.kChestsOpened,
                                     game.player.kTradesNPCSeller ,
                                     game.player.kTradesNPCBuyer ,

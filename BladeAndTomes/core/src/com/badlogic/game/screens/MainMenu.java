@@ -88,6 +88,9 @@ public class MainMenu extends ScreenAdapter {
         this.GAME = game;
         game.player = game.loadSaveManager.generatePlayer();
 
+        game.player.setKeyControl(game.controls);
+        game.player.setCurrentAnimation(game.getCurrentAnimation());
+
         batch = new SpriteBatch();
         manager = new AssetManager();
         manager.setLoader(TiledMap.class, new TmxMapLoader());

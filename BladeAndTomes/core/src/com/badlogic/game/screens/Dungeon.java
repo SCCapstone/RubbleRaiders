@@ -2,10 +2,12 @@ package com.badlogic.game.screens;
 
 
 import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.creatures.Player;
 
 import com.badlogic.game.creatures.Goblin;
+import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -28,13 +30,21 @@ public class Dungeon extends ScreenAdapter {
 
     final BladeAndTomes GAME;
     final int MOVE_DISTANCE;
-    Texture eventTex;
 
-    Image eventImage;
     Image backgroundImage;
-    float eventX, eventY, eventSizeX, eventSizeY;
+
     RoomHandler roomHandler;
 
+    Window returnMenu;
+    TextButton returnChoices[];
+    Label returnWarning;
+    boolean safeGuard;
+
+    Window deathMenu;
+    TextButton deathChoices[];
+    Label deathNotice;
+
+    Goblin[] goblins;
     Label tutorialMessage;
     TextButton next;
     int tutorialStep;
@@ -59,7 +69,7 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.clear();
         //Instances the player's inventory
 
-        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays);
+        roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays, GAME);
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
@@ -67,38 +77,22 @@ public class Dungeon extends ScreenAdapter {
         Texture background = new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png"));
         backgroundImage = new Image(background);
 
-        // Textures rendered in for our event
-        // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
-        eventTex = new Texture(Gdx.files.internal("GoldChest.jpg"));
-        eventImage = new Image(eventTex);
-        eventSizeX = 120f;
-        eventSizeY = 120f;
-        eventX = MathUtils.random(360, 1600);
-        eventY = MathUtils.random(240, 960);
-
-        goblins = new Goblin[0];
-
-        // Thanks to Alex Farcer for providing the dimensions of the original background. I (Aidan) rescaled the
+        // Thanks to Alex Facer for providing the dimensions of the original background. I (Aidan) rescaled the
         // image so that it would properly fit within the confines of the background.
         roomHandler.level.getBackgroundImage().setSize(2000,1150);
         roomHandler.level.getBackgroundImage().setPosition(-25,-20);
         GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
-
-        // Currently having size as a set variable here want to move it to events class
-        // This should keep it permanently in place through the dungeon right now
-        eventImage.setSize(eventSizeX, eventSizeY);
-        eventImage.setPosition(eventX, eventY);
-        GAME.stageInstance.addActor(eventImage);
 
         //Adds the player's icon to the stage.
         GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
         GAME.player.moveSquare.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
         GAME.player.interactSquare.setPosition(GAME.stageInstance.getWidth()/2 - MOVE_DISTANCE,GAME.stageInstance.getHeight()/2 - MOVE_DISTANCE);
         GAME.stageInstance.addActor(GAME.player.playerIcon);
+        //GAME.player.playerIcon.setVisible(true);
         GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
 
         //Instances the player's inventory
-//        inventory = new MainInventory(GAME);
+        //inventory = new MainInventory(GAME);
         game.overlays = new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
 
@@ -153,7 +147,73 @@ public class Dungeon extends ScreenAdapter {
                 return true;
             }
         };
+        //Based off of Window code in Dungeon for Save & Quit menu by Brent Able & Alex Facer
+        returnMenu = new Window("", GAME.generalWindowStyle);
+        returnMenu.setWidth(600);
+        returnMenu.setHeight(400);
+        returnMenu.setMovable(true);
+        returnMenu.setKeepWithinStage(true);
+        returnMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
 
+        //Based off of definition of label
+        returnWarning = new Label("What do you choose adventurer?", GAME.generalLabelStyle);
+
+        //Based on code in Dungeon for adding and setting buttons more dynamically suggested
+        //and implemented by Anirudh Oruganti
+        int num = 0;
+        returnChoices = new TextButton[2];
+        for(TextButton ignored : returnChoices) {
+            returnChoices[num] = new TextButton("", GAME.generalTextButtonStyle);
+            num++;
+        }
+
+        //Creates Text button labeled "Delve Further" that moves player to the next level
+        //Based off of code by Alex Facer and Brent Able in Dungeon for Save & Quit game menu
+        returnChoices[0].setText("Delve further");
+        returnChoices[0].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                returnMenu.clear();
+                returnMenu.remove();
+                GAME.stageInstance.clear();
+                roomHandler.deconstruct(false);
+
+                GAME.overlays.setOverLayesVisibility(true);
+                roomHandler.level.getBackgroundImage().setSize(2000, 1150);
+                roomHandler.level.getBackgroundImage().setPosition(-25, -20);
+                GAME.stageInstance.addActor(roomHandler.level.getBackgroundImage());
+
+                GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth()/2, GAME.stageInstance.getHeight()/2);
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                GAME.stageInstance.addActor(GAME.player.playerIcon);
+
+                safeGuard = false;
+                roomHandler.setExitAvailability(false);
+            }
+        });
+
+        //Creates a button labeled "Return to Town" that returns Player to town
+        //Based off of code by Alex Facer for TextButton for Window
+        returnChoices[1].setText("Return to Town");
+        returnChoices[1].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                dispose();
+                GAME.stageInstance.clear();
+                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
+                GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier()));
+                //GAME.player.kEarnedGoldThroughLevels++;
+                GAME.setScreen(new Overworld(GAME));
+                safeGuard = false;
+            }
+        });
+
+        deathMenu = new Window("", GAME.generalWindowStyle);
+        deathMenu.setWidth(600);
+        deathMenu.setHeight(400);
+        deathMenu.setMovable(true);
+        deathMenu.setKeepWithinStage(true);
+        deathMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
         GAME.player.playerIcon.addListener(escapePauseOver);
 
         warning = new Label("Are you sure you want\nto exit the Dungeon?", GAME.generalLabelStyle);
@@ -174,6 +234,33 @@ public class Dungeon extends ScreenAdapter {
                 dispose();
                 GAME.setScreen(new Overworld(GAME));
 
+        deathNotice = new Label("You have died!", GAME.generalLabelStyle);
+
+        deathChoices = new TextButton[2];
+
+        for(int i=0; i<2; i++) {
+            deathChoices[i] = new TextButton("", GAME.generalTextButtonStyle);
+        }
+        deathChoices[0].setText("Return to Town");
+        deathChoices[1].setText("Return to Menu");
+
+        deathChoices[0].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dispose();
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+            }
+        });
+
+        deathChoices[1].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dispose();
+                GAME.stageInstance.clear();
+                GAME.setScreen(new MainMenu(GAME));
+            }
+        });
             }
         });
 
@@ -230,13 +317,38 @@ public class Dungeon extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
+
+        if(!roomHandler.combatFlag &&
+            roomHandler.level.getMapID() == 1) {
+            roomHandler.combatFlag = true;
+            roomHandler.spawnGoblin();
+        }
+
+        //The code for adding columns and how to put things into the Window
+        //is based off of Alex Facer's code for the Windows and Menus
+        if(roomHandler.level.getMapID() == 10 &&
+                GAME.GRID_X[10] == GAME.player.playerIcon.getX() &&
+                GAME.GRID_Y[5] == GAME.player.playerIcon.getY() && !safeGuard) {
+            GAME.stageInstance.setKeyboardFocus(null);
+            GAME.stageInstance.addActor(returnMenu);
+            returnMenu.add(returnWarning).center().colspan(3);
+            returnMenu.row();
+            returnMenu.add(returnChoices[0], returnChoices[1]).center();
+            GAME.player.kDungeonsExplored++;
+            safeGuard = true;
+        }
+
+        if(roomHandler.level.getMapID() == 2) {
+            //TODO: Set up chest properly
+            roomHandler.checkTouchChest();
+            //GAME.chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
+            //GAME.overlays.displayChest(chest);
+        }
+
+
         GAME.batch.begin();
         GAME.runPlayerAnimation();
         //Tutorial checks
-        if(MainMenu.isTutorial && eventImage.isVisible() && tutorialStep != 1){ //chest
-            setTutorial(5);
-            nextTutorial();
-        }
         if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) { //combat
             setTutorial(2);
             nextTutorial();
@@ -283,20 +395,31 @@ public class Dungeon extends ScreenAdapter {
             roomHandler.handleCombat();
         }
         else {
+            GAME.player.isTurn = true;
             roomHandler.movement();
         }
 
         //If player is dead, return to the OverWorld
         if(GAME.player.getHealthPoints() <= 0) {
             dispose();
+            GAME.player.kDeaths++;
             GAME.stageInstance.clear();
             GAME.player.setHealthPoints(GAME.player.getFullHealth());
             BladeAndTomes.exitDungeon = true;
             BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
+
+            GAME.stageInstance.setKeyboardFocus(null);
+            GAME.stageInstance.addActor(deathMenu);
+            deathMenu.add(deathNotice).center().colspan(3);
+            deathMenu.row();
+            deathMenu.add(deathChoices[0], deathChoices[1]).center();
+            //GAME.setScreen(new Overworld(GAME));
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
+
+        GAME.overlays.render();
     }
 
     @Override

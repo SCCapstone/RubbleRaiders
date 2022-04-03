@@ -1,42 +1,30 @@
 package de.tomgrill.gdxtesting.UnitTests;
 
-import ScreenOverlayRework.MainInventory;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
-import com.badlogic.game.screens.Room;
 import com.badlogic.game.screens.RoomHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import de.tomgrill.gdxtesting.GdxTestRunner;
-import jdk.tools.jmod.Main;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(GdxTestRunner.class)
-public class RoomTest {
-
+public class RoomIDTest {
     @Test
-    public void RoomTest() {
+    public void RoomIDTest() {
         Stage test = new Stage(new ScreenViewport(), mock(SpriteBatch.class));
         Gdx.graphics = mock(Gdx.graphics.getClass());
-        Player testPlayer = new Player();
-//        MainInventory inventory = new MainInventory(mock(BladeAndTomes.class));
-        test.addActor(testPlayer.playerIcon);
 
-        RoomHandler testHandle = new RoomHandler(test, testPlayer, null);
-        Room temp = testHandle.level;
-        testPlayer.playerInput.keyDown(new InputEvent(), Input.Keys.LEFT);
-        testHandle.movement();
+        RoomHandler testHandle = new RoomHandler(test, new Player(), mock(OverlayManager.class), mock(BladeAndTomes.class));
 
-        Assert.assertEquals(temp, testHandle.level);
+        testHandle.generateLevelLayout();
+        Assert.assertTrue(testHandle.level.getRoomID() == 1);
     }
 }

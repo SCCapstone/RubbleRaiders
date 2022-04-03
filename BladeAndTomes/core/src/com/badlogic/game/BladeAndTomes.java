@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
@@ -87,8 +88,14 @@ public class BladeAndTomes extends Game {
     public boolean showtradeBuyer = false;
     public boolean showHiddenInventory = false;
     public boolean refreshInventory = false;
-    public final int MOVE_DISTANCE = 32;
+    public final int MOVE_DISTANCE = 64;
     public AssetManager assets;
+    public DragAndDrop dnd;
+
+    public int GRID_X_SQUARE = 21;
+    public int GRID_Y_SQUARE = 12;
+    public final int[] GRID_X = new int[GRID_X_SQUARE];
+    public final int[] GRID_Y = new int[GRID_Y_SQUARE];
 
     public int currentInventorySelection;
     public int tokens;
@@ -152,6 +159,7 @@ public class BladeAndTomes extends Game {
         spellDamageIncrease = 0;
         NullItemDoc = new itemDocument();
         currentSaveIndex = 2;
+        dnd = new DragAndDrop();
         enterDungeon = false;
         exitDungeon = false;
 
@@ -164,12 +172,22 @@ public class BladeAndTomes extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
 
+        //Section sets up the grid so that the player can move around correctly
+        int x_start = 264;
+        int y_start = 152;
+        for (int i = 0; i < GRID_X_SQUARE; i++) {
+            GRID_X[i] = x_start + 64 * (i + 1);
+        }
+        for (int i = 0; i < GRID_Y_SQUARE; i++) {
+            GRID_Y[i] = y_start + 64 * (i + 1);
+        }
 
         // Work for resizing of screen
 
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
         _bgmusic = new BackGroundMusic();
+        //_bgmusic.setMute(true); //This is to not make my ears bleed when I do things within the project
         _bgmusic.playMusic();
 
         // Inventory Things
@@ -351,10 +369,12 @@ public class BladeAndTomes extends Game {
 
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
-        if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(), 64,64);
 
-        System.out.println( player.playerIcon.getX());
+        //Passes the elapsed time to the player for using with internal variables
+        //Animation code was created by Miller Banford
+        player.setElapsedTime(elapsedTime);
+        if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
@@ -390,5 +410,14 @@ public class BladeAndTomes extends Game {
                 return true;
             }
         });
+    }
+
+    /**
+     * Allows for objects to get the currentAnimation and utilize it in their code as noted for the Player class
+     * Code is based on Miller Banford's code to work on animations.
+     * @return - The currentAnimation pointer for loading and working with animations
+     */
+    public Animation<TextureRegion> getCurrentAnimation() {
+        return currentAnimation;
     }
 }

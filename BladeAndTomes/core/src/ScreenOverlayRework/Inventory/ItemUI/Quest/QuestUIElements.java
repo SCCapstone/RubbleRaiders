@@ -1,7 +1,6 @@
 package ScreenOverlayRework.Inventory.ItemUI.Quest;
 
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -10,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -189,7 +187,7 @@ public class QuestUIElements implements Disposable {
         if(questAllocated){
 
     isCompleted = quest.getQuestStatus(
-            game.player.kAssignations,
+            game.player.kAssassinations,
             game.player.kChestsOpened,
             game.player.kTradesNPCSeller ,
             game.player.kTradesNPCBuyer ,

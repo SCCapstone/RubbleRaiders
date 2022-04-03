@@ -57,7 +57,7 @@ public class Player extends Entity {
     public boolean updateQuest;
 
     // Follow variables are used for quests
-    public int kAssignations;
+    public int kAssassinations;
     public int kDeaths;
     public int kDungeonsExplored;
     public int kTradesNPCSeller;
@@ -89,11 +89,24 @@ public class Player extends Entity {
     public Array<QuestDocument> activeQuests;
     public Array<itemDocument> inventoryItems;
 
-    final int MOVE_DISTANCE = 32;
+    final int MOVE_DISTANCE = 64;
     /*final int up = controls.getMoveUp();
     final int down = controls.getMoveDown();
     final int left = controls.getMoveLeft();
     final int right = controls .getMoveRight();*/
+
+    private int prevX;
+    private int prevY;
+
+    public boolean hasMoved;
+
+    private Goblin[] goblins;
+    private int numOfGoblins;
+
+    private MainMenuControls kControl;
+    private transient Animation<TextureRegion> currentAnimation;
+
+    private float elapsedTime;
 
     /**
      * Default constructor for player entity
@@ -109,7 +122,7 @@ public class Player extends Entity {
         this.isTurn = true;
         tokens = new AtomicInteger(0);
         playerDefence = 0;
-
+        hasMoved = false;
 
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();
@@ -135,15 +148,76 @@ public class Player extends Entity {
         // https://github.com/libgdx/libgdx/wiki/Scene2d
         gold = 100;
 
-        kAssignations = 0;
+        playerIcon.addListener(playerInput = new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                //Checks to see if goblins are present and then checks to see if said goblins
+                //are still moving before the player is allowed to move
+                //Derived from Miller's code to get the animations to play
+                if(goblins != null) {
+                    for (int i = 0; i < numOfGoblins; i++) {
+                        System.out.println(goblins[i].getCurrentAnimation() == null);
+                        if (goblins[i] == null) {
+                            continue;
+                        } else if (!goblins[i].getCurrentAnimation().isAnimationFinished(goblins[i].elapsedTime)) {
+                            return false;
+                        }
+                    }
+                }
+
+                //Makes sure to move the player when the animation is finished for him.
+                //Based off of Miller's code for working with the animations
+                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime)) {
+                    prevX = (int) playerIcon.getX();
+                    prevY = (int) playerIcon.getY();
+                    hasMoved = true;
+
+                    //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
+                    if(keycode == kControl.getMoveUp()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0.2f));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else if (keycode == kControl.getMoveDown()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0.2f));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else if(keycode == kControl.getMoveLeft()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0.2f));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else if(keycode == kControl.getMoveRight()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0.2f));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else {
+                        return false;
+                    }
+                    moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                    interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
+                }
+                return true;
+            }
+        });
+
+        //Already done
+        kAssassinations = 0;
         kDeaths = 0;
         kDungeonsExplored = 0;
+
+        //Already done by Andy in another branch
         kTradesNPCSeller = 0;
         kTradesNPCBuyer = 0;
-        kChestsOpened = 0;
         kUsedPositions = 0;
         kCompleteQuests = 0;
         kEarnedGoldThroughQuest = 0;
+
+        //Already done
+        kChestsOpened = 0;
         kCloseRangeKills = 0;
         kLongRangeKills = 0;
         kLevelsCompleted = 0;
@@ -165,17 +239,14 @@ public class Player extends Entity {
         activeQuests.add(null);
         activeQuests.add(null);
 
-
-
          acrobatics = new AtomicInteger(0);
         bruteforce = new AtomicInteger(0);
         speech = new AtomicInteger(0);
         barter = new AtomicInteger(0);
         awareness = new AtomicInteger(0);
         intuition = new AtomicInteger(0);
-
-
     }
+
     /**
      * Alternate constructor for player entity
      */
@@ -201,15 +272,86 @@ public class Player extends Entity {
 
         interactSquare.setSize(playerIcon.getImageWidth()*3, playerIcon.getImageHeight()*3);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
-
+        gold = 100;
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        gold = 100;
-        kAssignations = 0;
+        playerIcon.addListener(playerInput = new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                //Checks to see if goblins are present and then checks to see if said goblins
+                //are still moving before the player is allowed to move
+                //Derived from Miller's code to get the animations to play
+                for(int i=0; i< goblins.length; i++) {
+                    if(goblins[i] == null) {
+                        continue;
+                    }
+                    else if (goblins[i].getCurrentAnimation().isAnimationFinished(goblins[i].elapsedTime)) {
+                        return false;
+                    }
+                }
+
+                //Makes sure to move the player when the animation is finished for him.
+                //Based off of Miller's code for working with the animations
+                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime)) {
+                    prevX = (int) playerIcon.getX();
+                    prevY = (int) playerIcon.getY();
+
+                    //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
+                    if(keycode == kControl.getMoveUp()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 1));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else if (keycode == kControl.getMoveDown()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 1));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else if(keycode == kControl.getMoveLeft()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 1));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else if(keycode == kControl.getMoveRight()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 1));
+                        playerMovenSound.playMoveSound();
+                        isTurn = false;
+                    }
+                    else {
+                        return false;
+                    }
+                    /*switch (keycode) {
+                        case :
+                            playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 1));
+                            playerMovenSound.playMoveSound();
+                            break;
+                        case Input.Keys.DOWN:
+                            playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 1));
+                            playerMovenSound.playMoveSound();
+                            break;
+                        case Input.Keys.LEFT:
+                            playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 1));
+                            playerMovenSound.playMoveSound();
+                            break;
+                        case Input.Keys.RIGHT:
+                            playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 1));
+                            playerMovenSound.playMoveSound();
+                            break;
+                        default:
+                            return false;
+                    }*/
+                    moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                    interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
+                }
+                return true;
+            }
+        });
+        kAssassinations = 0;
         kDeaths = 0;
         kDungeonsExplored = 0;
         kTradesNPCSeller = 0;
@@ -224,7 +366,6 @@ public class Player extends Entity {
         kLevelsCompleted = 0;
         kEarnedGoldThroughLevels = 0;
         playerDefence = 0;
-
 
         activeQuests.add(null);
         activeQuests.add(null);
@@ -262,6 +403,22 @@ public class Player extends Entity {
 
     public String getId() {
         return id;
+    }
+
+    public int getPrevX() {
+        return this.prevX;
+    }
+
+    public int getPrevY() {
+        return this.prevY;
+    }
+
+    public void setPrevX(int num) {
+        this.prevX = num;
+    }
+
+    public void setPrevY(int num) {
+        this.prevY = num;
     }
 
     public int getPhysical() {
@@ -385,4 +542,37 @@ public class Player extends Entity {
         return playerBod;
     }
 
+    public void setGoblins(Goblin[] goblins) {
+        this.goblins = goblins;
+    }
+
+    public void setNumGoblins(int num) {
+        this.numOfGoblins = num;
+    }
+
+    /**
+     * Pointer that imports the keyboard controls for the player as made by Alex Facer and Anirudh Oruganti
+     * @param kControl - Pointer pointing towards the keyboard controls for the player as made by Alex Facer and
+     *                 Anirudh Oruganti
+     */
+    public void setKeyControl(MainMenuControls kControl) {
+        this.kControl = kControl;
+    }
+
+    /**
+     * Imports the pointer to the current animation as made by Miller Banford
+     * @param current - Pointer pointing towards the current animation object made by Miller Banford
+     */
+    public void setCurrentAnimation(Animation<TextureRegion> current) {
+        this.currentAnimation = current;
+    }
+
+
+    /**
+     * Imports elapsed time from the top level of the game as created and used by Miller Banford
+     * @param elapsedTime - Delta T from the amount of time the animation was started
+     */
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
 }

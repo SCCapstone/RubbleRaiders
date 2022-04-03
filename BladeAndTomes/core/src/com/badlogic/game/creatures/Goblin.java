@@ -3,8 +3,10 @@ package com.badlogic.game.creatures;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,12 +15,20 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class Goblin  extends Enemy{
+public class Goblin extends Enemy{
 
     Texture enemyTex;
     public final Image enemyImage;
     public boolean isTurn;
+    public int prevX;
+    public int prevY;
+    private Skin healthSkin;
+    private TextureAtlas healthAtlas;
+    public ProgressBar healthBar;
+    private Color color;
 
     private TextureAtlas idleTextureAtlas;
     private transient Animation<TextureRegion> idleAnimation;
@@ -33,6 +43,10 @@ public class Goblin  extends Enemy{
     private TextureAtlas moveRightTextureAtlas;
     private transient Animation<TextureRegion> moveRightAnimation;
     private transient Animation<TextureRegion> currentAnimation;
+    private int[] X_GRID;
+    private int[] Y_GRID;
+    private int goblinX;
+    private int goblinY;
     public float elapsedTime;
     public boolean isAttacking = false;
     public boolean moving = false;
@@ -43,14 +57,16 @@ public class Goblin  extends Enemy{
      * Paramaterized constuctor that is effectively the default constructor, which just instantiates a normal goblin
      * @param player - player instance so as to allow for the goblin to
      */
-    public Goblin(Player player) {
+    public Goblin(Player player, int[] X_GRID, int[] Y_GRID) {
         super(15, 15,15,15,64,64, player);
         enemyTex = new Texture(Gdx.files.internal("Goblin.png"));
         enemyImage = new Image(enemyTex);
         enemyImage.setSize(64,64);
         isTurn = false;
         enemyImage.setVisible(false);
-        movement = .3f;
+        movement = .5f;
+        this.X_GRID = X_GRID;
+        this.Y_GRID = Y_GRID;
 
         manager.load("AnimationFiles/goblinIdle.atlas", TextureAtlas.class);
         manager.load("AnimationFiles/goblinAttack.atlas", TextureAtlas.class);
@@ -72,6 +88,31 @@ public class Goblin  extends Enemy{
         moveLeftAnimation = new Animation<TextureRegion>(movement/5f, moveLeftTextureAtlas.getRegions());
         moveRightTextureAtlas = manager.get("AnimationFiles/goblinMoveRight.atlas");
         moveRightAnimation = new Animation<TextureRegion>(movement/5f, moveRightTextureAtlas.getRegions());
+        color = new Color(Color.GREEN);
+
+        // Goblin Health Bar based on Health.java by Anirudh Oruganti and had his help in using SkinComposer
+        // To make a simple, small progress bar for the Goblins
+        healthAtlas = new TextureAtlas(Gdx.files.internal("SkinAssets/GobHealth/gobHealth.atlas"));
+        healthSkin = new Skin(Gdx.files.internal("SkinAssets/GobHealth/gobHealth.json"), healthAtlas);
+        healthBar = new ProgressBar(0, fullHealth, 0.5f, false, healthSkin);
+        healthBar.setValue(healthPoints);
+        healthBar.setColor(color);
+    }
+
+    public int getGoblinX(){
+        return goblinX;
+    }
+
+    public int getGoblinY() {
+        return goblinY;
+    }
+
+    public void setGoblinX(int goblinX) {
+        this.goblinX = goblinX;
+    }
+
+    public void setGoblinY(int goblinY) {
+        this.goblinY = goblinY;
     }
 
     /**
@@ -79,21 +120,35 @@ public class Goblin  extends Enemy{
      * @return - Returns if movement was used or not considering turn based actions
      */
     public boolean movement() {
+
+        prevX = (int) this.enemyImage.getX();
+        prevY = (int) this.enemyImage.getY();
+
         float x_distance = enemyImage.getX() - player.playerIcon.getX();
         float y_distance = enemyImage.getY() - player.playerIcon.getY();
 
-        if((x_distance >= -128 && x_distance <= 128) &&
-                (y_distance >= -128 && y_distance <= 128)) {
+        if((x_distance >= -64 && x_distance <= 64) &&
+                (y_distance >= -64 && y_distance <= 64)) {
             return false;
         }
 
         if(y_distance < -64) {
+            /*goblinY++;
+            if(goblinY >= 12) {
+                goblinY = 11;
+            }*/
+            //enemyImage.addAction(Actions.moveTo(GRID_X[goblinX], enemyImage.getY() + 64,.3f));
+            //healthBar.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64, 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,.3f));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64, 0.3f));
             moving = true;
             resetElapsedTime();
             runMoveUpAnimation();
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,0));
         }
         else if(y_distance > 64) {
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,0));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64, 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,.3f));
             moving = true;
             resetElapsedTime();
@@ -101,18 +156,21 @@ public class Goblin  extends Enemy{
         }
 
         if(x_distance < -64) {
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),0));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(), 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),.3f));
             moving = true;
             resetElapsedTime();
             runMoveRightAnimation();
         }
         else if(x_distance > 64) {
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),0));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(), 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),.3f));
             moving = true;
             resetElapsedTime();
             runMoveLeftAnimation();
         }
-
         return true;
     }
 
@@ -138,6 +196,9 @@ public class Goblin  extends Enemy{
      */
     public void remove() {
         enemyImage.remove();
+        healthBar.remove();
+        healthSkin.dispose();
+        healthAtlas.dispose();
         enemyTex.dispose();
         idleTextureAtlas.dispose();
         moveDownTextureAtlas.dispose();
@@ -164,5 +225,23 @@ public class Goblin  extends Enemy{
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void resetElapsedTime() { elapsedTime = 0; }
 
+    /**
+     * Updates the goblin health everytime the goblin is hit. Functionality based off of Anirudh Oruganti's
+     * implementation of the health bar for the player.
+     */
+    public void updateHealth() {
+        if (healthPoints < fullHealth/2) {
+            color.set(Color.RED);
+        }
+        else {
+            color.set(Color.GREEN);
+        }
 
+        healthBar.setColor(color);
+        healthBar.setValue(getHealthPoints());
+    }
+
+    public Animation<TextureRegion> getCurrentAnimation() {
+        return currentAnimation;
+    }
 }

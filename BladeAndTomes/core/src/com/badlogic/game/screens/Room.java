@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,11 +17,16 @@ public class Room {
     private Image background;
     private Texture backgroundText;
     private AssetManager assetManager;
+    private int roomX, roomY;
+    private boolean levelExplored;
+    private Stage stage;
+    private TreasureChestUI chest;
+    private int chestX, chestY;
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    final public int X_VAL[] = {1750/2, 1750 - MOVE, MOVE*4, 1750/2};
-    final public int Y_VAL[] = {960, 960/2,  960/2, MOVE*2};
+    public int X_VAL[]; //= {(int) stage.getWidth()/2, (int) stage.getWidth() - MOVE, MOVE*4, (int) stage.getWidth()/2};
+    public int Y_VAL[]; //= {(int) stage.getHeight(), (int) stage.getHeight()/2,  (int) stage.getHeight()/2, MOVE*2};
 
     /**
      * Public constructor for creating a room. Usually just a blank, default room
@@ -32,12 +38,38 @@ public class Room {
         assetManager = new AssetManager();
         assetManager.load("DungeonRooms/SRoom.png", Texture.class);
         assetManager.finishLoading();
+        this.roomX = 0;
+        this.roomY = 0;
         this.background = new Image(assetManager.get("DungeonRooms/SRoom.png", Texture.class));
-
         this.door = new Room[4];
         this.numOfDoors = 1;
         this.roomID = 1;
         this.mapID = 0;
+        this.levelExplored = false;
+        this.chestX = this.chestY = 0;
+        this.chest = null;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        // X_VAL and Y_VAL just note the locations of the doors
+        // (because they are at the center of each side of the map)
+        X_VAL = new int[4];
+        Y_VAL = new int[4];
+
+        X_VAL[0] = (int) stage.getWidth()/2;
+        X_VAL[1] = (int) stage.getWidth() - 3*MOVE;
+        X_VAL[2] = MOVE*3;
+        X_VAL[3] = (int) stage.getWidth()/2;
+
+        Y_VAL[0] = (int) stage.getHeight() - 2*MOVE;
+        Y_VAL[1] = (int) stage.getHeight()/2;
+        Y_VAL[2] = (int) stage.getHeight()/2;
+        Y_VAL[3] = MOVE*2;
+
+       // X_VAL = {(int) stage.getWidth()/2, (int) stage.getWidth() - MOVE, MOVE*4, (int) stage.getWidth()/2};
+       // Y_VAL = {(int) stage.getHeight(), (int) stage.getHeight()/2,  (int) stage.getHeight()/2, MOVE*2};
     }
 
     /**
@@ -70,9 +102,31 @@ public class Room {
         assetManager.load(directory, Texture.class);
         assetManager.finishLoading();
         this.background = new Image(assetManager.get(directory, Texture.class));
-
-
         stage.addActor(this.background);
+    }
+
+    public int getChestX() {
+        return chestX;
+    }
+
+    public int getChestY() {
+        return chestY;
+    }
+
+    public void setChestX(int num) {
+        this.chestX = num;
+    }
+
+    public void setChestY(int num) {
+        this.chestY = num;
+    }
+
+    public TreasureChestUI getChest() {
+        return this.chest;
+    }
+
+    public void setChest(TreasureChestUI chest) {
+        this.chest = chest;
     }
 
     /**
@@ -159,5 +213,29 @@ public class Room {
      */
     public void setMapID(int mapID) {
         this.mapID = mapID;
+    }
+
+    public int getRoomX() {
+        return this.roomX;
+    }
+
+    public int getRoomY() {
+        return this.roomY;
+    }
+
+    public void setRoomX(int x) {
+        this.roomX = x;
+    }
+
+    public void setRoomY(int y) {
+        this.roomY = y;
+    }
+
+    public boolean isLevelExplored() {
+        return levelExplored;
+    }
+
+    public void setIsLevelExplored (boolean b) {
+        this.levelExplored = b;
     }
 }

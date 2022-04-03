@@ -144,6 +144,12 @@ public class Overworld extends ScreenAdapter {
         game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
         game.player.playerIcon.setPosition(1920/2,1080/2);
 
+        //Passes current animations and game controls to player to make sure it has those stored
+        //Keyboard Controls are done by Anirudh Oruganti and Alex Facer.
+        //Animation functions were researched and performed by Miller Banford
+        game.player.setKeyControl(game.controls);
+        game.player.setCurrentAnimation(game.getCurrentAnimation());
+
         counter = 0;
 
         this.GAME = game;
@@ -156,21 +162,10 @@ public class Overworld extends ScreenAdapter {
         manager.finishLoading();
         overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
 
-        //overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
-
-        MapLayers mapLayers = overWorldMap.getLayers();
-        collisionLayer = (TiledMapTileLayer) mapLayers.get("Buildings");
-        backgroundLayer = (TiledMapTileLayer) mapLayers.get("Background");
-
-        MapProperties mapProperties = overWorldMap.getProperties();
-        tileMeasurement = mapProperties.get("tilewidth", Integer.class);
-
-
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
-        //world.setContactFilter();
-
-        MOVE_DISTANCE = 32;
+     
+        MOVE_DISTANCE = 64;
         doTrade = false;
         batch = new SpriteBatch();
 
@@ -252,8 +247,8 @@ public class Overworld extends ScreenAdapter {
         NPC_Cords.setLocation(GAME.stageInstance.getWidth() / 8, GAME.stageInstance.getHeight() / 2);
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
-        // For overlays
 
+        // For overlays
         game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
         npcSeller = game.overlays.generateNewNPSeller();
@@ -323,6 +318,7 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        GAME.player.isTurn = true;
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.setAutoShapeType(true);
@@ -344,19 +340,19 @@ public class Overworld extends ScreenAdapter {
 
         GAME.batch.begin();
         GAME.runPlayerAnimation();
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp())) {
             GAME.resetElapsedTime();
             GAME.runMoveUpAnimation();
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+        else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveDown())) {
             GAME.resetElapsedTime();
             GAME.runMoveDownAnimation();
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveLeft())) {
             GAME.resetElapsedTime();
             GAME.runMoveLeftAnimation();
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+        else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveRight())) {
             GAME.resetElapsedTime();
             GAME.runMoveRightAnimation();
         }
