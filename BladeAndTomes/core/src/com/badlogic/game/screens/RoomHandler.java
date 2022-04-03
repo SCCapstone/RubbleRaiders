@@ -508,7 +508,7 @@ public class RoomHandler {
         /*else if (num > 2) {
 
         }*/
-        else {
+        else if (num < 2) {
             //eventX = MathUtils.random(360, 1600);
             //eventY = MathUtils.random(240, 960);
 
@@ -736,7 +736,7 @@ public class RoomHandler {
                 player.isTurn = false;
                 rangedFlag = false;
 
-                int hitRoll = generator.nextInt(20) + player.getPlayerClass()/2 + 1;
+                int hitRoll = generator.nextInt(20) + player.getAcrobatics()/2 + 1;
                 if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
                     goblins[selectionIndex].damageTaken(player.inventoryItems.get(game.currentInventorySelection).getDamage());
                     goblins[selectionIndex].updateHealth();
@@ -818,7 +818,7 @@ public class RoomHandler {
                 !magicFlag && !rangedFlag) {
             if (x_distance < 96 && x_distance > -96 &&
                     y_distance < 96 && y_distance > -96) {
-                int hitRoll = generator.nextInt(20) + player.getPlayerClass()/2 + 1;
+                int hitRoll = generator.nextInt(20) + player.getBruteforce()/2 + 1;
                 if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
                     goblins[selectionIndex].damageTaken(player.getPhysical()/2 + 1 + player.inventoryItems.get(game.currentInventorySelection).getDamage());
                     goblins[selectionIndex].updateHealth();
