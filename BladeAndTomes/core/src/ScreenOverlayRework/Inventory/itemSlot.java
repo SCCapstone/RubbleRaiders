@@ -112,12 +112,16 @@ public class itemSlot extends Actor {
             toolTip = manager.get(ToolTpPath+".json",Skin.class);
         }
         info = new TextTooltip("",toolTip);
-
+        info.setAlways(true);
         info.setInstant(true);
         displayInfo();
         table.addListener(info);
         updateSlotElements();
 
+    }
+    public void updateInfo(){
+        table.removeListener(info);
+        table.addListener(info);
     }
     public void displayInfo() {
         info.getActor().setText(String.valueOf(game.player.inventoryItems.get(documentIndex).getItemDescription()).toUpperCase());

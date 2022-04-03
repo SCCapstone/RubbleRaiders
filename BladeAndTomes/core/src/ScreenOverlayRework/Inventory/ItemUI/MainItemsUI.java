@@ -31,7 +31,6 @@ public class MainItemsUI {
 
         // Initializing table
         table = new Table();
-        table.setDebug(true);
         table.defaults();
         table.setBounds(0, 0, game.stageInstance.getWidth(), game.stageInstance.getHeight());
         table.align(topLeft).padLeft(10);

@@ -41,7 +41,6 @@ public class TradeUI {
         tableOverlays = new Table();
         leftTable = new Table();
         rightTable = new Table();
-        table.setDebug(true);
         table.background(game.BaseLabelStyle2.background);
         table.defaults();
         table.setBounds(game.stageInstance.getWidth() * 0.2f, game.stageInstance.getHeight() * 0.1f,
@@ -54,11 +53,9 @@ public class TradeUI {
         table.add(tableOverlays).row();
         drawTopLayer();
 
-        leftTable.setDebug(true);
         tableOverlays.addActor(leftTable);
         leftTable.add(leftStack);
 
-        rightTable.setDebug(true);
         tableOverlays.addActor(rightTable);
         rightTable.add(rightStack);
     }

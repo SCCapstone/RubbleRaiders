@@ -97,7 +97,6 @@ public class InventoryUI implements Disposable {
 
         // Specifying Hidden Inventory's Location
         HiddenInventoryTable.setBackground(game.BaseLabelStyle2.background);
-        HiddenInventoryTable.setDebug(true);
         HiddenInventoryTable.defaults();
         HiddenInventoryTable.setBounds(game.stageInstance.getWidth() * 0.4f, game.stageInstance.getHeight() * 0.2f,
                 game.stageInstance.getWidth() * 0.3f, game.stageInstance.getHeight() * 0.57f);
@@ -119,7 +118,6 @@ public class InventoryUI implements Disposable {
             public void clicked(InputEvent event, float x, float y) {
                 HiddenInventorySlots.setVisible(false);
                 HiddenQuests.setVisible(true);
-                HiddenQuests.setDebug(true);
                 HiddenSkill.setVisible(false);
                 drawQuests();
 
@@ -144,19 +142,16 @@ public class InventoryUI implements Disposable {
         HiddenInventoryTable.row();
 
         // Drawing Hidden Inventory Slots
-        HiddenInventorySlots.setDebug(true);
         HiddenInventorySlots.defaults();
         stack.add(HiddenInventorySlots);
         HiddenInventorySlots.setVisible(true);
 
         // HiddenQuests Inventory
-        HiddenQuests.setDebug(true);
         HiddenQuests.defaults();
         stack.add(HiddenQuests);
         HiddenQuests.setVisible(false);
 
         // HiddenSkill Inventory
-        HiddenSkill.setDebug(true);
         HiddenSkill.defaults();
         stack.add(HiddenSkill);
         HiddenSkill.setVisible(false);
@@ -261,6 +256,8 @@ public class InventoryUI implements Disposable {
     public void render(){
         questUI.render();
         skillUIs.render();
+//        for(int i = 0;i<slots.size;++i)
+//            slots.get(i).updateInfo();
 
     }
 

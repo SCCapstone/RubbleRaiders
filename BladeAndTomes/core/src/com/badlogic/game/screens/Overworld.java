@@ -140,7 +140,7 @@ public class Overworld extends ScreenAdapter {
         // The labels part of anris work for trading and selling
         // Is also piggybacking off of collision
         townHallMSG = new Label("Press "+  Input.Keys.toString(game.controls.getTradeMenu()) +" to buy things", game.BaseLabelStyle2);
-        questBoardMSG = new Label("Press " + Input.Keys.toString(game.controls.getFightAction()) + " to get a quest", game.BaseLabelStyle2);
+        questBoardMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to get a quest", game.BaseLabelStyle2);
         traderMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to sell things here!", game.BaseLabelStyle2);
         nearTownHall = false;
         nearBuyerTrader = false;
@@ -356,11 +356,6 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.setAutoShapeType(true);
-
-        if(GAME.player.moveSquare.overlaps(townHall))
-            System.out.println("Overlaps");
-
-
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         //renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         world.step(1/60f, 6, 2);
@@ -593,7 +588,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void tavernCollision(Player player, Stage stage) {
-        nearTavern = BlockEPhi(player, tavern.x, tavern.x+tavern.width, tavern.y, tavern.y+tavern.height);
+        nearTavern = BlockEPhi(player, tavern.x, tavern.x+tavern.width, tavern.y-10, tavern.y+tavern.height-10);
     }
 
     public void questBoardCollision(Player player, Stage stage) {
@@ -605,7 +600,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void chapelCollision(Player player, Stage stage) {
-         nearChapel = BlockEPhi(player, 650, 650+128,860, 860+128);
+         nearChapel = BlockEPhi(player, 650, 650+128,860-10, 860+128-10);
     }
 
     public boolean checkBlock(float plyLoc, float buildingLoc0, float buildingLoc1){

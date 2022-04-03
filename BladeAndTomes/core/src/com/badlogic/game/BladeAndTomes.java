@@ -352,9 +352,7 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(), 64,64);
-
-        System.out.println( player.playerIcon.getX());
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, false), player.playerIcon.getX(), player.playerIcon.getY(), 64,64);
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }

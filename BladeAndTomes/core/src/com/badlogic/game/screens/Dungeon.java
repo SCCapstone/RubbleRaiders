@@ -122,6 +122,7 @@ public class Dungeon extends ScreenAdapter {
             //if goblin in room, set step to 2 to explain combat
         }
 
+
     }
 
     public void nextTutorial(){
@@ -159,7 +160,6 @@ public class Dungeon extends ScreenAdapter {
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         GAME.batch.begin();
         GAME.runPlayerAnimation();
@@ -208,6 +208,8 @@ public class Dungeon extends ScreenAdapter {
         }
         GAME.batch.end();
         //inventory.update();
+        GAME.overlays.setOverLayesVisibility(true);
+
 
         //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {
@@ -216,6 +218,7 @@ public class Dungeon extends ScreenAdapter {
         else {
             roomHandler.movement();
         }
+        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
 
         //If player is dead, return to the OverWorld
         if(GAME.player.getHealthPoints() <= 0) {

@@ -8,6 +8,7 @@ import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
 import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -51,12 +52,6 @@ public class OverlayManager implements Disposable {
         table.addActor(inventory.getUI());
         setHiddenTableVisibility(game.showHiddenInventory); // Initially Hidden Table is not shown.
 
-        // MAP UI
-//        mapUI = new MapUI(game);
-//        table.align(top|right).padLeft(10);
-//        table.addActor(mapUI.getMapUI());
-
-
         // Health Bar
         healthBar = new Health(game,manager,counter);
         table.align(top|right).padLeft(10);
@@ -67,10 +62,12 @@ public class OverlayManager implements Disposable {
 
     public void NPCBuyerInventory(boolean val, NPCBuyer npc){
         inventory.Trade_Inventory_NPCBuyer(val,npc);
+
     }
     public void NPCSellerInventory(boolean val, NPCSeller npc){
 
         inventory.Trade_Inventory_NPCSeller(val,npc);
+
     }
     public NPCBuyer generateNewNPCBuyer(){
         return inventory.makeNPCBuyer();
@@ -86,16 +83,23 @@ public class OverlayManager implements Disposable {
     public void setHiddenTableVisibility(boolean val){
         game.showHiddenInventory =val;
         inventory.setHiddenInventoryVisibility(val);
+        table.toFront();
+//        table.remove();
+//        game.stageInstance.addActor(table);
     }
 
     public void render(){
         inventory.render();
         healthBar.update();
+        table.remove();
+        game.stageInstance.addActor(table);
     }
 
     public void setOverLayesVisibility(boolean value) {
         game.stageInstance.addActor(table);
         table.setVisible(value);
+//        table.remove();
+//        game.stageInstance.addActor(table);
     }
     public void setQuestBoardTradeVisibility(boolean val, TownHallQuestBoard board){
         inventory.displayQuestBoardTradeUI(val,board);
