@@ -139,7 +139,7 @@ public class Overworld extends ScreenAdapter {
 
     public Overworld (final BladeAndTomes game) {
         // Displays TownHall Interact msg
-        townHallMSG = new Label("Press "+  game.controls.getTradeMenu() +" To See Quest Board", game.BaseLabelStyle2);
+        townHallMSG = new Label("Press '"+  Input.Keys.toString(game.controls.getTradeMenu()) +"' To See Quest Board", game.BaseLabelStyle2);
         nearTownHall = false;
         nearBuyerTrader = false;
         nearSellerTrader = false;
@@ -299,7 +299,7 @@ public class Overworld extends ScreenAdapter {
         if(MainMenu.isTutorial){
             GAME.player.setHealthPoints(10);
             if(BladeAndTomes.exitDungeon){
-                tutorialStep = 8;
+                tutorialStep = 9;
                 nextTutorial();
             }
             else {
@@ -483,28 +483,32 @@ public class Overworld extends ScreenAdapter {
                 tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
                 break;
             case 5: //Quests Buying and Selling
-                tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
+                tutorialMessage.setText("Walk up to the board in the middle\nof town and click 'Q'.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
                         "\n\nClick 'Q' to exit quests.");
-                tutorialMessage.setPosition(80, GAME.stageInstance.getHeight()/2);
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2+300);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
             case 6: //Buy items
-                tutorialMessage.setText("Click 'T' to buy items\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
+                tutorialMessage.setText("Walk to the top left building\nand click 'T' to buy items.\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
                 break;
-            case 7: //enter dungeon
-                tutorialMessage.setText("Now it's time to fight!\n\nUsing the arrow keys, walk into\nthe portal at the bottom of town\n to enter the dungeon.");
-                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+            case 7: //Sell items
+                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
+                        "it into the slot\nand click sell.\n\nClick 'T' to exit menu.");
+                break;
+            case 8: //enter dungeon
+                tutorialMessage.setText("Now it's time to fight!\n\nWalk into the portal at the \nbottom of town to enter the dungeon.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
                 tutorialMessage.setSize(300f, 200f);
                 next.remove();
                 break;
-            case 8: //final explanation
+            case 9: //final explanation
                 GAME.stageInstance.addActor(tutorialMessage);
                 GAME.stageInstance.addActor(next);
                 next.setText("Exit");
                 tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
                 break;
-            case 9:
+            case 10:
                 GAME.stageInstance.clear();
                 dispose();
                 GAME.setScreen(new MainMenu(GAME));
@@ -605,7 +609,6 @@ public class Overworld extends ScreenAdapter {
             movePlayer(player,moveBackX,moveBackY);
         if(checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 )&&checkBlock(player.playerIcon.getY(),locY_1 ,locY_2 ))
             player.playerIcon.setPosition(prePlayerLocX , prePlayerLocY);
-        System.out.println(player.playerIcon.getY()+MOVE_DISTANCE+"\t"+locY_1);
         return checkBlock(player.playerIcon.getY()+MOVE_DISTANCE,locY_1 ,locY_2 )&&checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 );
 
     }
@@ -642,7 +645,7 @@ public class Overworld extends ScreenAdapter {
                     Rectangle rectangle = rectangleObject.getRectangle();
 
                     if (mapObject instanceof RectangleMapObject) {
-                        System.out.println(rectangle.x);
+                        //System.out.println(rectangle.x);
 //                        rectangle.x
                         BodyDef bodyDef = getBodyDef(i * tileMeasurement + tileMeasurement / 2f + rectangle.getX()
                                         - (tileMeasurement - rectangle.getWidth()) / 2f,

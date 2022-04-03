@@ -200,12 +200,13 @@ public class Dungeon extends ScreenAdapter {
                 break;
             case 2: //if goblin appears in room, explain combat
                 GAME.stageInstance.addActor(tutorialMessage);
-                tutorialMessage.setText("Goblins are in this room!\nMove to a goblin and use 'Q'\n to attack!\n\nThere is also ranged combat items\nSelect the enemy to attack\n using XXXX and use 'Q' to attack.");
+                tutorialMessage.setText("Goblins are in this room!\nMove to a goblin and use 'Q'\n to attack!\n\nThere is also ranged combat items" +
+                        "\nTo select an enemy to attack\n click 'Q' and confirm the \nattack with 'Enter'.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
                 break;
-            case 5: //if chest appears, explain events
-                tutorialMessage.setText("There is a chest in this room.\n...");
+            case 5: //if chest appears, explain chests
+                tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse '?' to open it.");
                 chestExplained = true;
                 break;
             case 6: //find the exit portal
@@ -233,11 +234,11 @@ public class Dungeon extends ScreenAdapter {
         GAME.batch.begin();
         GAME.runPlayerAnimation();
         //Tutorial checks
-        if(MainMenu.isTutorial && eventImage.isVisible() && tutorialStep != 1){
+        if(MainMenu.isTutorial && eventImage.isVisible() && tutorialStep != 1){ //chest
             setTutorial(5);
             nextTutorial();
         }
-        if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) {
+        if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) { //combat
             setTutorial(2);
             nextTutorial();
         }
