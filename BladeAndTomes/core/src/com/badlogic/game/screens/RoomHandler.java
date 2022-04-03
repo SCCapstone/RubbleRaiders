@@ -667,21 +667,21 @@ public class RoomHandler {
                     //Determines direction goblin moves if they run into/overlap their teammate
                     if(goblins[i].enemyImage.getX() + 64 <= X_VAL[1] &&
                         random_dir == 2) {
-                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX + 64, goblins[i].prevY));
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX + 64, goblins[i].prevY, 0.3f));
                     }
                     else if(goblins[i].enemyImage.getX() - 64 <= X_VAL[2] &&
                             random_dir == 3) {
-                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX - 64, goblins[i].prevY));
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX - 64, goblins[i].prevY, 0.3f));
                     }
                     else if(goblins[i].enemyImage.getY() + 64 <= Y_VAL[0] &&
                             random_dir == 1) {
-                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX, goblins[i].prevY + 64));
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX, goblins[i].prevY + 64, 0.3f));
                     }
                     else if(goblins[i].enemyImage.getY() - 64 <= Y_VAL[3] &&
                             random_dir == 4) {
-                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX, goblins[i].prevY - 64));
+                        goblins[i].enemyImage.addAction(Actions.moveTo(goblins[i].prevX, goblins[i].prevY - 64, 0.3f));
                     }
-                    goblins[i].healthBar.addAction(Actions.moveTo(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY()));
+                    goblins[i].healthBar.addAction(Actions.moveTo(goblins[i].enemyImage.getX(), goblins[i].enemyImage.getY(), 0.3f));
                 }
             }
         }
