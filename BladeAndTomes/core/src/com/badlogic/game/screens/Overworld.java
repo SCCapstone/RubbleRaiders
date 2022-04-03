@@ -197,9 +197,9 @@ public class Overworld extends ScreenAdapter {
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
-        saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
+        /*saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
         saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
-        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
+        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);*/
 
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
