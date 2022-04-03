@@ -354,9 +354,6 @@ public class Dungeon extends ScreenAdapter {
             nextTutorial();
         }
 
-        //GAME.vectorPlayerMovement();
-        //GAME.playerMovement();
-
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             GAME.resetElapsedTime();
             GAME.runMoveUpAnimation();
