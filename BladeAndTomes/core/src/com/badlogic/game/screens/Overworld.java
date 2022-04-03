@@ -198,7 +198,6 @@ public class Overworld extends ScreenAdapter {
         playerShape.dispose();
         worldRender = new Box2DDebugRenderer();
 
-        parseCollision();
 //        worldRender.VELOCITY_COLOR.b=
 
         MOVE_DISTANCE = 32;
@@ -327,12 +326,13 @@ public class Overworld extends ScreenAdapter {
         }
 
         townHall = new Rectangle(100,688,256,384);
-        marketStall = new Rectangle(612, 270, 192, 192);
+        marketStall = new Rectangle(612, 320, 200, 192);
         chapel = new Rectangle(640, 790, 128, 128);
-        questBoard = new Rectangle(900, 620, 64, 64);
-        tavern = new Rectangle(1410, 720, 160, 160);
-        //TownHallTable.setDebug(true);
-        //GAME.stageInstance.addActor(TownHallTable);
+        questBoard = new Rectangle(900, 650, 64, 64);
+        tavern = new Rectangle(1410, 800, 160, 160);
+
+        TownHallTable.setDebug(true);
+        GAME.stageInstance.addActor(TownHallTable);
         shapeRenderer = new ShapeRenderer();
         prePlayerLocX = GAME.player.playerIcon.getX();
         prePlayerLocY = GAME.player.playerIcon.getY();
@@ -435,7 +435,8 @@ public class Overworld extends ScreenAdapter {
             questBoardTrade.render();
         }
         GAME.overlays.render();
-//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
+
+        System.out.println(GAME.player.playerIcon.getX()+"\t"+GAME.player.playerIcon.getY());
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
         prePlayerLocX = GAME.player.playerIcon.getX();
         prePlayerLocY = GAME.player.playerIcon.getY();
@@ -584,7 +585,6 @@ public class Overworld extends ScreenAdapter {
             movePlayer(player,moveBackX,moveBackY);
         if(checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 )&&checkBlock(player.playerIcon.getY(),locY_1 ,locY_2 ))
             player.playerIcon.setPosition(prePlayerLocX , prePlayerLocY);
-        System.out.println(player.playerIcon.getY()+MOVE_DISTANCE+"\t"+locY_1 + player.playerIcon.getX());
         return checkBlock(player.playerIcon.getY()+MOVE_DISTANCE,locY_1 ,locY_2 )&&checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 );
 
     }
@@ -593,7 +593,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void tavernCollision(Player player, Stage stage) {
-        nearTavern = BlockEPhi(player, tavern.getX(), tavern.getX() + tavern.width, tavern.getY(), tavern.getY() + tavern.height);
+        nearTavern = BlockEPhi(player, tavern.x, tavern.x+tavern.width, tavern.y, tavern.y+tavern.height);
     }
 
     public void questBoardCollision(Player player, Stage stage) {
@@ -605,7 +605,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void chapelCollision(Player player, Stage stage) {
-        nearChapel = BlockEPhi(player, chapel.getX(), chapel.getX() + chapel.width, chapel.getY(), chapel.getY() + chapel.y);
+         nearChapel = BlockEPhi(player, 650, 650+128,860, 860+128);
     }
 
     public boolean checkBlock(float plyLoc, float buildingLoc0, float buildingLoc1){
