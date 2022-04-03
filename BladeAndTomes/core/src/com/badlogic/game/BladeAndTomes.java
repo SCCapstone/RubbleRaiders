@@ -330,7 +330,7 @@ public class BladeAndTomes extends Game {
      * @param width
      * @param height
      */
-    public     float width = 1920, height = 1080;
+    public float width = 1920, height = 1080;
 
     @Override
     public void resize(int width, int height) {
@@ -359,7 +359,7 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(), 48, 48);
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
@@ -367,4 +367,33 @@ public class BladeAndTomes extends Game {
     public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
+
+    public void playerMovement() {
+        player.playerIcon.addListener(player.playerInput = new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                switch(keycode) {
+                    case Input.Keys.UP:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE,1));
+                        break;
+                    case Input.Keys.DOWN:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE,1));
+                        break;
+                    case Input.Keys.LEFT:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY(),1));
+                        break;
+                    case Input.Keys.RIGHT:
+                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY(),1));
+                        break;
+                    default:
+                        return false;
+                }
+                player.isTurn = false;
+                player.moveSquare.setPosition(player.playerIcon.getX(), player.playerIcon.getY());
+                player.interactSquare.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY() - MOVE_DISTANCE);
+                return true;
+            }
+        });
+    }
 }

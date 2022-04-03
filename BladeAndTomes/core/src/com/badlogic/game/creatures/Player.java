@@ -209,41 +209,6 @@ public class Player extends Entity {
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
         gold = 100;
-
-        /*
-        playerIcon.addListener(playerInput = new InputListener() {
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                switch(keycode) {
-                    case Input.Keys.UP:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE,1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    case Input.Keys.DOWN:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE,1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    case Input.Keys.LEFT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(),1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    case Input.Keys.RIGHT:
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(),1));
-                        playerMovenSound.playMoveSound();
-                        break;
-                    default:
-                        return false;
-                }
-                isTurn = false;
-                moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
-                interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
-                return true;
-            }
-        });
-
-         */
         kAssignations = 0;
         kDeaths = 0;
         kDungeonsExplored = 0;
