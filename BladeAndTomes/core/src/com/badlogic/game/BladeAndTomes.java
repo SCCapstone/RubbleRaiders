@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
@@ -166,7 +167,7 @@ public class BladeAndTomes extends Game {
         controls = loadSaveManager.getSettings();
 
         assets = new AssetManager();
-        currentInventorySelection = 0;
+        currentInventorySelection = 1;
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -231,18 +232,18 @@ public class BladeAndTomes extends Game {
         inventoryBase1 = manager.get("inventoryBaseImage.png");
         inventoryBase2 = manager.get("inventoryBaseImage2.png");
         idleTextureAtlas = manager.get("AnimationFiles/playerIdle.atlas");
-        idleAnimation = new Animation<TextureRegion>(1/2f, idleTextureAtlas.getRegions());
+        idleAnimation = new Animation<TextureRegion>(1/6f, idleTextureAtlas.getRegions());
         currentAnimation = idleAnimation;
         moveDownTextureAtlas = manager.get("AnimationFiles/playerMoveDown.atlas");
-        moveDownAnimation = new Animation<TextureRegion>(2/5f, moveDownTextureAtlas.getRegions());
+        moveDownAnimation = new Animation<TextureRegion>(1/6f, moveDownTextureAtlas.getRegions());
         moveUpTextureAtlas = manager.get("AnimationFiles/playerMoveUp.atlas");
-        moveUpAnimation = new Animation<TextureRegion>(2/5f, moveUpTextureAtlas.getRegions());
+        moveUpAnimation = new Animation<TextureRegion>(1/6f, moveUpTextureAtlas.getRegions());
         moveLeftTextureAtlas = manager.get("AnimationFiles/playerMoveLeft.atlas");
-        moveLeftAnimation = new Animation<TextureRegion>(2/5f, moveLeftTextureAtlas.getRegions());
+        moveLeftAnimation = new Animation<TextureRegion>(1/6f, moveLeftTextureAtlas.getRegions());
         moveRightTextureAtlas = manager.get("AnimationFiles/playerMoveRight.atlas");
-        moveRightAnimation = new Animation<TextureRegion>(2/5f, moveRightTextureAtlas.getRegions());
+        moveRightAnimation = new Animation<TextureRegion>(1/6f, moveRightTextureAtlas.getRegions());
         attackDownTextureAtlas = manager.get("AnimationFiles/playerAttackDown.atlas");
-        attackDownAnimation = new Animation<TextureRegion>(1/5f, attackDownTextureAtlas.getRegions());
+        attackDownAnimation = new Animation<TextureRegion>(1/6f, attackDownTextureAtlas.getRegions());
 
         //Sets up the region to be used
         generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);

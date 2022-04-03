@@ -325,10 +325,10 @@ public class Overworld extends ScreenAdapter {
         world.step(1/60f, 6, 2);
         renderer.render();
         renderer.getBatch().begin();
-        renderer.renderTileLayer(collisionLayer);
+        //renderer.renderTileLayer(collisionLayer);
         renderer.getBatch().end();
 
-        GAME.playerMovement();
+        //playerMovement();
 
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 
@@ -539,7 +539,7 @@ public class Overworld extends ScreenAdapter {
             movePlayer(player,moveBackX,moveBackY);
         if(checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 )&&checkBlock(player.playerIcon.getY(),locY_1 ,locY_2 ))
             player.playerIcon.setPosition(prePlayerLocX , prePlayerLocY);
-        System.out.println(player.playerIcon.getY()+MOVE_DISTANCE+"\t"+locY_1 + player.playerIcon.getX());
+        //System.out.println(player.playerIcon.getY()+MOVE_DISTANCE+"\t"+locY_1 + player.playerIcon.getX());
         return checkBlock(player.playerIcon.getY()+MOVE_DISTANCE,locY_1 ,locY_2 )&&checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 );
 
     }

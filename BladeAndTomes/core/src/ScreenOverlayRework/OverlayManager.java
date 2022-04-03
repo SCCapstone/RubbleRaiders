@@ -83,7 +83,7 @@ public class OverlayManager implements Disposable {
     public void setHiddenTableVisibility(boolean val){
         game.showHiddenInventory =val;
         inventory.setHiddenInventoryVisibility(val);
-        table.toFront();
+        //table.toFront();
 //        table.remove();
 //        game.stageInstance.addActor(table);
     }
@@ -91,8 +91,8 @@ public class OverlayManager implements Disposable {
     public void render(){
         inventory.render();
         healthBar.update();
-        table.remove();
-        game.stageInstance.addActor(table);
+        //table.remove();
+        //game.stageInstance.addActor(table);
     }
 
     public void setOverLayesVisibility(boolean value) {

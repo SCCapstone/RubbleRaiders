@@ -1,6 +1,5 @@
 package de.tomgrill.gdxtesting.UnitTests;
 
-import ScreenOverlayRework.MainInventory;
 import ScreenOverlayRework.OverlayManager;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Player;
@@ -32,7 +31,7 @@ public class RoomTest {
 //        MainInventory inventory = new MainInventory(mock(BladeAndTomes.class));
         test.addActor(testPlayer.playerIcon);
 
-        RoomHandler testHandle = new RoomHandler(test, testPlayer, null);
+        RoomHandler testHandle = new RoomHandler(test, testPlayer, null, null);
         Room temp = testHandle.level;
         testPlayer.playerInput.keyDown(new InputEvent(), Input.Keys.LEFT);
         testHandle.movement();

@@ -44,7 +44,7 @@ public class Dungeon extends ScreenAdapter {
     TextButton deathChoices[];
     Label deathNotice;
 
-    Goblin[] goblins;
+    //Goblin[] goblins;
     Label tutorialMessage;
     TextButton next;
     int tutorialStep;
@@ -57,7 +57,7 @@ public class Dungeon extends ScreenAdapter {
     Table quitTable;
     InputListener escapePauseOver;
 
-    //private Goblin[] goblins;
+    private Goblin[] goblins;
 
     public Dungeon(final BladeAndTomes game) {
 
