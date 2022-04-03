@@ -126,7 +126,7 @@ public class RandomItemGenerator {
         range = (rangeType.equalsIgnoreCase("Ranged"))?1:0;
         itemDocument doc = new itemDocument();
         doc.setImageLocation(inventoryItemsPath + RandomItemType
-                + "/"+ String.valueOf(RandomItemName) + ".jpg");
+                + "/"+ String.valueOf(RandomItemName) + ".png");
         doc.setCategory(RandomItemType);
         doc.setTargetItem("Any");
         doc.setRange(range);

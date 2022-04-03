@@ -175,7 +175,7 @@ public class BladeAndTomes extends Game {
         // Adjusting this to a scale viewport for now on
         // Anri suggested checking out tabnine for libgdx. Found a solution with following line
         // specifically changing viewport to ScalingViewport
-        stageInstance = new Stage(new ScalingViewport(Scaling.fill, WINDOWWIDTH, WINDOWHIGHT));
+        stageInstance = new Stage(new ScalingViewport(Scaling.fit, 1920, 1200));
 
         //Sets upstate and downstate textures for texture Buttons
         assets.load("Text_Button_Up_State.jpg",Texture.class);
@@ -373,7 +373,7 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(),64,64);
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }

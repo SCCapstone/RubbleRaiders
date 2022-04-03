@@ -1,23 +1,13 @@
 package ScreenOverlayRework.Inventory;
 
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
-import java.util.Random;
 
 
 public class itemSlot extends Actor {
@@ -126,6 +116,7 @@ public class itemSlot extends Actor {
         info.setInstant(true);
         displayInfo();
         table.addListener(info);
+        updateSlotElements();
 
     }
     public void displayInfo() {
@@ -247,6 +238,7 @@ public class itemSlot extends Actor {
                 payload.setValidDragActor(temp);
                 dnd.setDragActorPosition(actor.getImageWidth()/2,
                         -actor.getImageHeight()/2);
+                updateSlotElements();
                 return payload;
             }
             @Override
@@ -262,14 +254,16 @@ public class itemSlot extends Actor {
                 String sellingItemCategory = game.player.inventoryItems.get(sellingItemIndex).getCategory();
                 String sellingItemName = game.player.inventoryItems.get(sellingItemIndex).getName();
 
+
                     sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
                             doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
                         doc.getLevel()==sellingItemlvl;
                     displayInfo();
+                    updateSlotElements();
 
                 }catch (Exception e){
                     displayInfo();
-
+                    updateSlotElements();
                     sellingObj =false;
                 }
             }
@@ -308,12 +302,11 @@ public class itemSlot extends Actor {
                         if(targetSlot.equalsIgnoreCase("Spell")) {
                             targetSlot = "Spells";
                         }
-
                 boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(newItem).getCategory()) || targetSlot.equalsIgnoreCase("Any"));
                 boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory())
                         || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory()));
-
-                        return  (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
+                    updateSlotElements();
+                    return  (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
                     catch (Exception e){
                         return false;
                     }
@@ -323,22 +316,36 @@ public class itemSlot extends Actor {
 
                 int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
                 int currentItem = Integer.valueOf(item.getName());
-                System.out.println("Before Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
+                System.out.println(newItem+"\t"+currentItem+"\t"+documentIndex);
                 game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
                 game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
                 game.player.inventoryItems.swap(newItem, currentItem);
                 game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
                 game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
-
                 Drawable temp = ((Image) payload.getObject()).getDrawable();
                 ((Image) payload.getObject()).setDrawable(item.getDrawable());
                 item.setDrawable(temp);
+                System.out.println(""+"\t"+newItem+"\t"+currentItem+"\t"+documentIndex);
+
+//                documentIndex = newItem;
+
+
+                updateSlotElements();
                 displayInfo();
-                System.out.println("After Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
+
+//                System.out.println("After Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
                 if(newItem == 16 ||currentItem == 16)
                     game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
+                updateSlotElements();
+
             }
         });
+    }
+    public void updateSlotElements(){
+        if(targetSlot.equalsIgnoreCase("Spell")||targetSlot.equalsIgnoreCase("Spells")||targetSlot.equalsIgnoreCase("armor")){
+            imageButtonAddOn.setVisible(game.player.inventoryItems.get(documentIndex).getCategory().equalsIgnoreCase("NUll"));
+            System.out.println(game.player.inventoryItems.get(documentIndex).setDefauls);
+        }
     }
 
     public DragAndDrop.Source getSourceLister() {

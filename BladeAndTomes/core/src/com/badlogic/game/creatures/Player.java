@@ -125,7 +125,7 @@ public class Player extends Entity {
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);
 
-        interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
+        interactSquare.setSize(64, 64);
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
 
         // Thank you to libGDX.info editors for creating a helpful tutorial
@@ -219,8 +219,8 @@ public class Player extends Entity {
         gold = 100;
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
-        playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        playerIcon.setOrigin(64/2, 64/2);
+        playerIcon.setPosition( 1920/2, 1200/2);
 
         moveSquare.setSize(playerIcon.getImageWidth(), playerIcon.getImageHeight());
         moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());

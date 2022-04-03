@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Scaling;
 import jdk.tools.jmod.Main;
 
 import java.awt.*;
@@ -134,6 +135,7 @@ public class Overworld extends ScreenAdapter {
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
     public Overworld (final BladeAndTomes game) {
+        Scaling.fit.apply(1920, 1200, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
         game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
 
         counter = 0;
@@ -356,7 +358,7 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.setView(camera);
+        renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         renderer.render();
 //        MapObjects objects = collisionLayer.getProperties().getKeys().toString();
 //        System.out.println(collisionLaye);
@@ -474,7 +476,6 @@ public class Overworld extends ScreenAdapter {
             questBoardTrade.render();
         }
 
-        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getRange());
         GAME.overlays.render();
 //        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
 
@@ -490,11 +491,16 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportHeight = height;
-        camera.viewportWidth = width;
-        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-        camera.update();
-        GAME.stageInstance.getViewport().update(width, height, true);
+        // stageInstance.getViewport().update(width, height, true);
+        // following code is an update from anri, Helping to correct some minor aspect issues in the game
+        Vector2 size = Scaling.fit.apply(1920, 1200, width, height);
+        int viewportX = (int) (width - size.x) / 2;
+        int viewportY = (int) (height - size.y) / 2;
+        int viewportWidth = (int) size.x;
+        int viewportHeight = (int) size.y;
+        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+        GAME.stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+        GAME.stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
    }
 
     @Override
