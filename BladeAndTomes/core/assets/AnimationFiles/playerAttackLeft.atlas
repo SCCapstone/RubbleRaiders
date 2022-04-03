@@ -6,7 +6,7 @@ filter: Nearest, Nearest
 repeat: none
 Player01
   rotate: false
-  xy: 0, 256
+  xy: 0, 448
   size: 63, 63
   orig: 63, 63
   offset: 0, 0

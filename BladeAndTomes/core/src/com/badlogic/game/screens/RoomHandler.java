@@ -86,7 +86,8 @@ public class RoomHandler {
 
     //Denotes the starting position of the player relative to where the player is entering.
     public Room level;
-    public static boolean combatFlag;
+    public boolean combatFlag;
+    public boolean eventFlag;
     private Stage stage;
     private Player player;
     private int levelNum;
@@ -108,6 +109,7 @@ public class RoomHandler {
         this.levelNum = 1;
         this.exitAvailable = false;
         this.combatFlag = false;
+        this.eventFlag = false;
         this.numOfGoblins = 0;
         this.levelsGenerated = 0;
         this.levelsExplored = 0;
@@ -238,26 +240,26 @@ public class RoomHandler {
      * @return - Returns if the process was successful or not.
      */
     public boolean movement() {
-        //System.out.println(player.playerIcon.getX() + "\t" + player.playerIcon.getY());
+
         // If the player enters a door, then take that player to the new room if that room exists
-        if(!combatFlag && X_VAL[0] - level.MOVE <= player.playerIcon.getX() &&
-                X_VAL[0] + 2*level.MOVE >= player.playerIcon.getX() &&
-                Y_VAL[0] <= player.playerIcon.getY()) {
+        if(!combatFlag && !eventFlag && level.X_VAL[0] <= player.playerIcon.getX() &&
+                level.X_VAL[0] + 3*level.MOVE >= player.playerIcon.getX() &&
+                level.Y_VAL[0] <= player.playerIcon.getY()) {
             return moveIntoRoom(1);
         }
-        else if(!combatFlag && X_VAL[1] <= player.playerIcon.getX() &&
-                Y_VAL[1] - 2*level.MOVE <= player.playerIcon.getY() &&
-                Y_VAL[1] + 1*level.MOVE >= player.playerIcon.getY()) {
+        else if(!combatFlag && !eventFlag && level.X_VAL[1] <= player.playerIcon.getX() &&
+                level.Y_VAL[1] <= player.playerIcon.getY() &&
+                level.Y_VAL[1] + 3*level.MOVE >= player.playerIcon.getY()) {
             return moveIntoRoom(2);
         }
-        else if(!combatFlag && X_VAL[2] >= player.playerIcon.getX() &&
-                Y_VAL[2] + 1*level.MOVE >= player.playerIcon.getY() &&
-                Y_VAL[2] - level.MOVE*2 <= player.playerIcon.getY()) {
+        else if(!combatFlag && !eventFlag && level.X_VAL[2] >= player.playerIcon.getX() &&
+                level.Y_VAL[2] + 2*level.MOVE >= player.playerIcon.getY() &&
+                level.Y_VAL[2] <= player.playerIcon.getY()) {
             return moveIntoRoom(3);
         }
-        else if(!combatFlag && X_VAL[3] - level.MOVE <= player.playerIcon.getX() &&
-                X_VAL[3] + 2*level.MOVE >= player.playerIcon.getX() &&
-                Y_VAL[3] >= player.playerIcon.getY()) {
+        else if(!combatFlag && !eventFlag && level.X_VAL[3] <= player.playerIcon.getX() &&
+                level.X_VAL[3] + 3*level.MOVE >= player.playerIcon.getX() &&
+                level.Y_VAL[3] >= player.playerIcon.getY()) {
             return moveIntoRoom(4);
         }
         // Makes sure player does not leave bounds
@@ -277,6 +279,7 @@ public class RoomHandler {
         //Room temp = level;
 
         combatFlag = false;
+        eventFlag = false;
 
         //Determines player exit if successful
         int exit = entrance == 1 ? 4 : entrance == 2 ? 3 : entrance == 3 ? 2 : 1;
@@ -511,16 +514,19 @@ public class RoomHandler {
         else if (num < 2) {
             //eventX = MathUtils.random(360, 1600);
             //eventY = MathUtils.random(240, 960);
-
+            chamber.setMapID(2);
             chamber.setChestX(game.GRID_X[generator.nextInt(game.GRID_X_SQUARE)]);
             chamber.setChestY(game.GRID_Y[generator.nextInt(game.GRID_Y_SQUARE)]);
             try {
                 chamber.setChest(game.overlays.generateChest());
-            } catch(Exception e) {
+            } catch (Exception e) {
 
             }
+        }
 
-            chamber.setMapID(2);
+        //Generates events
+        else if (num > 2) {
+            eventFlag = true;
         }
         return 0;
     }

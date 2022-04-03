@@ -388,7 +388,6 @@ public class Player extends Entity {
         intuition = new AtomicInteger(0);
 
     }
-
     public boolean getDefault() {
         return isDefault;
     }
@@ -432,8 +431,6 @@ public class Player extends Entity {
     public int getSocial() {
         return social;
     }
-
-
 
     public int getAcrobatics() {
         return acrobatics.get();

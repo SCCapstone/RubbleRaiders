@@ -156,6 +156,11 @@ public class Overworld extends ScreenAdapter {
         GAME.resetElapsedTime();
         objectLayerId = 2;
 
+        GAME._bgmusic.playTownMusic();
+
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
+        tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
         manager = new AssetManager();
         manager.setLoader(TiledMap.class, new TmxMapLoader());
         manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
@@ -379,7 +384,7 @@ public class Overworld extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
         isCollisionHandled(GAME.player, GAME.stageInstance);
-//        isTileCollisionHandled(GAME.player, collisionLayer);
+        //isTileCollisionHandled(GAME.player, collisionLayer);
         GAME.overlays.updateHealth();
 
         // Displays Hidden Inventory Table
