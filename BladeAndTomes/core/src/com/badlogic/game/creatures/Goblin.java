@@ -58,7 +58,7 @@ public class Goblin extends Enemy{
      * @param player - player instance so as to allow for the goblin to
      */
     public Goblin(Player player, int[] X_GRID, int[] Y_GRID) {
-        super(15, 15,15,15,64,64, player);
+        super(15, 15,12,15,64,64, player);
         enemyTex = new Texture(Gdx.files.internal("Goblin.png"));
         enemyImage = new Image(enemyTex);
         enemyImage.setSize(64,64);
