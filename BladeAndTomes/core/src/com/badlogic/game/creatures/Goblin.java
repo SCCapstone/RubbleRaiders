@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class Goblin  extends Enemy{
+public class Goblin extends Enemy{
 
     Texture enemyTex;
     public final Image enemyImage;
@@ -43,6 +43,10 @@ public class Goblin  extends Enemy{
     private TextureAtlas moveRightTextureAtlas;
     private transient Animation<TextureRegion> moveRightAnimation;
     private transient Animation<TextureRegion> currentAnimation;
+    private int[] X_GRID;
+    private int[] Y_GRID;
+    private int goblinX;
+    private int goblinY;
     public float elapsedTime;
     public boolean isAttacking = false;
     public boolean moving = false;
@@ -53,14 +57,16 @@ public class Goblin  extends Enemy{
      * Paramaterized constuctor that is effectively the default constructor, which just instantiates a normal goblin
      * @param player - player instance so as to allow for the goblin to
      */
-    public Goblin(Player player) {
+    public Goblin(Player player, int[] X_GRID, int[] Y_GRID) {
         super(15, 15,15,15,64,64, player);
         enemyTex = new Texture(Gdx.files.internal("Goblin.png"));
         enemyImage = new Image(enemyTex);
         enemyImage.setSize(64,64);
         isTurn = false;
         enemyImage.setVisible(false);
-        movement = .3f;
+        movement = .5f;
+        this.X_GRID = X_GRID;
+        this.Y_GRID = Y_GRID;
 
         manager.load("AnimationFiles/goblinIdle.atlas", TextureAtlas.class);
         manager.load("AnimationFiles/goblinAttack.atlas", TextureAtlas.class);
@@ -93,6 +99,22 @@ public class Goblin  extends Enemy{
         healthBar.setColor(color);
     }
 
+    public int getGoblinX(){
+        return goblinX;
+    }
+
+    public int getGoblinY() {
+        return goblinY;
+    }
+
+    public void setGoblinX(int goblinX) {
+        this.goblinX = goblinX;
+    }
+
+    public void setGoblinY(int goblinY) {
+        this.goblinY = goblinY;
+    }
+
     /**
      * Handles movement for the goblin relative to the player character (DOES NOT REGISTER WALLS)
      * @return - Returns if movement was used or not considering turn based actions
@@ -105,22 +127,28 @@ public class Goblin  extends Enemy{
         float x_distance = enemyImage.getX() - player.playerIcon.getX();
         float y_distance = enemyImage.getY() - player.playerIcon.getY();
 
-        if((x_distance >= -128 && x_distance <= 128) &&
-                (y_distance >= -128 && y_distance <= 128)) {
+        if((x_distance >= -64 && x_distance <= 64) &&
+                (y_distance >= -64 && y_distance <= 64)) {
             return false;
         }
 
         if(y_distance < -64) {
+            /*goblinY++;
+            if(goblinY >= 12) {
+                goblinY = 11;
+            }*/
+            //enemyImage.addAction(Actions.moveTo(GRID_X[goblinX], enemyImage.getY() + 64,.3f));
+            //healthBar.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64, 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,.3f));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64, 0.3f));
             moving = true;
             resetElapsedTime();
             runMoveUpAnimation();
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,0));
-            healthBar.setPosition(enemyImage.getX(), enemyImage.getY() + 64);
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() + 64,0));
         }
         else if(y_distance > 64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,0));
-            healthBar.setPosition(enemyImage.getX(), enemyImage.getY() - 64);
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,0));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64, 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX(), enemyImage.getY() - 64,.3f));
             moving = true;
             resetElapsedTime();
@@ -128,22 +156,21 @@ public class Goblin  extends Enemy{
         }
 
         if(x_distance < -64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),0));
-            healthBar.setPosition(enemyImage.getX() + 64, enemyImage.getY());
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),0));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(), 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX() + 64, enemyImage.getY(),.3f));
             moving = true;
             resetElapsedTime();
             runMoveRightAnimation();
         }
         else if(x_distance > 64) {
-            enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),0));
-            healthBar.setPosition(enemyImage.getX() - 64, enemyImage.getY());
+            //enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),0));
+            healthBar.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(), 0.3f));
             enemyImage.addAction(Actions.moveTo(enemyImage.getX() - 64, enemyImage.getY(),.3f));
             moving = true;
             resetElapsedTime();
             runMoveLeftAnimation();
         }
-
         return true;
     }
 
@@ -214,5 +241,7 @@ public class Goblin  extends Enemy{
         healthBar.setValue(getHealthPoints());
     }
 
-
+    public Animation<TextureRegion> getCurrentAnimation() {
+        return currentAnimation;
+    }
 }

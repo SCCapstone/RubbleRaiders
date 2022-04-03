@@ -61,9 +61,10 @@ public class MainItemsUI {
                             switch (game.player.inventoryItems.get(game.currentInventorySelection).getCategory()){
                                 case "Spells":
                                     if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("HealSpell")){
-                                        int playerhealth = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage()+game.player.getHealthPoints(),10);
-                                    game.player.setHealthPoints(playerhealth);
-                                    temp.removeItem();
+                                        int classHeal = game.player.getPlayerClass() == 1 || game.player.getPlayerClass() == 2 ? game.player.getMental()/2 : 0;
+                                        int playerhealth = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage()+game.player.getHealthPoints()+classHeal,10);
+                                        game.player.setHealthPoints(playerhealth);
+                                        temp.removeItem();
                                     } else if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("StrengthSpell")){
                                     game.spellDamageIncrease = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage(),10);
                                     temp.removeItem();

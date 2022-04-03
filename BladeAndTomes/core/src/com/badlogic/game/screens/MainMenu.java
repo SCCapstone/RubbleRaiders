@@ -87,6 +87,9 @@ public class MainMenu extends ScreenAdapter {
         this.GAME = game;
         game.player = game.loadSaveManager.generatePlayer();
 
+        game.player.setKeyControl(game.controls);
+        game.player.setCurrentAnimation(game.getCurrentAnimation());
+
         batch = new SpriteBatch();
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
         manager.load("AnimationFiles/Torch.atlas", TextureAtlas.class);

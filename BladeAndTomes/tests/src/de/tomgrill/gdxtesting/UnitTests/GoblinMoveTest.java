@@ -1,5 +1,6 @@
 package de.tomgrill.gdxtesting.UnitTests;
 
+import com.badlogic.game.BladeAndTomes;
 import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import de.tomgrill.gdxtesting.GdxTestRunner;
@@ -12,7 +13,8 @@ public class GoblinMoveTest {
     @Test
     public void GoblinMoveTest() {
         Player playerTest = new Player();
-        Goblin test  = new Goblin(playerTest);
+        BladeAndTomes game = new BladeAndTomes();
+        Goblin test  = new Goblin(playerTest, game.GRID_X, game.GRID_Y);
 
         Assert.assertFalse(test.movement());
     }

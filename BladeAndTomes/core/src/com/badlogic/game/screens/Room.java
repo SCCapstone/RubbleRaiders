@@ -1,5 +1,6 @@
 package com.badlogic.game.screens;
 
+import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +20,8 @@ public class Room {
     private int roomX, roomY;
     private boolean levelExplored;
     private Stage stage;
+    private TreasureChestUI chest;
+    private int chestX, chestY;
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
@@ -43,6 +46,8 @@ public class Room {
         this.roomID = 1;
         this.mapID = 0;
         this.levelExplored = false;
+        this.chestX = this.chestY = 0;
+        this.chest = null;
     }
 
     public void setStage(Stage stage) {
@@ -98,6 +103,30 @@ public class Room {
         assetManager.finishLoading();
         this.background = new Image(assetManager.get(directory, Texture.class));
         stage.addActor(this.background);
+    }
+
+    public int getChestX() {
+        return chestX;
+    }
+
+    public int getChestY() {
+        return chestY;
+    }
+
+    public void setChestX(int num) {
+        this.chestX = num;
+    }
+
+    public void setChestY(int num) {
+        this.chestY = num;
+    }
+
+    public TreasureChestUI getChest() {
+        return this.chest;
+    }
+
+    public void setChest(TreasureChestUI chest) {
+        this.chest = chest;
     }
 
     /**

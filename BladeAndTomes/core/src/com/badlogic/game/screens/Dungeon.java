@@ -37,9 +37,11 @@ public class Dungeon extends ScreenAdapter {
     Label returnWarning;
     boolean safeGuard;
 
+    Window deathMenu;
+    TextButton deathChoices[];
+    Label deathNotice;
+
     Goblin[] goblins;
-
-
 
     public Dungeon(final BladeAndTomes game) {
 
@@ -70,6 +72,7 @@ public class Dungeon extends ScreenAdapter {
         GAME.player.moveSquare.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
         GAME.player.interactSquare.setPosition(GAME.stageInstance.getWidth()/2 - MOVE_DISTANCE,GAME.stageInstance.getHeight()/2 - MOVE_DISTANCE);
         GAME.stageInstance.addActor(GAME.player.playerIcon);
+        //GAME.player.playerIcon.setVisible(true);
         GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
 
         //Instances the player's inventory
@@ -130,10 +133,46 @@ public class Dungeon extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 dispose();
                 GAME.stageInstance.clear();
-                GAME.player.setGold((int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier()));
-                GAME.player.kEarnedGoldThroughLevels = GAME.player.getGold();
+                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
+                GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier()));
+                //GAME.player.kEarnedGoldThroughLevels++;
                 GAME.setScreen(new Overworld(GAME));
                 safeGuard = false;
+            }
+        });
+
+        deathMenu = new Window("", GAME.generalWindowStyle);
+        deathMenu.setWidth(600);
+        deathMenu.setHeight(400);
+        deathMenu.setMovable(true);
+        deathMenu.setKeepWithinStage(true);
+        deathMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
+
+        deathNotice = new Label("You have died!", GAME.generalLabelStyle);
+
+        deathChoices = new TextButton[2];
+
+        for(int i=0; i<2; i++) {
+            deathChoices[i] = new TextButton("", GAME.generalTextButtonStyle);
+        }
+        deathChoices[0].setText("Return to Town");
+        deathChoices[1].setText("Return to Menu");
+
+        deathChoices[0].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dispose();
+                GAME.stageInstance.clear();
+                GAME.setScreen(new Overworld(GAME));
+            }
+        });
+
+        deathChoices[1].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dispose();
+                GAME.stageInstance.clear();
+                GAME.setScreen(new MainMenu(GAME));
             }
         });
     }
@@ -158,8 +197,8 @@ public class Dungeon extends ScreenAdapter {
         //The code for adding columns and how to put things into the Window
         //is based off of Alex Facer's code for the Windows and Menus
         if(roomHandler.level.getMapID() == 10 &&
-                roomHandler.GRID_X[10] == GAME.player.playerIcon.getX() &&
-                roomHandler.GRID_Y[5] == GAME.player.playerIcon.getY() && !safeGuard) {
+                GAME.GRID_X[10] == GAME.player.playerIcon.getX() &&
+                GAME.GRID_Y[5] == GAME.player.playerIcon.getY() && !safeGuard) {
             GAME.stageInstance.setKeyboardFocus(null);
             GAME.stageInstance.addActor(returnMenu);
             returnMenu.add(returnWarning).center().colspan(3);
@@ -169,12 +208,14 @@ public class Dungeon extends ScreenAdapter {
             safeGuard = true;
         }
 
-        if(roomHandler.level.getMapID() == 2 &&
-                roomHandler.checkTouchChest()) {
+        if(roomHandler.level.getMapID() == 2) {
             //TODO: Set up chest properly
+            roomHandler.checkTouchChest();
             //GAME.chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
             //GAME.overlays.displayChest(chest);
         }
+
+
         GAME.batch.begin();
         GAME.runPlayerAnimation();
 
@@ -224,6 +265,7 @@ public class Dungeon extends ScreenAdapter {
             roomHandler.handleCombat();
         }
         else {
+            GAME.player.isTurn = true;
             roomHandler.movement();
         }
 
@@ -233,7 +275,13 @@ public class Dungeon extends ScreenAdapter {
             GAME.player.kDeaths++;
             GAME.stageInstance.clear();
             GAME.player.setHealthPoints(GAME.player.getFullHealth());
-            GAME.setScreen(new Overworld(GAME));
+
+            GAME.stageInstance.setKeyboardFocus(null);
+            GAME.stageInstance.addActor(deathMenu);
+            deathMenu.add(deathNotice).center().colspan(3);
+            deathMenu.row();
+            deathMenu.add(deathChoices[0], deathChoices[1]).center();
+            //GAME.setScreen(new Overworld(GAME));
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {

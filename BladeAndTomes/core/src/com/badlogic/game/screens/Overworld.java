@@ -130,6 +130,12 @@ public class Overworld extends ScreenAdapter {
     public Overworld (final BladeAndTomes game) {
         game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
 
+        //Passes current animations and game controls to player to make sure it has those stored
+        //Keyboard Controls are done by Anirudh Oruganti and Alex Facer.
+        //Animation functions were researched and performed by Miller Banford
+        game.player.setKeyControl(game.controls);
+        game.player.setCurrentAnimation(game.getCurrentAnimation());
+
         counter = 0;
 
         this.GAME = game;
@@ -142,8 +148,6 @@ public class Overworld extends ScreenAdapter {
 
 
 // there are several other types, Rectangle is probably the most common one
-
-
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
         worldRender = new Box2DDebugRenderer();
@@ -257,8 +261,7 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-
-
+        GAME.player.isTurn = true;
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -288,19 +291,19 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.begin();
 
         GAME.runPlayerAnimation();
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp())) {
             GAME.resetElapsedTime();
             GAME.runMoveUpAnimation();
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+        else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveDown())) {
             GAME.resetElapsedTime();
             GAME.runMoveDownAnimation();
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveLeft())) {
             GAME.resetElapsedTime();
             GAME.runMoveLeftAnimation();
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+        else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveRight())) {
             GAME.resetElapsedTime();
             GAME.runMoveRightAnimation();
         }
@@ -335,7 +338,7 @@ public class Overworld extends ScreenAdapter {
         // Displays Hidden Inventory Table
 
         // COMMENT THIS CODE TO GET TRADING WORKING
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !isNpcSellerVisible && !isNpcBuyerVisible && !isQuestBoardTradeVisible) {
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu()) && !isNpcSellerVisible && !isNpcBuyerVisible && !isQuestBoardTradeVisible) {
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
         }
         if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcBuyerVisible){
@@ -347,7 +350,7 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)&& !isNpcSellerVisible){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcSellerVisible){
             isNpcBuyerVisible =!isNpcBuyerVisible;
             isQuestBoardTradeVisible =false;
             GAME.overlays.NPCSellerInventory(false,npcSeller);
@@ -355,14 +358,14 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)&& !isNpcSellerVisible){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcSellerVisible){
             isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
             GAME.overlays.NPCSellerInventory(false,npcSeller);
             GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcSellerVisible){
             isQuestBoardTradeVisible =     //Save all player data including name, stats, inventory
             !isQuestBoardTradeVisible;
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
