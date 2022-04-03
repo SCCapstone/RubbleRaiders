@@ -15,9 +15,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Json;
 import jdk.tools.jmod.Main;
@@ -40,6 +40,12 @@ public class Dungeon extends ScreenAdapter {
     int tutorialStep;
     boolean combatExplained;
     boolean chestExplained;
+
+    Window pauseMenu;
+    Label warning;
+    TextButton options[];
+    Table quitTable;
+    InputListener escapePauseOver;
 
     private Goblin[] goblins;
 
@@ -122,6 +128,69 @@ public class Dungeon extends ScreenAdapter {
             //if goblin in room, set step to 2 to explain combat
         }
 
+        pauseMenu = new Window("", GAME.generalWindowStyle);
+        pauseMenu.setHeight(500);
+        pauseMenu.setWidth(700);
+        pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
+        pauseMenu.setMovable(true);
+        pauseMenu.setKeepWithinStage(true);
+
+        /*saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
+        saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
+        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);*/
+
+        escapePauseOver = new InputListener() {
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                if(keycode == Input.Keys.ESCAPE)
+                {
+                    GAME.stageInstance.setKeyboardFocus(null);
+                    GAME.stageInstance.addActor(pauseMenu);
+                    pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
+                    pauseMenu.row();
+                    pauseMenu.row();
+                    pauseMenu.add(options[0], options[1]);
+                }
+                return true;
+            }
+        };
+
+        GAME.player.playerIcon.addListener(escapePauseOver);
+
+        warning = new Label("Are you sure you want\nto exit the Dungeon?", GAME.generalLabelStyle);
+        warning.setSize(300f, 200f);
+        warning.setAlignment(1,1);
+
+        options = new TextButton[] {
+                new TextButton("Confirm", GAME.generalTextButtonStyle),
+                new TextButton("Cancel", GAME.generalTextButtonStyle)
+        };
+
+        options[0].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                pauseMenu.clear();
+                pauseMenu.remove();
+                dispose();
+                GAME.setScreen(new Overworld(GAME));
+
+            }
+        });
+
+        options[1].addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                pauseMenu.clear();
+                pauseMenu.remove();
+            }
+        });
+
+        pauseMenu.setZIndex(1);
+        options[0].setZIndex(1);
+        options[1].setZIndex(1);
+
     }
 
     public void nextTutorial(){
@@ -131,12 +200,13 @@ public class Dungeon extends ScreenAdapter {
                 break;
             case 2: //if goblin appears in room, explain combat
                 GAME.stageInstance.addActor(tutorialMessage);
-                tutorialMessage.setText("Goblins are in this room!\nMove to a goblin and use 'Q'\n to attack!\n\nThere is also ranged combat items\nSelect the enemy to attack\n using XXXX and use 'Q' to attack.");
+                tutorialMessage.setText("Goblins are in this room!\nMove to a goblin and use 'Q'\n to attack!\n\nThere is also ranged combat items" +
+                        "\nTo select an enemy to attack\n click 'Q' and confirm the \nattack with 'Enter'.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
                 break;
-            case 5: //if chest appears, explain events
-                tutorialMessage.setText("There is a chest in this room.\n...");
+            case 5: //if chest appears, explain chests
+                tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse '?' to open it.");
                 chestExplained = true;
                 break;
             case 6: //find the exit portal
@@ -164,11 +234,11 @@ public class Dungeon extends ScreenAdapter {
         GAME.batch.begin();
         GAME.runPlayerAnimation();
         //Tutorial checks
-        if(MainMenu.isTutorial && eventImage.isVisible() && tutorialStep != 1){
+        if(MainMenu.isTutorial && eventImage.isVisible() && tutorialStep != 1){ //chest
             setTutorial(5);
             nextTutorial();
         }
-        if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) {
+        if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) { //combat
             setTutorial(2);
             nextTutorial();
         }
