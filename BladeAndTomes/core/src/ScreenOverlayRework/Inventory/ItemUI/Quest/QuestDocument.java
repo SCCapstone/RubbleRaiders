@@ -107,8 +107,10 @@ public class QuestDocument {
                 kObj = randomNumber.nextInt(5)+1;
                 kQuestObtainAmount = randomNumber.nextInt(4)+1;
                 break;
-
         }
+        ++rewardAmount;
+        ++kQuestObtainAmount;
+        ++kObj;
         progressBarVal = 0;
     }
     public void setInitialValues(

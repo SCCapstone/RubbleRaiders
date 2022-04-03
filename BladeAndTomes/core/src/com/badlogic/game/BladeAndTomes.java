@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -79,6 +80,7 @@ public class BladeAndTomes extends Game {
     public LabelStyle HealthLabelStyle;
     public MainMenuControls controls;
     public Player player;
+    public Image playerIcon;
     public BackGroundMusic _bgmusic;
     public OverlayManager overlays;
     public boolean showtrade = false;
@@ -110,11 +112,11 @@ public class BladeAndTomes extends Game {
     private transient Animation<TextureRegion> attackDownAnimation;
     private transient Animation<TextureRegion> currentAnimation;
     public float elapsedTime;
-    public Vector2 vec = new Vector2(960,540);
-    public int speed = 32;
 
     public static boolean enterDungeon;
     public static boolean exitDungeon;
+
+//    Rectangle townHall;
 
     private final AssetManager manager = new AssetManager();
 
@@ -177,10 +179,7 @@ public class BladeAndTomes extends Game {
         // Adjusting this to a scale viewport for now on
         // Anri suggested checking out tabnine for libgdx. Found a solution with following line
         // specifically changing viewport to ScalingViewport
-        stageInstance = new Stage(new FitViewport(1920,1080));
-        stageInstance.getViewport().setScreenX(0);
-        stageInstance.getViewport().setScreenY(0);
-        stageInstance.getViewport().apply();
+        stageInstance = new Stage(new ScalingViewport(Scaling.fit, 1920, 1080));
 
         //Sets upstate and downstate textures for texture Buttons
         assets.load("Text_Button_Up_State.jpg",Texture.class);
@@ -360,8 +359,7 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), vec.x, vec.y,32,32);
-//        System.out.println("Player X:\t"+player.playerIcon.getX()+"\tPlayer Y:"+player.playerIcon.getY());
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }
@@ -369,50 +367,4 @@ public class BladeAndTomes extends Game {
     public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
-
-    public void vectorPlayerMovement() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            if(vec.y+speed>=0&&(vec.y+speed)<stageInstance.getHeight())
-                vec.add(0,speed);
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
-            if(vec.y-speed>=0&&(vec.y-speed)<stageInstance.getHeight())
-                vec.add(0,-speed);
-        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
-            if(vec.x-speed>=0&&(vec.x-speed)<stageInstance.getWidth())
-                vec.add(-speed,0);
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
-            if(vec.x+speed>=0&&(vec.x+speed)<stageInstance.getWidth())
-                vec.add(speed,0);
-        }
-        //System.out.println(vec.x+"\t\t"+vec.y+"\t\t\t"+ stageInstance.getViewport().getScreenWidth());
-    }
-
-    public void playerMovement() {
-        player.playerIcon.addListener(player.playerInput = new InputListener() {
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                switch (keycode) {
-                    case Input.Keys.UP:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE, 0));
-                        break;
-                    case Input.Keys.DOWN:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE, 0));
-                        break;
-                    case Input.Keys.LEFT:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY(), 0));
-                        break;
-                    case Input.Keys.RIGHT:
-                        player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY(), 0));
-                        break;
-                    default:
-                        return false;
-                }
-                player.isTurn = false;
-                player.moveSquare.setPosition(player.playerIcon.getX(), player.playerIcon.getY());
-                player.interactSquare.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY() - MOVE_DISTANCE);
-                return true;
-            }
-        });
-    }
 }
