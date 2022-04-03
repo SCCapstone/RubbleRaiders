@@ -156,6 +156,8 @@ public class Overworld extends ScreenAdapter {
         manager.finishLoading();
         overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
 
+        //overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+
         MapLayers mapLayers = overWorldMap.getLayers();
         collisionLayer = (TiledMapTileLayer) mapLayers.get("Buildings");
         backgroundLayer = (TiledMapTileLayer) mapLayers.get("Background");
@@ -167,8 +169,6 @@ public class Overworld extends ScreenAdapter {
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
         //world.setContactFilter();
-
-        // Following below sets up our player box. Its density, and friction when hitting other boxes.
 
         MOVE_DISTANCE = 32;
         doTrade = false;
@@ -184,9 +184,9 @@ public class Overworld extends ScreenAdapter {
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
 
-        /*saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
+        saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
         saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
-        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);*/
+        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
 
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
@@ -331,15 +331,11 @@ public class Overworld extends ScreenAdapter {
 
 
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
-        //renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         world.step(1/60f, 6, 2);
         renderer.render();
         renderer.getBatch().begin();
         renderer.renderTileLayer(collisionLayer);
         renderer.getBatch().end();
-        worldRender.render(world, camera.combined);
-
-        //getTileCells(collisionLayer);
 
         GAME.playerMovement();
 
@@ -404,7 +400,6 @@ public class Overworld extends ScreenAdapter {
             questBoardTrade.render();
         }
         GAME.overlays.render();
-//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
         prePlayerLocX = GAME.player.playerIcon.getX();
         prePlayerLocY = GAME.player.playerIcon.getY();
@@ -425,7 +420,7 @@ public class Overworld extends ScreenAdapter {
         }
         if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&&nearSellerTrader){
             isNpcSellerVisible =!isNpcSellerVisible;
-            isQuestBoardTradeVisible =false;
+            isQuestBoardTradeVisible =true;
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
             GAME.overlays.setHiddenTableVisibility(false);
@@ -539,7 +534,6 @@ public class Overworld extends ScreenAdapter {
         questBoardCollision(player, stage);
         return true;
     }
-
     public void movePlayer(Player player, float MOVE_DISTANCE_X, float MOVE_DISTANCE_Y){
         player.playerIcon.setPosition(player.playerIcon.getX()+MOVE_DISTANCE_X, player.playerIcon.getY() + MOVE_DISTANCE_Y);
         player.moveSquare.setPosition(player.moveSquare.getX()+MOVE_DISTANCE_X, player.moveSquare.getY() + MOVE_DISTANCE_Y);
