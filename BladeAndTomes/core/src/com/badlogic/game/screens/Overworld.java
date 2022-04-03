@@ -284,7 +284,7 @@ public class Overworld extends ScreenAdapter {
         if(MainMenu.isTutorial){
             GAME.player.setHealthPoints(10);
             if(BladeAndTomes.exitDungeon){
-                tutorialStep = 8;
+                tutorialStep = 9;
                 nextTutorial();
             }
             else {
@@ -596,7 +596,7 @@ public class Overworld extends ScreenAdapter {
                 tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
                 break;
             case 5: //Quests Buying and Selling
-                tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
+                tutorialMessage.setText("Walk up to the board in the middle\nof town and click 'T'.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
                         "\n\nClick 'Q' to exit quests.");
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2+300);
@@ -609,19 +609,22 @@ public class Overworld extends ScreenAdapter {
                 tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
                         "it into the slot\nand click sell.\n\nClick 'T' to exit menu.");
                 break;
-            case 8: //enter dungeon
+            case 8: //item slot selection
+                tutorialMessage.setText("The item slots in the top left can\n be selected using 1-5 for the \nrespective slot position");
+                break;
+            case 9: //enter dungeon
                 tutorialMessage.setText("Now it's time to fight!\n\nWalk into the portal at the \nbottom of town to enter the dungeon.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
                 tutorialMessage.setSize(300f, 200f);
                 next.remove();
                 break;
-            case 9: //final explanation
+            case 10: //final explanation
                 GAME.stageInstance.addActor(tutorialMessage);
                 GAME.stageInstance.addActor(next);
                 next.setText("Exit");
                 tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
                 break;
-            case 10:
+            case 11:
                 GAME.stageInstance.clear();
                 dispose();
                 GAME.setScreen(new MainMenu(GAME));
