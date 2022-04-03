@@ -297,13 +297,6 @@ public class BladeAndTomes extends Game {
 //        player.setHealthPoints(10);
         this.setScreen(new MainMenu(this));
     }
-    /*
-    public void getCamera() {
-        this.camera = camera;
-    }
-
-     */
-
 
 
     /**
@@ -359,7 +352,9 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(), 48, 48);
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(), 48,48);
+
+        System.out.println( player.playerIcon.getX());
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }

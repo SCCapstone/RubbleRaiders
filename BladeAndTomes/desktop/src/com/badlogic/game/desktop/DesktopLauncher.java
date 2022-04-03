@@ -1,17 +1,21 @@
+
+
 package com.badlogic.game.desktop;
 
-
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setWindowSizeLimits(1280,720,1920,1080);
-		config.setMaximized(true);
-		new Lwjgl3Application(new BladeAndTomes(), config);
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.height = 1080;
+		config.width = 1920;
+		config.title = "Blades & Tomes";
+		config.resizable = true;
+		config.forceExit = false;
 		// Test Merge
 		// add this following bit so that the width and height don't go past a minimum requirement.
+		new LwjglApplication(new BladeAndTomes(), config);
 	}
 }

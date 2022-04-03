@@ -439,12 +439,12 @@ public class Overworld extends ScreenAdapter {
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
         prePlayerLocX = GAME.player.playerIcon.getX();
         prePlayerLocY = GAME.player.playerIcon.getY();
-        interactUI();
+
+
         townHallMSG.setVisible(nearTownHall);
-        System.out.println(nearTownHall);
         questBoardMSG.setVisible(nearQuestBoard);
         traderMSG.setVisible(nearMarketStall);
-
+        interactUI();
     }
 
     public void interactUI(){
@@ -454,7 +454,7 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
         }
-        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&&nearSellerTrader){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&&nearMarketStall){
             isNpcSellerVisible =!isNpcSellerVisible;
             isQuestBoardTradeVisible =false;
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
@@ -462,23 +462,23 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
-        } else if(!nearSellerTrader){
+        } else if(!nearMarketStall){
             isNpcSellerVisible =false;
             GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)&&nearBuyerTrader){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&&nearTownHall){
             isNpcBuyerVisible =!isNpcBuyerVisible;
             isQuestBoardTradeVisible =false;
             GAME.overlays.NPCSellerInventory(false,npcSeller);
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
-        } else if(!nearBuyerTrader){
+        } else if(!nearTownHall){
             isNpcBuyerVisible = false;
             GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)&& !isNpcSellerVisible){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& nearQuestBoard){
             isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
             GAME.overlays.NPCSellerInventory(false,npcSeller);
             GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
@@ -487,20 +487,10 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
             GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
 
-        } else if(!nearTownHall){
+        } else if(!nearQuestBoard){
             isQuestBoardTradeVisible = false;
             GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
-            isQuestBoardTradeVisible =     //Save all player data including name, stats, inventory
-            !isQuestBoardTradeVisible;
-            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
-            GAME.overlays.setHiddenTableVisibility(false);
-            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
-            chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
-            GAME.overlays.displayChest(chest);
-        }
-
         // Updates Elements for QuestBord
         if(isQuestBoardTradeVisible){
             questBoardTrade.render();

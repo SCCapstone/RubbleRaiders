@@ -168,8 +168,8 @@ public class QuestDocument {
                 return output;
             case 1:
                 // Open Chests
-                output = (kCurrentOpenedChests-kCurrentOpenedChests)>=kObj;
-                progressBarVal =  (kCurrentOpenedChests-kCurrentOpenedChests);
+                output = (kCurrentOpenedChests-kInitialOpenedChests)>=kObj;
+                progressBarVal =  (kCurrentOpenedChests-kInitialOpenedChests);
 
                 return output;
             case 2:
