@@ -18,7 +18,7 @@ public class BackGroundMusic {
         isMute = muted;
     }
    public BackGroundMusic(){
-        playList = new String[]{"new_main_menu_theme.mp3", "Music/dungeon.mp3", "Music/Battle.mp3", "Music/Town.mp3"};
+        playList = new String[]{"new_main_menu_theme.mp3", "Music/Dungeon.mp3", "Music/Battle.mp3", "Music/Town.mp3"};
         for(String music: playList) {
             manager.load(music, Music.class);
         }
