@@ -90,7 +90,6 @@ public class Dungeon extends ScreenAdapter {
         eventImage.setPosition(eventX, eventY);
         GAME.stageInstance.addActor(eventImage);
 
-
         //Adds the player's icon to the stage.
         GAME.player.playerIcon.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
         GAME.player.moveSquare.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
@@ -206,7 +205,7 @@ public class Dungeon extends ScreenAdapter {
                 next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
                 break;
             case 5: //if chest appears, explain chests
-                tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse '?' to open it.");
+                tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse 'T' to open it.");
                 chestExplained = true;
                 break;
             case 6: //find the exit portal

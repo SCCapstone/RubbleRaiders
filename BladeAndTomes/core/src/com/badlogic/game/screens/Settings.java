@@ -28,13 +28,6 @@ public class Settings extends ScreenAdapter {
 
     final BladeAndTomes GAME;
 
-    /*String moUp;
-    String moDown;
-    String moLeft;
-    String moRight;
-    String interAction;
-    String openMenu;*/
-
 
     Texture background;
     Image backgroundImage;
@@ -81,6 +74,9 @@ public class Settings extends ScreenAdapter {
         menuCont = game.controls;
 
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
+
+        Texture background = new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png"));
+        backgroundImage = new Image(background);
 
         settingsMusicLabel = new Label("Music Volume",GAME.generalLabelStyle);
         settingsMusicLabel.setAlignment(1,2);

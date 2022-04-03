@@ -60,6 +60,7 @@ public class MainMenu extends ScreenAdapter {
     public void dispose() {
         super.dispose();
         batch.dispose();
+        manager.dispose();
         torchAtlas.dispose();
     }
 
@@ -77,7 +78,7 @@ public class MainMenu extends ScreenAdapter {
     private TextureAtlas torchAtlas;
     private Animation<TextureRegion> animation;
     private float timePassed;
-    private final AssetManager manager = new AssetManager();
+    private AssetManager manager;
     /**
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
@@ -88,7 +89,11 @@ public class MainMenu extends ScreenAdapter {
         game.player = game.loadSaveManager.generatePlayer();
 
         batch = new SpriteBatch();
-        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        manager = new AssetManager();
+        manager.setLoader(TiledMap.class, new TmxMapLoader());
+        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+        manager.finishLoading();
+        overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
         manager.load("AnimationFiles/Torch.atlas", TextureAtlas.class);
         manager.finishLoading();
         torchAtlas = manager.get("AnimationFiles/Torch.atlas");
@@ -202,23 +207,17 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void render(float delta) {
-
         //Simplifying render thanks to libGDX for their "Extending the Simple Game" Tutorial,
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
+        renderer.render();
 //        renderer.setView(camera);
 //        renderer.render();
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-        // Torch Animation, Source: https://www.youtube.com/watch?v=vjgdX95HVrM
-        batch.begin();
-        timePassed +=Gdx.graphics.getDeltaTime();
-        batch.draw(animation.getKeyFrame(timePassed,true),width,600);
-        batch.draw(animation.getKeyFrame(timePassed,true),490,600);
-
-        batch.end();
 
         if(Gdx.input.justTouched()){
             buttonSound.playClick();
@@ -252,43 +251,4 @@ public class MainMenu extends ScreenAdapter {
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
-
-    public static void settingsSerialize() {
-        try {
-            XmlMapper xmlMapper = new XmlMapper();
-            try {
-                String xmlString = xmlMapper.writeValueAsString(new Item());
-
-                File xmlOutput = new File("Settings.xml");
-                FileWriter fileWriter = new FileWriter(xmlOutput);
-                fileWriter.write(xmlString);
-                fileWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void settingsDeserialize() {
-        try {
-            XmlMapper xmlMapper = new XmlMapper();
-            String readSettingsFile = new String(Files.readAllBytes(Paths.get("Settings.xml")));
-            MainMenu deserializeMenu = xmlMapper.readValue(readSettingsFile, MainMenu.class);
-
-            System.out.println("Rebind Settings");
-            System.out.println("Move up: " + deserializeMenu);
-            System.out.println("Move down: " + deserializeMenu);
-            System.out.println("Move left: " + deserializeMenu);
-            System.out.println("Move right: " + deserializeMenu);
-            System.out.println("Interact: " + deserializeMenu);
-            System.out.println("Menu: " + deserializeMenu);
-            System.out.println("Cursor: " + deserializeMenu);
-        } catch (IOException e) {
-            // for now use auto generated
-            e.printStackTrace();
-        }
-    }
-
 }

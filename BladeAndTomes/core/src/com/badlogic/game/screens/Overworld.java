@@ -53,7 +53,6 @@ public class Overworld extends ScreenAdapter {
 
     private World world;
     private TiledMap overWorldMap;
-    private final Box2DDebugRenderer worldRender;
 
     private AssetManager manager;
     private OrthogonalTiledMapRenderer renderer;
@@ -67,8 +66,6 @@ public class Overworld extends ScreenAdapter {
     int tileMeasurement;
     boolean collidedX, collidedY;
 
-    MapProperties mapProperties;
-
     private OrthographicCamera camera;
 
     Window pauseMenu;
@@ -76,11 +73,6 @@ public class Overworld extends ScreenAdapter {
     TextButton options[];
     Table quitTable;
     InputListener escapePauseOver;
-
-    BodyDef playerBodyDef;
-    Body playerBody;
-    PolygonShape playerShape;
-    FixtureDef fixtureDef;
 
     playerMoveSound playerMovenSound;
 
@@ -177,28 +169,6 @@ public class Overworld extends ScreenAdapter {
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
         //world.setContactFilter();
-
-        // Following below sets up our player box. Its density, and friction when hitting other boxes.
-        playerBodyDef = new BodyDef();
-        playerBodyDef.type = BodyDef.BodyType.DynamicBody;
-        //playerBodyDef.position.set(GAME.vec.x, GAME.vec.y);
-
-        playerBody = world.createBody(playerBodyDef);
-        //playerBody.setLinearVelocity(0,0);
-        playerShape = new PolygonShape();
-        playerShape.setAsBox(GAME.player.playerIcon.getWidth() / 2f, GAME.player.playerIcon.getHeight() / 2f);
-
-        fixtureDef = new FixtureDef();
-        fixtureDef.shape = playerShape;
-        fixtureDef.restitution = 0.0f;
-        fixtureDef.friction = 0.0f;
-        fixtureDef.density = 0.0f;
-
-        playerBody.createFixture(fixtureDef);
-        playerShape.dispose();
-        worldRender = new Box2DDebugRenderer();
-
-//        worldRender.VELOCITY_COLOR.b=
 
         MOVE_DISTANCE = 32;
         doTrade = false;
@@ -362,15 +332,11 @@ public class Overworld extends ScreenAdapter {
 
 
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
-        //renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         world.step(1/60f, 6, 2);
         renderer.render();
         renderer.getBatch().begin();
         renderer.renderTileLayer(collisionLayer);
         renderer.getBatch().end();
-        worldRender.render(world, camera.combined);
-
-        //getTileCells(collisionLayer);
 
         GAME.playerMovement();
 
@@ -435,8 +401,6 @@ public class Overworld extends ScreenAdapter {
             questBoardTrade.render();
         }
         GAME.overlays.render();
-
-        System.out.println(GAME.player.playerIcon.getX()+"\t"+GAME.player.playerIcon.getY());
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
         prePlayerLocX = GAME.player.playerIcon.getX();
         prePlayerLocY = GAME.player.playerIcon.getY();
@@ -585,6 +549,7 @@ public class Overworld extends ScreenAdapter {
             movePlayer(player,moveBackX,moveBackY);
         if(checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 )&&checkBlock(player.playerIcon.getY(),locY_1 ,locY_2 ))
             player.playerIcon.setPosition(prePlayerLocX , prePlayerLocY);
+        System.out.println(player.playerIcon.getY()+MOVE_DISTANCE+"\t"+locY_1 + player.playerIcon.getX());
         return checkBlock(player.playerIcon.getY()+MOVE_DISTANCE,locY_1 ,locY_2 )&&checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 );
 
     }
@@ -593,7 +558,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void tavernCollision(Player player, Stage stage) {
-        nearTavern = BlockEPhi(player, tavern.x, tavern.x+tavern.width, tavern.y, tavern.y+tavern.height);
+        nearTavern = BlockEPhi(player, tavern.getX(), tavern.getX() + tavern.width, tavern.getY(), tavern.getY() + tavern.height);
     }
 
     public void questBoardCollision(Player player, Stage stage) {
@@ -614,44 +579,6 @@ public class Overworld extends ScreenAdapter {
 
     // Very helpful guide on setting up tile collisions from following source
     // https://lyze.dev/2021/03/25/libGDX-Tiled-Box2D-example-tiles/
-    public void parseCollision() {
-        for(int i = 0; i < collisionLayer.getWidth(); i++) {
-            for (int j = 0; j < collisionLayer.getHeight(); j++) {
-                TiledMapTileLayer.Cell cell = collisionLayer.getCell(i, j);
-                if (cell == null) {
-                    continue;
-                } if (cell.getTile() == null) {
-                    continue;
-                }
-
-                MapObjects cellObjects = cell.getTile().getObjects();
-                if (cellObjects.getCount() != 1) {
-                    continue;
-                }
-
-                MapObject mapObject = cellObjects.get(0);
-                    RectangleMapObject rectangleObject = (RectangleMapObject) mapObject;
-                    Rectangle rectangle = rectangleObject.getRectangle();
-                        BodyDef bodyDef = getBodyDef(i * tileMeasurement + tileMeasurement / 2f + rectangle.getX()
-                                        - (tileMeasurement - rectangle.getWidth()) / 2f,
-                                j * tileMeasurement + tileMeasurement / 2f + rectangle.getY()
-                                        - (tileMeasurement - rectangle.getHeight()) / 2f);
-
-                        Body body = world.createBody(bodyDef);
-                        PolygonShape polygonShape = new PolygonShape();
-                        polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 0f).setRestitution(0.0f);
-                        polygonShape.dispose();
-            }
-        }
-    }
-
-    private BodyDef getBodyDef(float i, float j) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(i, j);
-        return bodyDef;
-    }
 
     public void nextTutorial() {
         switch (tutorialStep) {
@@ -677,26 +604,30 @@ public class Overworld extends ScreenAdapter {
             case 5: //Quests Buying and Selling
                 tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
                         "\n\nClick 'Q' to exit quests.");
-                tutorialMessage.setPosition(80, GAME.stageInstance.getHeight()/2);
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2+300);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
             case 6: //Buy items
-                tutorialMessage.setText("Click 'T' to buy items\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
+                tutorialMessage.setText("Walk to the top left building\nand click 'T' to buy items.\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
                 break;
-            case 7: //enter dungeon
-                tutorialMessage.setText("Now it's time to fight!\n\nUsing the arrow keys, walk into\nthe portal at the bottom of town\n to enter the dungeon.");
-                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+            case 7: //Sell items
+                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
+                        "it into the slot\nand click sell.\n\nClick 'T' to exit menu.");
+                break;
+            case 8: //enter dungeon
+                tutorialMessage.setText("Now it's time to fight!\n\nWalk into the portal at the \nbottom of town to enter the dungeon.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
                 tutorialMessage.setSize(300f, 200f);
                 next.remove();
                 break;
-            case 8: //final explanation
+            case 9: //final explanation
                 GAME.stageInstance.addActor(tutorialMessage);
                 GAME.stageInstance.addActor(next);
                 next.setText("Exit");
                 tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
                 break;
-            case 9:
+            case 10:
                 GAME.stageInstance.clear();
                 dispose();
                 GAME.setScreen(new MainMenu(GAME));
