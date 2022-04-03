@@ -173,6 +173,7 @@ public class Dungeon extends ScreenAdapter {
             nextTutorial();
         }
 
+        GAME.vectorPlayerMovement();
         GAME.playerMovement();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -201,14 +202,6 @@ public class Dungeon extends ScreenAdapter {
         if(goblins.length > 0){
             for(Goblin goblin: goblins) {
                 if(goblin != null) {
-                    /*if(goblin.isAttacking) {
-                        goblin.resetElapsedTime();
-                        goblin.runAttackAnimation();
-                    }*/
-                    /*if(goblin.moving) {
-                        goblin.resetElapsedTime();
-                        goblin.runMovingAnimation();
-                    }*/
                     goblin.runAnimation(GAME);
                 }
             }

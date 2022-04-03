@@ -85,7 +85,7 @@ public class BladeAndTomes extends Game {
     public boolean showtradeBuyer = false;
     public boolean showHiddenInventory = false;
     public boolean refreshInventory = false;
-    public final int MOVE_DISTANCE = 64;
+    public final int MOVE_DISTANCE = 32;
     public AssetManager assets;
 
     public int currentInventorySelection;
@@ -110,7 +110,7 @@ public class BladeAndTomes extends Game {
     private transient Animation<TextureRegion> attackDownAnimation;
     private transient Animation<TextureRegion> currentAnimation;
     public float elapsedTime;
-    public Vector2 vec = new Vector2(0,0);
+    public Vector2 vec = new Vector2(960,540);
     public int speed = 32;
 
     public static boolean enterDungeon;
@@ -360,7 +360,7 @@ public class BladeAndTomes extends Game {
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), vec.x, vec.y,24,24);
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), vec.x, vec.y,32,32);
 //        System.out.println("Player X:\t"+player.playerIcon.getX()+"\tPlayer Y:"+player.playerIcon.getY());
     }
 
@@ -369,6 +369,23 @@ public class BladeAndTomes extends Game {
     public void runMoveLeftAnimation() { currentAnimation = moveLeftAnimation; }
     public void runMoveRightAnimation() { currentAnimation = moveRightAnimation; }
     public void runAttackDownAnimation() { currentAnimation = attackDownAnimation; }
+
+    public void vectorPlayerMovement() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            if(vec.y+speed>=0&&(vec.y+speed)<stageInstance.getHeight())
+                vec.add(0,speed);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+            if(vec.y-speed>=0&&(vec.y-speed)<stageInstance.getHeight())
+                vec.add(0,-speed);
+        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+            if(vec.x-speed>=0&&(vec.x-speed)<stageInstance.getWidth())
+                vec.add(-speed,0);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if(vec.x+speed>=0&&(vec.x+speed)<stageInstance.getWidth())
+                vec.add(speed,0);
+        }
+        System.out.println(vec.x+"\t\t"+vec.y+"\t\t\t"+ stageInstance.getViewport().getScreenWidth());
+    }
 
     public void playerMovement() {
         player.playerIcon.addListener(player.playerInput = new InputListener() {

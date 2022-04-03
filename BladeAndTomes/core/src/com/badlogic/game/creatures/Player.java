@@ -119,10 +119,10 @@ public class Player extends Entity {
         //TODO: Move Player Icon Definitions to Backbone?
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth() / 2, playerIcon.getImageHeight() / 2);
-        playerIcon.setPosition( 500, 500);
-        playerIcon.setVisible(false);
-        playerBody(playerIcon);
-        moveSquare.setSize(64, 64);
+        playerIcon.setPosition( 960, 540);
+        playerIcon.setVisible(true);
+        //playerBody(playerIcon);
+        moveSquare.setSize(32, 32);
         moveSquare.setPosition(0, 0);
 
         interactSquare.setSize(playerIcon.getImageWidth() * 3, playerIcon.getImageHeight() * 3);
@@ -210,7 +210,7 @@ public class Player extends Entity {
         // https://github.com/libgdx/libgdx/wiki/Scene2d
         gold = 100;
 
-
+        /*
         playerIcon.addListener(playerInput = new InputListener() {
 
             @Override
@@ -242,6 +242,8 @@ public class Player extends Entity {
                 return true;
             }
         });
+
+         */
         kAssignations = 0;
         kDeaths = 0;
         kDungeonsExplored = 0;
@@ -265,7 +267,7 @@ public class Player extends Entity {
         activeQuests.add(null);
 
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
-        playerIcon.setSize(64,64);
+        playerIcon.setSize(32,32);
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/ 2, Gdx.graphics.getHeight()/2);
 

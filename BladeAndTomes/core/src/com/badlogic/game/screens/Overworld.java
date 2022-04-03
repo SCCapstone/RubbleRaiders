@@ -18,10 +18,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -71,33 +68,6 @@ public class Overworld extends ScreenAdapter {
     int rows;
 
     private OrthographicCamera camera;
-
-
-    Texture background;
-    Texture chapel;
-    Texture barracks;
-    Texture questBoard;
-    Texture portal;
-    Texture NPCTrader;
-    Texture marketStall;
-    Texture tavern;
-
-    /*
-    // use all this for collision with buildings later
-    private float tavernWidth = 128f;
-    private float tavernHeight = 128f;
-    private float marketStallHeight = 256f;
-    private float marketStallWidth = 196f;
-    private float barracksHeight = 384f;
-    private float barracksWidth = 256f;
-    private float chapelWidth = 196f;
-    private float chapelHeight = 256f;
-    private float questBoardHeight = 64f;
-    private float questBoardWidth = 64f;
-    private float portalHeight = 64f;
-    private float portalWidth = 64f;
-
-     */
 
     Window pauseMenu;
     Label warning;
@@ -160,7 +130,12 @@ public class Overworld extends ScreenAdapter {
         MapLayers mapLayers = overWorldMap.getLayers();
         collisionLayer = (TiledMapTileLayer) mapLayers.get("Buildings");
         backgroundLayer = (TiledMapTileLayer) mapLayers.get("Background");
-        tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
+        //tileMeasurement = collisionLayer.getTileWidth();
+        //tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
+
+        MapProperties mapProperties = overWorldMap.getProperties();
+        tileMeasurement = mapProperties.get("tilewidth", Integer.class);
+        //System.out.println(tileMeasurement);
 
         //columns = collisionLayer.getTileWidth();
         //rows = collisionLayer.getHeight();
@@ -170,7 +145,47 @@ public class Overworld extends ScreenAdapter {
         //System.out.println(overWorldMap.getTileSets().getTileSet(1).getTile(2).getOffsetX());
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
-        world = new World(new Vector2(0, 0),true);
+        world = new World(new Vector2(-1f, -1f),true);
+        //world.setContactFilter();
+
+        // Following below sets up our player box. Its density, and friction when hitting other boxes.
+        BodyDef playerBodyDef = new BodyDef();
+        playerBodyDef.type = BodyDef.BodyType.DynamicBody;
+        playerBodyDef.position.set(GAME.vec.x, GAME.vec.y);
+
+        Body playerBody = world.createBody(playerBodyDef);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)< GAME.stageInstance.getHeight())
+                GAME.vec.add(0,GAME.speed);
+                //playerBody.applyLinearImpulse(GAME.speed,GAME.vec.x, GAME.vec.y, false);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)< GAME.stageInstance.getHeight())
+                GAME.vec.add(0,-GAME.speed);
+                playerBodyDef.linearVelocity.set(0, -GAME.speed);
+        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)< GAME.stageInstance.getWidth())
+                GAME.vec.add(-GAME.speed,0);
+                playerBodyDef.linearVelocity.set(-GAME.speed,0);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)< GAME.stageInstance.getWidth())
+                GAME.vec.add(GAME.speed,0);
+                playerBodyDef.linearVelocity.set(GAME.speed, 0);
+        }
+        PolygonShape playerShape = new PolygonShape();
+        playerShape.setAsBox(GAME.player.playerIcon.getX() / 10, GAME.player.playerIcon.getY() / 10);
+        System.out.println(GAME.player.playerIcon.getX());
+        System.out.println(GAME.vec.x);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = playerShape;
+        fixtureDef.restitution = 0.0f;
+        fixtureDef.friction = 0.0f;
+        fixtureDef.density = 0.0f;
+
+        playerBody.createFixture(fixtureDef);
+        playerShape.dispose();
+        //playerBod(GAME.vec.x, GAME.vec.y);
         worldRender = new Box2DDebugRenderer();
 
         parseCollision();
@@ -362,7 +377,9 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
+        //renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
+        world.step(1/60f, 6, 2);
+        renderer.setView(camera);
         renderer.render();
         renderer.getBatch().begin();
         //renderer.renderTileLayer(backgroundLayer);
@@ -373,6 +390,7 @@ public class Overworld extends ScreenAdapter {
         //getTileCells(collisionLayer);
 
         GAME.playerMovement();
+        GAME.vectorPlayerMovement();
 
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 
@@ -398,7 +416,7 @@ public class Overworld extends ScreenAdapter {
         GAME.batch.end();
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
-        if(GAME.player.playerIcon.equals(overWorldMap.getTileSets().getTileSet("130"))) {
+        if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
@@ -406,7 +424,7 @@ public class Overworld extends ScreenAdapter {
             BladeAndTomes.exitDungeon = false;
             GAME.setScreen(new Dungeon(GAME));
         }
-        if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
+        if((int)(GAME.vec.x-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.vec.y-Portal_Cords.getLocation().y)/100 == 0){
             GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
@@ -477,19 +495,39 @@ public class Overworld extends ScreenAdapter {
 
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)<450)
+            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)< GAME.stageInstance.getHeight())
+                GAME.vec.add(0,GAME.speed);
+            //playerBodyDef.linearVelocity.set(0, GAME.speed);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)< GAME.stageInstance.getHeight())
+                GAME.vec.add(0,-GAME.speed);
+            //playerBodyDef.linearVelocity.set(0, -GAME.speed);
+        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)< GAME.stageInstance.getWidth())
+                GAME.vec.add(-GAME.speed,0);
+            //playerBodyDef.linearVelocity.set(-GAME.speed,0);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)< GAME.stageInstance.getWidth())
+                GAME.vec.add(GAME.speed,0);
+            //playerBodyDef.linearVelocity.set(GAME.speed, 0);
+        }
+        /*
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)<GAME.stageInstance.getHeight())
             GAME.vec.add(0,GAME.speed);
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
-            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)<450)
+            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)<GAME.stageInstance.getHeight())
                 GAME.vec.add(0,-GAME.speed);
         }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
-            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)<628)
+            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)<GAME.stageInstance.getWidth())
                 GAME.vec.add(-GAME.speed,0);
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
-            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)<628)
+            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)<GAME.stageInstance.getWidth())
                 GAME.vec.add(GAME.speed,0);
         }
         System.out.println(GAME.vec.x+"\t\t"+GAME.vec.y+"\t\t\t"+ GAME.stageInstance.getViewport().getScreenWidth());
+
+         */
     }
 
         //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
@@ -500,19 +538,20 @@ int width,height;
 
     @Override
     public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
-        GAME.stageInstance.getViewport().update(width, height);
-//        camera.viewportHeight = height;
-//        camera.viewportWidth = width;
-//        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-//        camera.update();
-//        GAME.stageInstance.getViewport().update(width, height, true);
+        //this.width = width;
+        //this.height = height;
+        //GAME.stageInstance.getViewport().update(width, height);
+        camera.viewportHeight = height;
+        camera.viewportWidth = width;
+        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
+        camera.update();
+        GAME.stageInstance.getViewport().update(width, height, true);
    }
 
     @Override
     public void show() {
         //overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        //parseCollision();
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         camera = new OrthographicCamera();
@@ -588,6 +627,8 @@ int width,height;
                 if (cell == null) {
                     //System.out.println(cell);
                     continue;
+                } if (cell.getTile() == null) {
+                    continue;
                 }
 
                 MapObjects cellObjects = cell.getTile().getObjects();
@@ -602,10 +643,6 @@ int width,height;
                 if (mapObject instanceof RectangleMapObject) {
                     RectangleMapObject rectangleObject = (RectangleMapObject) mapObject;
                     Rectangle rectangle = rectangleObject.getRectangle();
-
-                    if (mapObject instanceof RectangleMapObject) {
-                        System.out.println(rectangle.x);
-//                        rectangle.x
                         BodyDef bodyDef = getBodyDef(i * tileMeasurement + tileMeasurement / 2f + rectangle.getX()
                                         - (tileMeasurement - rectangle.getWidth()) / 2f,
                                 j * tileMeasurement + tileMeasurement / 2f + rectangle.getY()
@@ -614,10 +651,8 @@ int width,height;
                         Body body = world.createBody(bodyDef);
                         PolygonShape polygonShape = new PolygonShape();
                         polygonShape.setAsBox(rectangle.getWidth() / 2f, rectangle.getHeight() / 2f);
-                        body.createFixture(polygonShape, 1f);
+                        body.createFixture(polygonShape, 0f).setRestitution(0.0f);
                         polygonShape.dispose();
-
-                    }
                 }
             }
         }
@@ -630,10 +665,25 @@ int width,height;
         return bodyDef;
     }
 
+    /*
     private BodyDef playerBod(float i, float j) {
         BodyDef playerBodyDef = new BodyDef();
         playerBodyDef.type = BodyDef.BodyType.DynamicBody;
         playerBodyDef.position.set(i, j);
+
+        Body playerBody = world.createBody(playerBodyDef);
+        PolygonShape playerShape = new PolygonShape();
+        playerShape.setAsBox(i, j);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = playerShape;
+        fixtureDef.density = 1.0f;
+
+        Fixture fixture = playerBody.createFixture(fixtureDef);
+        playerShape.dispose();
+
         return playerBodyDef;
     }
+
+     */
 }
