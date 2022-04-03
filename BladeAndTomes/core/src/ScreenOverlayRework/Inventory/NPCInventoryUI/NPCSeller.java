@@ -39,7 +39,6 @@ public class NPCSeller extends TradeUI {
 
         Table trades = new Table();
         trades.defaults();
-        trades.debug();
         trades.align(right|center|top);
         trades.add(new Label("        Offers", game.BaseLabelStyle1)).size(150, 50);
         trades.row();

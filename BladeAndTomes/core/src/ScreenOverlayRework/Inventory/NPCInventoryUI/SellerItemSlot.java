@@ -54,7 +54,6 @@ public class SellerItemSlot extends itemSlot {
         cancelLabel.setSize(75,75);
         cancelLabel.setPosition(10,10);
 
-        item.setDebug(true);
         slot.addListener(new ClickListener(){
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {

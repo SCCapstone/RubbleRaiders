@@ -132,7 +132,7 @@ public class Overworld extends ScreenAdapter {
         // The labels part of anris work for trading and selling
         // Is also piggybacking off of collision
         townHallMSG = new Label("Press "+  Input.Keys.toString(game.controls.getTradeMenu()) +" to buy things", game.BaseLabelStyle2);
-        questBoardMSG = new Label("Press " + Input.Keys.toString(game.controls.getFightAction()) + " to get a quest", game.BaseLabelStyle2);
+        questBoardMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to get a quest", game.BaseLabelStyle2);
         traderMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to sell things here!", game.BaseLabelStyle2);
         nearTownHall = false;
         nearBuyerTrader = false;
@@ -164,7 +164,7 @@ public class Overworld extends ScreenAdapter {
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
-     
+
         MOVE_DISTANCE = 64;
         doTrade = false;
         batch = new SpriteBatch();
@@ -247,7 +247,6 @@ public class Overworld extends ScreenAdapter {
         NPC_Cords.setLocation(GAME.stageInstance.getWidth() / 8, GAME.stageInstance.getHeight() / 2);
         Portal_Cords = new Point();
         Portal_Cords.setLocation(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 8);
-
         // For overlays
         game.overlays =new OverlayManager(game);
         game.overlays.setOverLayesVisibility(true);
@@ -322,11 +321,6 @@ public class Overworld extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.setAutoShapeType(true);
-
-        if(GAME.player.moveSquare.overlaps(townHall))
-            System.out.println("Overlaps");
-
-
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         world.step(1/60f, 6, 2);
         renderer.render();
@@ -566,7 +560,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void chapelCollision(Player player, Stage stage) {
-         nearChapel = BlockEPhi(player, 650, 650+128,860, 860+128);
+         nearChapel = BlockEPhi(player, 650, 650+128,860-10, 860+128-10);
     }
 
     public boolean checkBlock(float plyLoc, float buildingLoc0, float buildingLoc1){

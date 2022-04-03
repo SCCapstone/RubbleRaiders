@@ -57,7 +57,7 @@ public class Dungeon extends ScreenAdapter {
     Table quitTable;
     InputListener escapePauseOver;
 
-    private Goblin[] goblins;
+    //private Goblin[] goblins;
 
     public Dungeon(final BladeAndTomes game) {
 
@@ -389,6 +389,8 @@ public class Dungeon extends ScreenAdapter {
         }
         GAME.batch.end();
         //inventory.update();
+        GAME.overlays.setOverLayesVisibility(true);
+
 
         //Decides if combat movement or normal movement will be used
         if(roomHandler.combatFlag) {
@@ -398,6 +400,7 @@ public class Dungeon extends ScreenAdapter {
             GAME.player.isTurn = true;
             roomHandler.movement();
         }
+        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
 
         //If player is dead, return to the OverWorld
         if(GAME.player.getHealthPoints() <= 0) {
