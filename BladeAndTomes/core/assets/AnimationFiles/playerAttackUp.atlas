@@ -6,35 +6,35 @@ filter: Nearest, Nearest
 repeat: none
 Player01
   rotate: false
-  xy: 0, 256
+  xy: 0, 320
   size: 63, 63
   orig: 63, 63
   offset: 0, 0
   index: -1
 Player02
   rotate: false
-  xy: 64, 256
+  xy: 64, 320
   size: 63, 63
   orig: 64, 64
   offset: 0, 0
   index: -1
 Player03
   rotate: false
-  xy: 128, 256
+  xy: 128, 320
   size: 63, 63
   orig: 64, 64
   offset: 0, 0
   index: -1
 Player04
     rotate: false
-    xy: 192, 256
+    xy: 192, 320
     size: 63, 63
     orig: 64, 64
     offset: 0, 0
     index: -1
 Player05
   rotate: false
-  xy: 256, 256
+  xy: 256, 320
   size: 63, 63
   orig: 64, 64
   offset: 0, 0

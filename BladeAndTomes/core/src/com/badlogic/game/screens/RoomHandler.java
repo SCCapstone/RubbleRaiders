@@ -61,6 +61,7 @@ public class RoomHandler {
     //Denotes the starting position of the player relative to where the player is entering.
     public Room level;
     public boolean combatFlag;
+    public boolean eventFlag;
     private Stage stage;
     private Player player;
     private int levelNum;
@@ -75,6 +76,7 @@ public class RoomHandler {
         this.level = new Room();
         this.levelNum = 1;
         this.combatFlag = false;
+        this.eventFlag = false;
         this.numOfGoblins = 0;
         this.remainingGoblin = numOfGoblins;
         try{
@@ -102,22 +104,22 @@ public class RoomHandler {
     public boolean movement() {
 
         // If the player enters a door, then take that player to the new room if that room exists
-        if(!combatFlag && level.X_VAL[0] <= player.playerIcon.getX() &&
+        if(!combatFlag && !eventFlag && level.X_VAL[0] <= player.playerIcon.getX() &&
                 level.X_VAL[0] + 3*level.MOVE >= player.playerIcon.getX() &&
                 level.Y_VAL[0] <= player.playerIcon.getY()) {
             return moveIntoRoom(1);
         }
-        else if(!combatFlag && level.X_VAL[1] <= player.playerIcon.getX() &&
+        else if(!combatFlag && !eventFlag && level.X_VAL[1] <= player.playerIcon.getX() &&
                 level.Y_VAL[1] <= player.playerIcon.getY() &&
                 level.Y_VAL[1] + 3*level.MOVE >= player.playerIcon.getY()) {
             return moveIntoRoom(2);
         }
-        else if(!combatFlag && level.X_VAL[2] >= player.playerIcon.getX() &&
+        else if(!combatFlag && !eventFlag && level.X_VAL[2] >= player.playerIcon.getX() &&
                 level.Y_VAL[2] + 2*level.MOVE >= player.playerIcon.getY() &&
                 level.Y_VAL[2] <= player.playerIcon.getY()) {
             return moveIntoRoom(3);
         }
-        else if(!combatFlag && level.X_VAL[3] <= player.playerIcon.getX() &&
+        else if(!combatFlag && !eventFlag && level.X_VAL[3] <= player.playerIcon.getX() &&
                 level.X_VAL[3] + 3*level.MOVE >= player.playerIcon.getX() &&
                 level.Y_VAL[3] >= player.playerIcon.getY()) {
             return moveIntoRoom(4);
@@ -140,6 +142,7 @@ public class RoomHandler {
         //Room temp = level;
 
         combatFlag = false;
+        eventFlag = false;
 
         //Determines player exit if successful
         int exit = entrance == 1 ? 4 : entrance == 2 ? 3 : entrance == 3 ? 2 : 1;
@@ -302,7 +305,7 @@ public class RoomHandler {
 
         //Generates events
         else if (num > 2) {
-            //TODO: Initiate event handle here.
+            eventFlag = true;
         }
         return 0;
     }

@@ -1,5 +1,5 @@
 Goblin.png
-size: 360, 576
+size: 320, 576
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none

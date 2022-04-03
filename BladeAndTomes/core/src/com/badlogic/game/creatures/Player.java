@@ -40,6 +40,7 @@ public class Player extends Entity {
     private int awareness;
     private int intuition;
     private int gold;
+    public int skillToken = 0;
     private String id;
     private String name;
     public Image playerIcon;
@@ -82,7 +83,7 @@ public class Player extends Entity {
         playerIcon = new Image(new Texture(Gdx.files.internal("PlayerIcon.jpg")));
         playerIcon.setOrigin(playerIcon.getImageWidth()/2, playerIcon.getImageHeight()/2);
         playerIcon.setPosition( Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-        playerIcon.setVisible(false);
+        playerIcon.setVisible(true);
         playerBody(playerIcon);
         moveSquare.setSize(64, 64);
         moveSquare.setPosition(0, 0);

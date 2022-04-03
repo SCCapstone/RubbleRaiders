@@ -101,6 +101,12 @@ public class BladeAndTomes extends Game {
     private transient Animation<TextureRegion> moveRightAnimation;
     private TextureAtlas attackDownTextureAtlas;
     private transient Animation<TextureRegion> attackDownAnimation;
+    private TextureAtlas attackUpTextureAtlas;
+    private transient Animation<TextureRegion> attackUpAnimation;
+    private TextureAtlas attackLeftTextureAtlas;
+    private transient Animation<TextureRegion> attackLeftAnimation;
+    private TextureAtlas attackRightTextureAtlas;
+    private transient Animation<TextureRegion> attackRightAnimation;
     private transient Animation<TextureRegion> currentAnimation;
     public float elapsedTime;
 
@@ -182,7 +188,7 @@ public class BladeAndTomes extends Game {
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
         _bgmusic = new BackGroundMusic();
-        _bgmusic.playMusic();
+        _bgmusic.playOverWorldMusic();
 
         // Inventory Things
         inventoryItems = new Array<>();
@@ -240,6 +246,9 @@ public class BladeAndTomes extends Game {
         manager.load("AnimationFiles/playerMoveLeft.atlas", TextureAtlas.class);
         manager.load("AnimationFiles/playerMoveRight.atlas", TextureAtlas.class);
         manager.load("AnimationFiles/playerAttackDown.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerAttackUp.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerAttackLeft.atlas", TextureAtlas.class);
+        manager.load("AnimationFiles/playerAttackRight.atlas", TextureAtlas.class);
         manager.finishLoading();
         generalTextButtonUpState = manager.get("Text_Button_Up_State.jpg");
         generalTextButtonDownState = manager.get("Text_Button_Down_State.jpg");
@@ -259,6 +268,12 @@ public class BladeAndTomes extends Game {
         moveRightAnimation = new Animation<TextureRegion>(player.getMovement()/5f, moveRightTextureAtlas.getRegions());
         attackDownTextureAtlas = manager.get("AnimationFiles/playerAttackDown.atlas");
         attackDownAnimation = new Animation<TextureRegion>(1/5f, attackDownTextureAtlas.getRegions());
+        attackUpTextureAtlas = manager.get("AnimationFiles/playerAttackUp.atlas");
+        attackUpAnimation = new Animation<TextureRegion>(1/5f, attackUpTextureAtlas.getRegions());
+        attackLeftTextureAtlas = manager.get("AnimationFiles/playerAttackLeft.atlas");
+        attackLeftAnimation = new Animation<TextureRegion>(1/5f, attackLeftTextureAtlas.getRegions());
+        attackRightTextureAtlas = manager.get("AnimationFiles/playerAttackRight.atlas");
+        attackRightAnimation = new Animation<TextureRegion>(1/5f, attackRightTextureAtlas.getRegions());
 
         //Sets up the region to be used
         generalTextButtonUpRegion = new TextureRegion(generalTextButtonUpState);

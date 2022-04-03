@@ -122,6 +122,8 @@ public class Overworld extends ScreenAdapter {
         GAME.resetElapsedTime();
         objectLayerId = 2;
 
+        GAME._bgmusic.playTownMusic();
+
         overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
         collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
