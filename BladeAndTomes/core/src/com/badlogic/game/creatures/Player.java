@@ -83,6 +83,7 @@ public class Player extends Entity {
     public transient Rectangle rangeSquare;
     public boolean isTurn;
     public AtomicInteger tokens;
+    public int skillToken;
 
     public transient InputListener playerInput;
     // For Inventory
@@ -123,6 +124,8 @@ public class Player extends Entity {
         tokens = new AtomicInteger(0);
         playerDefence = 0;
         hasMoved = false;
+
+        skillToken = 0;
 
         playerMovenSound = new playerMoveSound();
         moveSquare = new Rectangle();

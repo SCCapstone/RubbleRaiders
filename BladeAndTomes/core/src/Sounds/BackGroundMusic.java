@@ -27,11 +27,10 @@ public class BackGroundMusic {
             manager.load(music, Music.class);
         }
         manager.finishLoading();
-        playList = new String[]{"new_main_menu_theme.mp3"};
+        //playList = new String[]{"new_main_menu_theme.mp3"};
        musicType = new Random().nextInt(playList.length);
-       test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
+       //test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
         volume  =   0.5f;
-        isMute = true;
         isMute = false;
         music = manager.get(playList[0]);
     }

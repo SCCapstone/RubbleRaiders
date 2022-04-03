@@ -25,8 +25,9 @@ public class Room {
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    public int X_VAL[]; //= {(int) stage.getWidth()/2, (int) stage.getWidth() - MOVE, MOVE*4, (int) stage.getWidth()/2};
-    public int Y_VAL[]; //= {(int) stage.getHeight(), (int) stage.getHeight()/2,  (int) stage.getHeight()/2, MOVE*2};
+    public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*4, Gdx.graphics.getWidth()/2};
+    public int Y_VAL[] = {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2, MOVE * 2};
+
 
     /**
      * Public constructor for creating a room. Usually just a blank, default room

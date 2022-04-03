@@ -408,7 +408,7 @@ public class Overworld extends ScreenAdapter {
     }
 
     public void interactUI(){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E) ){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory()) ){
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.NPCBuyerInventory(false,npcBuyer);
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
