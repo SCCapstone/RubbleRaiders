@@ -75,6 +75,11 @@ public class Overworld extends ScreenAdapter {
     Table quitTable;
     InputListener escapePauseOver;
 
+    BodyDef playerBodyDef;
+    Body playerBody;
+    PolygonShape playerShape;
+    FixtureDef fixtureDef;
+
     playerMoveSound playerMovenSound;
 
     Point NPC_Cords;
@@ -145,39 +150,22 @@ public class Overworld extends ScreenAdapter {
         //System.out.println(overWorldMap.getTileSets().getTileSet(1).getTile(2).getOffsetX());
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
-        world = new World(new Vector2(-1f, -1f),true);
+        world = new World(new Vector2(0, 0),true);
         //world.setContactFilter();
 
         // Following below sets up our player box. Its density, and friction when hitting other boxes.
-        BodyDef playerBodyDef = new BodyDef();
+        playerBodyDef = new BodyDef();
         playerBodyDef.type = BodyDef.BodyType.DynamicBody;
         playerBodyDef.position.set(GAME.vec.x, GAME.vec.y);
 
-        Body playerBody = world.createBody(playerBodyDef);
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)< GAME.stageInstance.getHeight())
-                GAME.vec.add(0,GAME.speed);
-                //playerBody.applyLinearImpulse(GAME.speed,GAME.vec.x, GAME.vec.y, false);
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
-            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)< GAME.stageInstance.getHeight())
-                GAME.vec.add(0,-GAME.speed);
-                playerBodyDef.linearVelocity.set(0, -GAME.speed);
-        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
-            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)< GAME.stageInstance.getWidth())
-                GAME.vec.add(-GAME.speed,0);
-                playerBodyDef.linearVelocity.set(-GAME.speed,0);
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
-            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)< GAME.stageInstance.getWidth())
-                GAME.vec.add(GAME.speed,0);
-                playerBodyDef.linearVelocity.set(GAME.speed, 0);
-        }
-        PolygonShape playerShape = new PolygonShape();
-        playerShape.setAsBox(GAME.player.playerIcon.getX() / 10, GAME.player.playerIcon.getY() / 10);
+        playerBody = world.createBody(playerBodyDef);
+        //playerBody.setLinearVelocity(0,0);
+        playerShape = new PolygonShape();
+        playerShape.setAsBox(GAME.player.playerIcon.getWidth() / 2f, GAME.player.playerIcon.getHeight() / 2f);
         System.out.println(GAME.player.playerIcon.getX());
         System.out.println(GAME.vec.x);
 
-        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef = new FixtureDef();
         fixtureDef.shape = playerShape;
         fixtureDef.restitution = 0.0f;
         fixtureDef.friction = 0.0f;
@@ -185,7 +173,6 @@ public class Overworld extends ScreenAdapter {
 
         playerBody.createFixture(fixtureDef);
         playerShape.dispose();
-        //playerBod(GAME.vec.x, GAME.vec.y);
         worldRender = new Box2DDebugRenderer();
 
         parseCollision();
@@ -496,38 +483,17 @@ public class Overworld extends ScreenAdapter {
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
             if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)< GAME.stageInstance.getHeight())
-                GAME.vec.add(0,GAME.speed);
-            //playerBodyDef.linearVelocity.set(0, GAME.speed);
+                playerBody.setLinearVelocity(0, GAME.speed);
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
             if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)< GAME.stageInstance.getHeight())
-                GAME.vec.add(0,-GAME.speed);
-            //playerBodyDef.linearVelocity.set(0, -GAME.speed);
+                playerBody.setLinearVelocity(0, -GAME.speed);
         }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
             if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)< GAME.stageInstance.getWidth())
-                GAME.vec.add(-GAME.speed,0);
-            //playerBodyDef.linearVelocity.set(-GAME.speed,0);
+                playerBody.setLinearVelocity(-GAME.speed, 0);
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
             if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)< GAME.stageInstance.getWidth())
-                GAME.vec.add(GAME.speed,0);
-            //playerBodyDef.linearVelocity.set(GAME.speed, 0);
+                playerBody.setLinearVelocity(GAME.speed, 0);
         }
-        /*
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            if(GAME.vec.y+GAME.speed>=0&&(GAME.vec.y+GAME.speed)<GAME.stageInstance.getHeight())
-            GAME.vec.add(0,GAME.speed);
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
-            if(GAME.vec.y-GAME.speed>=0&&(GAME.vec.y-GAME.speed)<GAME.stageInstance.getHeight())
-                GAME.vec.add(0,-GAME.speed);
-        }else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
-            if(GAME.vec.x-GAME.speed>=0&&(GAME.vec.x-GAME.speed)<GAME.stageInstance.getWidth())
-                GAME.vec.add(-GAME.speed,0);
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
-            if(GAME.vec.x+GAME.speed>=0&&(GAME.vec.x+GAME.speed)<GAME.stageInstance.getWidth())
-                GAME.vec.add(GAME.speed,0);
-        }
-        System.out.println(GAME.vec.x+"\t\t"+GAME.vec.y+"\t\t\t"+ GAME.stageInstance.getViewport().getScreenWidth());
-
-         */
     }
 
         //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);

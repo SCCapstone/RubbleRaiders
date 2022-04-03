@@ -384,7 +384,7 @@ public class BladeAndTomes extends Game {
             if(vec.x+speed>=0&&(vec.x+speed)<stageInstance.getWidth())
                 vec.add(speed,0);
         }
-        System.out.println(vec.x+"\t\t"+vec.y+"\t\t\t"+ stageInstance.getViewport().getScreenWidth());
+        //System.out.println(vec.x+"\t\t"+vec.y+"\t\t\t"+ stageInstance.getViewport().getScreenWidth());
     }
 
     public void playerMovement() {
