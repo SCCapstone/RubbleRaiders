@@ -1,6 +1,5 @@
 package com.badlogic.game.screens;
 
-import Keyboard_Mouse_Controls.SaveLoadGame;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
@@ -8,16 +7,15 @@ import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
 import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.game.creatures.Goblin;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -25,7 +23,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -38,8 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Scaling;
-import jdk.tools.jmod.Main;
 
 import java.awt.*;
 
@@ -129,14 +124,31 @@ public class Overworld extends ScreenAdapter {
 
     TreasureChestUI chest;
     int counter;
+    Rectangle townHall;
+    float prePlayerLocX;
+    float prePlayerLocY;
+    boolean nearTownHall ;
+    boolean nearBuyerTrader ;
+    boolean nearSellerTrader ;
+
+    Label townHallMSG;
     // Helpful Collision Detection Tutorials (NOT IMPLEMENTED IN CODE YET)
     // TODO: IMPLEMENT THESE IN CODE
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
 
     public Overworld (final BladeAndTomes game) {
-        Scaling.fit.apply(1920, 1200, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+        // Displays TownHall Interact msg
+        townHallMSG = new Label("Press "+  game.controls.getTradeMenu() +" To See Quest Board", game.BaseLabelStyle2);
+        nearTownHall = false;
+        nearBuyerTrader = false;
+        nearSellerTrader = false;
+
+    //    Scaling.fit.apply(1920, 1200, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+//        resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
         game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+        game.player.playerIcon.setPosition(1920/2,1080/2);
 
         counter = 0;
 
@@ -165,7 +177,6 @@ public class Overworld extends ScreenAdapter {
 
         collidedX = false;
         collidedY = false;
-
         /*
         // Assets were obtained from below source
         // https://merchant-shade.itch.io/16x16-mini-world-sprites
@@ -297,92 +308,39 @@ public class Overworld extends ScreenAdapter {
             }
         }
 
-
+        townHall = new Rectangle(125,725,250,260);
+//        TownHallTable.setBounds(125,725,260,260);
+        TownHallTable.setDebug(true);
+        GAME.stageInstance.addActor(TownHallTable);
+        shapeRenderer = new ShapeRenderer();
+        prePlayerLocX = GAME.player.playerIcon.getX();
+        prePlayerLocY = GAME.player.playerIcon.getY();
+        GAME.stageInstance.addActor(townHallMSG);
+        townHallMSG.setPosition(townHall.getX()+ townHall.width-200,townHall.getY()+ townHall.height-200);
+        townHallMSG.setVisible(false);
     }
+    ShapeRenderer shapeRenderer;
 
-    public void nextTutorial() {
-        switch (tutorialStep) {
-            case 1:
-                GAME.stageInstance.addActor(tutorialMessage);
-                GAME.stageInstance.addActor(next);
-                break;
-            case 2: //Inventory screen
-                tutorialMessage.setText("Click 'E' to access your Inventory.\n\n Here you can view your items\n and equip armour or potions by\n" +
-                        "dragging them into the bottom slots.\n\nDrag an item from the 5 slots\nin the upper left hand corner into\na slot in this Inventory.");
-                tutorialMessage.setSize(300f, 300f);
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 4 - 50, GAME.stageInstance.getHeight() / 2);
-                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
-                break;
-            case 3: //Equipped Quests
-                tutorialMessage.setText("Click on the 'Quests' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
-                        " Buying quests will \nbe explained soon.");
-                tutorialMessage.setSize(300f, 200f);
-                break;
-            case 4: //Upgrading skills
-                tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
-                break;
-            case 5: //Quests Buying and Selling
-                tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
-                        "\n\nClick 'Q' to exit quests.");
-                tutorialMessage.setPosition(80, GAME.stageInstance.getHeight()/2);
-                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
-                break;
-            case 6: //Buy items
-                tutorialMessage.setText("Click 'T' to buy items\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
-                break;
-            case 7: //enter dungeon
-                tutorialMessage.setText("Now it's time to fight!\n\nUsing the arrow keys, walk into\nthe portal at the bottom of town\n to enter the dungeon.");
-                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
-                tutorialMessage.setSize(300f, 200f);
-                next.remove();
-                break;
-            case 8: //final explanation
-                GAME.stageInstance.addActor(tutorialMessage);
-                GAME.stageInstance.addActor(next);
-                next.setText("Exit");
-                tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
-                break;
-            case 9:
-                GAME.stageInstance.clear();
-                dispose();
-                GAME.setScreen(new MainMenu(GAME));
-                break;
-        }
-    }
+
+    Table TownHallTable = new Table();
 
     @Override
     public void render(float delta) {
 
-
+//        TownHallTable.setPosition(500,500);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        shapeRenderer.setAutoShapeType(true);
+
+        if(GAME.player.moveSquare.overlaps(townHall))
+            System.out.println("Overlaps");
+
 
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         renderer.render();
-//        MapObjects objects = collisionLayer.getProperties().getKeys().toString();
-//        System.out.println(collisionLaye);
-
-//
-//        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-//            System.out.println("working");
-//
-//            Rectangle rectangle = rectangleObject.getRectangle();
-//            Rectangle player = new Rectangle(GAME.player.playerIcon.getX(),GAME.player.playerIcon.getY(),
-//                    GAME.player.playerIcon.getImageWidth(),GAME.player.playerIcon.getImageHeight());
-//            if (Intersector.overlaps(rectangle,player)) {
-//
-//            }else {
-//            }
-//            // collision happened
-//        }
-        //worldRender.render(world, camera.combined);
-        //parseCollision();
-
-        // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
+//        GAME.stageInstance.addActor(townHall.);
 
         GAME.batch.begin();
-
         GAME.runPlayerAnimation();
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             GAME.resetElapsedTime();
@@ -435,9 +393,30 @@ public class Overworld extends ScreenAdapter {
         // Displays Hidden Inventory Table
 
         // COMMENT THIS CODE TO GET TRADING WORKING
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E) && !isNpcSellerVisible && !isNpcBuyerVisible&&!isQuestBoardTradeVisible)
+
+        // Updates Elements for QuestBord
+        if(isQuestBoardTradeVisible){
+            questBoardTrade.render();
+        }
+        GAME.overlays.render();
+//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
+        GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
+        prePlayerLocX = GAME.player.playerIcon.getX();
+        prePlayerLocY = GAME.player.playerIcon.getY();
+        interactUI();
+        townHallMSG.setVisible(nearTownHall);
+        System.out.println(nearTownHall);
+
+    }
+
+    public void interactUI(){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E) ){
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
-        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& !isNpcBuyerVisible){
+        }
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&&nearSellerTrader){
             isNpcSellerVisible =!isNpcSellerVisible;
             isQuestBoardTradeVisible =false;
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
@@ -445,43 +424,94 @@ public class Overworld extends ScreenAdapter {
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
+        } else if(!nearSellerTrader){
+            isNpcSellerVisible =false;
+            GAME.overlays.NPCSellerInventory(isNpcSellerVisible,npcSeller);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)&& !isNpcSellerVisible){
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)&&nearBuyerTrader){
             isNpcBuyerVisible =!isNpcBuyerVisible;
             isQuestBoardTradeVisible =false;
             GAME.overlays.NPCSellerInventory(false,npcSeller);
             GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
             GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
+        } else if(!nearBuyerTrader){
+            isNpcBuyerVisible = false;
+            GAME.overlays.NPCBuyerInventory(isNpcBuyerVisible,npcBuyer);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)&& !isNpcSellerVisible){
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&& nearTownHall){
             isQuestBoardTradeVisible = !isQuestBoardTradeVisible;
+            GAME.overlays.setHiddenTableVisibility(false);
             GAME.overlays.NPCSellerInventory(false,npcSeller);
+            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
             GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
-            GAME.overlays.setHiddenTableVisibility(false);
-            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+
+        } else if(!nearTownHall){
+            isQuestBoardTradeVisible = false;
+            GAME.overlays.setQuestBoardTradeVisibility(isQuestBoardTradeVisible,questBoardTrade);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.C)&& !isNpcSellerVisible){
-            isQuestBoardTradeVisible =     //Save all player data including name, stats, inventory
-            !isQuestBoardTradeVisible;
-            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
-            GAME.overlays.setHiddenTableVisibility(false);
-            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
-            chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
-            GAME.overlays.displayChest(chest);
-        }
-
-        // Updates Elements for QuestBord
-        if(isQuestBoardTradeVisible){
-            questBoardTrade.render();
-        }
-
-        GAME.overlays.render();
-//        System.out.println(GAME.player.inventoryItems.get(GAME.currentInventorySelection).getDamage());
-
-        GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
-
+//        if(Gdx.input.isKeyJustPressed(GAME.controls.getTradeMenu())&&near ){
+//            isQuestBoardTradeVisible =     //Save all player data including name, stats, inventory
+//                    !isQuestBoardTradeVisible;
+//            GAME.overlays.setQuestBoardTradeVisibility(false,questBoardTrade);
+//            GAME.overlays.setHiddenTableVisibility(false);
+//            GAME.overlays.NPCBuyerInventory(false,npcBuyer);
+//            chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
+//            GAME.overlays.displayChest(chest);
+//        }
     }
+    public void nextTutorial() {
+        switch (tutorialStep) {
+            case 1:
+                GAME.stageInstance.addActor(tutorialMessage);
+                GAME.stageInstance.addActor(next);
+                break;
+            case 2: //Inventory screen
+                tutorialMessage.setText("Click 'E' to access your Inventory.\n\n Here you can view your items\n and equip armour or potions by\n" +
+                        "dragging them into the bottom slots.\n\nDrag an item from the 5 slots\nin the upper left hand corner into\na slot in this Inventory.");
+                tutorialMessage.setSize(300f, 300f);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 4 - 50, GAME.stageInstance.getHeight() / 2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
+                break;
+            case 3: //Equipped Quests
+                tutorialMessage.setText("Click on the 'Quests' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
+                        " Buying quests will \nbe explained soon.");
+                tutorialMessage.setSize(300f, 200f);
+                break;
+            case 4: //Upgrading skills
+                tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
+                break;
+            case 5: //Quests Buying and Selling
+                tutorialMessage.setText("Click 'Q' to buy and\nsell quests.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
+                        "\n\nClick 'Q' to exit quests.");
+                tutorialMessage.setPosition(80, GAME.stageInstance.getHeight()/2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
+                break;
+            case 6: //Buy items
+                tutorialMessage.setText("Click 'T' to buy items\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
+                break;
+            case 7: //enter dungeon
+                tutorialMessage.setText("Now it's time to fight!\n\nUsing the arrow keys, walk into\nthe portal at the bottom of town\n to enter the dungeon.");
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
+                tutorialMessage.setSize(300f, 200f);
+                next.remove();
+                break;
+            case 8: //final explanation
+                GAME.stageInstance.addActor(tutorialMessage);
+                GAME.stageInstance.addActor(next);
+                next.setText("Exit");
+                tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
+                break;
+            case 9:
+                GAME.stageInstance.clear();
+                dispose();
+                GAME.setScreen(new MainMenu(GAME));
+                break;
+        }
+    }
+
 
         //GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
 
@@ -491,16 +521,6 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // stageInstance.getViewport().update(width, height, true);
-        // following code is an update from anri, Helping to correct some minor aspect issues in the game
-        Vector2 size = Scaling.fit.apply(1920, 1200, width, height);
-        int viewportX = (int) (width - size.x) / 2;
-        int viewportY = (int) (height - size.y) / 2;
-        int viewportWidth = (int) size.x;
-        int viewportHeight = (int) size.y;
-        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-        GAME.stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
-        GAME.stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
    }
 
     @Override
@@ -533,31 +553,68 @@ public class Overworld extends ScreenAdapter {
     //sets boundaries in the overworld
     //based off of Aidan Emmons boundary method for dungeon
     public boolean isCollisionHandled(Player player, Stage stage) {
-        if (player.playerIcon.getX() <= 2 * MOVE_DISTANCE) {
+        if (player.playerIcon.getX() <=  MOVE_DISTANCE) {
 
             player.playerIcon.setPosition(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() + MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
 
-        } else if (player.playerIcon.getY() <= 2 * MOVE_DISTANCE) {
+        } else if (player.playerIcon.getY() <=  MOVE_DISTANCE) {
 
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() + MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
 
-        } else if (player.playerIcon.getX() >= stage.getWidth() - 2 * MOVE_DISTANCE) {
+        } else if (player.playerIcon.getX() >=1920-MOVE_DISTANCE) {
 
             player.playerIcon.setPosition(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY());
             player.moveSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
 
-        } else if (player.playerIcon.getY() >= stage.getHeight() - 2 * MOVE_DISTANCE) {
+        } else if (player.playerIcon.getY() >= 1080-MOVE_DISTANCE) {
 
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - MOVE_DISTANCE);
             player.interactSquare.setPosition(player.moveSquare.getX() - MOVE_DISTANCE, player.moveSquare.getY() - MOVE_DISTANCE);
         }
+        TownHallCollision(player,stage);
         return true;
+    }
+
+    public void movePlayer(Player player, float MOVE_DISTANCE_X, float MOVE_DISTANCE_Y){
+        player.playerIcon.setPosition(player.playerIcon.getX()+MOVE_DISTANCE_X, player.playerIcon.getY() + MOVE_DISTANCE_Y);
+        player.moveSquare.setPosition(player.moveSquare.getX()+MOVE_DISTANCE_X, player.moveSquare.getY() + MOVE_DISTANCE_Y);
+        player.interactSquare.setPosition(player.moveSquare.getX()+MOVE_DISTANCE_X , player.moveSquare.getY()  + MOVE_DISTANCE_Y);
+    }
+
+    public boolean BlockEPhi(Player player, float locX_1, float locX_2,
+                                         float locY_1, float locY_2){
+        float moveBackX = 0;
+        float moveBackY = 0;
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp())){
+            moveBackY = - MOVE_DISTANCE;
+        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveDown())){
+            moveBackY =  MOVE_DISTANCE;
+        } else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveRight())){
+            moveBackX = - MOVE_DISTANCE;
+        } else if(Gdx.input.isKeyJustPressed(GAME.controls.getMoveLeft())){
+            moveBackX =  MOVE_DISTANCE;
+        }
+
+        if(checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 )&&checkBlock(player.playerIcon.getY(),locY_1 ,locY_2 ))
+            movePlayer(player,moveBackX,moveBackY);
+        if(checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 )&&checkBlock(player.playerIcon.getY(),locY_1 ,locY_2 ))
+            player.playerIcon.setPosition(prePlayerLocX , prePlayerLocY);
+        System.out.println(player.playerIcon.getY()+MOVE_DISTANCE+"\t"+locY_1);
+        return checkBlock(player.playerIcon.getY()+MOVE_DISTANCE,locY_1 ,locY_2 )&&checkBlock(player.playerIcon.getX(),locX_1 ,locX_2 );
+
+    }
+    public void TownHallCollision(Player player,Stage stage){
+      nearTownHall =  BlockEPhi(player, townHall.getX(), townHall.getX()+townHall.width,townHall.getY(),townHall.getY()+townHall.height);
+    }
+
+    public boolean checkBlock(float plyLoc, float buildingLoc0, float buildingLoc1){
+        return plyLoc>(buildingLoc0) && plyLoc<(buildingLoc1);
     }
 
     // Very helpful guide on setting up tile collisions from following source

@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -114,6 +115,8 @@ public class BladeAndTomes extends Game {
     public static boolean enterDungeon;
     public static boolean exitDungeon;
 
+//    Rectangle townHall;
+
     private final AssetManager manager = new AssetManager();
 
     public static class quest {
@@ -175,7 +178,7 @@ public class BladeAndTomes extends Game {
         // Adjusting this to a scale viewport for now on
         // Anri suggested checking out tabnine for libgdx. Found a solution with following line
         // specifically changing viewport to ScalingViewport
-        stageInstance = new Stage(new ScalingViewport(Scaling.fit, 1920, 1200));
+        stageInstance = new Stage(new ScalingViewport(Scaling.fit, 1920, 1080));
 
         //Sets upstate and downstate textures for texture Buttons
         assets.load("Text_Button_Up_State.jpg",Texture.class);
@@ -334,21 +337,21 @@ public class BladeAndTomes extends Game {
         this.height = height;
         // stageInstance.getViewport().update(width, height, true);
         // following code is an update from anri, Helping to correct some minor aspect issues in the game
-        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
-        int viewportX = (int) (width - size.x) / 2;
-        int viewportY = (int) (height - size.y) / 2;
-        int viewportWidth = (int) size.x;
-        int viewportHeight = (int) size.y;
-        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-        stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
-        stageInstance.getViewport().setScreenSize(viewportWidth, viewportHeight);
-
-        if (width < 1280) {
-            Gdx.graphics.setWindowedMode(1280, height);
-        }
-        if (height < 720) {
-            Gdx.graphics.setWindowedMode(width, 720);
-        }
+//        Vector2 size = Scaling.fit.apply(1920, 1080, width, height);
+//        int viewportX = (int) (width - size.x) / 2;
+//        int viewportY = (int) (height - size.y) / 2;
+//        int viewportWidth = (int) size.x;
+//        int viewportHeight = (int) size.y;
+//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+//        stageInstance.getViewport().update(viewportWidth, viewportHeight, true);
+        stageInstance.getViewport().update(width, height);
+//
+//        if (width < 1280) {
+//            Gdx.graphics.setWindowedMode(1280, height);
+//        }
+//        if (height < 720) {
+//            Gdx.graphics.setWindowedMode(width, 720);
+//        }
     }
 
     /**
