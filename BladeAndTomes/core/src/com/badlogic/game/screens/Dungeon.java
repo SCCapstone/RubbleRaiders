@@ -402,15 +402,15 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
 
-        if(!roomHandler.combatFlag &&
-            roomHandler.level.getMapID() == 1) {
+        if (!roomHandler.combatFlag &&
+                roomHandler.level.getMapID() == 1) {
             roomHandler.combatFlag = true;
             roomHandler.spawnGoblin();
         }
 
         //The code for adding columns and how to put things into the Window
         //is based off of Alex Facer's code for the Windows and Menus
-        if(roomHandler.level.getMapID() == 10 &&
+        if (roomHandler.level.getMapID() == 10 &&
                 GAME.GRID_X[10] == GAME.player.playerIcon.getX() &&
                 GAME.GRID_Y[5] == GAME.player.playerIcon.getY() && !safeGuard) {
             GAME.stageInstance.setKeyboardFocus(null);
@@ -422,57 +422,55 @@ public class Dungeon extends ScreenAdapter {
             safeGuard = true;
         }
 
-        if(roomHandler.level.getMapID() == 2) {
+        if (roomHandler.level.getMapID() == 2) {
             //TODO: Set up chest properly
             roomHandler.checkTouchChest();
             //GAME.chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
             //GAME.overlays.displayChest(chest);
         }
 
-
-        GAME.batch.begin();
-        GAME.runPlayerAnimation();
-        //Tutorial checks
-        if(MainMenu.isTutorial && roomHandler.eventFlag && tutorialStep != 1){ //chest
-            setTutorial(5);
-            nextTutorial();
-        }
-        if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) { //combat
-            setTutorial(2);
-            nextTutorial();
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            GAME.resetElapsedTime();
-            GAME.runMoveUpAnimation();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            GAME.resetElapsedTime();
-            GAME.runMoveDownAnimation();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            GAME.resetElapsedTime();
-            GAME.runMoveLeftAnimation();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            GAME.resetElapsedTime();
-            GAME.runMoveRightAnimation();
-        }
-        if(roomHandler.combatFlag) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-                GAME.resetElapsedTime();
-                GAME.runAttackDownAnimation();
+        if(!GAME.showHiddenInventory) {
+            GAME.batch.begin();
+            GAME.runPlayerAnimation();
+            //Tutorial checks
+            if (MainMenu.isTutorial && roomHandler.eventFlag && tutorialStep != 1) { //chest
+                setTutorial(5);
+                nextTutorial();
             }
-        }
-        goblins = roomHandler.getGoblins();
-        if(goblins.length > 0){
-            for(Goblin goblin: goblins) {
-                if(goblin != null) {
-                    goblin.runAnimation(GAME);
+            if (MainMenu.isTutorial && roomHandler.combatFlag && combatExplained == false) { //combat
+                setTutorial(2);
+                nextTutorial();
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                GAME.resetElapsedTime();
+                GAME.runMoveUpAnimation();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                GAME.resetElapsedTime();
+                GAME.runMoveDownAnimation();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                GAME.resetElapsedTime();
+                GAME.runMoveLeftAnimation();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                GAME.resetElapsedTime();
+                GAME.runMoveRightAnimation();
+            }
+            if (roomHandler.combatFlag) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                    GAME.resetElapsedTime();
+                    GAME.runAttackDownAnimation();
                 }
             }
+            goblins = roomHandler.getGoblins();
+            if (goblins.length > 0) {
+                for (Goblin goblin : goblins) {
+                    if (goblin != null) {
+                        goblin.runAnimation(GAME);
+                    }
+                }
+            }
+            GAME.batch.end();
         }
-        GAME.batch.end();
         //inventory.update();
         GAME.overlays.setOverLayesVisibility(true);
 
@@ -750,7 +748,7 @@ public class Dungeon extends ScreenAdapter {
             deathMenu.add(deathChoices[0], deathChoices[1]).center();
             //GAME.setScreen(new Overworld(GAME));
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory()))
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
 
         GAME.overlays.render();

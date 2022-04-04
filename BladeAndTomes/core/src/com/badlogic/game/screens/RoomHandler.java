@@ -121,7 +121,7 @@ public class RoomHandler {
         this.selectionImage = new Image(new Texture(Gdx.files.internal("selection.png")));
 
         //level.setStage(stage);
-        player.playerIcon.setVisible(true);
+        //player.playerIcon.setVisible(true);
 
         // Textures rendered in for our event
         // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
