@@ -9,7 +9,7 @@ public class LoadSaveManager {
     private String saveFilePath;
 
     public LoadSaveManager(){
-        saveFilePath = ".1";
+        saveFilePath = ".BladeAndTomesSave";
         load = new Load(saveFilePath);
         load.loadFourPreSets();
         save=new Save(saveFilePath,load.getFourPlayers());

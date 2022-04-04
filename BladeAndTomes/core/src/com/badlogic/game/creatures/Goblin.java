@@ -183,7 +183,7 @@ public class Goblin extends Enemy{
         resetElapsedTime();
         runAttackAnimation();
         int hitRoll = (int)(Math.random()*(20)+1);
-        if (hitRoll >= player.getArmorPoints()) {
+        if (hitRoll >= player.getArmorPoints() + player.playerDefence) {
            return (int)(Math.random()*(3)+1);
         }
         else {
