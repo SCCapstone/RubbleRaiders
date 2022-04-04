@@ -130,9 +130,9 @@ public class Overworld extends ScreenAdapter {
         // Displays TownHall Interact msg
         // The labels part of anris work for trading and selling
         // Is also piggybacking off of collision
-        townHallMSG = new Label("Press "+  Input.Keys.toString(game.controls.getTradeMenu()) +" to buy things", game.BaseLabelStyle2);
+        townHallMSG = new Label("Press "+  Input.Keys.toString(game.controls.getTradeMenu()) +" to sell things", game.BaseLabelStyle2);
         questBoardMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to get a quest", game.BaseLabelStyle2);
-        traderMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to sell things here!", game.BaseLabelStyle2);
+        traderMSG = new Label("Press " + Input.Keys.toString(game.controls.getTradeMenu()) + " to buy things here!", game.BaseLabelStyle2);
         nearTownHall = false;
         nearBuyerTrader = false;
         nearSellerTrader = false;
@@ -361,19 +361,19 @@ public class Overworld extends ScreenAdapter {
         //how player enters dungeon through the portal
         //I followed Anirudh Oruganti's method for the NPC interation in the overworld
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
-            GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
             BladeAndTomes.enterDungeon = true;
             BladeAndTomes.exitDungeon = false;
+            GAME.player.playerIcon.removeListener(escapePauseOver);
             GAME.setScreen(new Dungeon(GAME));
         }
         if((int)(GAME.player.moveSquare.getX()-Portal_Cords.getLocation().x)/100 == 0 &&(int)(GAME.player.moveSquare.getY()-Portal_Cords.getLocation().y)/100 == 0){
-            GAME.stageInstance.removeListener(escapePauseOver);
             GAME.stageInstance.clear();
             dispose();
             BladeAndTomes.enterDungeon = true;
             BladeAndTomes.exitDungeon = false;
+            GAME.player.playerIcon.removeListener(escapePauseOver);
             GAME.setScreen(new Dungeon(GAME));
         }
 
@@ -603,7 +603,7 @@ public class Overworld extends ScreenAdapter {
                 tutorialMessage.setText("Walk up to the board in the middle\nof town and click 'T'.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
                         "\n\nClick 'Q' to exit quests.");
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2+300);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2, GAME.stageInstance.getHeight()/2+300);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
             case 6: //Buy items

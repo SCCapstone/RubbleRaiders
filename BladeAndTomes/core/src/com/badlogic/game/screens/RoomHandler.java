@@ -35,7 +35,7 @@ public class RoomHandler {
 
     private boolean exitAvailable;
     private boolean endOfLevel;
-    private boolean chestVisible;
+    public static boolean chestVisible;
 
     private float levelMultiplier;
 

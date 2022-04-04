@@ -201,6 +201,8 @@ public class Dungeon extends ScreenAdapter {
         });
         if(MainMenu.isTutorial){
             nextTutorial();
+            GAME.player.setBruteforce(30);
+            GAME.player.setHealthPoints(100);
             //if goblin in room, set step to 2 to explain combat
         }
 
@@ -314,6 +316,7 @@ public class Dungeon extends ScreenAdapter {
                 pauseMenu.clear();
                 pauseMenu.remove();
                 dispose();
+                BladeAndTomes.exitDungeon = true;
                 GAME.setScreen(new Overworld(GAME));
 
         deathNotice = new Label("You have died!", GAME.generalLabelStyle);
@@ -432,7 +435,7 @@ public class Dungeon extends ScreenAdapter {
             GAME.batch.begin();
             GAME.runPlayerAnimation();
             //Tutorial checks
-            if (MainMenu.isTutorial && roomHandler.eventFlag && tutorialStep != 1) { //chest
+            if (MainMenu.isTutorial && roomHandler.level.getMapID() == 2 && tutorialStep != 1) { //chest
                 setTutorial(5);
                 nextTutorial();
             }
@@ -741,10 +744,10 @@ public class Dungeon extends ScreenAdapter {
             GAME.setScreen(new Overworld(GAME));
 
             GAME.stageInstance.setKeyboardFocus(null);
-            GAME.stageInstance.addActor(deathMenu);
-            deathMenu.add(deathNotice).center().colspan(3);
-            deathMenu.row();
-            deathMenu.add(deathChoices[0], deathChoices[1]).center();
+            //GAME.stageInstance.addActor(deathMenu);
+            //deathMenu.add(deathNotice).center().colspan(3);
+            //deathMenu.row();
+            //deathMenu.add(deathChoices[0], deathChoices[1]).center();
             //GAME.setScreen(new Overworld(GAME));
         }
         if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory()))

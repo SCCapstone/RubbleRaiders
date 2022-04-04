@@ -130,6 +130,7 @@ public class BladeAndTomes extends Game {
 
     public static boolean enterDungeon;
     public static boolean exitDungeon;
+    public static boolean isChest;
 
 //    Rectangle townHall;
 
@@ -170,6 +171,7 @@ public class BladeAndTomes extends Game {
         dnd = new DragAndDrop();
         enterDungeon = false;
         exitDungeon = false;
+        isChest = false;
 
         loadSaveManager = new LoadSaveManager();
         controls = loadSaveManager.getSettings();
