@@ -75,8 +75,13 @@ public class Settings extends ScreenAdapter {
 
         optionSpace = 150; optionWidth = 256f; optionHeight = 128f; optionLocX = 800f; optionLocY = 760f;
 
-        Texture background = new Texture(Gdx.files.internal("DungeonRooms/EWRoom.png"));
+        //image
+        //https://www.freepik.com/vectors/dungeon
+        // Dungeon vector created by upklyak - www.freepik.com
+        Texture background = new Texture(Gdx.files.internal("Settings.jpg"));
         backgroundImage = new Image(background);
+        backgroundImage.setSize(GAME.stageInstance.getWidth(), GAME.stageInstance.getHeight());
+        GAME.stageInstance.addActor(backgroundImage);
 
         settingsMusicLabel = new Label("Music Volume",GAME.generalLabelStyle);
         settingsMusicLabel.setAlignment(1,2);
@@ -141,7 +146,7 @@ public class Settings extends ScreenAdapter {
             }
         });
         //keybinding for Interact on settings page
-        tradeLabel = new Label("Trade", GAME.generalLabelStyle);
+        tradeLabel = new Label("Building\nInteractions", GAME.generalLabelStyle);
         tradeLabel.setAlignment(1,2);
         tradeKey = new TextField(Input.Keys.toString(menuCont.getTradeMenu()), GAME.generalTextFieldStyle);
         tradeKey.setMaxLength(1);
@@ -182,7 +187,7 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        fightLabel = new Label("Quests and\nCombat", GAME.generalLabelStyle);
+        fightLabel = new Label("Combat", GAME.generalLabelStyle);
         fightLabel.setAlignment(1,2);
         fightKey = new TextField(Input.Keys.toString(menuCont.getFightAction()), GAME.generalTextFieldStyle);
         fightKey.setMaxLength(1);
