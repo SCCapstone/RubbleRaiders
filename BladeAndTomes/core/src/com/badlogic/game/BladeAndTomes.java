@@ -196,7 +196,8 @@ public class BladeAndTomes extends Game {
 
         //Used BackgroundMusic created and designed by Anirudh Oruganti and moved it to the backbone
         //to fix pause menu glitch.
-        _bgmusic = new BackGroundMusic();
+        _bgmusic = new
+                BackGroundMusic();
         _bgmusic.playOverWorldMusic();
 
         // Inventory Things

@@ -29,7 +29,6 @@ public class BackGroundMusic {
         manager.finishLoading();
         //playList = new String[]{"new_main_menu_theme.mp3"};
        musicType = new Random().nextInt(playList.length);
-       //test = Gdx.audio.newMusic(Gdx.files.internal(playList[musicType]));
         volume  =   0.5f;
         isMute = false;
         music = manager.get(playList[0]);
@@ -39,8 +38,8 @@ public class BackGroundMusic {
 
     public void setVolume(float newVolume){
         volume = newVolume;
-        test.setVolume(volume);
-        test.play();
+        music.setVolume(volume);
+        music.play();
     }
 
     public void setMute(boolean mute){
@@ -57,9 +56,12 @@ public class BackGroundMusic {
         music.play();
     }
 
+
+
     public void playDungeonMusic(){
         // Music from: https://opengameart.org/content/the-dunjiin
         music.dispose();
+        music.stop();
         music = manager.get(playList[1]);
         music.play();
         music.setLooping(true);
