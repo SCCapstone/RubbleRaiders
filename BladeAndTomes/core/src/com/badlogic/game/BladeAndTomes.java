@@ -389,7 +389,7 @@ public class BladeAndTomes extends Game {
         //Animation code was created by Miller Banford
         player.setElapsedTime(elapsedTime);
         if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
-        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY());
+        batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(),64 ,64);
     }
 
     public void runMoveDownAnimation() { currentAnimation = moveDownAnimation; }

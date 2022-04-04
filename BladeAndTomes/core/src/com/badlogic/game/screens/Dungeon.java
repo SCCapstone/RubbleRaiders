@@ -704,6 +704,7 @@ public class Dungeon extends ScreenAdapter {
                 }
             });
         }
+        
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
 
         //If player is dead, return to the OverWorld
