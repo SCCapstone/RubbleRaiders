@@ -1,0 +1,27 @@
+
+Goblin.png
+size: 360, 576
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Goblin01
+  rotate: false
+  xy: 0, 320
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Goblin02
+  rotate: false
+  xy: 64, 320
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Goblin03
+  rotate: false
+  xy: 128, 320
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
