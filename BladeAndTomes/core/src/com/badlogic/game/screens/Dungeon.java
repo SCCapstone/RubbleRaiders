@@ -30,7 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Json;
-import jdk.tools.jmod.Main;
 
 import java.util.HashMap;
 
@@ -68,6 +67,7 @@ public class Dungeon extends ScreenAdapter {
     TextButton returnChoices[];
     Label returnWarning;
     boolean safeGuard;
+    boolean oneToken = true;
 
     Window deathMenu;
     TextButton deathChoices[];
@@ -331,6 +331,8 @@ public class Dungeon extends ScreenAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 dispose();
                 GAME.stageInstance.clear();
+                BladeAndTomes.exitDungeon = true;
+                BladeAndTomes.enterDungeon = false;
                 GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -368,7 +370,7 @@ public class Dungeon extends ScreenAdapter {
                 break;
             case 2: //if goblin appears in room, explain combat
                 GAME.stageInstance.addActor(tutorialMessage);
-                tutorialMessage.setText("Goblins are in this room!\nMove to a goblin and use 'Q'\n to attack!\n\nThere is also ranged combat items" +
+                tutorialMessage.setText("Goblins are in this room!\nThere is close combat and ranged\ncombat items" +
                         "\nTo select an enemy to attack\n click 'Q' and confirm the \nattack with 'Enter'.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
@@ -430,6 +432,10 @@ public class Dungeon extends ScreenAdapter {
         GAME.batch.begin();
         GAME.runPlayerAnimation();
         //Tutorial checks
+        if(MainMenu.isTutorial && roomHandler.eventFlag && tutorialStep != 1){ //chest
+            setTutorial(5);
+            nextTutorial();
+        }
         if(MainMenu.isTutorial && roomHandler.combatFlag && combatExplained==false) { //combat
             setTutorial(2);
             nextTutorial();
@@ -528,10 +534,14 @@ public class Dungeon extends ScreenAdapter {
             optionOne.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent changeEvent, Actor actor) {
+
                     switch(optionOneChoice) {
                         case(0):
                             if(GAME.player.getSpeech() > 10) {
-                                GAME.player.skillToken++;
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
                                 eventDodgeImage.remove();
@@ -556,7 +566,10 @@ public class Dungeon extends ScreenAdapter {
                             break;
                         case(1):
                             if(GAME.player.getAwareness() > 10) {
-                                GAME.player.skillToken++;
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
                                 eventDodgeImage.remove();
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
@@ -581,7 +594,10 @@ public class Dungeon extends ScreenAdapter {
                             break;
                         case(2):
                             if(GAME.player.getIntuition() > 10) {
-                                GAME.player.skillToken++;
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
                                 eventTraderImage.remove();
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
@@ -613,7 +629,10 @@ public class Dungeon extends ScreenAdapter {
                     switch(optionTwoChoice) {
                         case(0):
                             if(GAME.player.getBruteforce() > 10) {
-                                GAME.player.skillToken++;
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
                                 eventTraderImage.remove();
@@ -638,7 +657,10 @@ public class Dungeon extends ScreenAdapter {
                             break;
                         case(1):
                             if(GAME.player.getAcrobatics() > 10) {
-                                GAME.player.skillToken++;
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
                                 eventDodgeImage.remove();
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
@@ -663,7 +685,10 @@ public class Dungeon extends ScreenAdapter {
                             break;
                         case(2):
                             if(GAME.player.getBarter() > 10) {
-                                GAME.player.skillToken++;
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
                                 eventTraderImage.remove();
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
@@ -694,6 +719,7 @@ public class Dungeon extends ScreenAdapter {
                 public void changed(ChangeEvent changeEvent, Actor actor) {
                     roomHandler.eventFlag = false;
                     loadEventOnce = false;
+                    oneToken = true;
                     optionDone.remove();
                     eventSuccessImage.remove();
                     eventFailImage.remove();
@@ -703,6 +729,7 @@ public class Dungeon extends ScreenAdapter {
                 }
             });
         }
+        
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
 
         //If player is dead, return to the OverWorld

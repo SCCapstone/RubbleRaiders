@@ -25,8 +25,8 @@ public class Room {
 
     //Constants to be used for denoting location and movement
     final public int MOVE = 64;
-    public int X_VAL[] = {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*4, Gdx.graphics.getWidth()/2};
-    public int Y_VAL[] = {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2, MOVE * 2};
+    //public int X_VAL[]; //= {Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth() - MOVE, MOVE*4, Gdx.graphics.getWidth()/2};
+    //public int Y_VAL[]; //= {Gdx.graphics.getHeight(), Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2, MOVE * 2};
 
 
     /**
@@ -51,7 +51,7 @@ public class Room {
         this.chest = null;
     }
 
-    public void setStage(Stage stage) {
+    /*public void setStage(Stage stage) {
         this.stage = stage;
 
         // X_VAL and Y_VAL just note the locations of the doors
@@ -71,7 +71,7 @@ public class Room {
 
        // X_VAL = {(int) stage.getWidth()/2, (int) stage.getWidth() - MOVE, MOVE*4, (int) stage.getWidth()/2};
        // Y_VAL = {(int) stage.getHeight(), (int) stage.getHeight()/2,  (int) stage.getHeight()/2, MOVE*2};
-    }
+    }*/
 
     /**
      * Paramaterized Constructor for the room

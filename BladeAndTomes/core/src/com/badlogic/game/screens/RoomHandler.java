@@ -120,6 +120,9 @@ public class RoomHandler {
         //this.roomLimit[4][5] = true;
         this.selectionImage = new Image(new Texture(Gdx.files.internal("selection.png")));
 
+        //level.setStage(stage);
+        player.playerIcon.setVisible(true);
+
         // Textures rendered in for our event
         // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
         eventTex = new Texture(Gdx.files.internal("GoldChest.jpg"));
@@ -242,24 +245,24 @@ public class RoomHandler {
     public boolean movement() {
 
         // If the player enters a door, then take that player to the new room if that room exists
-        if(!combatFlag && !eventFlag && level.X_VAL[0] <= player.playerIcon.getX() &&
-                level.X_VAL[0] + 3*level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[0] <= player.playerIcon.getY()) {
+        if(!combatFlag && !eventFlag && X_VAL[0] - 2*level.MOVE <= player.playerIcon.getX() &&
+                X_VAL[0] + 2*level.MOVE >= player.playerIcon.getX() &&
+                Y_VAL[0] <= player.playerIcon.getY()) {
             return moveIntoRoom(1);
         }
-        else if(!combatFlag && !eventFlag && level.X_VAL[1] <= player.playerIcon.getX() &&
-                level.Y_VAL[1] <= player.playerIcon.getY() &&
-                level.Y_VAL[1] + 3*level.MOVE >= player.playerIcon.getY()) {
+        else if(!combatFlag && !eventFlag && X_VAL[1] <= player.playerIcon.getX() &&
+                Y_VAL[1] - 2*level.MOVE <= player.playerIcon.getY() &&
+                Y_VAL[1] + 1*level.MOVE >= player.playerIcon.getY()) {
             return moveIntoRoom(2);
         }
-        else if(!combatFlag && !eventFlag && level.X_VAL[2] >= player.playerIcon.getX() &&
-                level.Y_VAL[2] + 2*level.MOVE >= player.playerIcon.getY() &&
-                level.Y_VAL[2] <= player.playerIcon.getY()) {
+        else if(!combatFlag && !eventFlag && X_VAL[2] >= player.playerIcon.getX() &&
+                Y_VAL[2] + 1*level.MOVE >= player.playerIcon.getY() &&
+                Y_VAL[2] - 2*level.MOVE <= player.playerIcon.getY()) {
             return moveIntoRoom(3);
         }
-        else if(!combatFlag && !eventFlag && level.X_VAL[3] <= player.playerIcon.getX() &&
-                level.X_VAL[3] + 3*level.MOVE >= player.playerIcon.getX() &&
-                level.Y_VAL[3] >= player.playerIcon.getY()) {
+        else if(!combatFlag && !eventFlag && X_VAL[3] - 2*level.MOVE <= player.playerIcon.getX() &&
+                X_VAL[3] + 2*level.MOVE >= player.playerIcon.getX() &&
+                Y_VAL[3] >= player.playerIcon.getY()) {
             return moveIntoRoom(4);
         }
         // Makes sure player does not leave bounds
@@ -308,6 +311,7 @@ public class RoomHandler {
 
 
         //Clears out the stage and re-adds everything
+        player.playerIcon.clearActions();
         player.playerIcon.setPosition(x_offset, y_offset);
         stage.clear();
         level.getBackgroundImage().setSize(2000, 1150);

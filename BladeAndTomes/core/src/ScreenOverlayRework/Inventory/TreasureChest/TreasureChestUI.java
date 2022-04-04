@@ -42,7 +42,6 @@ public class TreasureChestUI extends TradeUI {
         label.setSize(150,50);
         Table trades = new Table();
         trades.defaults();
-        trades.debug();
         trades.align(right|top);
         trades.row();
         tempSlots(true);
