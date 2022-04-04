@@ -237,7 +237,6 @@ public class Dungeon extends ScreenAdapter {
         returnMenu.setMovable(true);
         returnMenu.setKeepWithinStage(true);
         returnMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
-
         //Based off of definition of label
         returnWarning = new Label("What do you choose adventurer?", GAME.generalLabelStyle);
 
