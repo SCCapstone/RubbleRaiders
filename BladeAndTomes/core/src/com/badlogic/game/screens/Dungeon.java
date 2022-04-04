@@ -283,8 +283,8 @@ public class Dungeon extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 dispose();
                 GAME.stageInstance.clear();
-                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier()));
+                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 //GAME.player.kEarnedGoldThroughLevels++;
                 GAME.setScreen(new Overworld(GAME));
                 safeGuard = false;

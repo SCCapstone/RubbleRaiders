@@ -81,7 +81,6 @@ public class CharacterCreation extends ScreenAdapter {
             @Override
             public void keyTyped(TextField textField, char c) {
                 GAME.player.setName(textField.getText());
-                System.out.println(GAME.player.getName());
             }
         });
         nameField.setX(960,1);
