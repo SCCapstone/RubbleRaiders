@@ -95,12 +95,12 @@ public class RoomHandler {
     private Image selectionImage;
 
     private TreasureChestUI chest;
-    private BladeAndTomes game;
+    private final BladeAndTomes game;
 
     /**
      * Constructor for the "RoomHandler" or the linked list handler
      */
-    public RoomHandler(Stage stage, final Player player, OverlayManager inventory, BladeAndTomes game) {
+    public RoomHandler(Stage stage, final Player player, OverlayManager inventory, final BladeAndTomes game) {
         this.player = player;
         this.stage = stage;
         this.game = game;
@@ -140,43 +140,41 @@ public class RoomHandler {
         selectionImage.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                switch(keycode) {
-                    case Input.Keys.RIGHT:
-                        if(selectionIndex >= numOfGoblins-1) {
+                if(keycode == game.controls.getMoveRight()) {
+                    if(selectionIndex >= numOfGoblins-1) {
+                        selectionIndex = 0;
+                    }
+                    else {
+                        ++selectionIndex;
+                    }
+
+                    while(goblins[selectionIndex] == null) {
+                        ++selectionIndex;
+                        if(selectionIndex == numOfGoblins) {
                             selectionIndex = 0;
                         }
-                        else {
-                            ++selectionIndex;
-                        }
+                    }
 
-                        while(goblins[selectionIndex] == null) {
-                            ++selectionIndex;
-                            if(selectionIndex == numOfGoblins) {
-                                selectionIndex = 0;
-                            }
-                        }
+                    selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
 
-                        selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
-                        break;
-                    case Input.Keys.LEFT:
-                        if(selectionIndex <= 0) {
+                }
+                else if(keycode == game.controls.getMoveLeft()) {
+                    if(selectionIndex <= 0) {
+                        selectionIndex = numOfGoblins - 1;
+                    }
+                    else {
+                        --selectionIndex;
+                    }
+
+                    while(goblins[selectionIndex] == null) {
+                        --selectionIndex;
+                        if(selectionIndex < 0) {
                             selectionIndex = numOfGoblins - 1;
                         }
-                        else {
-                            --selectionIndex;
-                        }
+                    }
 
-                        while(goblins[selectionIndex] == null) {
-                            --selectionIndex;
-                            if(selectionIndex < 0) {
-                                selectionIndex = numOfGoblins - 1;
-                            }
-                        }
+                    selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
 
-                        selectionImage.addAction(Actions.moveTo(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY()));
-                        break;
-                    default:
-                        return false;
                 }
 
                 x_distance = goblins[selectionIndex].enemyImage.getX() - player.playerIcon.getX();
@@ -352,7 +350,7 @@ public class RoomHandler {
         //inventory.reAddInventory();
         try {
             //inventory.setOverLayesVisibility(true);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.E))
+            if (Gdx.input.isKeyJustPressed(game.controls.getOpenInventory()))
                 inventory.setHiddenTableVisibility(true);
 
             //Based off of Anirudh's suggestion to fix the inventory and allow for selection within the dungeon
@@ -442,7 +440,7 @@ public class RoomHandler {
     public void deconstruct(boolean EOL) {
         if (!EOL) {
             levelNum++;
-            levelMultiplier += 0.5;
+            levelMultiplier += 5;
             levelsExplored = 0;
             level = new Room();
         }
@@ -742,7 +740,7 @@ public class RoomHandler {
             selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
             stage.addActor(selectionImage);
 
-            if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !magicFlag)  {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !magicFlag && rangedFlag)  {
                 player.isTurn = false;
                 rangedFlag = false;
 
@@ -803,7 +801,7 @@ public class RoomHandler {
 
         if (!magicFlag && !rangedFlag && Gdx.input.isKeyJustPressed(game.controls.getFightAction())
             && !(player.inventoryItems.get(game.currentInventorySelection).getRange() == 1)){
-            meleeFlag = !meleeFlag;
+            meleeFlag = true;
 
             if(selectionIndex >= numOfGoblins) {
                 selectionIndex = 0;
@@ -825,7 +823,7 @@ public class RoomHandler {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) &&
-                !magicFlag && !rangedFlag) {
+                !magicFlag && !rangedFlag && meleeFlag) {
             if (x_distance < 96 && x_distance > -96 &&
                     y_distance < 96 && y_distance > -96) {
                 int hitRoll = generator.nextInt(20) + player.getBruteforce()/2 + 1;

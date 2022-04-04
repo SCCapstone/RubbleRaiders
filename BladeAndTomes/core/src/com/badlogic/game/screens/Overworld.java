@@ -190,7 +190,7 @@ public class Overworld extends ScreenAdapter {
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
             {
-                if(keycode == Input.Keys.ESCAPE)
+                if(keycode == game.controls.getOpenPauseMenu())
                 {
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);

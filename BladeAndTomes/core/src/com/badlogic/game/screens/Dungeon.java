@@ -220,7 +220,7 @@ public class Dungeon extends ScreenAdapter {
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
             {
-                if(keycode == Input.Keys.ESCAPE)
+                if(keycode == GAME.controls.getOpenPauseMenu())
                 {
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
@@ -284,7 +284,8 @@ public class Dungeon extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 dispose();
                 GAME.stageInstance.clear();
-                GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier()));
+                GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier())+5);
+                System.out.println( GAME.player.getGold());
                 GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 //GAME.player.kEarnedGoldThroughLevels++;
                 GAME.setScreen(new Overworld(GAME));
@@ -444,21 +445,21 @@ public class Dungeon extends ScreenAdapter {
                 nextTutorial();
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp())) {
                 GAME.resetElapsedTime();
                 GAME.runMoveUpAnimation();
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveDown())) {
                 GAME.resetElapsedTime();
                 GAME.runMoveDownAnimation();
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveLeft())) {
                 GAME.resetElapsedTime();
                 GAME.runMoveLeftAnimation();
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveRight())) {
                 GAME.resetElapsedTime();
                 GAME.runMoveRightAnimation();
             }
             if (roomHandler.combatFlag) {
-                if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                if (Gdx.input.isKeyJustPressed(GAME.controls.getFightAction())) {
                     GAME.resetElapsedTime();
                     GAME.runAttackDownAnimation();
                 }
@@ -743,7 +744,7 @@ public class Dungeon extends ScreenAdapter {
             BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
 
-            GAME.stageInstance.setKeyboardFocus(null);
+            //GAME.stageInstance.setKeyboardFocus(null);
             //GAME.stageInstance.addActor(deathMenu);
             //deathMenu.add(deathNotice).center().colspan(3);
             //deathMenu.row();
