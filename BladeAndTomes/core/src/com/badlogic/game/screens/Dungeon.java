@@ -42,11 +42,14 @@ public class Dungeon extends ScreenAdapter {
     private Texture eventDodgeTex;
     private Texture eventGoblinTex;
     private Texture eventTraderTex;
+    private Texture eventJimmyTex;
+    private Texture eventGhostTex;
+    private Texture eventTrapTex;
     private Texture eventSuccessTex;
     private Texture eventFailTex;
 
-    public int optionOneChoice;
-    public int optionTwoChoice;
+    public int optionOneChoice = 0;
+    public int optionTwoChoice = 0;
     private TextButton optionDone;
     private TextButton optionOne;
     private TextButton optionTwo;
@@ -58,6 +61,9 @@ public class Dungeon extends ScreenAdapter {
     private Image eventDodgeImage;
     private Image eventGoblinImage;
     private Image eventTraderImage;
+    private Image eventJimmyImage;
+    private Image eventGhostImage;
+    private Image eventTrapImage;
     private Image eventSuccessImage;
     private Image eventFailImage;
 
@@ -115,6 +121,9 @@ public class Dungeon extends ScreenAdapter {
         manager.load("EventImages/EventDodge.png", Texture.class);
         manager.load("EventImages/EventGoblin.png", Texture.class);
         manager.load("EventImages/EventTrader.png", Texture.class);
+        manager.load("EventImages/EventJimmy.png", Texture.class);
+        manager.load("EventImages/EventGhost.png", Texture.class);
+        manager.load("EventImages/EventTrap.png", Texture.class);
         manager.load("EventImages/EventSuccess.png", Texture.class);
         manager.load("EventImages/EventFail.png", Texture.class);
         //manager.load("Music/Battle.wav", Music.class);
@@ -134,6 +143,12 @@ public class Dungeon extends ScreenAdapter {
         eventGoblinImage = new Image(eventGoblinTex);
         eventTraderTex = manager.get("EventImages/EventTrader.png");
         eventTraderImage = new Image(eventTraderTex);
+        eventJimmyTex = manager.get("EventImages/EventJimmy.png");
+        eventJimmyImage = new Image(eventJimmyTex);
+        eventGhostTex = manager.get("EventImages/EventGhost.png");
+        eventGhostImage = new Image(eventGhostTex);
+        eventTrapTex = manager.get("EventImages/EventTrap.png");
+        eventTrapImage = new Image(eventTrapTex);
         eventSuccessTex = manager.get("EventImages/EventSuccess.png");
         eventSuccessImage = new Image(eventSuccessTex);
         eventFailTex = manager.get("EventImages/EventFail.png");
@@ -523,18 +538,18 @@ public class Dungeon extends ScreenAdapter {
             }
             resetBattleMusic = true;
         }
-        optionOneChoice = 0;
-        optionTwoChoice = 0;
         if(roomHandler.eventFlag) {
             if(!loadEventOnce) {
-                int eventType = generator.nextInt(3);
+                int eventType = generator.nextInt(6);
                 switch (eventType) {
                     case (0):
                         eventGoblinImage.setX((GAME.WINDOWWIDTH / 2) - 250);
                         eventGoblinImage.setY((GAME.WINDOWHIGHT / 2) - 250);
                         GAME.stageInstance.addActor(eventGoblinImage);
                         optionOne.setText("Speech");
+                        optionOneChoice = 0;
                         optionTwo.setText("Brute Force");
+                        optionTwoChoice = 0;
                         break;
                     case (1):
                         eventDodgeImage.setX((GAME.WINDOWWIDTH / 2) - 250);
@@ -553,6 +568,33 @@ public class Dungeon extends ScreenAdapter {
                         optionOneChoice = 2;
                         optionTwo.setText("Barter");
                         optionTwoChoice = 2;
+                        break;
+                    case (3):
+                        eventJimmyImage.setX((GAME.WINDOWWIDTH / 2) - 250);
+                        eventJimmyImage.setY((GAME.WINDOWHIGHT / 2) - 250);
+                        GAME.stageInstance.addActor(eventJimmyImage);
+                        optionOne.setText("Brute Force");
+                        optionOneChoice = 3;
+                        optionTwo.setText("Barter");
+                        optionTwoChoice = 2;
+                        break;
+                    case (4):
+                        eventGhostImage.setX((GAME.WINDOWWIDTH / 2) - 250);
+                        eventGhostImage.setY((GAME.WINDOWHIGHT / 2) - 250);
+                        GAME.stageInstance.addActor(eventGhostImage);
+                        optionOne.setText("Awareness");
+                        optionOneChoice = 1;
+                        optionTwo.setText("Speech");
+                        optionTwoChoice = 3;
+                        break;
+                    case (5):
+                        eventTrapImage.setX((GAME.WINDOWWIDTH / 2) - 250);
+                        eventTrapImage.setY((GAME.WINDOWHIGHT / 2) - 250);
+                        GAME.stageInstance.addActor(eventTrapImage);
+                        optionOne.setText("Intuition");
+                        optionOneChoice = 2;
+                        optionTwo.setText("Acrobatics");
+                        optionTwoChoice = 1;
                         break;
                 }
                 GAME.stageInstance.addActor(optionOne);
@@ -574,6 +616,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
                                 eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -585,6 +630,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
                                 eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -602,6 +650,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventDodgeImage.remove();
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -613,6 +664,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventDodgeImage.remove();
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -630,6 +684,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventTraderImage.remove();
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -641,6 +698,43 @@ public class Dungeon extends ScreenAdapter {
                                 eventTraderImage.remove();
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
+                                optionOne.remove();
+                                optionTwo.remove();
+                                eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
+                                eventFailImage.setY((GAME.WINDOWHIGHT/2)-250);
+                                GAME.stageInstance.addActor(eventFailImage);
+                                GAME.stageInstance.addActor(optionDone);
+                            }
+                            break;
+                        case(3):
+                            if(GAME.player.getBruteforce() > 10) {
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
+                                eventTraderImage.remove();
+                                eventGoblinImage.remove();
+                                eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
+                                optionOne.remove();
+                                optionTwo.remove();
+                                eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
+                                eventSuccessImage.setY((GAME.WINDOWHIGHT/2)-250);
+                                GAME.stageInstance.addActor(eventSuccessImage);
+                                GAME.stageInstance.addActor(optionDone);
+                            }
+                            else {
+                                eventTraderImage.remove();
+                                eventGoblinImage.remove();
+                                eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -665,6 +759,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
                                 eventTraderImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventSuccessImage.setX((GAME.WINDOWWIDTH / 2) - 250);
@@ -676,6 +773,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
                                 eventTraderImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -693,6 +793,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventDodgeImage.remove();
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -704,6 +807,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventDodgeImage.remove();
                                 eventGoblinImage.remove();
                                 eventTraderImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -721,6 +827,9 @@ public class Dungeon extends ScreenAdapter {
                                 eventTraderImage.remove();
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -732,6 +841,43 @@ public class Dungeon extends ScreenAdapter {
                                 eventTraderImage.remove();
                                 eventGoblinImage.remove();
                                 eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
+                                optionOne.remove();
+                                optionTwo.remove();
+                                eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
+                                eventFailImage.setY((GAME.WINDOWHIGHT/2)-250);
+                                GAME.stageInstance.addActor(eventFailImage);
+                                GAME.stageInstance.addActor(optionDone);
+                            }
+                            break;
+                        case(3):
+                            if(GAME.player.getSpeech() > 10) {
+                                if(oneToken) {
+                                    GAME.player.tokens.set(GAME.player.tokens.get() + 1);
+                                    oneToken = false;
+                                }
+                                eventTraderImage.remove();
+                                eventGoblinImage.remove();
+                                eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
+                                optionOne.remove();
+                                optionTwo.remove();
+                                eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
+                                eventSuccessImage.setY((GAME.WINDOWHIGHT/2)-250);
+                                GAME.stageInstance.addActor(eventSuccessImage);
+                                GAME.stageInstance.addActor(optionDone);
+                            }
+                            else {
+                                eventTraderImage.remove();
+                                eventGoblinImage.remove();
+                                eventDodgeImage.remove();
+                                eventGhostImage.remove();
+                                eventJimmyImage.remove();
+                                eventTrapImage.remove();
                                 optionOne.remove();
                                 optionTwo.remove();
                                 eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
@@ -755,6 +901,9 @@ public class Dungeon extends ScreenAdapter {
                     eventDodgeImage.remove();
                     eventGoblinImage.remove();
                     eventTraderImage.remove();
+                    eventGhostImage.remove();
+                    eventJimmyImage.remove();
+                    eventTrapImage.remove();
                 }
             });
         }
