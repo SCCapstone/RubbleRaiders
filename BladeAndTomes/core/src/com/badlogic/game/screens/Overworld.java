@@ -597,28 +597,33 @@ public class Overworld extends ScreenAdapter {
                 tutorialMessage.setSize(300f, 200f);
                 break;
             case 4: //Upgrading skills
-                tutorialMessage.setText("Click on the 'Skills' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills.\n\nGive it a try then click\n 'E' to exit the Inventory.");
+                tutorialMessage.setText("Click on the 'Skill' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills. You can earn tokens\nfrom being successful in events\nin the dungeon.\n\nClick 'E' to exit the Inventory.");
                 break;
             case 5: //Quests Buying and Selling
                 tutorialMessage.setText("Walk up to the board in the middle\nof town and click 'T'.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
-                        "\n\nClick 'Q' to exit quests.");
+                        "\n\nClick 'T' to exit quests.");
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2, GAME.stageInstance.getHeight()/2+300);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
-            case 6: //Buy items
-                tutorialMessage.setText("Walk to the top left building\nand click 'T' to buy items.\n\nClick the pay button to buy the item.\n\nClick 'T' to exit menu.");
+            case 6: //Sell items
+                tutorialMessage.setSize(300f,250f);
+                tutorialMessage.setText("Walk to the top left building\n and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
+                        "it into the slot\nand click sell. Make sure to check \nthat the level of the items are the \nsame by hovering your mouse over them" +
+                        "\n\nClick 'T' to exit menu.");
                 break;
-            case 7: //Sell items
-                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
-                        "it into the slot\nand click sell.\n\nClick 'T' to exit menu.");
+            case 7: //Buy items
+                tutorialMessage.setSize(300f,200f);
+                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to buy items.\nClick the pay button to buy the item." +
+                        "\n\nClick 'T' to exit menu.");
                 break;
             case 8: //item slot selection
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
+                next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 tutorialMessage.setText("The item slots in the top left can\n be selected using 1-5 for the \nrespective slot position");
                 break;
             case 9: //enter dungeon
                 tutorialMessage.setText("Now it's time to fight!\n\nWalk into the portal at the \nbottom of town to enter the dungeon.");
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
                 tutorialMessage.setSize(300f, 200f);
                 next.remove();
                 break;

@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Null;
 
 import java.util.HashMap;
 
@@ -337,8 +338,9 @@ public class Dungeon extends ScreenAdapter {
             }
         });
 
-        //Let's the player that he/she has died. Based on Label code in MainMenu
+        //Let's the player know that he/she has died. Based on Label code in MainMenu
         deathNotice = new Label("You have died!", GAME.generalLabelStyle);
+        deathNotice.setAlignment(1,1);
 
         //Defines the Choices the player can make as objects
         deathChoices = new TextButton[2];
@@ -398,12 +400,15 @@ public class Dungeon extends ScreenAdapter {
             case 2: //if goblin appears in room, explain combat
                 GAME.stageInstance.addActor(tutorialMessage);
                 tutorialMessage.setText("Goblins are in this room!\nThere is close combat and ranged\ncombat items" +
-                        "\nTo select an enemy to attack\n click 'Q' and confirm the \nattack with 'Enter'.");
+                        "\nClick 'Q' and use movement keys to\nselect an enemy to attack. Then\nconfirm the attack with 'Enter'.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
+                combatExplained = true;
                 break;
             case 5: //if chest appears, explain chests
-                tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse 'T' to open it.");
+                GAME.stageInstance.addActor(tutorialMessage);
+                tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse 'T' to open it. You\n can drag and drop any items\n" +
+                        "into your inventory.");
                 chestExplained = true;
                 break;
             case 6: //find the exit portal
@@ -458,7 +463,8 @@ public class Dungeon extends ScreenAdapter {
         GAME.batch.draw(roomHandler.level.getBackgroundText(), -25, -20, 2000, 1150);
         GAME.runPlayerAnimation();
         //Tutorial checks
-        if (MainMenu.isTutorial && roomHandler.level.getMapID() == 2 && tutorialStep != 1) { //chest
+        System.out.println(MainMenu.isTutorial && roomHandler.level.getChest() != null && chestExplained == false);
+        if (MainMenu.isTutorial && roomHandler.level.getChest() != null) { //chest
             setTutorial(5);
             nextTutorial();
         }
@@ -768,9 +774,9 @@ public class Dungeon extends ScreenAdapter {
 
             GAME.stageInstance.setKeyboardFocus(null);
             GAME.stageInstance.addActor(deathMenu);
-            deathMenu.add(deathNotice).center().colspan(3);
+            deathMenu.add(deathNotice).colspan(4).width(deathMenu.getWidth()/3+30);
             deathMenu.row();
-            deathMenu.add(deathChoices[0], deathChoices[1]).center();
+            deathMenu.add(deathChoices[0], deathChoices[1]);
             GAME.setScreen(new Overworld(GAME));
         }
         if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory()))
