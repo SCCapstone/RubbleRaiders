@@ -463,7 +463,6 @@ public class Dungeon extends ScreenAdapter {
         GAME.batch.draw(roomHandler.level.getBackgroundText(), -25, -20, 2000, 1150);
         GAME.runPlayerAnimation();
         //Tutorial checks
-        System.out.println(MainMenu.isTutorial && roomHandler.level.getChest() != null && chestExplained == false);
         if (MainMenu.isTutorial && roomHandler.level.getChest() != null) { //chest
             setTutorial(5);
             nextTutorial();
