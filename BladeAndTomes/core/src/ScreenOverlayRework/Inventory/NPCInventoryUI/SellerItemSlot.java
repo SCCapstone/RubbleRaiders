@@ -155,7 +155,7 @@ public class SellerItemSlot extends itemSlot {
                     sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
                             doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
                             doc.getLevel()==sellingItemlvl;
-                    System.out.println(sellingObj);
+                    //System.out.println(sellingObj);
 
                     return sellingObj;
 

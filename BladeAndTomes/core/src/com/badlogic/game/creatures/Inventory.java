@@ -44,7 +44,7 @@ public class Inventory {
         swap.add(index);
         int[] returnArr;
         if (swap.size() == 2) {
-            System.out.println(swap.get(0) + " : " + swap.get(1));
+            //System.out.println(swap.get(0) + " : " + swap.get(1));
             returnArr = new int[]{swap.get(0), swap.get(1)};
             swapInventory(swap.get(0), swap.get(1));
             swap.clear();

@@ -312,9 +312,9 @@ public class RoomHandler {
         player.playerIcon.clearActions();
         player.playerIcon.setPosition(x_offset, y_offset);
         stage.clear();
-        level.getBackgroundImage().setSize(2000, 1150);
-        level.getBackgroundImage().setPosition(-25, -20);
-        stage.addActor(level.getBackgroundImage());
+        //level.getBackgroundImage().setSize(2000, 1150);
+        //level.getBackgroundImage().setPosition(-25, -20);
+        //stage.addActor(level.getBackgroundImage());
         stage.addActor(player.playerIcon);
         stage.setKeyboardFocus(player.playerIcon);
 
@@ -417,7 +417,7 @@ public class RoomHandler {
         ROOMS[] superRoom = ROOMS.values();
         for(ROOMS room : superRoom) {
             if(room.id == chamber.getRoomID()) {
-                chamber.setBackgroundImage(room.filename, stage);
+                chamber.setBackgroundImage(room.filename);
             }
         }
 
@@ -609,10 +609,12 @@ public class RoomHandler {
         y_distance = player.playerIcon.getY() - eventImage.getY();
 
         //Based off of Anirudh Oruganti's code in Overworld for getting the chest to display
+        //When treademenu key pressed, open/close chest and prevent/allow player movement
         if(Gdx.input.isKeyJustPressed(game.controls.getTradeMenu()) &&
                 x_distance < 96 && x_distance > -96 &&
                 y_distance < 96 && y_distance > -96) {
             level.getChest().setTreasureChestVisible(!level.getChest().isTreasureChestVisible());
+            stage.setKeyboardFocus(level.getChest().isTreasureChestVisible() ? null : player.playerIcon);
             game.overlays.setHiddenTableVisibility(false);
             game.overlays.displayChest(level.getChest());
             player.kChestsOpened++;
@@ -715,18 +717,28 @@ public class RoomHandler {
         return levelMultiplier;
     }
 
+    /**
+     * Segregates and labels the portion of code that specifically handles ranged combat between the player and the
+     * Enemy NPCs (in this version, Goblins)
+     */
     public void handleRangeCombat() {
-        //System.out.println(player.inventoryItems.get(game.currentInventorySelection).getRange() == 1);
+
+        //Checks to see if the player pressed the fight action and if all flags and player's weapon are set to true
+        //Sets ranged flag true for the selection image to do it's thing
         if(Gdx.input.isKeyJustPressed(game.controls.getFightAction()) && !magicFlag
             && !meleeFlag && player.inventoryItems.get(game.currentInventorySelection).getRange() == 1) {
             rangedFlag = true;
         }
 
+        //Works on resetting and working on making sure the selection is correct
         if(selectionIndex >= numOfGoblins) {
             selectionIndex = 0;
         }
 
-        if (rangedFlag && !magicFlag) {
+        //Makes sure to block out other ranged flags
+        if (rangedFlag && !magicFlag && !meleeFlag) {
+
+            //Resets the selection index to keep it on a viable goblin
             if(goblins[selectionIndex] == null) {
                 while(goblins[selectionIndex] == null) {
                     selectionIndex++;
@@ -736,21 +748,27 @@ public class RoomHandler {
                 }
             }
 
+            //Sets up the keyboard for the selection image and allowing the player to move between goblins
             stage.setKeyboardFocus(selectionImage);
             selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
             stage.addActor(selectionImage);
 
+            //Makes sure the enter input is legitimate and working for the ranged weapon
             if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !magicFlag && rangedFlag)  {
                 player.isTurn = false;
                 rangedFlag = false;
 
+                //Hit Roll
                 int hitRoll = generator.nextInt(20) + player.getAcrobatics()/2 + 1;
                 if (hitRoll >= goblins[selectionIndex].getArmorPoints()) {
                     goblins[selectionIndex].damageTaken(player.inventoryItems.get(game.currentInventorySelection).getDamage());
                     goblins[selectionIndex].updateHealth();
                 }
+
+                //Sets player's turn to false
                 player.isTurn = false;
 
+                //Set all goblin turns to true
                 for (int j = 0; j < numOfGoblins; j++) {
                     if (goblins[selectionIndex] == null) {
                         continue;
@@ -758,10 +776,12 @@ public class RoomHandler {
                     goblins[selectionIndex].isTurn = true;
                 }
 
+                //CHecks to see if the current goblin is dead and increments quest flag by one
                 if(goblins[selectionIndex].getHealthPoints() <= 0) {
                     player.kLongRangeKills++;
                 }
 
+                //Removes Selection Combat and puts keyboard control back to player
                 selectionImage.remove();
                 stage.setKeyboardFocus(player.playerIcon);
             }
@@ -799,14 +819,19 @@ public class RoomHandler {
 
     public void handleMeleeCombat() {
 
+        //Checks to see if the player pressed the fight action and if all flags and player's weapon are set to true
         if (!magicFlag && !rangedFlag && Gdx.input.isKeyJustPressed(game.controls.getFightAction())
             && !(player.inventoryItems.get(game.currentInventorySelection).getRange() == 1)){
+
+            //Sets Melee Flag true for the selection image
             meleeFlag = true;
 
+            //Sets up the selection index to prevent it from looping beyond the confines of the array
             if(selectionIndex >= numOfGoblins) {
                 selectionIndex = 0;
             }
 
+            //Loops through the array and sets the selection image to the first viable goblin
             if(goblins[selectionIndex] == null) {
                 while(goblins[selectionIndex] == null) {
                     selectionIndex++;
@@ -817,6 +842,8 @@ public class RoomHandler {
                 x_distance = goblins[selectionIndex].enemyImage.getX() - player.playerIcon.getX();
                 y_distance = goblins[selectionIndex].enemyImage.getY() - player.playerIcon.getY();
             }
+
+            //Sets the selection image to the stage
             stage.setKeyboardFocus(selectionImage);
             selectionImage.setPosition(goblins[selectionIndex].enemyImage.getX(), goblins[selectionIndex].enemyImage.getY());
             stage.addActor(selectionImage);

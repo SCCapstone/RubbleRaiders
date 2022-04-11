@@ -21,6 +21,7 @@ public class Save {
         saveParser = new Json();
         this.fourPreSets = fourPreSets;
 }
+
 public void addToGeneralSave(){}
     public void saveNewProgress(Player player,int index){
         fourPreSets.set(index,saveParser.toJson(player,Player.class));

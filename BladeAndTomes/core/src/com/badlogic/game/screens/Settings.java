@@ -335,7 +335,7 @@ public class Settings extends ScreenAdapter {
 
     public void setControl(TextField t, int keycode){
         String key = Input.Keys.toString(keycode);
-        System.out.println(key);
+        //System.out.println(key);
         if(!t.getText().equals("")){
             //clear text and write new character
             t.setText("");

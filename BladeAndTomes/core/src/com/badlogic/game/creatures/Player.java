@@ -160,7 +160,7 @@ public class Player extends Entity {
                 //Derived from Miller's code to get the animations to play
                 if(goblins != null) {
                     for (int i = 0; i < numOfGoblins; i++) {
-                        System.out.println(goblins[i].getCurrentAnimation() == null);
+                        //System.out.println(goblins[i].getCurrentAnimation() == null);
                         if (goblins[i] == null) {
                             continue;
                         } else if (!goblins[i].getCurrentAnimation().isAnimationFinished(goblins[i].elapsedTime)) {

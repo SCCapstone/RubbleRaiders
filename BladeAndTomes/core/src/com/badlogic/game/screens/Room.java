@@ -41,7 +41,8 @@ public class Room {
         assetManager.finishLoading();
         this.roomX = 0;
         this.roomY = 0;
-        this.background = new Image(assetManager.get("DungeonRooms/SRoom.png", Texture.class));
+        this.backgroundText = assetManager.get("DungeonRooms/SRoom.png", Texture.class);
+        //this.background = new Image(assetManager.get("DungeonRooms/SRoom.png", Texture.class));
         this.door = new Room[4];
         this.numOfDoors = 1;
         this.roomID = 1;
@@ -81,8 +82,8 @@ public class Room {
      * @param roomID - Gives the roomID of the area (based on NEWS)
      * @param mapID - Gives basic map id to identify special rooms
      */
-    public Room(Image background, Room door[], int numOfDoors, int roomID, int mapID) {
-        this.background = background;
+    public Room(Texture background, Room door[], int numOfDoors, int roomID, int mapID) {
+        this.backgroundText = background;
         this.door = door;
         this.numOfDoors = numOfDoors;
         this.roomID = roomID;
@@ -94,16 +95,16 @@ public class Room {
      * Sets the image background for the room
      * @param directory - the directory or location of image relative to the internal project
      */
-    public void setBackgroundImage(String directory, Stage stage) {
-        this.background.remove();
+    public void setBackgroundImage(String directory) {
+        //this.background.remove();
 
         //Thanks to user Tenfour04 on StackOverflow for introducing a way to easily dispose of assets.
         //https://stackoverflow.com/questions/38102499/libgdx-image-class-dispose
         assetManager.clear();
         assetManager.load(directory, Texture.class);
         assetManager.finishLoading();
-        this.background = new Image(assetManager.get(directory, Texture.class));
-        stage.addActor(this.background);
+        this.backgroundText = assetManager.get(directory, Texture.class);
+        //stage.addActor(this.background);
     }
 
     public int getChestX() {
@@ -238,5 +239,9 @@ public class Room {
 
     public void setIsLevelExplored (boolean b) {
         this.levelExplored = b;
+    }
+
+    public Texture getBackgroundText() {
+        return this.backgroundText;
     }
 }

@@ -320,7 +320,7 @@ public class itemSlot extends Actor {
 
                 int newItem = Integer.valueOf(((Image) payload.getObject()).getName());
                 int currentItem = Integer.valueOf(item.getName());
-                System.out.println(newItem+"\t"+currentItem+"\t"+documentIndex);
+                //System.out.println(newItem+"\t"+currentItem+"\t"+documentIndex);
                 game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
                 game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
                 game.player.inventoryItems.swap(newItem, currentItem);
@@ -329,7 +329,7 @@ public class itemSlot extends Actor {
                 Drawable temp = ((Image) payload.getObject()).getDrawable();
                 ((Image) payload.getObject()).setDrawable(item.getDrawable());
                 item.setDrawable(temp);
-                System.out.println(""+"\t"+newItem+"\t"+currentItem+"\t"+documentIndex);
+                //System.out.println(""+"\t"+newItem+"\t"+currentItem+"\t"+documentIndex);
 
 //                documentIndex = newItem;
 
@@ -348,7 +348,7 @@ public class itemSlot extends Actor {
     public void updateSlotElements(){
         if(targetSlot.equalsIgnoreCase("Spell")||targetSlot.equalsIgnoreCase("Spells")||targetSlot.equalsIgnoreCase("armor")){
             imageButtonAddOn.setVisible(game.player.inventoryItems.get(documentIndex).getCategory().equalsIgnoreCase("NUll"));
-            System.out.println(game.player.inventoryItems.get(documentIndex).setDefauls);
+            //System.out.println(game.player.inventoryItems.get(documentIndex).setDefauls);
         }
     }
 
