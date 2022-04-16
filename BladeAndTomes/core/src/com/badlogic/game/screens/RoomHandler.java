@@ -513,7 +513,13 @@ public class RoomHandler {
         /*else if (num > 2) {
 
         }*/
-        else if (num < 2) {
+
+        //Generates events
+        else if (num >= 3) {
+            eventFlag = true;
+        }
+
+        else if (num < 3) {
             //eventX = MathUtils.random(360, 1600);
             //eventY = MathUtils.random(240, 960);
             chamber.setMapID(2);
@@ -524,11 +530,6 @@ public class RoomHandler {
             } catch (Exception e) {
 
             }
-        }
-
-        //Generates events
-        else if (num > 2) {
-            eventFlag = true;
         }
         return 0;
     }
@@ -617,7 +618,8 @@ public class RoomHandler {
             stage.setKeyboardFocus(level.getChest().isTreasureChestVisible() ? null : player.playerIcon);
             game.overlays.setHiddenTableVisibility(false);
             game.overlays.displayChest(level.getChest());
-            player.kChestsOpened++;
+            if (level.getChest().isTreasureChestVisible())
+                player.kChestsOpened++;
             return true;
         } else {
             return false;

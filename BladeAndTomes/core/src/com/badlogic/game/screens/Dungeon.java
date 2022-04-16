@@ -539,6 +539,7 @@ public class Dungeon extends ScreenAdapter {
             resetBattleMusic = true;
         }
         if(roomHandler.eventFlag) {
+            GAME.stageInstance.setKeyboardFocus(null);
             if(!loadEventOnce) {
                 int eventType = generator.nextInt(6);
                 switch (eventType) {
@@ -744,6 +745,7 @@ public class Dungeon extends ScreenAdapter {
                             }
                             break;
                     }
+                    GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 }
             });
             optionTwo.addListener(new ChangeListener() {
@@ -887,6 +889,7 @@ public class Dungeon extends ScreenAdapter {
                             }
                             break;
                     }
+                    GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 }
             });
             optionDone.addListener(new ChangeListener() {
@@ -901,6 +904,7 @@ public class Dungeon extends ScreenAdapter {
                     eventDodgeImage.remove();
                     eventGoblinImage.remove();
                     eventTraderImage.remove();
+                    GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                     eventGhostImage.remove();
                     eventJimmyImage.remove();
                     eventTrapImage.remove();
@@ -919,7 +923,6 @@ public class Dungeon extends ScreenAdapter {
             BladeAndTomes.exitDungeon = true;
             BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
-
             GAME.stageInstance.setKeyboardFocus(null);
             GAME.stageInstance.addActor(deathMenu);
             deathMenu.add(deathNotice).colspan(4).width(deathMenu.getWidth()/3+30);
@@ -927,8 +930,15 @@ public class Dungeon extends ScreenAdapter {
             deathMenu.add(deathChoices[0], deathChoices[1]);
             GAME.setScreen(new Overworld(GAME));
         }
-        if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory()))
+        if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory())) {
             GAME.overlays.setHiddenTableVisibility(!GAME.showHiddenInventory);
+            if(GAME.showHiddenInventory) {
+                GAME.stageInstance.setKeyboardFocus(null);
+            }
+            else {
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+            }
+        }
 
         GAME.overlays.render();
     }
