@@ -157,14 +157,14 @@ public class Overworld extends ScreenAdapter {
 
         GAME._bgmusic.playTownMusic();
 
-        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Background.tmx");
         collisionLayer = (TiledMapTileLayer) overWorldMap.getLayers().get(1);
         tileMeasurement = ((TiledMapTileLayer) overWorldMap.getLayers().get(1)).getTileWidth();
         manager = new AssetManager();
         manager.setLoader(TiledMap.class, new TmxMapLoader());
-        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+        manager.load("Maps/Overworld_Background.tmx", TiledMap.class);
         manager.finishLoading();
-        overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
+        overWorldMap = manager.get("Maps/Overworld_Background.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         world = new World(new Vector2(0, 0),true);
@@ -469,7 +469,7 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void show() {
-        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Background.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         camera = new OrthographicCamera();
