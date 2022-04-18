@@ -5,6 +5,7 @@ import LoadAndSave.LoadSaveManager;
 import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.OverlayManager;
 import Sounds.BackGroundMusic;
+import Sounds.playerMoveSound;
 import com.badlogic.game.creatures.Inventory;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.game.screens.MainMenu;
@@ -77,6 +78,8 @@ public class BladeAndTomes extends Game {
     TextureRegion inventoryTextButtonRegion;
     public LabelStyle BaseLabelStyle1;
     public LabelStyle BaseLabelStyle2;
+
+    playerMoveSound playerMovenSound;
 
     public LabelStyle HealthLabelStyle;
     public MainMenuControls controls;
@@ -388,15 +391,19 @@ public class BladeAndTomes extends Game {
                 switch(keycode) {
                     case Input.Keys.UP:
                         player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() + MOVE_DISTANCE,1));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.DOWN:
                         player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX(), player.playerIcon.getY() - MOVE_DISTANCE,1));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.LEFT:
                         player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() - MOVE_DISTANCE, player.playerIcon.getY(),1));
+                        playerMovenSound.playMoveSound();
                         break;
                     case Input.Keys.RIGHT:
                         player.playerIcon.addAction(Actions.moveTo(player.playerIcon.getX() + MOVE_DISTANCE, player.playerIcon.getY(),1));
+                        playerMovenSound.playMoveSound();
                         break;
                     default:
                         return false;
