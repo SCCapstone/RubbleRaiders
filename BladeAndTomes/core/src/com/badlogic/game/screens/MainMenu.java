@@ -48,7 +48,6 @@ public class MainMenu extends ScreenAdapter {
 
     private TiledMap overWorldMap;
     OrthogonalTiledMapRenderer renderer;
-    OrthographicCamera camera;
 
     //All used imagery for the given examples below.
     Texture background;
@@ -61,7 +60,7 @@ public class MainMenu extends ScreenAdapter {
         super.dispose();
         batch.dispose();
         manager.dispose();
-        torchAtlas.dispose();
+
     }
 
 
@@ -75,7 +74,6 @@ public class MainMenu extends ScreenAdapter {
     //BackGroundMusic _bgmusic;
     ButtonClickSound buttonSound;
     private SpriteBatch batch;
-    private TextureAtlas torchAtlas;
     private Animation<TextureRegion> animation;
     private float timePassed;
     private AssetManager manager;
@@ -93,17 +91,6 @@ public class MainMenu extends ScreenAdapter {
 
         batch = new SpriteBatch();
         manager = new AssetManager();
-        manager.setLoader(TiledMap.class, new TmxMapLoader());
-        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
-        manager.finishLoading();
-        overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
-        manager.load("AnimationFiles/Torch.atlas", TextureAtlas.class);
-        manager.finishLoading();
-        torchAtlas = manager.get("AnimationFiles/Torch.atlas");
-        animation = new Animation<TextureRegion>(1/6f,torchAtlas.getRegions());
-////        background = new Texture(Gdx.files.internal("Main_Menu_Screen.jpg"));
-//        backgroundImage = new Image(background);
-//        GAME.stageInstance.addActor(backgroundImage);
         newGame = 0; tutorial = 1; settings = 2; exitGame = 3;
         isTutorial = false;
 
@@ -196,9 +183,11 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
-        overWorldMap = new TmxMapLoader().load("Maps/Overworld_Revamped_Two.tmx");
+        manager.setLoader(TiledMap.class, new TmxMapLoader());
+        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+        manager.finishLoading();
+        overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
         renderer = new OrthogonalTiledMapRenderer(overWorldMap);
-        camera = new OrthographicCamera();
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
@@ -238,11 +227,6 @@ public class MainMenu extends ScreenAdapter {
     public void resize(int width, int height) {
         this.width =width;
         this.height=height;
-        camera.viewportHeight = height;
-        camera.viewportWidth = width;
-        camera.translate(GAME.stageInstance.getWidth() / 2, GAME.stageInstance.getHeight() / 2);
-        camera.update();
-
         GAME.stageInstance.getViewport().update(width, height, true);
     }
 

@@ -19,6 +19,7 @@ public class MainItemsUI {
     private AssetManager itemsManager;
     private Array<itemSlot> slots;
 
+    public Array<InputListener> inventoryItemSelectionLister;
     public MainItemsUI(BladeAndTomes GAME,
                        DragAndDrop dnd,
                        AssetManager itemsManager,
@@ -28,6 +29,7 @@ public class MainItemsUI {
         this.dnd = dnd;
         this.itemsManager = itemsManager;
         this.slots = slots;
+        inventoryItemSelectionLister = new Array<>();
 
         // Initializing table
         table = new Table();
@@ -45,7 +47,7 @@ public class MainItemsUI {
             temp.applySource();
             temp.applyTarget();
             final int finalI = i;
-            game.stageInstance.addListener(new InputListener()
+            InputListener lister = new InputListener()
             {
                 @Override
                 public boolean keyDown(InputEvent event, int keycode)
@@ -59,15 +61,16 @@ public class MainItemsUI {
                         if(game.currentInventorySelection == finalI)
                             switch (game.player.inventoryItems.get(game.currentInventorySelection).getCategory()){
                                 case "Spells":
+                                    game.player.kUsedPositions++;
                                     if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("HealSpell")){
                                         int classHeal = game.player.getPlayerClass() == 1 || game.player.getPlayerClass() == 2 ? game.player.getMental()/2 : 0;
                                         int playerhealth = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage()+game.player.getHealthPoints()+classHeal,10);
                                         game.player.setHealthPoints(playerhealth);
                                         temp.removeItem();
                                     } else if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("StrengthSpell")){
-                                    game.spellDamageIncrease = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage(),10);
-                                    temp.removeItem();
-                                }
+                                        game.spellDamageIncrease = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage(),10);
+                                        temp.removeItem();
+                                    }
                                     break;
                                 case "Armor":
                                     game.player.inventoryItems.swap(finalI, 16);
@@ -76,10 +79,12 @@ public class MainItemsUI {
                                     game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
                                     break;
                             }
-                        }
+                    }
                     return true;
                 }
-            });
+            };
+            game.stageInstance.addListener(lister);
+            inventoryItemSelectionLister.add(lister);
             if(game.currentInventorySelection == i)
                 temp.applySelection(true);
             slots.add(temp);

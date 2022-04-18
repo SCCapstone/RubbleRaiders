@@ -8,7 +8,6 @@ import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
 import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -19,7 +18,7 @@ import static com.badlogic.gdx.utils.Align.*;
 public class OverlayManager implements Disposable {
     private final BladeAndTomes game;
     private Table table;
-    private InventoryUI inventory;
+    public InventoryUI inventory;
     private Health healthBar;
     private DragAndDrop dnd;
     private AssetManager manager;
@@ -36,9 +35,7 @@ public class OverlayManager implements Disposable {
             table.setBounds(0,0,Game.stageInstance.getWidth(),Game.stageInstance.getHeight());
             game.stageInstance.addActor(table);
             makeOverlays();
-
-
-
+            table.setZIndex(1);
     }
 
     public void setCounter(int counter) {
@@ -76,11 +73,12 @@ public class OverlayManager implements Disposable {
 
         return inventory.makeNPCSeller();
     }
-
+    public boolean isHiddenInventoryVisible;
     public void removeALlActors(){
         table.clear();
     }
     public void setHiddenTableVisibility(boolean val){
+        isHiddenInventoryVisible = val;
         game.showHiddenInventory =val;
         inventory.setHiddenInventoryVisibility(val);
         //table.toFront();

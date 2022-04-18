@@ -107,24 +107,24 @@ public class BladeAndTomes extends Game {
 
     public LoadSaveManager loadSaveManager;
     public itemDocument NullItemDoc;
-    private TextureAtlas idleTextureAtlas;
-    private transient Animation<TextureRegion> idleAnimation;
-    private TextureAtlas moveDownTextureAtlas;
-    private transient Animation<TextureRegion> moveDownAnimation;
-    private TextureAtlas moveUpTextureAtlas;
-    private transient Animation<TextureRegion> moveUpAnimation;
-    private TextureAtlas moveLeftTextureAtlas;
-    private transient Animation<TextureRegion> moveLeftAnimation;
-    private TextureAtlas moveRightTextureAtlas;
-    private transient Animation<TextureRegion> moveRightAnimation;
-    private TextureAtlas attackDownTextureAtlas;
-    private transient Animation<TextureRegion> attackDownAnimation;
-    private TextureAtlas attackUpTextureAtlas;
-    private transient Animation<TextureRegion> attackUpAnimation;
-    private TextureAtlas attackLeftTextureAtlas;
-    private transient Animation<TextureRegion> attackLeftAnimation;
-    private TextureAtlas attackRightTextureAtlas;
-    private transient Animation<TextureRegion> attackRightAnimation;
+    public TextureAtlas idleTextureAtlas;
+    public transient Animation<TextureRegion> idleAnimation;
+    public TextureAtlas moveDownTextureAtlas;
+    public transient Animation<TextureRegion> moveDownAnimation;
+    public TextureAtlas moveUpTextureAtlas;
+    public transient Animation<TextureRegion> moveUpAnimation;
+    public TextureAtlas moveLeftTextureAtlas;
+    public transient Animation<TextureRegion> moveLeftAnimation;
+    public TextureAtlas moveRightTextureAtlas;
+    public transient Animation<TextureRegion> moveRightAnimation;
+    public TextureAtlas attackDownTextureAtlas;
+    public transient Animation<TextureRegion> attackDownAnimation;
+    public TextureAtlas attackUpTextureAtlas;
+    public transient Animation<TextureRegion> attackUpAnimation;
+    public TextureAtlas attackLeftTextureAtlas;
+    public transient Animation<TextureRegion> attackLeftAnimation;
+    public TextureAtlas attackRightTextureAtlas;
+    public transient Animation<TextureRegion> attackRightAnimation;
     private transient Animation<TextureRegion> currentAnimation;
     public float elapsedTime;
 
@@ -132,32 +132,12 @@ public class BladeAndTomes extends Game {
     public static boolean exitDungeon;
     public static boolean isChest;
 
+    public boolean isPaused;
+
 //    Rectangle townHall;
 
     private final AssetManager manager = new AssetManager();
 
-    public static class quest {
-        String goal;
-        int value;
-        boolean used;
-        public quest(String s, int i, boolean b){
-            goal = s;
-            value = i;
-            used = b;
-        }
-        public String getGoal(){
-            return goal;
-        }
-        public int getValue(){
-            return value;
-        }
-        public void setUsed(){
-            used = true;
-        }
-        public boolean isUsed(){
-            return used;
-        }
-    }
 
     /**
      * Creates and initializes all objects and variables for the main project before moving the program to
@@ -172,7 +152,7 @@ public class BladeAndTomes extends Game {
         enterDungeon = false;
         exitDungeon = false;
         isChest = false;
-
+        isPaused = false;
         loadSaveManager = new LoadSaveManager();
         controls = loadSaveManager.getSettings();
 
@@ -181,7 +161,6 @@ public class BladeAndTomes extends Game {
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         font = new BitmapFont();
-
         //Section sets up the grid so that the player can move around correctly
         int x_start = 264;
         int y_start = 152;

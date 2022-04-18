@@ -31,8 +31,7 @@ public class InventoryUI implements Disposable {
 
     private AssetManager itemManager;
     private AssetManager mainItemsUIManager;
-    private MainItemsUI main_Inventory;
-
+    public MainItemsUI main_Inventory;
     private GeneralItemUI generalItemUI;
     private QuestUI questUI;
     private SkillUI skillUIs;

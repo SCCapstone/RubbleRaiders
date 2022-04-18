@@ -354,7 +354,9 @@ public class RoomHandler {
                 inventory.setHiddenTableVisibility(true);
 
             //Based off of Anirudh's suggestion to fix the inventory and allow for selection within the dungeon
-            game.overlays = new OverlayManager(game);
+            for(InputListener listener:game.overlays.inventory.main_Inventory.inventoryItemSelectionLister){
+                stage.addListener(listener);
+            }
             game.overlays.setOverLayesVisibility(true);
         }catch (Exception e){
 
