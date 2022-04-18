@@ -179,22 +179,22 @@ public class Player extends Entity {
                     //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
                     if(keycode == kControl.getMoveUp()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0.2f));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else if (keycode == kControl.getMoveDown()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0.2f));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveLeft()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0.2f));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveRight()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0.2f));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else {
@@ -307,47 +307,27 @@ public class Player extends Entity {
                     //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
                     if(keycode == kControl.getMoveUp()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 1));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else if (keycode == kControl.getMoveDown()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 1));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveLeft()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 1));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveRight()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 1));
-                        playerMovenSound.playMoveSound();
+                        //playerMovenSound.playMoveSound();
                         isTurn = false;
                     }
                     else {
                         return false;
                     }
-                    /*switch (keycode) {
-                        case :
-                            playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 1));
-                            playerMovenSound.playMoveSound();
-                            break;
-                        case Input.Keys.DOWN:
-                            playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 1));
-                            playerMovenSound.playMoveSound();
-                            break;
-                        case Input.Keys.LEFT:
-                            playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 1));
-                            playerMovenSound.playMoveSound();
-                            break;
-                        case Input.Keys.RIGHT:
-                            playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 1));
-                            playerMovenSound.playMoveSound();
-                            break;
-                        default:
-                            return false;
-                    }*/
                     moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
                     interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
                 }
