@@ -64,7 +64,7 @@ public class Overworld extends ScreenAdapter {
     Window pauseMenu;
     Label warning;
     TextButton options[];
-    InputListener escapePauseOver;
+    static InputListener escapePauseOver;
 
     Point NPC_Cords;
     Point Portal_Cords;
@@ -291,6 +291,7 @@ public class Overworld extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        GAME.player.playerIcon.removeListener(escapePauseOver);
         overWorldMap.dispose();
         renderer.dispose();
         manager.dispose();

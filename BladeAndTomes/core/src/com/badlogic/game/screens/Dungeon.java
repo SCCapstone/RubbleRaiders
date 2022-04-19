@@ -90,7 +90,7 @@ public class Dungeon extends ScreenAdapter {
     Label warning;
     TextButton pauseOptions[];
     Table quitTable;
-    InputListener escapePauseOver;
+    InputListener escapeListen;
 
     private Goblin[] goblins;
 
@@ -102,6 +102,7 @@ public class Dungeon extends ScreenAdapter {
 
         //Initial backbone values carried over
         this.GAME = game;
+        game.player.playerIcon.removeListener(Overworld.escapePauseOver);
         MOVE_DISTANCE = 64;
         GAME.resetElapsedTime();
         //Clears the stage instance
@@ -250,7 +251,7 @@ public class Dungeon extends ScreenAdapter {
         saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
         saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);*/
 
-        escapePauseOver = new InputListener() {
+        escapeListen = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
             {
                 if(keycode == GAME.controls.getOpenPauseMenu())
@@ -352,7 +353,7 @@ public class Dungeon extends ScreenAdapter {
         deathMenu.setMovable(true);
         deathMenu.setKeepWithinStage(true);
         deathMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
-        GAME.player.playerIcon.addListener(escapePauseOver);
+        GAME.player.playerIcon.addListener(escapeListen);
 
         //Gives the player a warning before exit the dungeon
         warning = new Label("Are you sure you want\nto exit the Dungeon?", GAME.generalLabelStyle);
