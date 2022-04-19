@@ -1,38 +1,25 @@
 package com.badlogic.game.screens;
 
 
-import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
-import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
-import com.badlogic.game.creatures.Player;
 
 import com.badlogic.game.creatures.Goblin;
-import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.Random;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Null;
-
-import java.util.HashMap;
 
 public class Dungeon extends ScreenAdapter {
 
@@ -99,9 +86,9 @@ public class Dungeon extends ScreenAdapter {
     boolean combatExplained;
     boolean chestExplained;
 
-    Window pauseMenu;
+    Window exitMenu;
     Label warning;
-    TextButton options[];
+    TextButton pauseOptions[];
     Table quitTable;
     InputListener escapePauseOver;
 
@@ -252,12 +239,12 @@ public class Dungeon extends ScreenAdapter {
             //if goblin in room, set step to 2 to explain combat
         }
 
-        pauseMenu = new Window("", GAME.generalWindowStyle);
-        pauseMenu.setHeight(500);
-        pauseMenu.setWidth(700);
-        pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
-        pauseMenu.setMovable(true);
-        pauseMenu.setKeepWithinStage(true);
+        exitMenu = new Window("", GAME.generalWindowStyle);
+        exitMenu.setHeight(500);
+        exitMenu.setWidth(700);
+        exitMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
+        exitMenu.setMovable(true);
+        exitMenu.setKeepWithinStage(true);
 
         /*saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
         saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
@@ -268,12 +255,16 @@ public class Dungeon extends ScreenAdapter {
             {
                 if(keycode == GAME.controls.getOpenPauseMenu())
                 {
+                    if(MainMenu.isTutorial){
+                        tutorialMessage.remove();
+                        next.remove();
+                    }
                     GAME.stageInstance.setKeyboardFocus(null);
-                    GAME.stageInstance.addActor(pauseMenu);
-                    pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
-                    pauseMenu.row();
-                    pauseMenu.row();
-                    pauseMenu.add(options[0], options[1]);
+                    GAME.stageInstance.addActor(exitMenu);
+                    exitMenu.add(warning).colspan(4).width(exitMenu.getWidth()/3+25);
+                    exitMenu.row();
+                    exitMenu.row();
+                    exitMenu.add(pauseOptions[0], pauseOptions[1]);
                 }
                 return true;
             }
@@ -347,6 +338,8 @@ public class Dungeon extends ScreenAdapter {
                 //System.out.println( GAME.player.getGold());
                 GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 //GAME.player.kEarnedGoldThroughLevels++;
+                BladeAndTomes.exitDungeon = true;
+                BladeAndTomes.enterDungeon = false;
                 GAME.setScreen(new Overworld(GAME));
                 safeGuard = false;
             }
@@ -366,19 +359,20 @@ public class Dungeon extends ScreenAdapter {
         warning.setSize(300f, 200f);
         warning.setAlignment(1,1);
 
-        options = new TextButton[] {
+        pauseOptions = new TextButton[] {
                 new TextButton("Confirm", GAME.generalTextButtonStyle),
                 new TextButton("Cancel", GAME.generalTextButtonStyle)
         };
 
-        options[0].addListener(new ChangeListener() {
+        pauseOptions[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 GAME.stageInstance.clear();
-                pauseMenu.clear();
-                pauseMenu.remove();
+                exitMenu.clear();
+                exitMenu.remove();
                 dispose();
                 BladeAndTomes.exitDungeon = true;
+                BladeAndTomes.enterDungeon = false;
                 GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -422,19 +416,22 @@ public class Dungeon extends ScreenAdapter {
         });
 
         //Sets up the pause menu for the player to utilize the pause menu
-        options[1].addListener(new ChangeListener() {
+        pauseOptions[1].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-                pauseMenu.clear();
-                pauseMenu.remove();
+                exitMenu.clear();
+                exitMenu.remove();
+                if(MainMenu.isTutorial && BladeAndTomes.enterDungeon && BladeAndTomes.exitDungeon==false){
+                    GAME.stageInstance.addActor(tutorialMessage);
+                }
             }
         });
 
         //Sets the index for the pause menu and options
-        pauseMenu.setZIndex(1);
-        options[0].setZIndex(1);
-        options[1].setZIndex(1);
+        exitMenu.setZIndex(1);
+        pauseOptions[0].setZIndex(1);
+        pauseOptions[1].setZIndex(1);
     }
 
     public void nextTutorial(){
@@ -447,7 +444,6 @@ public class Dungeon extends ScreenAdapter {
                 tutorialMessage.setText("Goblins are in this room!\nThere is close combat and ranged\ncombat items" +
                         "\nClick 'Q' and use movement keys to\nselect an enemy to attack. Then\nconfirm the attack with 'Enter'.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
-                next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
                 combatExplained = true;
                 break;
             case 5: //if chest appears, explain chests
@@ -455,12 +451,10 @@ public class Dungeon extends ScreenAdapter {
                 tutorialMessage.setText("There is a chest in this room.\n Go up to the chest and \nuse 'T' to open it. You\n can drag and drop any items\n" +
                         "into your inventory.");
                 chestExplained = true;
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 break;
-            case 6: //find the exit portal
-                tutorialMessage.setText("Continue exploring the dungeon\nand find the portal to exit.");
-                BladeAndTomes.exitDungeon = true;
-                BladeAndTomes.enterDungeon = false;
-                break;
+            case 7: //done
+                tutorialMessage.remove();
         }
     }
 
@@ -490,7 +484,7 @@ public class Dungeon extends ScreenAdapter {
                 GAME.GRID_Y[5] == GAME.player.playerIcon.getY() && !safeGuard) {
             GAME.stageInstance.setKeyboardFocus(null);
             GAME.stageInstance.addActor(returnMenu);
-            returnMenu.add(returnWarning).center().colspan(3);
+            returnMenu.add(returnWarning).center().colspan(4);
             returnMenu.row();
             returnMenu.add(returnChoices[0], returnChoices[1]).center();
             GAME.player.kDungeonsExplored++;
@@ -1108,6 +1102,8 @@ public class Dungeon extends ScreenAdapter {
             deathMenu.add(deathNotice).colspan(4).width(deathMenu.getWidth()/3+30);
             deathMenu.row();
             deathMenu.add(deathChoices[0], deathChoices[1]);
+            BladeAndTomes.exitDungeon = true;
+            BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
         }
         if(Gdx.input.isKeyJustPressed(GAME.controls.getOpenInventory())) {

@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Null;
 import jdk.tools.jmod.Main;
 
 import java.awt.*;
@@ -127,6 +128,10 @@ public class Overworld extends ScreenAdapter {
             {
                 if(keycode == game.controls.getOpenPauseMenu())
                 {
+                    if(MainMenu.isTutorial){
+                        tutorialMessage.remove();
+                        next.remove();
+                    }
                     GAME.stageInstance.setKeyboardFocus(null);
                     GAME.stageInstance.addActor(pauseMenu);
                     pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
@@ -166,6 +171,11 @@ public class Overworld extends ScreenAdapter {
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 pauseMenu.clear();
                 pauseMenu.remove();
+                if(MainMenu.isTutorial && BladeAndTomes.enterDungeon==false){
+                    GAME.stageInstance.addActor(tutorialMessage);
+                    if(tutorialStep<=8)
+                        GAME.stageInstance.addActor(next);
+                }
             }
         });
 
@@ -216,7 +226,6 @@ public class Overworld extends ScreenAdapter {
             }
             else {
                 nextTutorial();
-                GAME.stageInstance.setKeyboardFocus(next);
             }
         }
 
@@ -246,6 +255,13 @@ public class Overworld extends ScreenAdapter {
         //isCollisionHandled(GAME.player, GAME.stageInstance);
         //isTileCollisionHandled(GAME.player, collisionLayer);
         GAME.overlays.updateHealth();
+
+
+        //Tutorial check
+        if(MainMenu.isTutorial && BladeAndTomes.exitDungeon){
+            tutorialStep = 10;
+            nextTutorial();
+        }
 
 
         // Updates Elements for QuestBord
@@ -297,7 +313,7 @@ public class Overworld extends ScreenAdapter {
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
             case 3: //Equipped Quests
-                tutorialMessage.setText("Click on the 'Quests' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
+                tutorialMessage.setText("Click on the 'Quest' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
                         " Buying quests will \nbe explained soon.");
                 tutorialMessage.setSize(300f, 200f);
                 break;
@@ -314,12 +330,12 @@ public class Overworld extends ScreenAdapter {
             case 6: //Sell items
                 tutorialMessage.setSize(300f,250f);
                 tutorialMessage.setText("Walk to the top left building\n and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
-                        "it into the slot\nand click sell. Make sure to check \nthat the level of the items are the \nsame by hovering your mouse over them" +
+                        "it into the slot\nand click sell. Make sure to check \nthat the level of the items are the same\nby hovering your mouse over them" +
                         "\n\nClick 'T' to exit menu.");
                 break;
             case 7: //Buy items
                 tutorialMessage.setSize(300f,200f);
-                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to buy items.\nClick the pay button to buy the item." +
+                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to open the menu.\nClick the pay button to buy the item." +
                         "\n\nClick 'T' to exit menu.");
                 break;
             case 8: //item slot selection
