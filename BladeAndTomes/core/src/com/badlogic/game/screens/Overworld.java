@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Null;
 import jdk.tools.jmod.Main;
 
@@ -62,15 +63,20 @@ public class Overworld extends ScreenAdapter {
 
 
     Window pauseMenu;
-    Label warning;
-    TextButton options[];
+    static Label warning;
+    static TextButton options[];
+    ChangeListener quitOption;
     static InputListener escapePauseOver;
+    Label controls;
+    TextButton exitControls;
+    TextButton viewControls;
+    static TextButton chooseQuit;
+    TextButton exitPause;
 
     Point NPC_Cords;
     Point Portal_Cords;
     boolean doTrade;
 
-    Window saveQuit;
     TextButton saveBack;
     Label tutorialMessage;
     TextButton next;
@@ -113,16 +119,95 @@ public class Overworld extends ScreenAdapter {
         collidedX = false;
         collidedY = false;
 
+        //set up pause menu window
         pauseMenu = new Window("", GAME.generalWindowStyle);
         pauseMenu.setHeight(500);
         pauseMenu.setWidth(700);
         pauseMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
         pauseMenu.setMovable(true);
         pauseMenu.setKeepWithinStage(true);
-        saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
-        saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
-        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);
 
+        //set up three options in pause menu (controls, exit game, exit menu)
+        viewControls = new TextButton("View Controls", GAME.generalTextButtonStyle);
+        viewControls.setSize(150,100);
+        viewControls.setPosition(GAME.stageInstance.getWidth()/2-150,GAME.stageInstance.getHeight()/2);
+        chooseQuit = new TextButton("Quit", GAME.generalTextButtonStyle);
+        chooseQuit.setSize(150,100);
+        chooseQuit.setPosition(GAME.stageInstance.getWidth()/2,GAME.stageInstance.getHeight()/2);
+        chooseQuit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+               viewControls.remove();
+               chooseQuit.remove();
+               exitPause.remove();
+                GAME.stageInstance.addActor(pauseMenu);
+                pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
+                pauseMenu.row();
+                pauseMenu.row();
+                if(BladeAndTomes.enterDungeon == false){
+                    pauseMenu.add(options[0], options[1]);
+                } else {
+                    pauseMenu.add(Dungeon.exit);
+                    pauseMenu.add(options[1]);
+                }
+            }
+        });
+
+        exitPause = new TextButton("Close", GAME.generalTextButtonStyle);
+        exitPause.setSize(100, 50);
+        exitPause.setPosition(viewControls.getX()+100, viewControls.getY()-50);
+        exitPause.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
+                viewControls.remove();
+                chooseQuit.remove();
+                exitPause.remove();
+            }
+        });
+
+        //label showing player their current controls in game
+        controls = new Label("", GAME.generalLabelStyle);
+        controls.setText("    Controls:\n\n    Move Up: "+ Input.Keys.toString(GAME.controls.getMoveUp())
+                +"\n    Move Left: "+Input.Keys.toString(GAME.controls.getMoveLeft())
+                +"\n    Move Down: "+Input.Keys.toString(GAME.controls.getMoveDown())
+                +"\n    Move Right: "+Input.Keys.toString(GAME.controls.getMoveRight())
+                +"\n    Trading/Chests: "+Input.Keys.toString(GAME.controls.getTradeMenu())
+                +"\n    Pause: "+Input.Keys.toString(GAME.controls.getOpenPauseMenu())
+                +"\n    Inventory: "+Input.Keys.toString(GAME.controls.getOpenInventory())
+                +"\n    Combat: "+Input.Keys.toString(GAME.controls.getFightAction())
+                +"\n    Slot 1: "+Input.Keys.toString(GAME.controls.getItem1())
+                +"\n    Slot 2: "+Input.Keys.toString(GAME.controls.getItem2())
+                +"\n    Slot 3: "+Input.Keys.toString(GAME.controls.getItem3())
+                +"\n    Slot 4: "+Input.Keys.toString(GAME.controls.getItem4())
+                +"\n    Slot 5: "+Input.Keys.toString(GAME.controls.getItem5()));
+        controls.setFontScale(1.5f);
+        controls.setSize(250, 510);
+        controls.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2-175);
+        //option to exit controls view and go back to pause menu options
+        exitControls = new TextButton("Back", GAME.generalTextButtonStyle);
+        exitControls.setSize(150, 50);
+        exitControls.setPosition(controls.getX()+50, controls.getY()-50);
+        exitControls.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                controls.remove();
+                exitControls.remove();
+                GAME.stageInstance.addActor(viewControls);
+                GAME.stageInstance.addActor(chooseQuit);
+                GAME.stageInstance.addActor(exitPause);
+            }
+        });
+
+        viewControls.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                viewControls.remove();
+                chooseQuit.remove();
+                GAME.stageInstance.addActor(controls);
+                GAME.stageInstance.addActor(exitControls);
+            }
+        });
         escapePauseOver = new InputListener() {
             public boolean keyDown(InputEvent event, int keycode)
             {
@@ -133,11 +218,9 @@ public class Overworld extends ScreenAdapter {
                         next.remove();
                     }
                     GAME.stageInstance.setKeyboardFocus(null);
-                    GAME.stageInstance.addActor(pauseMenu);
-                    pauseMenu.add(warning).colspan(4).width(pauseMenu.getWidth()/3+25);
-                    pauseMenu.row();
-                    pauseMenu.row();
-                    pauseMenu.add(options[0], options[1]);
+                    GAME.stageInstance.addActor(viewControls);
+                    GAME.stageInstance.addActor(chooseQuit);
+                    GAME.stageInstance.addActor(exitPause);
                 }
                 return true;
             }
@@ -152,6 +235,7 @@ public class Overworld extends ScreenAdapter {
           new TextButton("Quit", GAME.generalTextButtonStyle),
           new TextButton("Cancel", GAME.generalTextButtonStyle)
         };
+
 
         options[0].addListener(new ChangeListener() {
             @Override

@@ -86,11 +86,12 @@ public class Dungeon extends ScreenAdapter {
     boolean combatExplained;
     boolean chestExplained;
 
-    Window exitMenu;
+   /* Window exitMenu;
     Label warning;
     TextButton pauseOptions[];
     Table quitTable;
-    InputListener escapeListen;
+    InputListener escapeListen;*/
+    static TextButton exit;
 
     private Goblin[] goblins;
 
@@ -102,7 +103,7 @@ public class Dungeon extends ScreenAdapter {
 
         //Initial backbone values carried over
         this.GAME = game;
-        game.player.playerIcon.removeListener(Overworld.escapePauseOver);
+        //game.player.playerIcon.removeListener(Overworld.escapePauseOver);
         MOVE_DISTANCE = 64;
         GAME.resetElapsedTime();
         //Clears the stage instance
@@ -110,6 +111,24 @@ public class Dungeon extends ScreenAdapter {
         //Instances the player's inventory
 
         roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays, GAME);
+
+        //make changes to the pause menu for dungeon
+        Overworld.warning.setText("Do you want to exit the Dungeon?\nYour progress will be lost.");
+        Overworld.chooseQuit.setText("Exit Dungeon");
+        //creates new exit button in quit menu to exit back to overworld
+        exit = new TextButton("Confirm", GAME.generalTextButtonStyle);
+        exit.setPosition(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight()/3);
+        exit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME.stageInstance.clear();
+                dispose();
+                BladeAndTomes.exitDungeon = true;
+                BladeAndTomes.enterDungeon = false;
+                GAME.setScreen(new Overworld(GAME));
+            }
+        });
+
 
         //set background info
         //Dungeon background images taken from https://opengameart.org/content/set-of-background-for-dungeon-room
@@ -240,36 +259,6 @@ public class Dungeon extends ScreenAdapter {
             //if goblin in room, set step to 2 to explain combat
         }
 
-        exitMenu = new Window("", GAME.generalWindowStyle);
-        exitMenu.setHeight(500);
-        exitMenu.setWidth(700);
-        exitMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
-        exitMenu.setMovable(true);
-        exitMenu.setKeepWithinStage(true);
-
-        /*saveQuit = new Window("SaveQuit", GAME.generalWindowStyle);
-        saveQuit.setSize(GAME.stageInstance.getWidth()/3,GAME.stageInstance.getHeight());
-        saveQuit.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.35f);*/
-
-        escapeListen = new InputListener() {
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                if(keycode == GAME.controls.getOpenPauseMenu())
-                {
-                    if(MainMenu.isTutorial){
-                        tutorialMessage.remove();
-                        next.remove();
-                    }
-                    GAME.stageInstance.setKeyboardFocus(null);
-                    GAME.stageInstance.addActor(exitMenu);
-                    exitMenu.add(warning).colspan(4).width(exitMenu.getWidth()/3+25);
-                    exitMenu.row();
-                    exitMenu.row();
-                    exitMenu.add(pauseOptions[0], pauseOptions[1]);
-                }
-                return true;
-            }
-        };
         //Based off of Window code in Dungeon for Save & Quit menu by Brent Able & Alex Facer
         returnMenu = new Window("", GAME.generalWindowStyle);
         returnMenu.setWidth(600);
@@ -353,30 +342,9 @@ public class Dungeon extends ScreenAdapter {
         deathMenu.setMovable(true);
         deathMenu.setKeepWithinStage(true);
         deathMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
-        GAME.player.playerIcon.addListener(escapeListen);
+        //GAME.player.playerIcon.addListener(escapeListen);
 
         //Gives the player a warning before exit the dungeon
-        warning = new Label("Are you sure you want\nto exit the Dungeon?", GAME.generalLabelStyle);
-        warning.setSize(300f, 200f);
-        warning.setAlignment(1,1);
-
-        pauseOptions = new TextButton[] {
-                new TextButton("Confirm", GAME.generalTextButtonStyle),
-                new TextButton("Cancel", GAME.generalTextButtonStyle)
-        };
-
-        pauseOptions[0].addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.clear();
-                exitMenu.clear();
-                exitMenu.remove();
-                dispose();
-                BladeAndTomes.exitDungeon = true;
-                BladeAndTomes.enterDungeon = false;
-                GAME.setScreen(new Overworld(GAME));
-            }
-        });
 
         //Let's the player know that he/she has died. Based on Label code in MainMenu
         deathNotice = new Label("You have died!", GAME.generalLabelStyle);
@@ -416,23 +384,7 @@ public class Dungeon extends ScreenAdapter {
             }
         });
 
-        //Sets up the pause menu for the player to utilize the pause menu
-        pauseOptions[1].addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-                exitMenu.clear();
-                exitMenu.remove();
-                if(MainMenu.isTutorial && BladeAndTomes.enterDungeon && BladeAndTomes.exitDungeon==false){
-                    GAME.stageInstance.addActor(tutorialMessage);
-                }
-            }
-        });
 
-        //Sets the index for the pause menu and options
-        exitMenu.setZIndex(1);
-        pauseOptions[0].setZIndex(1);
-        pauseOptions[1].setZIndex(1);
     }
 
     public void nextTutorial(){

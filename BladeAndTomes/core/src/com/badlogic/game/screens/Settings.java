@@ -146,7 +146,7 @@ public class Settings extends ScreenAdapter {
             }
         });
         //keybinding for Interact on settings page
-        tradeLabel = new Label("Building\nInteractions", GAME.generalLabelStyle);
+        tradeLabel = new Label("Trading\n& Chests", GAME.generalLabelStyle);
         tradeLabel.setAlignment(1,2);
         tradeKey = new TextField(Input.Keys.toString(menuCont.getTradeMenu()), GAME.generalTextFieldStyle);
         tradeKey.setMaxLength(1);
@@ -160,7 +160,7 @@ public class Settings extends ScreenAdapter {
             }
         });
         //keybinding for Menu on settings page
-        menuLabel = new Label("Menu", GAME.generalLabelStyle);
+        menuLabel = new Label("Pause", GAME.generalLabelStyle);
         menuLabel.setAlignment(1,2);
         menuKey = new TextField(Input.Keys.toString(menuCont.getOpenPauseMenu()), GAME.generalTextFieldStyle);
         menuKey.setMaxLength(1);

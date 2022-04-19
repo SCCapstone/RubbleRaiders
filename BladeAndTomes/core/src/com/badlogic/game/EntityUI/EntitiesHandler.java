@@ -41,7 +41,7 @@ public class EntitiesHandler implements Disposable {
         seller = game.overlays.generateNewNPSeller();
         camera = (OrthographicCamera) game.stageInstance.getCamera();
         player = new PlayerEnitityUI((OrthographicCamera) game.stageInstance.getCamera(), game.batch,
-                game.controls, 500, 500, 50, 50, game.moveUpAnimation,
+                game.controls, 960, 540, 50, 50, game.moveUpAnimation,
                 game.moveDownAnimation, game.moveLeftAnimation, game.moveRightAnimation);
         // Contains All goblins
         goblins = new Array<>();
