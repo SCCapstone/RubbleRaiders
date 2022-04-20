@@ -15,11 +15,11 @@ garner the ultimate riches from the experience.
 and resource management.
 * Combat with evil monsters within the dungeon that will not hesistate
 to challenge and impede the players intended goal.
-![Buy and Sell](BladeAndTomes\core\assets\WebsiteImages\DungeonBattle.PNG)
+![Dungeon Battle](BladeAndTomes\core\assets\WebsiteImages\DungeonBattle.PNG)
 * Simple combat AI that will chase after the player and try to take
 them down.
 * Take on random events that test your characters skills!
-  ![Buy and Sell](BladeAndTomes\core\assets\WebsiteImages\Event.PNG)
+  ![Events in Dungeon](BladeAndTomes\core\assets\WebsiteImages\Event.PNG)
 
 ## Requirements
 The game itself requires that you run Adoptium OpenJDK 11, given below:
