@@ -55,15 +55,6 @@ public class MainMenu extends ScreenAdapter {
     Button MainMenuOptions[];
     public static boolean isTutorial;
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        batch.dispose();
-        manager.dispose();
-
-    }
-
-
     // Options
     int newGame,tutorial,settings,exitGame;
 
@@ -237,5 +228,12 @@ public class MainMenu extends ScreenAdapter {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        batch.dispose();
+        manager.dispose();
     }
 }

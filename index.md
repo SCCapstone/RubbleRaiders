@@ -1,6 +1,3 @@
-# Blades and Tomes
-A game of dungeoneering and sorcery by the Rubble Raiders.
-
 ## About the Game
 The game centers around you, the player, creating a simple character
 that will represent you in the game world and making them explore
@@ -11,14 +8,18 @@ taking ability.
 The game includes:
 * A choice of three simple, yet distinct classes to vary the game play experience
 * The ability to bargain with and trade with NPCs in town
+![Buy and Sell](BladeAndTomes\core\assets\WebsiteImages\BuySell.PNG)
 * Allowing the player to enter a decrepit, strange dungeon and 
 garner the ultimate riches from the experience.
 * Manage a simple inventory interface to maximize both function,
 and resource management.
 * Combat with evil monsters within the dungeon that will not hesistate
 to challenge and impede the players intended goal.
+![Buy and Sell](BladeAndTomes\core\assets\WebsiteImages\DungeonBattle.PNG)
 * Simple combat AI that will chase after the player and try to take
 them down.
+* Take on random events that test your characters skills!
+  ![Buy and Sell](BladeAndTomes\core\assets\WebsiteImages\Event.PNG)
 
 ## Requirements
 The game itself requires that you run Adoptium OpenJDK 11, given below:
