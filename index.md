@@ -29,5 +29,5 @@ Please install all provided features provided by the program.
 * Aidan Emmons (akemmons@email.sc.edu)
 * Alex Facer
 * Brent Able
-* Anirudh Oruganti
+* Anirudh Oruganti (oruganti@email.sc.edu)
 * Miller Bandford
