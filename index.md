@@ -24,6 +24,7 @@ them down.
 ## Requirements
 The game itself requires that you run Adoptium OpenJDK 11, given below:
 ```https://adoptium.net/temurin/archive```
+
 Please install all provided features provided by the program.
 
 ## About the Team
