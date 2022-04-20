@@ -27,6 +27,9 @@ The game itself requires that you run Adoptium OpenJDK 11, given below:
 
 Please install all provided features provided by the program.
 
+**MADE FOR WINDOWS!!** You may try to run it on another system,
+but we do not guarantee that the program will function as intended.
+
 ## About the Team
 * Aidan Emmons - akemmons@email.sc.edu
 * Brent Able - bpable@email.sc.edu
