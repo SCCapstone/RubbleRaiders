@@ -1,8 +1,10 @@
 ## About the Game
-The game centers around you, the player, creating a simple character
-that will represent you in the game world and making them explore
-a random series of dungeon rooms that will test the player's risk
-taking ability.
+If you enjoy classical fantasy dungeon crawlers then this is a game made for you!
+The game centers around you, the player, creating a simple adventurer.
+Representing your desired playstyle and making them explore
+a randomly generated dungeon. While you take on quest to give yourself a goal on your adventures.
+Filled with randomly determined enemies, events, and treasure.
+See how far you can get as the difficulty slowly ramps up the deeper you go.
 
 ## Features
 The game includes:
