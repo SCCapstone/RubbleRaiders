@@ -26,8 +26,8 @@ The game itself requires that you run Adoptium OpenJDK 11, given below:
 Please install all provided features provided by the program.
 
 ## About the Team
-* Aidan Emmons (akemmons@email.sc.edu)
-* Alex Facer
-* Brent Able
-* Anirudh Oruganti (oruganti@email.sc.edu)
-* Miller Bandford
+* Aidan Emmons - akemmons@email.sc.edu
+* Brent Able - bpable@email.sc.edu
+* V.N Anirudh Oruganti - oruganti@email.sc.edu
+* Alex Facer - afacer@email.sc.edu
+* Miller Banford - banford@email.sc.edu
