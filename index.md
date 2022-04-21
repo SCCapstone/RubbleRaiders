@@ -1,3 +1,7 @@
+## Game Demo 
+
+![placeholder](BladeAndTomes\core\assets\WebsiteImages\placeholder.png)
+
 ## About the Game
 If you enjoy classical fantasy dungeon crawlers then this is a game made for you!
 The game centers around you, the player, creating a simple adventurer.
@@ -30,6 +34,9 @@ The game itself requires that you run Adoptium OpenJDK 11, given below:
 ```https://adoptium.net/temurin/archive```
 
 Please install all provided features provided by the program.
+
+**MADE FOR WINDOWS!!** You may try to run it on another system,
+but we do not guarantee that the program will function as intended.
 
 ## About the Team
 * Aidan Emmons - akemmons@email.sc.edu
