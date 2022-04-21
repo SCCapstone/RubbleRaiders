@@ -8,6 +8,8 @@ See how far you can get as the difficulty slowly ramps up the deeper you go.
 
 ## Features
 The game includes:
+* A tutorial for new players to learn the games mechanics.
+![Tutorial](BladeAndTomes\core\assets\WebsiteImages\TutorialMessage.PNG)
 * A choice of three simple, yet distinct classes to vary the game play experience
 * The ability to bargain with and trade with NPCs in town
 ![Buy and Sell](BladeAndTomes\core\assets\WebsiteImages\BuySell.PNG)
