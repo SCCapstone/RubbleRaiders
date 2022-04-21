@@ -1,6 +1,5 @@
 ## Game Demo 
-
-https://user-images.githubusercontent.com/71472070/164562257-61c4008e-3281-4f53-b491-fe2dbb9f415b.mp4
+[Video PlaceHolder](https://user-images.githubusercontent.com/71472070/164562257-61c4008e-3281-4f53-b491-fe2dbb9f415b.mp4)
 
 
 ## About the Game
