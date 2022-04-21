@@ -1,3 +1,7 @@
+## Game Demo 
+
+![placeholder](BladeAndTomes\core\assets\WebsiteImages\placeholder.png)
+
 ## About the Game
 If you enjoy classical fantasy dungeon crawlers then this is a game made for you!
 The game centers around you, the player, creating a simple adventurer.
