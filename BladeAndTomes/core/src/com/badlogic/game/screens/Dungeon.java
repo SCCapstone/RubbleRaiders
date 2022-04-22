@@ -125,6 +125,7 @@ public class Dungeon extends ScreenAdapter {
                 dispose();
                 BladeAndTomes.exitDungeon = true;
                 BladeAndTomes.enterDungeon = false;
+                GAME.player.setHealthPoints(GAME.player.getFullHealth());
                 GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -308,6 +309,10 @@ public class Dungeon extends ScreenAdapter {
                 //Renders the Overlay properly for the player
                 GAME.overlays.render();
 
+                //Save player
+
+                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
+
                 //Makes sure repeated instances are free
                 safeGuard = false;
 
@@ -369,6 +374,7 @@ public class Dungeon extends ScreenAdapter {
                 GAME.stageInstance.clear();
                 BladeAndTomes.exitDungeon = true;
                 BladeAndTomes.enterDungeon = false;
+                GAME.player.setHealthPoints(GAME.player.getFullHealth());
                 GAME.setScreen(new Overworld(GAME));
             }
         });
@@ -441,6 +447,7 @@ public class Dungeon extends ScreenAdapter {
             returnMenu.row();
             returnMenu.add(returnChoices[0], returnChoices[1]).center();
             GAME.player.kDungeonsExplored++;
+            GAME.player.setHealthPoints(GAME.player.getFullHealth());
             safeGuard = true;
         }
 
