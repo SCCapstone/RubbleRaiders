@@ -1,8 +1,5 @@
 package ScreenOverlayRework.Inventory.ItemUI;
 
-import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestDocument;
-import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestTradeElements;
-import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestUIElements;
 import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestUIElements;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;

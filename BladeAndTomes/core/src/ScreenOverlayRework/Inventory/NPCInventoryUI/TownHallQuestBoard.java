@@ -5,7 +5,6 @@ import ScreenOverlayRework.Inventory.ItemUI.Quest.QuestTradeElements;
 import ScreenOverlayRework.Inventory.ItemUI.QuestUI;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 

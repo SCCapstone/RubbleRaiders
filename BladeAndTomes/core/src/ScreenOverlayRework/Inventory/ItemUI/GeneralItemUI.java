@@ -1,6 +1,5 @@
 package ScreenOverlayRework.Inventory.ItemUI;
 
-import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;

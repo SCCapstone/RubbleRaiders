@@ -74,6 +74,7 @@ public class NPCSeller extends TradeUI {
                             game.player.inventoryItems.set(i,doc);
                             itemSlot slot = slots.get(i);
                             slot.getItem().setDrawable(doc.getImage(itemsManager).getDrawable());
+                            slot.getItem().setColor(doc.getImage(itemsManager).getColor());
                             slot.displayInfo();
                             availableSlot = false;
                             game.player.setGold(availableGold - itemPrice);

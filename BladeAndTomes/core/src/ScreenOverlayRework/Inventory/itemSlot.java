@@ -4,7 +4,9 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -38,6 +40,9 @@ public class itemSlot extends Actor {
     protected AssetManager manager;
     protected TextTooltip info;
     protected ImageButton imageButtonAddOn;
+    protected boolean isBuyer = false;
+    protected Label cancelLabel;
+
 
     /*
     TODO
@@ -66,6 +71,7 @@ public class itemSlot extends Actor {
         dnd=DND;
         this.targetSlot = targetSlot;
         documentIndex = index;
+        cancelLabel = null;
 
         BaseSlotTexturePath = "SkinAssets/Inventory/Slot/SlotUI";
         if(!manager.contains(BaseSlotTexturePath+".json",Skin.class)){
@@ -128,6 +134,7 @@ public class itemSlot extends Actor {
         if(String.valueOf(game.player.inventoryItems.get(documentIndex).getItemDescription()).equalsIgnoreCase("")){
             table.removeListener(info);
             info.setInstant(false);
+            info.hide();
         }
         else {
             info.setInstant(true);
@@ -135,6 +142,7 @@ public class itemSlot extends Actor {
             table.addListener(info);
         }
     }
+
 
     public void displayInfo(itemDocument doc) {
 
@@ -223,6 +231,7 @@ public class itemSlot extends Actor {
 
     public void updateDrawable(){
         item.setDrawable(game.player.inventoryItems.get(documentIndex).getImage(manager).getDrawable());
+        item.setColor(game.player.inventoryItems.get(documentIndex).getImage(manager).getColor());
         displayInfo();
 
     }
@@ -236,7 +245,8 @@ public class itemSlot extends Actor {
                 Image actor =(Image) payload.getObject();
                 item.setVisible(false);
                 Image temp = new Image(actor.getDrawable());
-                temp.setSize(75,75);
+                temp.setColor(actor.getColor());
+                temp.setSize(50,50);
                 payload.setDragActor(temp);
                 payload.setInvalidDragActor(temp);
                 payload.setValidDragActor(temp);
@@ -327,17 +337,16 @@ public class itemSlot extends Actor {
                 game.player.inventoryItems.get(newItem).setIndex(String.valueOf(currentItem));
                 game.player.inventoryItems.get(currentItem).setIndex(String.valueOf(newItem));
                 Drawable temp = ((Image) payload.getObject()).getDrawable();
+                Color currentItemColor = item.getColor().cpy();
+                Color newtItemColor = ((Image) payload.getObject()).getColor();
+
                 ((Image) payload.getObject()).setDrawable(item.getDrawable());
                 item.setDrawable(temp);
-                //System.out.println(""+"\t"+newItem+"\t"+currentItem+"\t"+documentIndex);
 
-//                documentIndex = newItem;
-
-
+                item.setColor(newtItemColor);
+                ((Image) payload.getObject()).setColor(currentItemColor);
                 updateSlotElements();
                 displayInfo();
-
-//                System.out.println("After Swap\t" + game.player.inventoryItems.get(newItem).getIndex()+"\t"+game.player.inventoryItems.get(currentItem).getIndex());
                 if(newItem == 16 ||currentItem == 16)
                     game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
                 updateSlotElements();
@@ -352,6 +361,12 @@ public class itemSlot extends Actor {
         }
     }
 
+    public void setItemImage(Image itemImage){
+        String name = item.getName();
+        item = itemImage;
+        item.setName(name);
+
+    }
     public DragAndDrop.Source getSourceLister() {
         return sourceLister;
     }

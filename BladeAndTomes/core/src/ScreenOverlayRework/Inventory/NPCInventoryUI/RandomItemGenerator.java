@@ -1,13 +1,8 @@
 package ScreenOverlayRework.Inventory.NPCInventoryUI;
 
 import ScreenOverlayRework.Inventory.itemDocument;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -34,7 +29,7 @@ public class RandomItemGenerator {
         itemsFinal = new Hashtable<String, Hashtable<String,String>>();
         itemDocument = new itemDocument();
         inventoryItemsPath = "InventoryItems/";
-        MaxLevel = 4;
+        MaxLevel = 1;
         addAvailableItems();
         itemType = (String) items.keySet().toArray()[random.nextInt(items.size())];
         itemCategory = (String) items.get(itemType).keySet().toArray()[random.nextInt(items.get(itemType).size())];
@@ -84,10 +79,10 @@ public class RandomItemGenerator {
     }
     public void generateArmorDoc(){
         RandomItemName =  (String) itemsFinal.get("Armor").keySet().toArray()[random.nextInt(itemsFinal.get("Armor").size())];
-        int itemLevel = random.nextInt(11+MaxLevel)+1;
+        int itemLevel = random.nextInt(MaxLevel)+1;
         boolean isMagic = (random.nextInt(1500)>1400)?true:false;
-        int itemDamage =Math.min((itemLevel*itemLevel)/2,10);
-        itemDamage = (isMagic&&itemLevel>=14)? 10:itemDamage;
+        int itemDamage =Math.min((itemLevel*itemLevel+itemLevel)/2,10);
+        itemDamage = (isMagic&&itemLevel>=MaxLevel)? 10:itemDamage;
 
         String ItemInfo = "***  Armor ***"+"\n"+
                 "Armor Level: "+String.valueOf(itemLevel)+"\n"+
@@ -164,10 +159,6 @@ public class RandomItemGenerator {
 
             doc.setItemDescription(ItemInfo);
         doc.setDefauls = false;
-        doc.color = (isMagic)       ?   Color.PURPLE:
-                    (itemLevel == 4)?   Color.GOLD:
-                    (itemLevel == 3)?   Color.BLUE:
-                    (itemLevel == 2)?   Color.BROWN: Color.GRAY;
         doc.isDefaultColor = false;
         itemDocument = doc;
     }
@@ -177,7 +168,7 @@ public class RandomItemGenerator {
 
     }
     public int calculatePrice(int level) {
-        int price = (random.nextInt(5) + level*level+1);
+        int price = (random.nextInt(5) + level*level+1)+2;
         return price;
     }
 

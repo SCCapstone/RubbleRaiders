@@ -9,7 +9,7 @@ import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
 import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -23,7 +23,7 @@ public class OverlayManager implements Disposable {
     private DragAndDrop dnd;
     private AssetManager manager;
     int counter = 0;
-
+    public boolean isHiddenInventoryVisible;
     public OverlayManager(BladeAndTomes Game)  {
         manager = Game.assets;
 
@@ -34,8 +34,11 @@ public class OverlayManager implements Disposable {
             table.defaults();
             table.setBounds(0,0,Game.stageInstance.getWidth(),Game.stageInstance.getHeight());
             game.stageInstance.addActor(table);
+            isHiddenInventoryVisible = false;
             makeOverlays();
-            table.setZIndex(1);
+
+
+
     }
 
     public void setCounter(int counter) {
@@ -73,13 +76,13 @@ public class OverlayManager implements Disposable {
 
         return inventory.makeNPCSeller();
     }
-    public boolean isHiddenInventoryVisible;
+
     public void removeALlActors(){
         table.clear();
     }
     public void setHiddenTableVisibility(boolean val){
+        game.showHiddenInventory = val;
         isHiddenInventoryVisible = val;
-        game.showHiddenInventory =val;
         inventory.setHiddenInventoryVisibility(val);
         //table.toFront();
 //        table.remove();

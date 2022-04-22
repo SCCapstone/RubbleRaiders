@@ -1,6 +1,5 @@
 package ScreenOverlayRework.Inventory.ItemUI;
 
-import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
@@ -18,7 +17,6 @@ public class MainItemsUI {
     private Table table;
     private AssetManager itemsManager;
     private Array<itemSlot> slots;
-
     public Array<InputListener> inventoryItemSelectionLister;
     public MainItemsUI(BladeAndTomes GAME,
                        DragAndDrop dnd,
@@ -77,14 +75,17 @@ public class MainItemsUI {
                                     slots.get(finalI).updateDrawable();
                                     slots.get(16).updateDrawable();
                                     game.player.playerDefence = game.player.inventoryItems.get(16).getDamage();
+                                    slots.get(16).displayInfo();
                                     break;
                             }
-                    }
+                        }
                     return true;
                 }
             };
             game.stageInstance.addListener(lister);
+
             inventoryItemSelectionLister.add(lister);
+
             if(game.currentInventorySelection == i)
                 temp.applySelection(true);
             slots.add(temp);

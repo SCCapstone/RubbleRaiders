@@ -5,25 +5,33 @@ import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 public class SellerItemSlot extends itemSlot {
-    final boolean[] isOverSlot = {false};
-    final boolean[] isOverItem = {false};
-    final Label cancelLabel;
-    Array<itemSlot> slots;
 
+    Array<itemSlot> slots;
     itemDocument itemDocument;
+    Label info;
+    Label displayItemMatch;
+    String initialItemLabelText;
+    boolean isOverSlot;
     public SellerItemSlot(BladeAndTomes game,
-                    itemDocument doc,
-                    DragAndDrop DND,
-                    AssetManager manager, Array<itemSlot> slots){
+                          final itemDocument doc,
+                          DragAndDrop DND,
+                          final AssetManager manager, Array<itemSlot> slots, Label info){
         super();
+        initialItemLabelText = info.getText().toString();
+        this.info = info;
         this.slots=slots;
         this.manager=manager;
         BaseSlotTexturePath = "SkinAssets/Inventory/Slot/SlotUI";
@@ -37,48 +45,34 @@ public class SellerItemSlot extends itemSlot {
             manager.finishLoading();
             slotSkin = manager.get(BaseSlotTexturePath+".json",Skin.class);
         }
+        isBuyer = true;
         this.doc = doc;
         slot = new ImageButton(slotSkin);
          final Label.LabelStyle style = game.BaseLabelStyle2;
         slot.setSize(100,100);
         table.addActor(slot);
-        item = new Image();
+        slot.getListeners().clear();
+        item = doc.getImage(manager);
         itemDocument = new itemDocument();
         item.setName(itemDocument.getName());
         item.setSize(65,65);
+        item.setColor(item.getColor().r,item.getColor().g,item.getColor().b,0.25f);
         item.setPosition(slot.getWidth()*0.15f,slot.getWidth()*0.15f);
         table.addActor(item);
         this.game = game;
         dnd = DND;
-        final boolean[] isOverCancelLabel = {false};
         cancelLabel.setSize(75,75);
         cancelLabel.setPosition(10,10);
-
-        slot.addListener(new ClickListener(){
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-
-                if(sellingObj) {
-                    slot.addActor(cancelLabel);
-                    item.setVisible(false);
-                }
-                super.enter(event, x, y, pointer, fromActor);
-            }
-
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                slot.removeActor(cancelLabel);
-                item.setVisible(true);
-                super.exit(event, x, y, pointer, toActor);
-            }
-        });
+        cancelLabel.setFontScale(.9f);
+        displayItemMatch= new Label("", game.BaseLabelStyle2);
+        displayItemMatch.setSize(75,75);
+        displayItemMatch.setPosition(10,10);
         cancelLabel.addListener(new ClickListener(){
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                isOverItem[0] = true;
                 if(sellingObj){
                     table.addActor(cancelLabel);
+                    cancelLabel.getColor().a = 1.0f;
                 }
                 super.enter(event, x, y, pointer, fromActor);
             }
@@ -87,12 +81,12 @@ public class SellerItemSlot extends itemSlot {
             public void clicked(InputEvent event, float x, float y) {
                 boolean addBack = addBackToInventory(itemDocument);
                 if(addBack){
-
-                    slot.removeActor(cancelLabel);
-
+                    table.removeActor(cancelLabel);
                     tradeComplete();
+                    item.setDrawable(doc.getImage(manager).getDrawable());
                 } else{
                     cancelLabel.setText("No Slots Empty!");
+
                 }
                 super.clicked(event, x, y);
             }
@@ -100,25 +94,14 @@ public class SellerItemSlot extends itemSlot {
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 {
-                    table.removeActor(cancelLabel);
+                    cancelLabel.getColor().a = 0f;
                 }
                 super.exit(event, x, y, pointer, toActor);
             }
         });
+        cancelLabel.getColor().a = 1.0f;
         sellingObj = false;
-        currentPayload = null;
-        Skin toolTip;
-        String ToolTpPath = "InventoryItems/Other/SlotTextToolTip/SlotTextToolTip";
-        if(manager.contains(ToolTpPath+".json",Skin.class)){
-            toolTip = manager.get(ToolTpPath+".json",Skin.class);
-        } else{
-            manager.load(ToolTpPath+".json",Skin.class,new SkinLoader.SkinParameter(ToolTpPath+".atlas"));
-            manager.finishLoading();
-            toolTip = manager.get(ToolTpPath+".json",Skin.class);
-        }
-        info = new TextTooltip("",toolTip);
-        info.setInstant(true);
-        item.addListener(info);
+        isOverSlot = false;
     }
 
     public boolean addBackToInventory(itemDocument newItemDoc){
@@ -131,8 +114,8 @@ public class SellerItemSlot extends itemSlot {
                 game.player.inventoryItems.set(i,newItemDoc);
                 itemSlot slot = slots.get(i);
                 slot.getItem().setDrawable(newItemDoc.getImage(manager).getDrawable());
+                slot.getItem().setColor(newItemDoc.getImage(manager).getColor());
                 slot.displayInfo();
-
                 return true;
             }
         }
@@ -143,20 +126,42 @@ public class SellerItemSlot extends itemSlot {
     public void applyTarget() {
         dnd.addTarget(new DragAndDrop.Target(table) {
             @Override
+            public void reset(DragAndDrop.Source source, DragAndDrop.Payload payload) {
+                if(isOverSlot){
+                    table.removeActor(displayItemMatch);
+                    info.setText(initialItemLabelText);
+                    info.setFontScale(1f);
+                    isOverSlot = false;
+                }
+                super.reset(source, payload);
+            }
+
+            @Override
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
-
                 try {
-
                     int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
                     int sellingItemlvl = game.player.inventoryItems.get(sellingItemIndex).getLevel();
                     String sellingItemCategory = game.player.inventoryItems.get(sellingItemIndex).getCategory();
                     String sellingItemName = game.player.inventoryItems.get(sellingItemIndex).getName();
+                    boolean itemTypeEquals =  doc.getName().equalsIgnoreCase(sellingItemName);
+                    boolean itemCategoryEquals = doc.getCategory().equalsIgnoreCase(sellingItemCategory);
+                    boolean itemLevelEquals =  doc.getLevel()==sellingItemlvl;
 
-                    sellingObj = doc.getName().equalsIgnoreCase(sellingItemName) &&
-                            doc.getCategory().equalsIgnoreCase(sellingItemCategory) &&
-                            doc.getLevel()==sellingItemlvl;
-                    //System.out.println(sellingObj);
 
+                    sellingObj =itemTypeEquals &&
+                            itemCategoryEquals &&
+                            itemLevelEquals;
+                    if(!sellingObj){
+                        info.setText("           Provided: \n           "+"  Level "+String.valueOf(sellingItemlvl)+" "+sellingItemName.toUpperCase()+"\n"+"           Wants:\n           " + " Level: "+String.valueOf(doc.getLevel())+" "+doc.getName().toUpperCase());
+                        info.setFontScale(.85f);
+                        displayItemMatch.setText(" CAN'T\n TRADE\n ITEM");
+                        table.addActor(displayItemMatch);
+                    }
+                    else{
+                        displayItemMatch.setText("    DROP");
+                        table.addActor(displayItemMatch);
+                    }
+                    isOverSlot = true;
                     return sellingObj;
 
                 } catch (Exception e){
@@ -171,16 +176,24 @@ public class SellerItemSlot extends itemSlot {
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 int sellingItemIndex = Integer.valueOf(((Image) payload.getObject()).getName());
-                    Drawable temp = ((Image) payload.getObject()).getDrawable();
-                    ((Image) payload.getObject()).setDrawable(item.getDrawable());
-                    item.setDrawable(temp);
+                    Color color =  ((Image) payload.getObject()).getColor();
+                    ((Image) payload.getObject()).setDrawable((new Image()).getDrawable());
+                    item.getColor().a = 1;
                     itemDocument tempDoc = game.player.inventoryItems.get(sellingItemIndex);
                     itemDocument.setIndex(String.valueOf(sellingItemIndex));
                     game.player.inventoryItems.set(sellingItemIndex,itemDocument);
                     itemDocument = tempDoc;
                     ((Image) payload.getObject()).setName(String.valueOf(sellingItemIndex));
+                    cancelLabel.setName("   CANCEL \n   TRADE!");
+                    table.addActor(cancelLabel);
+                    cancelLabel.getColor().a = 1f;
+
+
 //                    item.setName("BUY");
             }});
+    }
+
+    public void setBackDrawable(){
     }
 
 
@@ -188,7 +201,7 @@ public class SellerItemSlot extends itemSlot {
         sellingObj = false;
         itemDocument = new itemDocument();
         item.setName(itemDocument.getName());
-        item.setDrawable(null);
+        item.setColor(item.getColor().r,item.getColor().g,item.getColor().b,0.25f);
     }
 
 }

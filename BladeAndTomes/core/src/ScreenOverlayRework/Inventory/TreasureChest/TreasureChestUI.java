@@ -11,7 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
 
-import static com.badlogic.gdx.utils.Align.*;
+import static com.badlogic.gdx.utils.Align.right;
+import static com.badlogic.gdx.utils.Align.top;
 
 public class TreasureChestUI extends TradeUI {
     private Array<RandomItemGenerator> trade;
@@ -34,9 +35,6 @@ public class TreasureChestUI extends TradeUI {
             trade.add(new RandomItemGenerator(itemsManager));
 
     }
-
-
-
     public void drawSeller() {
         Label label = new Label("        Chest", game.BaseLabelStyle1);
         label.setSize(150,50);

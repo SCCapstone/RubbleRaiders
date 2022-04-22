@@ -13,7 +13,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -32,6 +33,7 @@ public class InventoryUI implements Disposable {
     private AssetManager itemManager;
     private AssetManager mainItemsUIManager;
     public MainItemsUI main_Inventory;
+
     private GeneralItemUI generalItemUI;
     private QuestUI questUI;
     private SkillUI skillUIs;
@@ -40,7 +42,7 @@ public class InventoryUI implements Disposable {
     TextButton InventoryButton;
     TextButton QuestButton;
     TextButton SkillButton;
-    TownHallQuestBoard questBoard;
+    TextButton Gold;
     public InventoryUI(BladeAndTomes GAME,DragAndDrop dnd) {
         game = GAME;
         // Tables used to draw slots
@@ -84,6 +86,10 @@ public class InventoryUI implements Disposable {
         makeHiddenInventory();
         table.addActor(HiddenInventoryTable);
 
+        Gold = new TextButton("Gold: "+String.valueOf(game.player.getGold()),game.inventoryTextButtonStyle);
+        Gold.setPosition( 775,750);
+        Gold.setSize(100,75);
+        table.addActor(Gold);
 
     }
 
@@ -175,7 +181,7 @@ public class InventoryUI implements Disposable {
         return npc;
     }
     public NPCBuyer makeNPCBuyer(){
-        ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer npc=new NPCBuyer(game,dnd,mainItemsUIManager,slots);
+        NPCBuyer npc=new NPCBuyer(game,dnd,mainItemsUIManager,slots);
         npc.getTable().setVisible(false);
         return npc;
     }
@@ -255,6 +261,7 @@ public class InventoryUI implements Disposable {
     public void render(){
         questUI.render();
         skillUIs.render();
+        Gold.setText("Gold: "+String.valueOf(game.player.getGold()));
 //        for(int i = 0;i<slots.size;++i)
 //            slots.get(i).updateInfo();
 
@@ -271,9 +278,12 @@ public class InventoryUI implements Disposable {
             stack.add(HiddenInventorySlots);
             drawQuests();
             HiddenInventoryTable.setVisible(true);
+            Gold.setVisible(true);
         }
         else{
             HiddenInventoryTable.setVisible(val);
+            Gold.setVisible(val);
+
 
         }
     }

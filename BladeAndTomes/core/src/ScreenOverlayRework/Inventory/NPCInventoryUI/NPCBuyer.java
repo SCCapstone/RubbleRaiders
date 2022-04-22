@@ -4,7 +4,9 @@ import ScreenOverlayRework.Inventory.itemDocument;
 import ScreenOverlayRework.Inventory.itemSlot;
 import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -45,7 +47,7 @@ public class NPCBuyer extends TradeUI {
             trades.add(makeitemRow(trade.get(i)));
             trades.row();
         }
-        trades.setPosition(750,450);
+        trades.setPosition(875,450);
         buyer.addActor(trades);
     }
     public Table makeitemRow(final RandomItemGenerator currentTrade){
@@ -53,15 +55,21 @@ public class NPCBuyer extends TradeUI {
         final boolean tradeOK = false;
         final int price = (int) (currentTrade.getItemDocument().getPrice()*0.2);
         itemDocument doc = currentTrade.getItemDocument();
-        final SellerItemSlot slot = new SellerItemSlot(game,doc, dnd,itemsManager,slots);
-        table.add(slot.getSlot()).size(100,100);
-//        slot.applySource();
+        String str = new String("           Trader is Buying:\n"+"           Item: "+doc.getName().toUpperCase()+"\n"+"           Level: "+String.valueOf(doc.getLevel()));
+        Label itemLabel = new Label(str,game.BaseLabelStyle1);
+        final SellerItemSlot slot = new SellerItemSlot(game,doc, dnd,itemsManager,slots,itemLabel);
         slot.applyTarget();
+        Image itemImage = currentTrade.getItemDocument().getImage(itemsManager);
 
-        slot.displayInfo(doc);
-        table.add(currentTrade.getItemDocument().getImage(itemsManager)).size(50,50);
+
+        itemImage.setColor(Color.BLACK);
+        itemImage.setSize(50,50);
+        itemImage.setPosition(15,15);
+        //slot.getSlot().addActor(itemImage);//.size(50,50);
+        table.add(slot.getSlot()).size(100,100);
+        table.add(itemLabel).size(250,80);
         TextButton button = new TextButton("Get "+String.valueOf(price)+" Gold",game.generalTextButtonStyle);
-        table.add(button).size(150,70).colspan(3);
+        table.add(button).size(100,80).colspan(3);
 
         button.addListener(new ClickListener(){
             @Override

@@ -2,7 +2,6 @@ package ScreenOverlayRework.Inventory.ItemUI.Quest;
 
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Hashtable;
 import java.util.Random;
 
 public class QuestDocument {
@@ -88,6 +87,8 @@ public class QuestDocument {
                 ++rewardAmount;
                 kObj = randomNumber.nextInt(5)+7;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4)+randomNumber.nextInt(4);
+                if(isRewardGold)
+                    rewardAmount+=kQuestObtainAmount;
                 break;
             case "MEDIUM":
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
@@ -97,15 +98,17 @@ public class QuestDocument {
 
                 kObj = randomNumber.nextInt(5)+2;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4);
+                rewardAmount+=kQuestObtainAmount;
                 break;
             case "EASY":
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
                 isRewardGold = true;
-                rewardAmount = randomNumber.nextInt(5)+1;
+                rewardAmount = randomNumber.nextInt(5);
                 ++rewardAmount;
 
                 kObj = randomNumber.nextInt(5)+1;
                 kQuestObtainAmount = randomNumber.nextInt(4)+1;
+                rewardAmount+=kQuestObtainAmount;
                 break;
         }
         ++rewardAmount;
