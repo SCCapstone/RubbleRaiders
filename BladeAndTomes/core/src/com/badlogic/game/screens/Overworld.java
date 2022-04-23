@@ -108,7 +108,6 @@ public class Overworld extends ScreenAdapter {
         this.GAME = game;
         GAME.resetElapsedTime();
         objectLayerId = 2;
-
         GAME._bgmusic.playTownMusic();
 
         manager = new AssetManager();

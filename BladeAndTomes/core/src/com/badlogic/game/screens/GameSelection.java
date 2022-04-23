@@ -94,8 +94,6 @@ public class GameSelection extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //delete game file 1
-                System.out.println("Delete game 1");
-                //Gdx.files.internal("GameSave.sav").delete();
                 GAME.loadSaveManager.savePlayer(new Player(), 0);
                 deleteFile1.remove();
                 game1.setText("Game 1");
@@ -120,8 +118,6 @@ public class GameSelection extends ScreenAdapter {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         //delete game file 2
-                        System.out.println("Delete game 2");
-                        //Gdx.files.internal("GameSaveTwo.sav").delete();
                         GAME.loadSaveManager.savePlayer(new Player(), 1);
                         deleteFile2.remove();
                         game2.setText("Game 2");
@@ -146,8 +142,6 @@ public class GameSelection extends ScreenAdapter {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         //delete game file 3
-                        System.out.println("Delete game 3");
-                        //Gdx.files.internal("GameSaveThree.sav").delete();
                         GAME.loadSaveManager.savePlayer(new Player(), 2);
                         deleteFile3.remove();
                         game3.setText("Game 3");
@@ -172,14 +166,13 @@ public class GameSelection extends ScreenAdapter {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         //delete game file 4
-                        System.out.println("Delete game 4");
                         GAME.loadSaveManager.savePlayer(new Player(), 3);
                         deleteFile4.remove();
                         game4.setText("Game 4");
                     }
                 });
 
-                //table layout
+                //game selection table layout
                 savedGames.add(game1).padBottom(10f).center().padRight(10f);
                 if(!GAME.loadSaveManager.loadPlayer(0).getDefault()){
                     savedGames.add(deleteFile1);

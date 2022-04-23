@@ -330,7 +330,6 @@ public class Dungeon extends ScreenAdapter {
                 dispose();
                 GAME.stageInstance.clear();
                 GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier())+5);
-                //System.out.println( GAME.player.getGold());
                 GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 //GAME.player.kEarnedGoldThroughLevels++;
                 BladeAndTomes.exitDungeon = true;
