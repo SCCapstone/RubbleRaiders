@@ -495,6 +495,7 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.draw();
         //inventory.update();
         GAME.overlays.setOverLayesVisibility(true);
+        GAME.player.repollKey();
 
 
         //Decides if combat movement or normal movement will be used

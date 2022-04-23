@@ -109,6 +109,9 @@ public class Player extends Entity {
 
     private float elapsedTime;
 
+    private int currentKey;
+    private boolean[] keyFlag = {false, false, false, false};
+
     /**
      * Default constructor for player entity
      */
@@ -124,6 +127,7 @@ public class Player extends Entity {
         tokens = new AtomicInteger(0);
         playerDefence = 0;
         hasMoved = false;
+        currentKey = 0;
 
         skillToken = 0;
 
@@ -152,6 +156,27 @@ public class Player extends Entity {
         gold = 100;
 
         playerIcon.addListener(playerInput = new InputListener() {
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if(keycode == kControl.getMoveUp()) {
+                    keyFlag[0] = false;
+                }
+                else if (keycode == kControl.getMoveDown()) {
+                    keyFlag[3] = false;
+                }
+                else if(keycode == kControl.getMoveLeft()) {
+                    keyFlag[2] = false;
+                }
+                else if(keycode == kControl.getMoveRight()) {
+                    keyFlag[1] = false;
+                }
+                else {
+                    return false;
+                }
+                return true;
+            }
+
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
@@ -175,26 +200,31 @@ public class Player extends Entity {
                     prevX = (int) playerIcon.getX();
                     prevY = (int) playerIcon.getY();
                     hasMoved = true;
+                    currentKey = keycode;
 
                     //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
                     if(keycode == kControl.getMoveUp()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0.2f));
                         //playerMovenSound.playMoveSound();
+                        keyFlag[0] = true;
                         isTurn = false;
                     }
                     else if (keycode == kControl.getMoveDown()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0.2f));
                         //playerMovenSound.playMoveSound();
+                        keyFlag[3] = true;
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveLeft()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0.2f));
                         //playerMovenSound.playMoveSound();
+                        keyFlag[2] = true;
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveRight()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0.2f));
                         //playerMovenSound.playMoveSound();
+                        keyFlag[1] = true;
                         isTurn = false;
                     }
                     else {
@@ -370,6 +400,12 @@ public class Player extends Entity {
         awareness = new AtomicInteger(0);
         intuition = new AtomicInteger(0);
 
+    }
+
+    public void repollKey() {
+        if(keyFlag[0] || keyFlag[3] || keyFlag[2] || keyFlag[1]) {
+            playerInput.keyDown(new InputEvent(), currentKey);
+        }
     }
     public boolean getDefault() {
         return isDefault;
