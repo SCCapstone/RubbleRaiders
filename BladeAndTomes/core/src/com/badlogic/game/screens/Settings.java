@@ -5,7 +5,6 @@ import com.badlogic.game.BladeAndTomes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,7 +21,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.Key;
 
 public class Settings extends ScreenAdapter {
 
@@ -361,6 +359,9 @@ public class Settings extends ScreenAdapter {
         table.defaults();
         table.setBounds(775,400,500,GAME.stageInstance.getHeight());
         table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.25f);
+        table.add(settingsMusicLabel);
+        table.add(settingsMusicSlider).colspan(3).width(table.getWidth()+43);
+        table.row().padTop(10f);
         table.add(upLabel).padBottom(8f);
         table.add(upKey).left().padBottom(8f).padRight(8f);
         table.add(downLabel).padBottom(8f);
@@ -390,6 +391,7 @@ public class Settings extends ScreenAdapter {
         table.add(item5);
         table.add(item5Key).left();
         table.row().padTop(10f);
+
         GAME.stageInstance.addActor(settingsQuitOption);
 
     }
