@@ -27,6 +27,7 @@ public class CharacterCreation extends ScreenAdapter {
     int points;
     Label pointsMessage;
     Label classMessage;
+    Label nameFieldLabel;
     TextField nameField;
     TextButton[] statFields;
     Label[] secondaryStatFields;
@@ -40,10 +41,6 @@ public class CharacterCreation extends ScreenAdapter {
     String name;
 
     int selection;
-    /*
-    private FitViewport viewport;
-    private OrthographicCamera camera;
-     */
     SpriteBatch batch;
 
     /**
@@ -56,13 +53,14 @@ public class CharacterCreation extends ScreenAdapter {
         this.GAME = game;
         batch = new SpriteBatch();
 
+        //set initial values
         points = 9;
         primaryPoints = new Label("Points: "+points, game.generalLabelStyle);
         warrior = false;
         wizard = false;
         cleric = false;
 
-
+        //button returns player to game selection screen
         backButton = new TextButton("Back to Menu", GAME.generalTextButtonStyle);
         backButton.setSize(175f, 65f);
         backButton.setPosition(50, GAME.stageInstance.getHeight()-100);
@@ -70,11 +68,20 @@ public class CharacterCreation extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 GAME.stageInstance.clear();
-                GAME.setScreen(new MainMenu(GAME));
+                GAME.setScreen(new GameSelection(GAME));
             }
         });
         GAME.stageInstance.addActor(backButton);
-        //Text Field for the Name
+
+        //Label for where player will enter their characters name
+        nameFieldLabel = new Label("Character Name", GAME.generalLabelStyle);
+        nameFieldLabel.setColor(Color.GOLD);
+        nameFieldLabel.setSize(155, 50);
+        nameFieldLabel.setX(960,1);
+        nameFieldLabel.setY(1025,1);
+        nameFieldLabel.setAlignment(1,1);
+        GAME.stageInstance.addActor(nameFieldLabel);
+        //Text Field for the Character Name
         nameField = new TextField("", GAME.generalTextFieldStyle);
         nameField.setAlignment(1);
         // Sets the max limit to char name
@@ -86,10 +93,23 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setName(textField.getText());
             }
         });
-        nameField.setX(960,1);
+        nameField.setX(950,1);
         nameField.setY(950, 1);
+        nameField.setSize(175,100);
         GAME.stageInstance.addActor(nameField);
 
+
+        classMessage = new Label("Please select a class", GAME.generalLabelStyle);
+        classMessage.setX(880, 1);
+        classMessage.setY(875, 1);
+        classMessage.setHeight(50);
+        classMessage.setWidth(300);
+        classMessage.setAlignment(1, 1);
+        classMessage.setFontScale(1.25f);
+        classMessage.setColor(Color.GOLD);
+        GAME.stageInstance.addActor(classMessage);
+
+        //
         primaryPoints.setAlignment(1);
         primaryPoints.setX(950, 1);
         primaryPoints.setY(700, 1);
@@ -222,6 +242,7 @@ public class CharacterCreation extends ScreenAdapter {
             GAME.stageInstance.addActor(classSelection[i]);
         }
 
+        //Listeners for the three classes buttons
         classSelection[BladeAndTomes.classes.WARRIOR.ordinal()].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -238,11 +259,8 @@ public class CharacterCreation extends ScreenAdapter {
                 classSelection[2].setColor(1f,1f,1f,1f);
                 pointsMessage.setText("Physical must be the strongest stat");
                 primaryPoints.setText("Points: "+points);
-                //GAME.player.setPhysical(10);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
-                //GAME.player.setMental(7);
                 statFields[1].setText("Mental: " + GAME.player.getMental());
-                //GAME.player.setSocial(5);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
                 secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
                 secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
@@ -269,11 +287,8 @@ public class CharacterCreation extends ScreenAdapter {
                 classSelection[1].setColor(Color.GRAY);
                 classSelection[2].setColor(1f,1f,1f,1f);
                 pointsMessage.setText("Social must be the strongest stat");
-                //GAME.player.setPhysical(7);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
-                //GAME.player.setMental(5);
                 statFields[1].setText("Mental: " + GAME.player.getMental());
-                //GAME.player.setSocial(10);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
                 secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
                 secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
@@ -300,11 +315,8 @@ public class CharacterCreation extends ScreenAdapter {
                 classSelection[1].setColor(1f,1f,1f,1f);
                 classSelection[2].setColor(Color.GRAY);
                 pointsMessage.setText("Mental must be the strongest stat");
-                //GAME.player.setPhysical(5);
                 statFields[0].setText("Physical: " + GAME.player.getPhysical());
-                //GAME.player.setMental(10);
                 statFields[1].setText("Mental: " + GAME.player.getMental());
-                //GAME.player.setSocial(7);
                 statFields[2].setText("Social: " + GAME.player.getSocial());
                 secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
                 secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
@@ -341,12 +353,6 @@ public class CharacterCreation extends ScreenAdapter {
     }
 
     public void setSecondaryStats(){
-        /*GAME.player.getAcrobatics();
-        GAME.player.getBruteforce();
-        GAME.player.getBarter();
-        GAME.player.getSpeech();
-        GAME.player.getIntuition();
-        GAME.player.getAwareness();*/
         secondaryStatFields[0].setText("Acrobatics: " + GAME.player.getAcrobatics());
         secondaryStatFields[1].setText("Bruteforce: " + GAME.player.getBruteforce());
         secondaryStatFields[2].setText("Speech: " + GAME.player.getSpeech());
@@ -365,21 +371,10 @@ public class CharacterCreation extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-
-
-        /*
-        // Need a getter for the camera class
-        batch.setTransformMatrix(GAME.getCamera().view);
-        batch.setProjectionMatrix(GAME.getCamera().projection);
-         */
     }
 
     public void resize(int width, int height) {
         GAME.stageInstance.getViewport().update(width, height, true);
-        /*
-        viewport.update(width, height);
-        camera.update();
-         */
     }
 
     @Override

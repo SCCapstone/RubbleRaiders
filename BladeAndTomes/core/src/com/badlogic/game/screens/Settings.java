@@ -83,9 +83,30 @@ public class Settings extends ScreenAdapter {
         backgroundImage.setSize(GAME.stageInstance.getWidth(), GAME.stageInstance.getHeight());
         GAME.stageInstance.addActor(backgroundImage);
 
+        //label and slider for changing music volume
         settingsMusicLabel = new Label("Music Volume",GAME.generalLabelStyle);
         settingsMusicLabel.setAlignment(1,2);
-        //keybinding for Interact on settings page
+        //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
+        //and curators of UseOf.org
+        //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.html#isOver--
+        //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
+        settingsMusicSlider = new Slider(0f, 1f, 0.05f, false ,GAME.generalSliderStyle);
+        settingsMusicSlider.setButton(0);
+        settingsMusicSlider.setVisualPercent(GAME._bgmusic.getVolume());
+        settingsMusicSlider.setWidth(500);
+        settingsMusicSlider.getStyle().knob.setMinWidth(50);
+        settingsMusicSlider.getStyle().knobDown.setMinWidth(50);
+        //sets the music volume based on slider value
+        settingsMusicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                GAME._bgmusic.setVolume(settingsMusicSlider.getVisualValue());
+            }
+        });
+
+        //Below are all the labels and text fields to allow user to change keybinds for certain
+        //game mechanics
+
         upLabel = new Label("Move Up", GAME.generalLabelStyle);
         upLabel.setAlignment(1,2);
         upKey = new TextField(Input.Keys.toString(menuCont.getMoveUp()), GAME.generalTextFieldStyle);
@@ -93,18 +114,13 @@ public class Settings extends ScreenAdapter {
         upKey.addListener(new InputListener(){
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                if(event.getPointer() == 0){
                 setControl(upKey, keycode);
                 menuCont.setMoveUp(keycode);
-                event.setPointer(-1);
-                }
-                return false;
+                return true;
             }
 
         });
-
-                //keybinding for Attack on settings page
-                downLabel = new Label("Move Down", GAME.generalLabelStyle);
+        downLabel = new Label("Move Down", GAME.generalLabelStyle);
         downLabel.setAlignment(1,2);
         downKey = new TextField(Input.Keys.toString(menuCont.getMoveDown()), GAME.generalTextFieldStyle);
         downKey.setMaxLength(1);
@@ -117,7 +133,6 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        //keybinding for Inventory on settings page
         leftLabel = new Label("Move Left", GAME.generalLabelStyle);
         leftLabel.setAlignment(1,2);
         leftKey = new TextField(Input.Keys.toString(menuCont.getMoveLeft()), GAME.generalTextFieldStyle);
@@ -131,7 +146,6 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        //keybinding for right movement on settings page
         rightLabel = new Label("Move Right", GAME.generalLabelStyle);
         rightLabel.setAlignment(1,2);
         rightKey = new TextField(Input.Keys.toString(menuCont.getMoveRight()), GAME.generalTextFieldStyle);
@@ -145,7 +159,6 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        //keybinding for Interact on settings page
         tradeLabel = new Label("Trading\n& Chests", GAME.generalLabelStyle);
         tradeLabel.setAlignment(1,2);
         tradeKey = new TextField(Input.Keys.toString(menuCont.getTradeMenu()), GAME.generalTextFieldStyle);
@@ -159,7 +172,6 @@ public class Settings extends ScreenAdapter {
                 return true;
             }
         });
-        //keybinding for Menu on settings page
         menuLabel = new Label("Pause", GAME.generalLabelStyle);
         menuLabel.setAlignment(1,2);
         menuKey = new TextField(Input.Keys.toString(menuCont.getOpenPauseMenu()), GAME.generalTextFieldStyle);
@@ -280,28 +292,7 @@ public class Settings extends ScreenAdapter {
             }
         });
 
-
-
-        //libGDX documentation on how Slider works as well as UseOf.org example by libGDX on application of sliders by libGDX team
-        //and curators of UseOf.org
-        //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.html#isOver--
-        //http://useof.org/java-open-source/com.badlogic.gdx.scenes.scene2d.ui.Slider
-        settingsMusicSlider = new Slider(0f, 1f, 0.05f, false ,GAME.generalSliderStyle);
-        settingsMusicSlider.setButton(0);
-        settingsMusicSlider.setVisualPercent(GAME._bgmusic.getVolume());
-        settingsMusicSlider.setWidth(500);
-        //sets the width of the slider
-        settingsMusicSlider.getStyle().knob.setMinWidth(50);
-        settingsMusicSlider.getStyle().knobDown.setMinWidth(50);
-
-        //sets the music volume based on slider value - NOT WORKING YET
-        settingsMusicSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                GAME._bgmusic.setVolume(settingsMusicSlider.getVisualValue());
-            }
-        });
-
+        //button to exit settings screen and return to main menu
         settingsQuitOption = new TextButton("Exit Settings", GAME.generalTextButtonStyle);
         settingsQuitOption.setPosition(25f,GAME.stageInstance.getHeight()-125);
         settingsQuitOption.setSize(150f,100f);
@@ -312,30 +303,12 @@ public class Settings extends ScreenAdapter {
                 dispose();
                 GAME.loadSaveManager.saveSettings(menuCont);
                 GAME.setScreen(new MainMenu(game));
-                //TODO: save keybind changes
-                /*controls.setMoveUp(upKey.getText());
-                controls.setMoveDown(downKey.getText());
-                controls.setMoveLeft(leftKey.getText());
-                controls.setMoveRight(rightKey.getText());
-                controls.setOpenInventory(inventoryKey.getText());
-                controls.setFightAction(fightKey.getText());
-                controls.setTradeMenu(tradeKey.getText());
-                controls.setOpenPauseMenu(menuKey.getText());*/
             }
         });
     }
 
-    public String getKeyString(int key){
-        return KeyEvent.getKeyText(key);
-    }
-
-    public MainMenuControls getMenuCont(){
-        return menuCont;
-    }
-
     public void setControl(TextField t, int keycode){
         String key = Input.Keys.toString(keycode);
-        //System.out.println(key);
         if(!t.getText().equals("")){
             //clear text and write new character
             t.setText("");
@@ -357,10 +330,12 @@ public class Settings extends ScreenAdapter {
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
 
+        //set up table that will contain all labels and text fields for changing controls
         table = new Table();
         table.defaults();
         table.setBounds(775,400,500,GAME.stageInstance.getHeight());
         table.setSize(GAME.stageInstance.getWidth()*0.2f,GAME.stageInstance.getHeight()*0.25f);
+        //adding all labels and text fields to table in order
         table.add(settingsMusicLabel);
         table.add(settingsMusicSlider).colspan(3).width(table.getWidth()+43);
         table.row().padTop(10f);
@@ -430,55 +405,5 @@ public class Settings extends ScreenAdapter {
         GAME.stageInstance.clear();
     }
 
-
-    public static void settingsSerialize() {
-        try {
-            XmlMapper xmlMapper = new XmlMapper();
-            try {
-                String xmlString = xmlMapper.writeValueAsString(new MainMenuControls(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.T, Input.Keys.ESCAPE, Input.Keys.E, Input.Keys.Q, Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4));
-
-                File xmlOutput = new File("Settings.xml");
-                FileWriter fileWriter = new FileWriter(xmlOutput);
-                fileWriter.write(xmlString);
-                fileWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-    }
-
-    public static void settingsDeserialize() {
-        try {
-            XmlMapper xmlMapper = new XmlMapper();
-            String readSettingsFile = new String(Files.readAllBytes(Paths.get("Settings.xml")));
-            MainMenuControls deserializeMenu = xmlMapper.readValue(readSettingsFile, MainMenuControls.class);
-
-            deserializeMenu.getMoveUp();
-            deserializeMenu.getMoveDown();
-            deserializeMenu.getMoveLeft();
-            deserializeMenu.getMoveRight();
-            deserializeMenu.getTradeMenu();
-            deserializeMenu.getOpenPauseMenu();
-            deserializeMenu.getOpenInventory();
-            deserializeMenu.getFightAction();
-            /*
-            System.out.println("Rebind Settings");
-            System.out.println("Move up: " + deserializeMenu);
-            System.out.println("Move down: " + deserializeMenu);
-            System.out.println("Move left: " + deserializeMenu);
-            System.out.println("Move right: " + deserializeMenu);
-            System.out.println("Interact: " + deserializeMenu);
-            System.out.println("Menu: " + deserializeMenu);
-            System.out.println("Cursor: " + deserializeMenu);
-             */
-        } catch (IOException e) {
-            // for now use auto generated
-            e.printStackTrace();
-            return;
-        }
-    }
 
 }
