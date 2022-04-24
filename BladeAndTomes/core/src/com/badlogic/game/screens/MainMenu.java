@@ -157,15 +157,11 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
-        //manager.setLoader(TiledMap.class, new TmxMapLoader());
         manager.load("Maps/Forest.png", Texture.class);
-        //manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
 
         manager.finishLoading();
         forest = manager.get("Maps/Forest.png");
         forest.getDepth();
-        //overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
-        //renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
