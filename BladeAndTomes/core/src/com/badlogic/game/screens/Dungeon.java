@@ -329,7 +329,8 @@ public class Dungeon extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 dispose();
                 GAME.stageInstance.clear();
-                GAME.player.setGold(GAME.player.getGold() + (int) (10f * (float) roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier())+5);
+                GAME.player.setGold(GAME.player.getGold() + (int) (10 * roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier())+5);
+                //System.out.println( GAME.player.getGold());
                 GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 //GAME.player.kEarnedGoldThroughLevels++;
                 BladeAndTomes.exitDungeon = true;
@@ -438,10 +439,13 @@ public class Dungeon extends ScreenAdapter {
         //The code for adding columns and how to put things into the Window
         //is based off of Alex Facer's code for the Windows and Menus
         if (roomHandler.level.getMapID() == 10 &&
-                GAME.GRID_X[10] == GAME.player.playerIcon.getX() &&
-                GAME.GRID_Y[5] == GAME.player.playerIcon.getY() && !safeGuard) {
+                ((GAME.GRID_X[10] <= GAME.player.playerIcon.getX() &&
+                GAME.GRID_Y[5] <= GAME.player.playerIcon.getY()) &&
+                        (GAME.GRID_X[11] > GAME.player.playerIcon.getX() &&
+                GAME.GRID_Y[6] > GAME.player.playerIcon.getY())) && !safeGuard) {
             GAME.stageInstance.setKeyboardFocus(null);
             GAME.stageInstance.addActor(returnMenu);
+            GAME.player.setKeyFlag(new boolean[] {false, false, false, false});
             returnMenu.add(returnWarning).center().colspan(4);
             returnMenu.row();
             returnMenu.add(returnChoices[0], returnChoices[1]).center();
@@ -470,19 +474,20 @@ public class Dungeon extends ScreenAdapter {
             nextTutorial();
         }
 
-        if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp())) {
+        if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp()) && GAME.getCurrentAnimation().isAnimationFinished(GAME.elapsedTime)) {
             GAME.resetElapsedTime();
             GAME.runMoveUpAnimation();
-        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveDown())) {
+        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveDown()) && GAME.getCurrentAnimation().isAnimationFinished(GAME.elapsedTime)) {
             GAME.resetElapsedTime();
             GAME.runMoveDownAnimation();
-        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveLeft())) {
+        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveLeft()) && GAME.getCurrentAnimation().isAnimationFinished(GAME.elapsedTime)) {
             GAME.resetElapsedTime();
             GAME.runMoveLeftAnimation();
-        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveRight())) {
+        } else if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveRight()) && GAME.getCurrentAnimation().isAnimationFinished(GAME.elapsedTime)) {
             GAME.resetElapsedTime();
             GAME.runMoveRightAnimation();
         }
+
         if (roomHandler.combatFlag) {
             if (Gdx.input.isKeyJustPressed(GAME.controls.getFightAction())) {
                 GAME.resetElapsedTime();
@@ -501,6 +506,7 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.draw();
         //inventory.update();
         GAME.overlays.setOverLayesVisibility(true);
+        //GAME.player.repollKey();
 
 
         //Decides if combat movement or normal movement will be used

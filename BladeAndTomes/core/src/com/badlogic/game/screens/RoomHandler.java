@@ -123,6 +123,8 @@ public class RoomHandler {
         //level.setStage(stage);
         player.playerIcon.setVisible(false);
 
+        player.setKeyFlag(new boolean[]{false, false, false, false});
+
         // Textures rendered in for our event
         // currently giving it a reasonable range to spawn into, and keeping it in dungeon 1
         eventTex = new Texture(Gdx.files.internal("GoldChest.jpg"));
@@ -196,7 +198,7 @@ public class RoomHandler {
         Y_VAL = new int[4];
 
         X_VAL[0] = (int) stage.getWidth()/2;
-        X_VAL[1] = (int) stage.getWidth() - 3* level.MOVE;
+        X_VAL[1] = (int) stage.getWidth() - 3*level.MOVE;
         X_VAL[2] = level.MOVE*3;
         X_VAL[3] = (int) stage.getWidth()/2;
 
@@ -204,6 +206,8 @@ public class RoomHandler {
         Y_VAL[1] = (int) stage.getHeight()/2;
         Y_VAL[2] = (int) stage.getHeight()/2;
         Y_VAL[3] = level.MOVE*2;
+
+        player.setBorder(X_VAL, Y_VAL);
 
         //Makes sure to start from the starter room and moves on from there
         generateLevelLayout();
@@ -278,7 +282,7 @@ public class RoomHandler {
     private boolean moveIntoRoom(int entrance) {
         //Moves onto next room
         //Room temp = level;
-
+        player.setKeyFlag(new boolean[] {false, false, false, false});
         combatFlag = false;
         eventFlag = false;
 
@@ -312,9 +316,6 @@ public class RoomHandler {
         player.playerIcon.clearActions();
         player.playerIcon.setPosition(x_offset, y_offset);
         stage.clear();
-        //level.getBackgroundImage().setSize(2000, 1150);
-        //level.getBackgroundImage().setPosition(-25, -20);
-        //stage.addActor(level.getBackgroundImage());
         stage.addActor(player.playerIcon);
         stage.setKeyboardFocus(player.playerIcon);
 
@@ -446,12 +447,6 @@ public class RoomHandler {
             levelsExplored = 0;
             level = new Room();
         }
-        else {
-            levelNum = 0;
-            levelMultiplier = 3;
-            endOfLevel = true;
-        }
-
         player.kLevelsCompleted++;
         player.kEarnedGoldThroughLevels++;
     }
@@ -499,6 +494,7 @@ public class RoomHandler {
 
         if(levelsExplored >= 5 && !exitAvailable) {
             chamber.setMapID(10);
+            levelsExplored = 0;
             exitAvailable = true;
         }
 
@@ -543,6 +539,18 @@ public class RoomHandler {
      */
     public boolean isCollisionHandled()
     {
+        float x_change = player.playerIcon.getX() - eventImage.getX();
+        float y_change = player.playerIcon.getY() - eventImage.getY();
+
+
+        //Checks player collision with the chest and pushes player out if it overlaps
+        if(x_change < 64 && x_change > -64 &&
+            y_change < 64 && y_change > -64 &&
+            level.getMapID() == 2) {
+            player.playerIcon.setPosition(player.getPrevX(), player.getPrevY());
+        }
+
+
         if(player.playerIcon.getX() <= X_VAL[2])
         {
             player.playerIcon.setPosition(player.playerIcon.getX() + level.MOVE, player.playerIcon.getY());
@@ -561,8 +569,7 @@ public class RoomHandler {
             player.moveSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY());
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
         }
-        else if(player.playerIcon.getY() >= Y_VAL[0])
-        {
+        else if(player.playerIcon.getY() >= Y_VAL[0]) {
             player.playerIcon.setPosition(player.playerIcon.getX(), player.playerIcon.getY() - level.MOVE);
             player.moveSquare.setPosition(player.moveSquare.getX(), player.moveSquare.getY() - level.MOVE);
             player.interactSquare.setPosition(player.moveSquare.getX() - level.MOVE, player.moveSquare.getY() - level.MOVE);
@@ -939,6 +946,7 @@ public class RoomHandler {
                     numOfGoblins = 0;
                     player.setNumGoblins(0);
                     levelsExplored++;
+                    player.kDungeonsExplored++;
                     return;
                 }
             }

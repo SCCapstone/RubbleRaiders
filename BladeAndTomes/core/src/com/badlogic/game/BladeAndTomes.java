@@ -381,7 +381,7 @@ public class BladeAndTomes extends Game {
         //Passes the elapsed time to the player for using with internal variables
         //Animation code was created by Miller Banford
         player.setElapsedTime(elapsedTime);
-        if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
+        //if(currentAnimation.isAnimationFinished(elapsedTime)) currentAnimation = idleAnimation;
         batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), player.playerIcon.getX(), player.playerIcon.getY(),64 ,64);
     }
 

@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.math.Rectangle;
@@ -56,7 +57,7 @@ public class Player extends Entity {
     public transient Image playerIcon;
     public transient MainMenuControls controls;
 
-    public boolean updateQuest;
+    public boolean updateQuest, keyFlagOne;
 
     // Follow variables are used for quests
     public int kAssassinations;
@@ -118,6 +119,14 @@ public class Player extends Entity {
         TemporaryStrengthPortionStatus = 0;
     }
     private float elapsedTime;
+
+    private int currentKey;
+    private boolean[] keyFlag = {false, false, false, false};
+
+    private int[] X_GRID, Y_GRID, X_VAL, Y_VAL;
+    public Stage stage;
+
+
     /**
      * Default constructor for player entity
      */
@@ -133,6 +142,7 @@ public class Player extends Entity {
         tokens = new AtomicInteger(0);
         playerDefence = 0;
         hasMoved = false;
+        currentKey = 0;
 
         skillToken = 0;
 
@@ -161,6 +171,24 @@ public class Player extends Entity {
         gold = 100;
 
         playerIcon.addListener(playerInput = new InputListener() {
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if(keycode == kControl.getMoveUp()) {
+                    keyFlag[0] = false;
+                }
+                if (keycode == kControl.getMoveDown()) {
+                    keyFlag[3] = false;
+                }
+                if(keycode == kControl.getMoveLeft()) {
+                    keyFlag[2] = false;
+                }
+                if(keycode == kControl.getMoveRight()) {
+                    keyFlag[1] = false;
+                }
+                return true;
+            }
+
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
@@ -178,32 +206,52 @@ public class Player extends Entity {
                     }
                 }
 
+                if(keycode == kControl.getMoveUp() && !(keyFlag[1] || keyFlag[2] || keyFlag[3])) {
+                    keyFlag[0] = true;
+                }
+                else if (keycode == kControl.getMoveDown() && !(keyFlag[1] || keyFlag[2] || keyFlag[0])) {
+                    keyFlag[3] = true;
+                }
+                else if(keycode == kControl.getMoveLeft() && !(keyFlag[1] || keyFlag[0] || keyFlag[3])) {
+                    keyFlag[2] = true;
+                }
+                else if(keycode == kControl.getMoveRight() && !(keyFlag[0] || keyFlag[2] || keyFlag[3])) {
+                    keyFlag[1] = true;
+                }
+
                 //Makes sure to move the player when the animation is finished for him.
                 //Based off of Miller's code for working with the animations
-                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime)) {
+                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime) &&
+                    playerIcon.getY() <= Y_GRID[0] && playerIcon.getY() >= Y_GRID[3] &&
+                    playerIcon.getX() <= X_GRID[1] && playerIcon.getX() >= X_GRID[2]) {
                     prevX = (int) playerIcon.getX();
                     prevY = (int) playerIcon.getY();
                     hasMoved = true;
+                    currentKey = keycode;
 
                     //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
                     if(keycode == kControl.getMoveUp()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0.2f));
                         //playerMovenSound.playMoveSound();
+                        //keyFlag[0] = true;
                         isTurn = false;
                     }
                     else if (keycode == kControl.getMoveDown()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0.2f));
                         //playerMovenSound.playMoveSound();
+                        //keyFlag[3] = true;
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveLeft()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0.2f));
                         //playerMovenSound.playMoveSound();
+                        //keyFlag[2] = true;
                         isTurn = false;
                     }
                     else if(keycode == kControl.getMoveRight()) {
                         playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0.2f));
                         //playerMovenSound.playMoveSound();
+                        //keyFlag[1] = true;
                         isTurn = false;
                     }
                     else {
@@ -295,6 +343,13 @@ public class Player extends Entity {
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
+                if(!(playerIcon.getX() <= X_GRID[2] ||
+                        playerIcon.getY() <= Y_GRID[3] ||
+                        playerIcon.getX() >= X_GRID[1] ||
+                        playerIcon.getY() >= Y_GRID[0])) {
+                    return false;
+                }
+
                 //Checks to see if goblins are present and then checks to see if said goblins
                 //are still moving before the player is allowed to move
                 //Derived from Miller's code to get the animations to play
@@ -309,7 +364,7 @@ public class Player extends Entity {
 
                 //Makes sure to move the player when the animation is finished for him.
                 //Based off of Miller's code for working with the animations
-                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime)) {
+                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime)){
                     prevX = (int) playerIcon.getX();
                     prevY = (int) playerIcon.getY();
 
@@ -379,6 +434,14 @@ public class Player extends Entity {
         awareness = new AtomicInteger(0);
         intuition = new AtomicInteger(0);
 
+    }
+
+    public void repollKey() {
+        if((keyFlag[0] || keyFlag[3] || keyFlag[2] || keyFlag[1]) &&
+                playerIcon.getY() + MOVE_DISTANCE <= Y_GRID[0] && playerIcon.getY() - MOVE_DISTANCE >= Y_GRID[3] &&
+                playerIcon.getX() + MOVE_DISTANCE <= X_GRID[1] && playerIcon.getX() - MOVE_DISTANCE >= X_GRID[2]) {
+            playerInput.keyDown(new InputEvent(), currentKey);
+        }
     }
     public boolean getDefault() {
         return isDefault;
@@ -563,5 +626,18 @@ public class Player extends Entity {
      */
     public void setElapsedTime(float elapsedTime) {
         this.elapsedTime = elapsedTime;
+    }
+
+    public void setBorder(int[] X, int[] Y) {
+        X_GRID = X;
+        Y_GRID = Y;
+    }
+
+    public void setKeyFlag(boolean[] keyFlags) {
+        this.keyFlag = keyFlags;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }
