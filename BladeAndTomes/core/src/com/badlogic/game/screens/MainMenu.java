@@ -42,31 +42,16 @@ public class MainMenu extends ScreenAdapter {
 
     //Definition of constant for game instance
     final BladeAndTomes GAME;
-
-    private String[] names;
-    private String[] saveTime;
-
     private TiledMap overWorldMap;
     OrthogonalTiledMapRenderer renderer;
-
-    //All used imagery for the given examples below.
-    Texture background;
-    Image backgroundImage;
     public Button MainMenuOptions[];
     public static boolean isTutorial;
-
     // Options
     int newGame,tutorial,settings,exitGame;
-
     // Option Dimensions and Location
     float optionSpace, optionWidth,optionHeight,optionLocX,optionLocY;
-
-    //BackGroundMusic
-    //BackGroundMusic _bgmusic;
     ButtonClickSound buttonSound;
     private SpriteBatch batch;
-    private Animation<TextureRegion> animation;
-    private float timePassed;
     private AssetManager manager;
     public  GameSelection selection;
     /**
@@ -74,8 +59,9 @@ public class MainMenu extends ScreenAdapter {
      * @param game - Running instance of the game, holding all top level variables.
      */
     public MainMenu(final BladeAndTomes game) {
-
+        //set game to current game
         this.GAME = game;
+        //generate default player
         game.player = game.loadSaveManager.generatePlayer();
 
         game.player.setKeyControl(game.controls);
@@ -83,12 +69,10 @@ public class MainMenu extends ScreenAdapter {
 
         batch = new SpriteBatch();
         manager = new AssetManager();
+
+        //initialize values for menu options and tutorial flag
         newGame = 0; tutorial = 1; settings = 2; exitGame = 3;
         isTutorial = false;
-
-        //TODO: Move menu sounds to backbone layer
-        //_bgmusic = new BackGroundMusic();
-        //_bgmusic.playMusic();
 
         buttonSound = new ButtonClickSound();
 
@@ -105,7 +89,7 @@ public class MainMenu extends ScreenAdapter {
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
 
-
+        //listener for selecting the New Game button
         MainMenuOptions[newGame].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -118,18 +102,11 @@ public class MainMenu extends ScreenAdapter {
             }
         });
 
-        final TextButton loadQuitOption = new TextButton("Cancel", GAME.generalTextButtonStyle);
-
-        loadQuitOption.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-            }
-        });
-
         //Helpful references for how Windows work in libGDX by libGDX team. The formatting for the style and window
         //follow the Jave documentation.
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.html
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Window.WindowStyle.html
+        //Listener for selecting button to begin Tutorial
         MainMenuOptions[tutorial].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -143,6 +120,7 @@ public class MainMenu extends ScreenAdapter {
         //The reference sheets for the documentation is made by the libGDX team and used extensively
         //as a reference for different functions
         //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/scenes/scene2d/ui/Slider.html#isOver--
+        //Listener for button to go to Settings screen
         MainMenuOptions[settings].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -150,7 +128,7 @@ public class MainMenu extends ScreenAdapter {
                 GAME.setScreen(new Settings(GAME));
             }
         });
-
+        //Listener for button to close game entirely
         MainMenuOptions[exitGame].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -198,20 +176,12 @@ public class MainMenu extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         renderer.render();
-//        renderer.setView(camera);
-//        renderer.render();
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
 
         if(Gdx.input.justTouched()){
             buttonSound.playClick();
         }
-
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
-        //GAME.stageInstance.draw();
-
-        // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
     }
 
     float width = 0, height = 0;

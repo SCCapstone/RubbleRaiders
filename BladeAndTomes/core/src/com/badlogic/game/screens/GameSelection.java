@@ -34,28 +34,33 @@ public class GameSelection extends ScreenAdapter {
     ButtonClickSound buttonSound;
 
     public GameSelection(final BladeAndTomes game){
+        //set game to current game
         this.GAME = game;
+        //add background image
         background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
         backgroundImage = new Image(background);
         GAME.stageInstance.addActor(backgroundImage);
 
         buttonSound = new ButtonClickSound();
 
+        //initialize buttons for deleting save files
         deleteFile1 = new TextButton("Delete\nGame 1", GAME.generalTextButtonStyle);
         deleteFile2 = new TextButton("Delete\nGame 2", GAME.generalTextButtonStyle);
         deleteFile3 = new TextButton("Delete\nGame 3", GAME.generalTextButtonStyle);
         deleteFile4 = new TextButton("Delete\nGame 4", GAME.generalTextButtonStyle);
+
+        //Instructional message
         selectGameInfo = new Label("Please select a game file to continue or start", GAME.generalLabelStyle);
         selectGameInfo.setSize(540f, 75f);
         selectGameInfo.setPosition(930, 910, 1);
         selectGameInfo.setAlignment(1, 1);
         selectGameInfo.setFontScale(1.5f);
 
+        //window that will hold the table of games and delete buttons(if existing save)
         loadWindow = new Window("", GAME.generalWindowStyle);
-        //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
-        //loadWindow.setBackground();
         loadWindow.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight()/2);
         loadWindow.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.30f);
+        //back button to return to main menu
         loadBack = new TextButton("Back", GAME.generalTextButtonStyle);
         loadBack.setSize(200f,65f);
         loadBack.setPosition(810, 240);
@@ -71,9 +76,11 @@ public class GameSelection extends ScreenAdapter {
                 GAME.setScreen(new MainMenu(GAME));
             }
         });
+        //table that holds game files to select from and delete options
         savedGames = new Table();
         savedGames.setFillParent(true);
         savedGames.defaults();
+        //Game file 1
         game1 = new TextButton(GAME.loadSaveManager.loadPlayer(0).getName().equals("") ?
                 "Game 1" :
                 GAME.loadSaveManager.loadPlayer(0).getName(), GAME.generalTextButtonStyle);
@@ -89,6 +96,7 @@ public class GameSelection extends ScreenAdapter {
                 checkPlayer();
             }
         });
+        //Delete game file 1
         deleteFile1.setSize(60f, 60f);
         deleteFile1.addListener(new ChangeListener() {
             @Override
@@ -99,6 +107,7 @@ public class GameSelection extends ScreenAdapter {
                 game1.setText("Game 1");
             }
         });
+        //game file 2
         game2 = new TextButton(GAME.loadSaveManager.loadPlayer(1).getName().equals("") ? "Game 2" : GAME.loadSaveManager.loadPlayer(1).getName(), GAME.generalTextButtonStyle);
         game2.addListener(new ChangeListener() {
             @Override
@@ -109,11 +118,9 @@ public class GameSelection extends ScreenAdapter {
                 loadWindow.remove();
                 GAME.currentSaveIndex = 1;
                 GAME.stageInstance.clear();
-                //Add load/save from Inventory branch
                 checkPlayer();
-
             }});
-
+            //delete game file 2
                 deleteFile2.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -123,6 +130,8 @@ public class GameSelection extends ScreenAdapter {
                         game2.setText("Game 2");
                     }
                 });
+
+                //game file 3
                 game3 = new TextButton(GAME.loadSaveManager.loadPlayer(2).getName().equals("") ? "Game 3" : GAME.loadSaveManager.loadPlayer(2).getName(), GAME.generalTextButtonStyle);
                 game3.addListener(new ChangeListener() {
                     @Override
@@ -137,6 +146,7 @@ public class GameSelection extends ScreenAdapter {
                         checkPlayer();
                     }
                 });
+                //delete game file 3
                 deleteFile3.setSize(65f, 65f);
                 deleteFile3.addListener(new ChangeListener() {
                     @Override
@@ -147,6 +157,7 @@ public class GameSelection extends ScreenAdapter {
                         game3.setText("Game 3");
                     }
                 });
+                //game file 4
                 game4 = new TextButton(GAME.loadSaveManager.loadPlayer(3).getName().equals("") ? "Game 4" : GAME.loadSaveManager.loadPlayer(3).getName(), GAME.generalTextButtonStyle);
                 game4.addListener(new ChangeListener() {
                     @Override
@@ -161,6 +172,7 @@ public class GameSelection extends ScreenAdapter {
                         checkPlayer();
                     }
                 });
+                //delete game file 4
                 deleteFile4.setSize(65f, 65f);
                 deleteFile4.addListener(new ChangeListener() {
                     @Override
@@ -193,6 +205,7 @@ public class GameSelection extends ScreenAdapter {
                     savedGames.add(deleteFile4);
                 }
 
+                //add elements(actors) to stage
                 loadWindow.addActor(savedGames);
                 GAME.stageInstance.addActor(selectGameInfo);
                 GAME.stageInstance.addActor(loadWindow);
@@ -221,12 +234,6 @@ public class GameSelection extends ScreenAdapter {
                 if (Gdx.input.justTouched()) {
                     buttonSound.playClick();
                 }
-
-                //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-                //GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
-                //GAME.stageInstance.draw();
-
-                // SHOULD RENDER IN A MOUSE OR SOME TYPE OF CURSOR FOR THE PERSON
             }
 
             @Override
