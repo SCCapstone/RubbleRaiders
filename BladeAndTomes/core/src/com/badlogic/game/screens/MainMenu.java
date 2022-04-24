@@ -74,7 +74,12 @@ public class MainMenu extends ScreenAdapter {
 
         batch = new SpriteBatch();
         manager = new AssetManager();
+        manager.load("Maps/Forest.png", Texture.class);
 
+        manager.finishLoading();
+        forest = manager.get("Maps/Forest.png");
+        Image img = new Image(forest);
+        game.stageInstance.addActor(img);
         //initialize values for menu options and tutorial flag
         newGame = 0; tutorial = 1; settings = 2; exitGame = 3;
         isTutorial = false;
@@ -157,11 +162,8 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
-        manager.load("Maps/Forest.png", Texture.class);
 
-        manager.finishLoading();
-        forest = manager.get("Maps/Forest.png");
-        forest.getDepth();
+        //forest.getDepth();
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
@@ -180,9 +182,6 @@ public class MainMenu extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         //renderer.render();
-        batch.begin();
-        batch.draw(forest, 0, 0);
-        batch.end();
 
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
