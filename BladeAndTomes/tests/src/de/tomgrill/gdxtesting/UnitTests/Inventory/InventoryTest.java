@@ -1,4 +1,4 @@
-package de.tomgrill.gdxtesting.UnitTests;
+package de.tomgrill.gdxtesting.UnitTests.Inventory;
 
 import com.badlogic.game.creatures.Inventory;
 import de.tomgrill.gdxtesting.GdxTestRunner;

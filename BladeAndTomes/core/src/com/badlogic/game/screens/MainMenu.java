@@ -52,7 +52,7 @@ public class MainMenu extends ScreenAdapter {
     //All used imagery for the given examples below.
     Texture background;
     Image backgroundImage;
-    Button MainMenuOptions[];
+    public Button MainMenuOptions[];
     public static boolean isTutorial;
 
     // Options
@@ -68,6 +68,7 @@ public class MainMenu extends ScreenAdapter {
     private Animation<TextureRegion> animation;
     private float timePassed;
     private AssetManager manager;
+    public  GameSelection selection;
     /**
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
@@ -113,7 +114,7 @@ public class MainMenu extends ScreenAdapter {
                 }
                 GAME.stageInstance.clear();
                 dispose();
-                GAME.setScreen(new GameSelection(GAME));
+                GAME.setScreen(selection = new GameSelection(GAME));
             }
         });
 

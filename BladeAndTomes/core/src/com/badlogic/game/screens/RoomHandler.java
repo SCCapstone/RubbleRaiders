@@ -620,13 +620,15 @@ public class RoomHandler {
             stage.setKeyboardFocus(level.getChest().isTreasureChestVisible() ? null : player.playerIcon);
             game.overlays.setHiddenTableVisibility(false);
             game.overlays.displayChest(level.getChest());
-
             if (level.getChest().isTreasureChestVisible())
                 player.kChestsOpened++;
             return true;
-        } else  {
+        } else if( Gdx.input.isKeyJustPressed(game.controls.getOpenInventory())){
+            level.getChest().setTreasureChestVisible(false);
+            stage.setKeyboardFocus(level.getChest().isTreasureChestVisible() ? null : player.playerIcon);
+            game.overlays.displayChest(level.getChest());
             return false;
-        }
+        } else return false;
 
     }
 

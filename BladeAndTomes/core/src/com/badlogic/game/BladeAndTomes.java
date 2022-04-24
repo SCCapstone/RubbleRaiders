@@ -138,7 +138,7 @@ public class BladeAndTomes extends Game {
     public boolean isPaused;
 
 //    Rectangle townHall;
-
+    public MainMenu mainMenu;
     private final AssetManager manager = new AssetManager();
 
 
@@ -146,6 +146,10 @@ public class BladeAndTomes extends Game {
      * Creates and initializes all objects and variables for the main project before moving the program to
      * the first screen.
      */
+
+    public void createNoneGraphicalObject(){
+
+    }
     @Override
     public void create() {
         spellDamageIncrease = 0;
@@ -312,9 +316,9 @@ public class BladeAndTomes extends Game {
         generalSliderStyle.background = new TextureRegionDrawable(generalTextButtonUpRegion);
         generalSliderStyle.knob = new TextureRegionDrawable(generalTextButtonDownRegion);
         generalSliderStyle.knobDown = new TextureRegionDrawable(generalTextButtonUpRegion);
-
+        mainMenu = new MainMenu(this);
 //        player.setHealthPoints(10);
-        this.setScreen(new MainMenu(this));
+        this.setScreen(mainMenu);
     }
 
 
