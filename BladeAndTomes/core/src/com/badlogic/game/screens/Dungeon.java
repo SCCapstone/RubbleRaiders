@@ -113,7 +113,8 @@ public class Dungeon extends ScreenAdapter {
         roomHandler = new RoomHandler(GAME.stageInstance, GAME.player, GAME.overlays, GAME);
 
         //make changes to the pause menu for dungeon
-        Overworld.warning.setText("Do you want to exit the Dungeon?\nYour progress will be lost.");
+        Overworld.warning.setText("Do you want \nto exit the Dungeon?\nYour progress \nwill be lost.");
+        Overworld.warning.setAlignment(1);
         Overworld.chooseQuit.setText("Exit Dungeon");
         //creates new exit button in quit menu to exit back to overworld
         exit = new TextButton("Confirm", GAME.generalTextButtonStyle);
@@ -269,7 +270,7 @@ public class Dungeon extends ScreenAdapter {
         returnMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
 
         //Based off of definition of label
-        returnWarning = new Label("What do you choose adventurer?", GAME.generalLabelStyle);
+        returnWarning = new Label( "What do you \nchoose adventurer?", GAME.generalLabelStyle);
 
         //Based on code in Dungeon for adding and setting buttons more dynamically suggested
         //and implemented by Anirudh Oruganti
@@ -282,7 +283,8 @@ public class Dungeon extends ScreenAdapter {
 
         //Creates Text button labeled "Delve Further" that moves player to the next level
         //Based off of code by Alex Facer and Brent Able in Dungeon for Save & Quit game menu
-        returnChoices[0].setText("Delve further");
+        returnChoices[0].setText("     Delve further");
+
         returnChoices[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {

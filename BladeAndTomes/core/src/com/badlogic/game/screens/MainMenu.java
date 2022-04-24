@@ -150,7 +150,6 @@ public class MainMenu extends ScreenAdapter {
             MainMenuOptions[i].setHeight(optionHeight);
             GAME.stageInstance.addActor(MainMenuOptions[i]);
         }
-
     }
 
     /**

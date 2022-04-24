@@ -57,7 +57,7 @@ public class GameSelection extends ScreenAdapter {
 
         //window that will hold the table of games and delete buttons(if existing save)
         loadWindow = new Window("", GAME.generalWindowStyle);
-        loadWindow.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight()/2);
+        loadWindow.setSize(GAME.stageInstance.getWidth()/4+100,GAME.stageInstance.getHeight()/2);
         loadWindow.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.30f);
         //back button to return to main menu
         loadBack = new TextButton("Back", GAME.generalTextButtonStyle);

@@ -93,7 +93,7 @@ public class CharacterCreation extends ScreenAdapter {
                 GAME.player.setName(textField.getText());
             }
         });
-        nameField.setX(950,1);
+        nameField.setX(1000,1);
         nameField.setY(950, 1);
         nameField.setSize(175,100);
         GAME.stageInstance.addActor(nameField);

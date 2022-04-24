@@ -183,12 +183,12 @@ public class Overworld extends ScreenAdapter {
                 +"\n        Slot 4: "+Input.Keys.toString(GAME.controls.getItem4())
                 +"\n        Slot 5: "+Input.Keys.toString(GAME.controls.getItem5()));
         controls.setFontScale(0.8f);
-        controls.setSize(200, 300);
+        controls.setSize(250, 350);
         controls.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2-175);
         //option to exit controls view and go back to pause menu options
         exitControls = new TextButton("Back", GAME.generalTextButtonStyle);
         exitControls.setSize(150, 50);
-        exitControls.setPosition(controls.getX()+50, controls.getY()-50);
+        exitControls.setPosition(controls.getX()+50, controls.getY()-150);
         exitControls.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -228,9 +228,10 @@ public class Overworld extends ScreenAdapter {
         };
         GAME.player.playerIcon.addListener(escapePauseOver);
 
-        warning = new Label("Are you sure you want to Quit?", GAME.generalLabelStyle);
+        warning = new Label("Are you sure \nyou want to Quit?", GAME.generalLabelStyle);
         warning.setSize(300f, 200f);
         warning.setAlignment(1,1);
+        warning.setAlignment(1);
 
         options = new TextButton[] {
           new TextButton("Quit", GAME.generalTextButtonStyle),
