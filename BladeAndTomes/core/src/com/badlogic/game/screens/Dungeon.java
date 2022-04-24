@@ -270,7 +270,8 @@ public class Dungeon extends ScreenAdapter {
         returnMenu.setPosition(GAME.stageInstance.getWidth()/3, GAME.stageInstance.getHeight()/3);
 
         //Based off of definition of label
-        returnWarning = new Label( "What do you \nchoose adventurer?", GAME.generalLabelStyle);
+        returnWarning = new Label( "What do you\nchoose\nadventurer?", GAME.generalLabelStyle);
+        returnWarning.setAlignment(1,1);
 
         //Based on code in Dungeon for adding and setting buttons more dynamically suggested
         //and implemented by Anirudh Oruganti
@@ -283,8 +284,7 @@ public class Dungeon extends ScreenAdapter {
 
         //Creates Text button labeled "Delve Further" that moves player to the next level
         //Based off of code by Alex Facer and Brent Able in Dungeon for Save & Quit game menu
-        returnChoices[0].setText("     Delve further");
-
+        returnChoices[0].setText("Delve\nfurther");
         returnChoices[0].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -325,7 +325,7 @@ public class Dungeon extends ScreenAdapter {
 
         //Creates a button labeled "Return to Town" that returns Player to town
         //Based off of code by Alex Facer for TextButton for Window
-        returnChoices[1].setText("Return to Town");
+        returnChoices[1].setText("Return to\nTown");
         returnChoices[1].addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
