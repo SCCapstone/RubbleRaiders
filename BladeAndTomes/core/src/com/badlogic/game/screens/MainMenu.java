@@ -4,12 +4,14 @@ import Keyboard_Mouse_Controls.SaveLoadGame;
 import LoadAndSave.LoadSaveManager;
 import Sounds.ButtonClickSound;
 import com.badlogic.game.BladeAndTomes;
+import com.badlogic.game.EntityUI.EntitiesHandler;
 import com.badlogic.game.creatures.Item;
 import com.badlogic.game.creatures.Player;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -54,6 +56,9 @@ public class MainMenu extends ScreenAdapter {
     private SpriteBatch batch;
     private AssetManager manager;
     public  GameSelection selection;
+
+    Texture forest;
+
     /**
      * Constructor for the game, giving the various and
      * @param game - Running instance of the game, holding all top level variables.
@@ -153,11 +158,15 @@ public class MainMenu extends ScreenAdapter {
      */
     @Override
     public void show() {
-        manager.setLoader(TiledMap.class, new TmxMapLoader());
-        manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+        //manager.setLoader(TiledMap.class, new TmxMapLoader());
+        manager.load("Maps/Forest.png", Texture.class);
+        //manager.load("Maps/Overworld_Revamped_Two.tmx", TiledMap.class);
+
         manager.finishLoading();
-        overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
-        renderer = new OrthogonalTiledMapRenderer(overWorldMap);
+        forest = manager.get("Maps/Forest.png");
+        forest.getDepth();
+        //overWorldMap = manager.get("Maps/Overworld_Revamped_Two.tmx");
+        //renderer = new OrthogonalTiledMapRenderer(overWorldMap);
         //Stage Input Processor Model as given by Reiska of StackOverflow
         //https://stackoverflow.com/questions/36819541/androidstudio-libgdx-changelistener-not-working
         Gdx.input.setInputProcessor(GAME.stageInstance);
@@ -174,8 +183,12 @@ public class MainMenu extends ScreenAdapter {
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
-        renderer.render();
+        //renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
+        //renderer.render();
+        batch.begin();
+        batch.draw(forest, 0, 0);
+        batch.end();
+
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
 
