@@ -95,7 +95,6 @@ public class QuestDocument {
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5)+7;
                 ++rewardAmount;
-
                 kObj = randomNumber.nextInt(5)+2;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4);
                 rewardAmount+=kQuestObtainAmount;
@@ -105,7 +104,6 @@ public class QuestDocument {
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5);
                 ++rewardAmount;
-
                 kObj = randomNumber.nextInt(5)+1;
                 kQuestObtainAmount = randomNumber.nextInt(4)+1;
                 rewardAmount+=kQuestObtainAmount;
@@ -138,8 +136,8 @@ public class QuestDocument {
          kInitialCompleteQuests = kCurrentCompleteQuests;
          kInitialPotionsConsumed = kCurrentPotionsConsumed;
          kInitialEarnGoldThroughQuest= kCurrentEarnGoldThroughQuest;
-         kCurrentCloseRangeKills= kCurrentCloseRangeKills;
-         kCurrentLongRangeKills = kCurrentLongRangeKills;
+         kInitialCloseRangeKills= kCurrentCloseRangeKills;
+         kInitialLongRangeKills = kCurrentLongRangeKills;
          kInitialLevelCompleted =  kCurrentLevelCompleted;
          kInitialEarnGoldThroughLevels= kCurrentEarnGoldThroughLevels;
 

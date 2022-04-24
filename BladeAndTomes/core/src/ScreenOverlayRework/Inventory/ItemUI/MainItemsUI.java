@@ -67,6 +67,7 @@ public class MainItemsUI {
                                         temp.removeItem();
                                     } else if(game.player.inventoryItems.get(game.currentInventorySelection).getName().equalsIgnoreCase("StrengthSpell")){
                                         game.spellDamageIncrease = Math.min(game.player.inventoryItems.get(game.currentInventorySelection).getDamage(),10);
+                                        game.player.addTemporaryStrengthPortionStatus(game.spellDamageIncrease);
                                         temp.removeItem();
                                     }
                                     break;

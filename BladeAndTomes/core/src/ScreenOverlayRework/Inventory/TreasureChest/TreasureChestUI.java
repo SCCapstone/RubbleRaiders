@@ -19,6 +19,7 @@ public class TreasureChestUI extends TradeUI {
     private Table chest;
     private int numberOfTrades;
     private boolean isTreasureChestVisiable;
+    private Array<itemDocument> currentTradeItems = new Array<itemDocument>();
     public TreasureChestUI(BladeAndTomes game, DragAndDrop dnd, AssetManager itemsManager, Array<itemSlot> slots) {
         super(game, dnd, itemsManager, slots, "Chest",true);
         chest = new Table();
@@ -33,6 +34,14 @@ public class TreasureChestUI extends TradeUI {
     private void generateTrades(int numberTrades){
         for(int i = 0;i <numberTrades;++i)
             trade.add(new RandomItemGenerator(itemsManager));
+
+        for(RandomItemGenerator item:trade)
+            currentTradeItems.add(item.getItemDocument());
+        for(int i = 0 ;i<6;++i){
+            itemDocument doc = new itemDocument();
+            doc.setDefauls = true;
+            currentTradeItems.add(doc);
+        }
 
     }
     public void drawSeller() {
@@ -76,13 +85,18 @@ public class TreasureChestUI extends TradeUI {
     public void tempSlots(boolean have){
         if(have){
             if(game.player.inventoryItems.size > 16){
-                for(int i=17;i<26;i++)
-                    if (i-17<numberOfTrades)
-                    game.player.inventoryItems.set(i,trade.get(i-17).getItemDocument());
-                return;
+                for(int i=17;i<26;i++) {
+                    currentTradeItems.get(i - 17).setIndex(String.valueOf(i));
+                    game.player.inventoryItems.set(i, currentTradeItems.get(i - 17));
+                }
             }
             for(int i = 0;i<9;++i)
-                game.player.inventoryItems.add(trade.get(i).getItemDocument());
+                game.player.inventoryItems.add(currentTradeItems.get(i));
+        }
+        else{
+        for(int i = 0;i<9;++i) {
+            currentTradeItems.set(i,game.player.inventoryItems.get(i+17));
+        }
         }
     }
     public void setTreasureChestVisible(boolean treasureChestVisible) {

@@ -48,6 +48,8 @@ public class Player extends Entity {
     public AtomicInteger awareness;
     public AtomicInteger intuition;
 
+
+
     private int gold;
     private String id;
     private String name;
@@ -106,9 +108,16 @@ public class Player extends Entity {
 
     private MainMenuControls kControl;
     private transient Animation<TextureRegion> currentAnimation;
-
+    transient int TemporaryStrengthPortionStatus = 0;
+    public void addTemporaryStrengthPortionStatus(int deltaStat){
+        TemporaryStrengthPortionStatus = deltaStat;
+        bruteforce.getAndAdd(TemporaryStrengthPortionStatus);
+    }
+    public void removeTemporary(){
+        bruteforce.getAndAdd(-TemporaryStrengthPortionStatus);
+        TemporaryStrengthPortionStatus = 0;
+    }
     private float elapsedTime;
-
     /**
      * Default constructor for player entity
      */

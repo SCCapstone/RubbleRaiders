@@ -104,72 +104,147 @@ public class EntityUIBase extends InputAdapter {
     /**
      * This method continuous ran every iteration of the game. This will need to be defined in the handler class.
      * This method usually gets override by the child. This method could be used to draw the entity on the screen.
-     * @param delta THe input time difference from iteration to iteration.
+     * @param delta The  time difference from iteration to iteration.
      */
     public void render(float delta) {
+        // re-setting the moving flag to false.
         isEntityMoving = false;
+        // time passed for animations
         elapsedTime += Gdx.graphics.getDeltaTime();
+        // moves up
         if (moveUP()) ;
+        // moves down
         else if (moveDown()) ;
+        // moves left
         else if (moveLeft()) ;
+        // moves right
         else if (moveRight()) ;
+        // updating entite's postion
         Entity_Rect.setPosition(currentEntityPosition);
+        // drawing the entite texture on screen
         batch.begin();
+        // animations each itration
         batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), currentEntityPosition.x, currentEntityPosition.y, Entity_Width, Entity_Height);
+        // end of drawing
         batch.end();
     }
 
+    /**
+     *  The purpose of this function is to move the entity left.
+     * @return true to indicate that it has moved
+     */
     public boolean moveLeft() {
+            // saving the previous position for collision purposes
             previousEntityPosition.x = currentEntityPosition.x;
+            // saving the orientation of the player for animations purposes
             playerDirection = "LEFT";
+            // adding to elapsed time for animations transition
             elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
+            // Setting te moving flag to true once the entity has fully moved
             isEntityMoving = true;
+            // Setting the current animation to left walking
             currentAnimation = leftAnimation;
+            // Moving the animation left on screen
             currentEntityPosition.x -= Gdx.graphics.getDeltaTime() * Speed;
+            // Returning true to indicate that the entity has moved.
             return true;
     }
-
+    /**
+     *  The purpose of this function is to move the entity right.
+     * @return true to indicate that it has moved
+     */
     public boolean moveRight() {
-            previousEntityPosition.x = currentEntityPosition.x;
-            playerDirection = "RIGHT";
-            elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
-            isEntityMoving = true;
-            currentAnimation = rightAnimation;
-            currentEntityPosition.x += Gdx.graphics.getDeltaTime() * Speed;
-            return true;
+        // saving the previous position for collision purposes
+        previousEntityPosition.x = currentEntityPosition.x;
+        // saving the orientation of the player for animations purposes
+        playerDirection = "RIGHT";
+        // adding to elapsed time for animations transition
+        elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
+        // Setting te moving flag to true once the entity has fully moved
+        isEntityMoving = true;
+        // Setting the current animation to right walking
+        currentAnimation = rightAnimation;
+        // Moving the animation right on screen
+        currentEntityPosition.x += Gdx.graphics.getDeltaTime() * Speed;
+        // Returning true to indicate that the entity has moved.
+
+        return true;
     }
+    /**
+     *  The purpose of this function is to move the entity up.
+     * @return true to indicate that it has moved
+     */
     public boolean moveUP() {
+        // saving the previous position for collision purposes
 
             previousEntityPosition.y = currentEntityPosition.y;
-            playerDirection = "UP";
-            elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
-            isEntityMoving = true;
-            currentAnimation = upAnimation;
-            currentEntityPosition.y += Gdx.graphics.getDeltaTime() * Speed;
-            return true;
+        // saving the orientation of the player for animations purposes
+
+        playerDirection = "UP";
+        // adding to elapsed time for animations transition
+
+        elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
+        // Setting te moving flag to true once the entity has fully moved
+
+        isEntityMoving = true;
+        // Setting the current animation to up walking
+
+        currentAnimation = upAnimation;
+        // Moving the animation up on screen
+
+        currentEntityPosition.y += Gdx.graphics.getDeltaTime() * Speed;
+        // Returning true to indicate that the entity has moved.
+        return true;
 
     }
-
+    /**
+     *  The purpose of this function is to move the entity down.
+     * @return true to indicate that it has moved
+     */
     public boolean moveDown() {
-            previousEntityPosition.y = currentEntityPosition.y;
-            playerDirection = "DOWN";
-            elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
-            isEntityMoving = true;
-            currentAnimation = downAnimation;
-            currentEntityPosition.y -= Gdx.graphics.getDeltaTime() * Speed;
-            return true;
+        // saving the previous position for collision purposes
+
+        previousEntityPosition.y = currentEntityPosition.y;
+        // saving the orientation of the player for animations purposes
+
+        playerDirection = "DOWN";
+        // adding to elapsed time for animations transition
+
+        elapsedTime = (isEntityMoving) ? 0 : elapsedTime;
+        // Setting te moving flag to true once the entity has fully moved
+
+        isEntityMoving = true;
+        // Setting the current animation to down walking
+
+        currentAnimation = downAnimation;
+        // Moving the animation down on screen
+
+        currentEntityPosition.y -= Gdx.graphics.getDeltaTime() * Speed;
+        // Returning true to indicate that the entity has moved.
+
+        return true;
     }
 
-
+    /**
+     *  The functionality of this method is to reset the entity to its previous position.
+     */
     public void resetToPreviousPosition() {
         currentEntityPosition.y = previousEntityPosition.y;
         currentEntityPosition.x = previousEntityPosition.x;
     }
 
+    /**
+     * This method checks if two rectangles overlay on top of each other which indicates
+     * if they collied.
+     * @param rectangle This is usually area rectangle of building, another entity or item.
+     * @return true if the both rectangle collides else false.
+     */
     public boolean isColliding(Rectangle rectangle) {
         return Entity_Rect.overlaps(rectangle);
     }
-
+    /**
+     * @Functionality Disposes all things such as textures which are not managed by other classes.
+     */
     public void dispose() {
 
     }

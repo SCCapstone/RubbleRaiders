@@ -295,6 +295,7 @@ public class itemSlot extends Actor {
             itemTemp.setCategory("Null");
             item.setDrawable((new Image()).getDrawable());
             game.player.inventoryItems.set(itemIndex,itemTemp);
+            displayInfo();
         }catch (Exception e){
             System.out.println(e);
         }
@@ -319,8 +320,8 @@ public class itemSlot extends Actor {
                 boolean sourceItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(newItem).getCategory()) || targetSlot.equalsIgnoreCase("Any"));
                 boolean targetItemSlot = (targetSlot.equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory())
                         || targetSlot.equalsIgnoreCase("Any") || "NULL".equalsIgnoreCase(game.player.inventoryItems.get(currentItem).getCategory()));
-                    updateSlotElements();
-                    return  (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot;}
+                    System.out.println("Current: "+game.player.inventoryItems.get(currentItem).getCategory()+" NEW: "+game.player.inventoryItems.get(newItem).getCategory());
+                    return  (!game.player.inventoryItems.get(newItem).getTargetItem().equalsIgnoreCase("NUll")) && targetItemSlot && sourceItemSlot&&!game.player.inventoryItems.get(newItem).getCategory().equalsIgnoreCase("null");}
                     catch (Exception e){
                         return false;
                     }
@@ -357,7 +358,6 @@ public class itemSlot extends Actor {
     public void updateSlotElements(){
         if(targetSlot.equalsIgnoreCase("Spell")||targetSlot.equalsIgnoreCase("Spells")||targetSlot.equalsIgnoreCase("armor")){
             imageButtonAddOn.setVisible(game.player.inventoryItems.get(documentIndex).getCategory().equalsIgnoreCase("NUll"));
-            //System.out.println(game.player.inventoryItems.get(documentIndex).setDefauls);
         }
     }
 

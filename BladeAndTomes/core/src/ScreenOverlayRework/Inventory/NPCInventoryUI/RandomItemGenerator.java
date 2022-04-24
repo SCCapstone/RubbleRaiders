@@ -204,6 +204,9 @@ public class RandomItemGenerator {
     public ScreenOverlayRework.Inventory.itemDocument getItemDocument() {
         return itemDocument;
     }
+    public void setItemDocument(ScreenOverlayRework.Inventory.itemDocument doc) {
+         itemDocument = doc;
+    }
 
     public String getInventoryItemsPath() {
         return inventoryItemsPath;

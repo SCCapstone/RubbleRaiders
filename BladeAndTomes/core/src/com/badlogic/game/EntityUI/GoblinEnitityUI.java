@@ -23,7 +23,6 @@ public class GoblinEnitityUI extends EntityUIBase{
     @Override
     public void render(float delta){
         elapsedTime+= Gdx.graphics.getDeltaTime()/4;
-
         isEntityMoving = true;
         batch.begin();
         batch.draw(currentAnimation.getKeyFrame(elapsedTime,true),currentEntityPosition.x,currentEntityPosition.y,Entity_Width,Entity_Height);

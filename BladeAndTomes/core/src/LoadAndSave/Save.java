@@ -24,6 +24,7 @@ public class Save {
 
 public void addToGeneralSave(){}
     public void saveNewProgress(Player player,int index){
+        player.removeTemporary();
         fourPreSets.set(index,saveParser.toJson(player,Player.class));
         file = Gdx.files.local(savePath);
         file.writeString(saveParser.toJson(fourPreSets), false);

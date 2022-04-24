@@ -82,6 +82,8 @@ public class Overworld extends ScreenAdapter {
     TextButton next;
     int tutorialStep;
 
+    TreasureChestUI chest1;
+    TreasureChestUI chest2;
 
     TownHallQuestBoard questBoardTrade;
     boolean isQuestBoardTradeVisible;
@@ -314,6 +316,8 @@ public class Overworld extends ScreenAdapter {
         }
 
         entitiesHandler = new EntitiesHandler(game);
+        chest1 = game.overlays.generateChest();
+        chest2 = game.overlays.generateChest();
     }
 
     @Override
@@ -347,11 +351,16 @@ public class Overworld extends ScreenAdapter {
             nextTutorial();
         }
 
-
         // Updates Elements for QuestBord
         if(isQuestBoardTradeVisible){
             questBoardTrade.render();
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            chest1.setTreasureChestVisible(!chest1.isTreasureChestVisible());
+            GAME.overlays.displayChest(chest1);}
+        if(Gdx.input.isKeyJustPressed(Input.Keys.N)){
+            chest2.setTreasureChestVisible(!chest2.isTreasureChestVisible());
+            GAME.overlays.displayChest(chest2);}
         GAME.overlays.render();
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
     }

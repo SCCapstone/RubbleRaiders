@@ -140,14 +140,16 @@ public class EntitiesHandler implements Disposable {
         if(player.isColliding(goblins.get(currentEnemyId).Entity_Rect)){
             goblins.get(currentEnemyId).nearPlayer = true;
             goblins.get(currentEnemyId).bounceBack();
-            return true;}
+            return true;
+        }
         else{
             goblins.get(currentEnemyId).nearPlayer = false;
         }
         for (int i = 0; i < goblins.size; ++i)
             if (goblins.get(currentEnemyId).isColliding(goblins.get(i).Entity_Rect)&&i!=currentEnemyId){
                 goblins.get(0).resetToPreviousPosition();
-                return true;}
+                return true;
+            }
         return false;
     }
     public void renderGoblins(float delta) {
