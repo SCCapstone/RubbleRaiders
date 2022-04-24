@@ -114,12 +114,9 @@ public class Settings extends ScreenAdapter {
         upKey.addListener(new InputListener(){
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                if(event.getPointer() == 0){
                 setControl(upKey, keycode);
                 menuCont.setMoveUp(keycode);
-                event.setPointer(-1);
-                }
-                return false;
+                return true;
             }
 
         });
