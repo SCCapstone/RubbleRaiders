@@ -64,7 +64,7 @@ public class CharacterCreation extends ScreenAdapter {
 
 
         backButton = new TextButton("Back to Menu", GAME.generalTextButtonStyle);
-        backButton.setSize(120f, 65f);
+        backButton.setSize(175f, 65f);
         backButton.setPosition(50, GAME.stageInstance.getHeight()-100);
         backButton.addListener(new ChangeListener() {
             @Override
@@ -77,6 +77,9 @@ public class CharacterCreation extends ScreenAdapter {
         //Text Field for the Name
         nameField = new TextField("", GAME.generalTextFieldStyle);
         nameField.setAlignment(1);
+        // Sets the max limit to char name
+        nameField.setMaxLength(10);
+        nameField.setSize(250,150);
         nameField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
@@ -92,18 +95,16 @@ public class CharacterCreation extends ScreenAdapter {
         primaryPoints.setY(700, 1);
         primaryPoints.setHeight(60);
         primaryPoints.setWidth(150);
-        primaryPoints.setFontScale(1.25f);
         primaryPoints.setColor(Color.GOLD);
         GAME.stageInstance.addActor(primaryPoints);
 
         pointsMessage = new Label("Allocate points to physical, mental, and social", GAME.generalLabelStyle);
-        pointsMessage.setX(860, 1);
+        pointsMessage.setX(910, 1);
         pointsMessage.setY(630, 1);
         pointsMessage.setAlignment(1, 1);
         pointsMessage.setHeight(60);
         pointsMessage.setWidth(500);
         pointsMessage.setColor(Color.GOLD);
-        pointsMessage.setFontScale(1.25f);
         GAME.stageInstance.addActor(pointsMessage);
 
         classMessage = new Label("Please select a class", GAME.generalLabelStyle);
@@ -112,7 +113,6 @@ public class CharacterCreation extends ScreenAdapter {
         classMessage.setHeight(50);
         classMessage.setWidth(300);
         classMessage.setAlignment(1, 1);
-        classMessage.setFontScale(1.25f);
         classMessage.setColor(Color.GOLD);
         GAME.stageInstance.addActor(classMessage);
 
@@ -180,7 +180,7 @@ public class CharacterCreation extends ScreenAdapter {
 
         for(int i=0; i<statFields.length; i++) {
             //statFields[i].setAlignment(1);
-            statFields[i].setHeight(90);
+            statFields[i].setSize(140,90);
             statFields[i].setX(780+i*180,1);
             statFields[i].setY(500,1);
             GAME.stageInstance.addActor(statFields[i]);
@@ -197,7 +197,8 @@ public class CharacterCreation extends ScreenAdapter {
         };
         for(int i=0; i<secondaryStatFields.length; i++) {
             secondaryStatFields[i].setAlignment(1);
-            secondaryStatFields[i].setHeight(90);
+            secondaryStatFields[i].setSize(175,90);
+
             secondaryStatFields[i].setX(560+i*180,1);
             secondaryStatFields[i].setY(350,1);
             GAME.stageInstance.addActor(secondaryStatFields[i]);

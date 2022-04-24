@@ -67,7 +67,8 @@ public class NPCBuyer extends TradeUI {
         itemImage.setPosition(15,15);
         //slot.getSlot().addActor(itemImage);//.size(50,50);
         table.add(slot.getSlot()).size(100,100);
-        table.add(itemLabel).size(250,80);
+        itemLabel.setFontScale(0.63f);
+        table.add(itemLabel).size(260,80);
         TextButton button = new TextButton("Get "+String.valueOf(price)+" Gold",game.generalTextButtonStyle);
         table.add(button).size(100,80).colspan(3);
 

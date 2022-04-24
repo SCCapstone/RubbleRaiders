@@ -88,7 +88,8 @@ public class InventoryUI implements Disposable {
 
         Gold = new TextButton("Gold: "+String.valueOf(game.player.getGold()),game.inventoryTextButtonStyle);
         Gold.setPosition( 775,750);
-        Gold.setSize(100,75);
+        Gold.setSize(125,50);
+        Gold.getStyle().font.getData().setScale(0.7f);
         table.addActor(Gold);
 
     }

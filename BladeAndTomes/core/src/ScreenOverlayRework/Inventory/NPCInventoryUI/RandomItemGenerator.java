@@ -29,7 +29,7 @@ public class RandomItemGenerator {
         itemsFinal = new Hashtable<String, Hashtable<String,String>>();
         itemDocument = new itemDocument();
         inventoryItemsPath = "InventoryItems/";
-        MaxLevel = 1;
+        MaxLevel = 4 ;
         addAvailableItems();
         itemType = (String) items.keySet().toArray()[random.nextInt(items.size())];
         itemCategory = (String) items.get(itemType).keySet().toArray()[random.nextInt(items.get(itemType).size())];
@@ -153,7 +153,7 @@ public class RandomItemGenerator {
         doc.setTargetItem("Any");
         doc.setRange(range);
         doc.setLevel(itemLevel);
-        doc.setPrice(calculatePrice(itemLevel));
+        doc.setPrice(calculatePrice(itemLevel+1));
         doc.setName(RandomItemName);
             doc.setDamage(itemDamage);
 

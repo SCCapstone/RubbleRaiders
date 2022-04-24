@@ -39,7 +39,7 @@ public class SkillInterface {
         // UI Components Init
         plus = new TextButton("Upgrade",game.generalTextButtonStyle);
         skillType = new Label("     "+typeInfo,game.BaseLabelStyle1);
-        currentAmount = new Label("     Current Level: \n     "+String.valueOf(upgradeObj.get()),game.BaseLabelStyle1);
+        currentAmount = new Label("     Current Level: \n     \t"+String.valueOf(upgradeObj.get()),game.BaseLabelStyle1);
 //        currentAmount.;
 
         createSkillLayout();
@@ -51,15 +51,19 @@ public class SkillInterface {
     public void createSkillLayout(){
 
         table.add(skillType).size(125,70).spaceTop(50);
-        table.add(currentAmount).size(130,70).space(10);
-        table.add(plus).size(130,50).space(10).spaceTop(10);
+        skillType.setFontScale(.7f);
+        table.add(currentAmount).size(160,70).space(10);
+        currentAmount.setFontScale(.7f);
+        table.add(plus).size(160,50).space(10).spaceTop(10);
+        plus.getStyle().font.getData().setScale(0.65f);
+
     }
 
     public void addListener(){
         plus.addListener(new ClickListener(){
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                plus.setText("Need "+String.valueOf(((int) avaiableTokens.get()/3 +1))+" Token(s");
+                plus.setText("Need "+String.valueOf(((int) avaiableTokens.get()/3 +1))+" Token(s)");
             }
 
             @Override

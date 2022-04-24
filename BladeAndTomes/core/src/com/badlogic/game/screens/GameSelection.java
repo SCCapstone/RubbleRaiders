@@ -49,12 +49,11 @@ public class GameSelection extends ScreenAdapter {
         selectGameInfo.setSize(540f, 75f);
         selectGameInfo.setPosition(930, 910, 1);
         selectGameInfo.setAlignment(1, 1);
-        selectGameInfo.setFontScale(1.5f);
 
         loadWindow = new Window("", GAME.generalWindowStyle);
         //loadWindow.setBackground(new TextureRegionDrawable(new TextureRegion()));
         //loadWindow.setBackground();
-        loadWindow.setSize(GAME.stageInstance.getWidth()/4,GAME.stageInstance.getHeight()/2);
+        loadWindow.setSize(GAME.stageInstance.getWidth()/4+100,GAME.stageInstance.getHeight()/2+100);
         loadWindow.setPosition(GAME.stageInstance.getWidth()*0.35f, GAME.stageInstance.getHeight()*0.30f);
         loadBack = new TextButton("Back", GAME.generalTextButtonStyle);
         loadBack.setSize(200f,65f);
@@ -137,7 +136,7 @@ public class GameSelection extends ScreenAdapter {
                         checkPlayer();
                     }
                 });
-                deleteFile3.setSize(65f, 65f);
+                deleteFile3.setSize(250,150);
                 deleteFile3.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -161,7 +160,7 @@ public class GameSelection extends ScreenAdapter {
                         checkPlayer();
                     }
                 });
-                deleteFile4.setSize(65f, 65f);
+                deleteFile4.setSize(250,150);
                 deleteFile4.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -173,24 +172,24 @@ public class GameSelection extends ScreenAdapter {
                 });
 
                 //game selection table layout
-                savedGames.add(game1).padBottom(10f).center().padRight(10f);
+                savedGames.add(game1).padBottom(10f).center().padRight(10f).size(250,90);
                 if(!GAME.loadSaveManager.loadPlayer(0).getDefault()){
-                    savedGames.add(deleteFile1);
+                    savedGames.add(deleteFile1).size(250,90);;
                 }
                 savedGames.row();
-                savedGames.add(game2).padBottom(10f).center().padRight(10f);
+                savedGames.add(game2).padBottom(10f).center().padRight(10f).size(250,90);;
                 if(!GAME.loadSaveManager.loadPlayer(1).getDefault()){
-                    savedGames.add(deleteFile2);
+                    savedGames.add(deleteFile2).size(250,90);;
                 }
                 savedGames.row();
-                savedGames.add(game3).padBottom(10f).center().padRight(10f);
+                savedGames.add(game3).padBottom(10f).center().padRight(10f).size(250,90);;
                 if(!GAME.loadSaveManager.loadPlayer(2).getDefault()){
-                    savedGames.add(deleteFile3);
+                    savedGames.add(deleteFile3).size(250,90);;
                 }
                 savedGames.row();
-                savedGames.add(game4).padBottom(10f).center().padRight(10f);
+                savedGames.add(game4).padBottom(10f).center().padRight(10f).size(250,90);;
                 if(!GAME.loadSaveManager.loadPlayer(3).getDefault()){
-                    savedGames.add(deleteFile4);
+                    savedGames.add(deleteFile4).size(250,90);;
                 }
 
                 loadWindow.addActor(savedGames);
@@ -198,7 +197,7 @@ public class GameSelection extends ScreenAdapter {
                 GAME.stageInstance.addActor(loadWindow);
                 GAME.stageInstance.addActor(loadBack);
 
-            }
+    }
 
             @Override
             public void show() {

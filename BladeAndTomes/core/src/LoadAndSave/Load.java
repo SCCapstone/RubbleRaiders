@@ -10,24 +10,46 @@ import com.badlogic.gdx.utils.Json;
 import jdk.tools.jmod.Main;
 
 public class Load {
+    // Path to the file where the players are being loaded
     String savePath;
+    // Parser provided by libgdx
     Json saveParser;
+    // List of all pre-loaded classes
     Array<String> fourPreSets;
+    // File Handler to manage the file
     FileHandle file;
 
-
+    /**
+     *  A constructor which defines all necessary objects
+     * @param savePath File path to players are loaded from
+     */
     public Load(String savePath){
+        // Path to file
         this.savePath=savePath;
+        // Defining Json parser object by api
         saveParser = new Json();
+        // FileHandler to read files
         file = new FileHandle(savePath);
     }
+
+    /**
+     * This method loads all Player from files in Array -> String format of the player class
+     */
     public void loadFourPreSets(){
+        // try catch if file does not exits
             try {
+                // String Array containing Player classes
                 fourPreSets = saveParser.fromJson(Array.class,file.read());
             } catch (Exception e) {
+                // if Fails it creates default player classes
                 createDeafultsPlayer();
             }
     }
+
+    /**
+     *
+     * @return
+     */
     public Player generateDefaultPlayer(){
         Player ply = new Player();
         itemDocument slot = ply.inventoryItems.get(0);
@@ -68,7 +90,6 @@ public class Load {
     public void createDeafultsPlayer(){
         Player ply = generateDefaultPlayer();
         String deafult = saveParser.toJson(ply);
-
         fourPreSets  = new Array<>();
         fourPreSets.add(deafult);
         fourPreSets.add(deafult);

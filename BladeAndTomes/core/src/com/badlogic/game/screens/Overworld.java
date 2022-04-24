@@ -169,21 +169,21 @@ public class Overworld extends ScreenAdapter {
 
         //label showing player their current controls in game
         controls = new Label("", GAME.generalLabelStyle);
-        controls.setText("    Controls:\n\n    Move Up: "+ Input.Keys.toString(GAME.controls.getMoveUp())
-                +"\n    Move Left: "+Input.Keys.toString(GAME.controls.getMoveLeft())
-                +"\n    Move Down: "+Input.Keys.toString(GAME.controls.getMoveDown())
-                +"\n    Move Right: "+Input.Keys.toString(GAME.controls.getMoveRight())
-                +"\n    Trading/Chests: "+Input.Keys.toString(GAME.controls.getTradeMenu())
-                +"\n    Pause: "+Input.Keys.toString(GAME.controls.getOpenPauseMenu())
-                +"\n    Inventory: "+Input.Keys.toString(GAME.controls.getOpenInventory())
-                +"\n    Combat: "+Input.Keys.toString(GAME.controls.getFightAction())
-                +"\n    Slot 1: "+Input.Keys.toString(GAME.controls.getItem1())
-                +"\n    Slot 2: "+Input.Keys.toString(GAME.controls.getItem2())
-                +"\n    Slot 3: "+Input.Keys.toString(GAME.controls.getItem3())
-                +"\n    Slot 4: "+Input.Keys.toString(GAME.controls.getItem4())
-                +"\n    Slot 5: "+Input.Keys.toString(GAME.controls.getItem5()));
-        controls.setFontScale(1.5f);
-        controls.setSize(250, 510);
+        controls.setText("        Controls:\n        Move Up: "+ Input.Keys.toString(GAME.controls.getMoveUp())
+                +"\n        Move Left: "+Input.Keys.toString(GAME.controls.getMoveLeft())
+                +"\n        Move Down: "+Input.Keys.toString(GAME.controls.getMoveDown())
+                +"\n        Move Right: "+Input.Keys.toString(GAME.controls.getMoveRight())
+                +"\n        Trading/Chests: "+Input.Keys.toString(GAME.controls.getTradeMenu())
+                +"\n        Pause: "+Input.Keys.toString(GAME.controls.getOpenPauseMenu())
+                +"\n        Inventory: "+Input.Keys.toString(GAME.controls.getOpenInventory())
+                +"\n        Combat: "+Input.Keys.toString(GAME.controls.getFightAction())
+                +"\n        Slot 1: "+Input.Keys.toString(GAME.controls.getItem1())
+                +"\n        Slot 2: "+Input.Keys.toString(GAME.controls.getItem2())
+                +"\n        Slot 3: "+Input.Keys.toString(GAME.controls.getItem3())
+                +"\n        Slot 4: "+Input.Keys.toString(GAME.controls.getItem4())
+                +"\n        Slot 5: "+Input.Keys.toString(GAME.controls.getItem5()));
+        controls.setFontScale(0.8f);
+        controls.setSize(200, 300);
         controls.setPosition(GAME.stageInstance.getWidth()/2-100, GAME.stageInstance.getHeight()/2-175);
         //option to exit controls view and go back to pause menu options
         exitControls = new TextButton("Back", GAME.generalTextButtonStyle);
