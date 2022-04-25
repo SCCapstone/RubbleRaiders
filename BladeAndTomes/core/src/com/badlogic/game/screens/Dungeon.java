@@ -395,6 +395,7 @@ public class Dungeon extends ScreenAdapter {
 
     }
 
+    //function controlling all tutorial messages in the dungeon and their progression
     public void nextTutorial(){
         switch(tutorialStep){
             case 1:
@@ -447,8 +448,6 @@ public class Dungeon extends ScreenAdapter {
                 GAME.GRID_Y[5] <= GAME.player.playerIcon.getY()) &&
                         (GAME.GRID_X[11] > GAME.player.playerIcon.getX() &&
                 GAME.GRID_Y[6] > GAME.player.playerIcon.getY())) && !safeGuard) {
-
-            if(!MainMenu.isTutorial) {
                 GAME.stageInstance.setKeyboardFocus(null);
                 GAME.stageInstance.addActor(returnMenu);
                 GAME.player.setKeyFlag(new boolean[]{false, false, false, false});
@@ -458,19 +457,10 @@ public class Dungeon extends ScreenAdapter {
                 GAME.player.kDungeonsExplored++;
                 GAME.player.setHealthPoints(GAME.player.getFullHealth());
                 safeGuard = true;
-            }
-            else {
-                GAME.stageInstance.setKeyboardFocus(null);
-                BladeAndTomes.exitDungeon = true;
-                GAME.setScreen(new Overworld(GAME));
-            }
         }
 
         if (roomHandler.level.getMapID() == 2) {
-            //TODO: Set up chest properly
             roomHandler.checkTouchChest();
-            //GAME.chest.setTreasureChestVisible(!chest.isTreasureChestVisible());
-            //GAME.overlays.displayChest(chest);
         }
 
         GAME.batch.begin();
@@ -815,14 +805,18 @@ public class Dungeon extends ScreenAdapter {
             GAME.player.kDeaths++;
             GAME.stageInstance.clear();
             GAME.player.setHealthPoints(GAME.player.getFullHealth());
+            //set tutorial dungeon variables
             BladeAndTomes.exitDungeon = true;
             BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
             GAME.stageInstance.setKeyboardFocus(null);
-            GAME.stageInstance.addActor(deathMenu);
-            deathMenu.add(deathNotice).colspan(4).width(deathMenu.getWidth()/3+30);
-            deathMenu.row();
-            deathMenu.add(deathChoices[0], deathChoices[1]);
+            //if player is not in tutorial, show the death message, otherwise dont
+            if(!MainMenu.isTutorial) {
+                GAME.stageInstance.addActor(deathMenu);
+                deathMenu.add(deathNotice).colspan(4).width(deathMenu.getWidth() / 3 + 30);
+                deathMenu.row();
+                deathMenu.add(deathChoices[0], deathChoices[1]);
+            }
             BladeAndTomes.exitDungeon = true;
             BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
@@ -840,6 +834,7 @@ public class Dungeon extends ScreenAdapter {
         GAME.overlays.render();
     }
 
+    //remove all assets regarding events
     public void removeEventImages(){
         eventGoblinImage.remove();
         eventTraderImage.remove();
@@ -857,6 +852,7 @@ public class Dungeon extends ScreenAdapter {
         optionTwo.remove();
     }
 
+    //if player is successful in event, this is called
     public void eventSuccess(){
         eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
         eventSuccessImage.setY((GAME.WINDOWHIGHT/2)-250);
@@ -864,6 +860,7 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.addActor(optionDone);
     }
 
+    //if player fails the event, this is called
     public void eventFail(){
         eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
         eventFailImage.setY((GAME.WINDOWHIGHT/2)-250);

@@ -302,8 +302,10 @@ public class Overworld extends ScreenAdapter {
                 nextTutorial();
             }
         });
+        //check that player is in tutorial to set health and initiate progression
         if(MainMenu.isTutorial){
             GAME.player.setHealthPoints(10);
+            //checks if player has exited the dungeon to set tutorial to ending
             if(BladeAndTomes.exitDungeon){
                 tutorialStep = 9;
                 nextTutorial();
@@ -376,6 +378,7 @@ public class Overworld extends ScreenAdapter {
     // Very helpful guide on setting up tile collisions from following source
     // https://lyze.dev/2021/03/25/libGDX-Tiled-Box2D-example-tiles/
 
+    //Function controlling the tutorial messages and progression through them
     public void nextTutorial() {
         switch (tutorialStep) {
             case 1:
@@ -429,11 +432,13 @@ public class Overworld extends ScreenAdapter {
                 break;
             case 10: //final explanation
                 GAME.stageInstance.addActor(tutorialMessage);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2+200);
                 GAME.stageInstance.addActor(next);
+                next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
                 next.setText("Exit");
                 tutorialMessage.setText("Now you know the basics\nof Blade and Tomes!\n\nAll controls can be changed\n in the settings on the main menu.");
                 break;
-            case 11:
+            case 11: //exit
                 GAME.stageInstance.clear();
                 dispose();
                 GAME.setScreen(new MainMenu(GAME));
