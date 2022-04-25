@@ -438,6 +438,8 @@ public class Dungeon extends ScreenAdapter {
             roomHandler.spawnGoblin();
         }
 
+        System.out.println(MainMenu.isTutorial);
+
         //The code for adding columns and how to put things into the Window
         //is based off of Alex Facer's code for the Windows and Menus
         if (roomHandler.level.getMapID() == 10 &&
@@ -445,6 +447,8 @@ public class Dungeon extends ScreenAdapter {
                 GAME.GRID_Y[5] <= GAME.player.playerIcon.getY()) &&
                         (GAME.GRID_X[11] > GAME.player.playerIcon.getX() &&
                 GAME.GRID_Y[6] > GAME.player.playerIcon.getY())) && !safeGuard) {
+
+            if(!MainMenu.isTutorial) {
                 GAME.stageInstance.setKeyboardFocus(null);
                 GAME.stageInstance.addActor(returnMenu);
                 GAME.player.setKeyFlag(new boolean[]{false, false, false, false});
@@ -454,6 +458,12 @@ public class Dungeon extends ScreenAdapter {
                 GAME.player.kDungeonsExplored++;
                 GAME.player.setHealthPoints(GAME.player.getFullHealth());
                 safeGuard = true;
+            }
+            else {
+                GAME.stageInstance.setKeyboardFocus(null);
+                BladeAndTomes.exitDungeon = true;
+                GAME.setScreen(new Overworld(GAME));
+            }
         }
 
         if (roomHandler.level.getMapID() == 2) {
