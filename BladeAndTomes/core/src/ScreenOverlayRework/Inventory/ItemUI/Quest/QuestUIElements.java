@@ -65,7 +65,6 @@ public class QuestUIElements implements Disposable {
         manager.load("InventoryItems/Other/QuestBaseLabel/QuestBaseLabel.json",Skin.class, new SkinLoader.SkinParameter("InventoryItems/Other/QuestBaseLabel/QuestBaseLabel.atlas"));
         manager.load("InventoryItems/Other/QuestProgressBar/ProgressBar.json",Skin.class,  new SkinLoader.SkinParameter("InventoryItems/Other/QuestProgressBar/ProgressBar.atlas"));
         manager.load("InventoryItems/Other/QuestTextButton/QuestButton.json",Skin.class,  new SkinLoader.SkinParameter("InventoryItems/Other/QuestTextButton/QuestButton.atlas"));
-
         manager.finishLoading();
         questBarSkin = manager.get("InventoryItems/Other/QuestBaseLabel/QuestBaseLabel.json");
         noQuest = new Label("NO QUEST EQUIPPED",game.BaseLabelStyle2);

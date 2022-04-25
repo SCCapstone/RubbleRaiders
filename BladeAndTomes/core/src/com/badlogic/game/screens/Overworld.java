@@ -1,48 +1,28 @@
 package com.badlogic.game.screens;
 
-import Keyboard_Mouse_Controls.SaveLoadGame;
-import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCBuyer;
-import ScreenOverlayRework.Inventory.NPCInventoryUI.NPCSeller;
 import ScreenOverlayRework.Inventory.NPCInventoryUI.TownHallQuestBoard;
-import ScreenOverlayRework.Inventory.TreasureChest.TreasureChestUI;
 import ScreenOverlayRework.OverlayManager;
-import Sounds.playerMoveSound;
 import com.badlogic.game.BladeAndTomes;
-import com.badlogic.game.EntityUI.EntitiesHandler;
-import com.badlogic.game.creatures.Player;
-import com.badlogic.gdx.*;
+import com.badlogic.game.EntityUI.DungeonEntitiesHandler;
+import com.badlogic.game.EntityUI.OverWorldEntitiesHandler;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Null;
-import jdk.tools.jmod.Main;
 
 import java.awt.*;
 
@@ -61,7 +41,7 @@ public class Overworld extends ScreenAdapter {
     int objectLayerId;
     boolean collidedX, collidedY;
 
-
+    DungeonEntitiesHandler dng;
     Window pauseMenu;
     static Label warning;
     static TextButton options[];
@@ -90,7 +70,7 @@ public class Overworld extends ScreenAdapter {
     // TODO: IMPLEMENT THESE IN CODE
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
-    EntitiesHandler entitiesHandler;
+    OverWorldEntitiesHandler overWorldEntitiesHandler;
     public Overworld (final BladeAndTomes game) {
         // Displays TownHall Interact msg
         // The labels part of anris work for trading and selling
@@ -312,8 +292,8 @@ public class Overworld extends ScreenAdapter {
                 nextTutorial();
             }
         }
-
-        entitiesHandler = new EntitiesHandler(game);
+        dng = new DungeonEntitiesHandler(game,null,null,null,null,null,false);
+       // overWorldEntitiesHandler = new OverWorldEntitiesHandler(game);
     }
 
     @Override
@@ -324,7 +304,7 @@ public class Overworld extends ScreenAdapter {
         renderer.setView((OrthographicCamera) GAME.stageInstance.getCamera());
         renderer.render();
         // Renders All UI elements
-        entitiesHandler.render(delta);
+        dng.render(delta);
 
         // Set the pixel lengths & heights for each texture. This allows for proper scaling of our project
 

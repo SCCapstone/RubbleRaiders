@@ -81,7 +81,6 @@ public class itemSlot extends Actor {
         slotSkin = manager.get(BaseSlotTexturePath+".json",Skin.class);
 
 
-
         slot = new ImageButton(slotSkin);
         table = new Group();
         slot.setSize(100,100);

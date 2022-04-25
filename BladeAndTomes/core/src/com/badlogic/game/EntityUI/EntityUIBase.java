@@ -166,6 +166,44 @@ public class EntityUIBase extends InputAdapter {
         currentEntityPosition.x = previousEntityPosition.x;
     }
 
+    public void bounceBack(){
+        float adderX = 0;
+        float adderY = 0;
+        if(playerDirection.equalsIgnoreCase("UP")){
+            adderY -= 1;
+
+        } else if(playerDirection.equalsIgnoreCase("Down")){
+            adderY += 1;
+
+        } else if(playerDirection.equalsIgnoreCase("Left")){
+            adderX += 1;
+
+        } else if(playerDirection.equalsIgnoreCase("Right")){
+            adderX -= 1;
+        }
+        currentEntityPosition.y = previousEntityPosition.y + adderY;
+        currentEntityPosition.x = previousEntityPosition.x + adderX;
+    }
+
+    public void bounceBack(String dir,float distance){
+        float adderX = 0;
+        float adderY = 0;
+        if(dir.equalsIgnoreCase("UP")){
+            adderY += distance;
+
+        } else if(dir.equalsIgnoreCase("Down")){
+            adderY -= distance;
+
+        } else if(dir.equalsIgnoreCase("Left")){
+            adderX -= distance;
+
+        } else if(dir.equalsIgnoreCase("Right")){
+            adderX += distance;
+        }
+        currentEntityPosition.y = previousEntityPosition.y + adderY;
+        currentEntityPosition.x = previousEntityPosition.x + adderX;
+    }
+
     public boolean isColliding(Rectangle rectangle) {
         return Entity_Rect.overlaps(rectangle);
     }

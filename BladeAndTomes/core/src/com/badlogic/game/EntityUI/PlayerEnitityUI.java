@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayerEnitityUI extends EntityUIBase{
     public boolean isPaused;
+    public boolean cantMoveInCurrentDirection;
     public PlayerEnitityUI(OrthographicCamera camera,
                            SpriteBatch batch,
                            MainMenuControls controls,
@@ -22,16 +23,17 @@ public class PlayerEnitityUI extends EntityUIBase{
                            Animation<TextureRegion> rightAnimation) {
         super(camera, batch, controls, initialPlayerLocation_X, initialPlayerLocation_Y, Entity_Width, Entity_Height, upAnimation, downAnimation, leftAnimation, rightAnimation);
         isPaused = false;
+        cantMoveInCurrentDirection = false;
     }
     @Override
     public void render(float delta){
         isEntityMoving = false;
         elapsedTime += Gdx.graphics.getDeltaTime();
         if(!isPaused)
-        if (Gdx.input.isKeyPressed(controls.getMoveUp()) && currentEntityPosition.y < HEIGHT) moveUP();
-        else if (Gdx.input.isKeyPressed(controls.getMoveDown()) && currentEntityPosition.y > MIN_HEIGHT) moveDown();
-        else if (Gdx.input.isKeyPressed(controls.getMoveLeft()) && currentEntityPosition.x > MIN_WIDTH) moveLeft();
-        else if ( Gdx.input.isKeyPressed(controls.getMoveRight()) && currentEntityPosition.x < WIDTH)  moveRight();
+        if (Gdx.input.isKeyPressed(controls.getMoveUp()) && currentEntityPosition.y < HEIGHT && (!cantMoveInCurrentDirection&&playerDirection.equalsIgnoreCase("up")||!playerDirection.equalsIgnoreCase("up"))) {moveUP();cantMoveInCurrentDirection = false;}
+        else if (Gdx.input.isKeyPressed(controls.getMoveDown()) && currentEntityPosition.y > MIN_HEIGHT&& (!cantMoveInCurrentDirection&&playerDirection.equalsIgnoreCase("down")||!playerDirection.equalsIgnoreCase("down"))) {moveDown();cantMoveInCurrentDirection = false;}
+        else if (Gdx.input.isKeyPressed(controls.getMoveLeft()) && currentEntityPosition.x > MIN_WIDTH&& (!cantMoveInCurrentDirection&&playerDirection.equalsIgnoreCase("left")||!playerDirection.equalsIgnoreCase("left"))) {moveLeft();cantMoveInCurrentDirection = false;}
+        else if ( Gdx.input.isKeyPressed(controls.getMoveRight()) && currentEntityPosition.x < WIDTH&& (!cantMoveInCurrentDirection&&playerDirection.equalsIgnoreCase("right")||!playerDirection.equalsIgnoreCase("right")))  {moveRight();cantMoveInCurrentDirection = false;}
         Entity_Rect.setPosition(currentEntityPosition);
         batch.begin();
         batch.draw(currentAnimation.getKeyFrame(elapsedTime, true), currentEntityPosition.x, currentEntityPosition.y, Entity_Width, Entity_Height);
