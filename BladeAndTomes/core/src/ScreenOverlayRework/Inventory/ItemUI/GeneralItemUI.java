@@ -60,10 +60,8 @@ public class GeneralItemUI {
         table.row();
 
         // Drawing Hidden Sell Item Inventory Slots
-
         Table SpellItems = new Table();
         SpellItems.align(top | center);
-//        SpellItems.add(new Label("\tSpell Items", game.generalLabelStyle)).size(125, 50).colspan(3);
         for (int i = 14; i < 16; ++i) {
 
             itemSlot temp = new itemSlot(game, dnd, i, "Spell",itemsManager);
@@ -79,10 +77,7 @@ public class GeneralItemUI {
         table.add(SpellItems).top();
 
         // Drawing Hidden Armor Inventory Slots
-
         Table ArmorItems = new Table();
-//        ArmorItems.add(new Label("\tArmor Equipped", game.generalLabelStyle)).size(125, 50);
-//        ArmorItems.row();
 
         for (int i = 16; i < 17; ++i) {
 

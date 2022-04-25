@@ -18,7 +18,6 @@ public class QuestDocument {
 
 
     // Initial User Stats
-
     private int kInitialKills;
     private int kInitialOpenedChests;
     private int kInitialItemsBought;
@@ -26,7 +25,6 @@ public class QuestDocument {
     private int kInitialDungeonsExplored;
     private int kInitialCompleteQuests;
     private int kInitialPotionsConsumed;
-
     private int kInitialEarnGoldThroughQuest;
     private int kInitialCloseRangeKills;
     private int kInitialLongRangeKills;
@@ -35,27 +33,6 @@ public class QuestDocument {
 
 
 
-
-
-
-    public QuestDocument(){
-        availableQuests = new Array<>();
-//        rewardAmount = 0;
-//        kQuestObtainAmount = 0;
-
-        availableQuests.add("Kill Enemies");
-        availableQuests.add("Open Chests");
-        availableQuests.add("Trade Items with NPC");
-        availableQuests.add("Explore Dungeon Rooms");
-        availableQuests.add("Sell Items to NPC");
-        availableQuests.add("Consume potions");
-        availableQuests.add("Complete quests");
-        availableQuests.add("Buy Items From NPC");
-        availableQuests.add("Kill Enemies Using Close \n\t\t\t\t  Range Weapons");
-        availableQuests.add("Kill Enemies Using Long \n\t\t\t\t  Range Weapons");
-        availableQuests.add("Complete Level(s)");
-        availableQuests.add("Earn Gold Through Levels");
-    }
     public QuestDocument(String difficulty){
         this.difficulty = difficulty;
         availableQuests = new Array<>();
@@ -230,14 +207,11 @@ public class QuestDocument {
         }
 
     }
-    public void updateQuestStatus(){
-
-    }
     public String getQuestDescription(){
         return availableQuests.get(currentQuestIndex);
     }
     public int getRewardAmount(){
-        return rewardAmount/2;
+        return rewardAmount;
     }
     public int getObjAmount(){
         return kObj;

@@ -95,11 +95,10 @@ public class InventoryUI implements Disposable {
     }
 
 
-
-    // TODO THIS METHOD HANDLES ALL HIDEN INVENTORY COMPONENTS
+    /**
+     *  TODO THIS METHOD HANDLES ALL MAKING OF HIDDEN INVENTORY COMPONENTS
+      */
     public void makeHiddenInventory() {
-        Skin skin = itemManager.get("InventoryItems/Other/StoneBaseLabel/StoneBase.json");
-        Label label = new Label("",skin);
 
         // Specifying Hidden Inventory's Location
         HiddenInventoryTable.setBackground(game.BaseLabelStyle2.background);
@@ -167,25 +166,46 @@ public class InventoryUI implements Disposable {
         drawSkills();
 
     }
+
+    /**
+     * THIS MAKE A NEW INSTANCE OF TOWN HALL QUEST BOARD CLASS WITH LINKING IT TO THIS CLASS
+     * @return NEW QUEST BOARD
+     */
     public TownHallQuestBoard makeQuestBoard(){
         TownHallQuestBoard Board = new TownHallQuestBoard(game,mainItemsUIManager, questUI);
-//        Board.addActorStack(questUI.getTable(),-75,-10);
-//        table.addActor(Board.getTable());
         return Board;
     }
+    /**
+     * THIS MAKE A NEW INSTANCE OF TREASURE CHEST CLASS WITH LINKING IT TO THIS CLASS
+     * @return NEW TREASURE CHEST
+     */
     public TreasureChestUI makeTreasureChest(){
         TreasureChestUI chestUI = new TreasureChestUI(game,dnd,mainItemsUIManager,slots);
         return chestUI;
     }
+    /**
+     * THIS MAKE A NEW INSTANCE OF NPC SELLER CLASS WITH LINKING IT TO THIS CLASS
+     * @return NEW SELLER
+     */
     public NPCSeller makeNPCSeller(){
         NPCSeller npc = new NPCSeller(game,dnd,mainItemsUIManager,slots);
         return npc;
     }
+    /**
+     * THIS MAKE A NEW INSTANCE OF NPCBUYER CLASS WITH LINKING IT TO THIS CLASS
+     * @return NEW BUYER
+     */
     public NPCBuyer makeNPCBuyer(){
         NPCBuyer npc=new NPCBuyer(game,dnd,mainItemsUIManager,slots);
         npc.getTable().setVisible(false);
         return npc;
     }
+
+    /**
+     * THIS METHOD IS RESPONSIBLE FOR DISPLAYING GIVEN CHEST ONTO THE SCREEN
+     * THIS SETS ALL OTHER UI ELEMENTS OFF.
+     * @param chestUI GIVEN CHEST
+     */
     public void displayChest(TreasureChestUI chestUI){
         if(chestUI.isTreasureChestVisible()){
             table.addActor(chestUI.getTable());
@@ -263,15 +283,11 @@ public class InventoryUI implements Disposable {
         questUI.render();
         skillUIs.render();
         Gold.setText("Gold: "+String.valueOf(game.player.getGold()));
-//        for(int i = 0;i<slots.size;++i)
-//            slots.get(i).updateInfo();
-
     }
 
 
 
     public void setHiddenInventoryVisibility(boolean val){
-
         if(val){
             HiddenInventorySlots.setVisible(true);
             HiddenQuests.setVisible(false);
@@ -282,41 +298,18 @@ public class InventoryUI implements Disposable {
             Gold.setVisible(true);
         }
         else{
-            HiddenInventoryTable.setVisible(val);
-            Gold.setVisible(val);
+            HiddenInventoryTable.setVisible(false);
+            Gold.setVisible(false);
 
 
         }
-    }
-    public void removeListens(){
-        for(int i = 0;i<slots.size;++i){
-            dnd.removeSource((slots.get(i).getSourceLister()));
-            dnd.removeTarget(slots.get(i).getTargetLister());
-        }
-    }
-
-    public void clearAssetManger(){
-        for(String s: itemManager.getAssetNames())
-            itemManager.unload(s);
-        for(String s: mainItemsUIManager.getAssetNames())
-            mainItemsUIManager.unload(s);
-
-        itemManager.clear();
-        mainItemsUIManager.clear();
     }
 
     public Table getUI(){
         return table;
     }
-
     @Override
     public void dispose() {
-//        for(String s: itemManager.getAssetNames())
-//            itemManager.unload(s);
-//        for(String s: mainItemsUIManager.getAssetNames())
-//            mainItemsUIManager.unload(s);
-//        itemManager.dispose();
-//        mainItemsUIManager.dispose();
 
     }
 }

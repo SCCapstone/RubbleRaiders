@@ -334,21 +334,14 @@ public class Overworld extends ScreenAdapter {
         //Specifically the advanced section on super.render() as well as the following section on the main
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
-//        npcTraderMsg = new Label("Wanna Trade\n Press \"T\" ", GAME.BaseLabelStyle2);
-
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
         GAME.stageInstance.draw();
-        //isCollisionHandled(GAME.player, GAME.stageInstance);
-        //isTileCollisionHandled(GAME.player, collisionLayer);
         GAME.overlays.updateHealth();
-
-
         //Tutorial check
         if(MainMenu.isTutorial && BladeAndTomes.exitDungeon){
             tutorialStep = 10;
             nextTutorial();
         }
-
         // Updates Elements for QuestBord
         if(isQuestBoardTradeVisible){
             questBoardTrade.render();
@@ -390,6 +383,8 @@ public class Overworld extends ScreenAdapter {
             case 1:
                 GAME.stageInstance.addActor(tutorialMessage);
                 GAME.stageInstance.addActor(next);
+                tutorialMessage.setZIndex(0);
+                next.setZIndex(0);
                 break;
             case 2: //Inventory screen
                 tutorialMessage.setText("Click 'E' to access your Inventory.\n\n Here you can view your items\n and equip armour or potions by\n" +
