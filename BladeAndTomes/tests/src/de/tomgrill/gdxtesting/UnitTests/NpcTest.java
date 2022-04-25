@@ -36,7 +36,6 @@ public class NpcTest {
         // properly.
         Assert.assertEquals(testNPC.getArmorPoints(), 7);
         Assert.assertEquals(testNPC.getHealthPoints(), 10);
-        Assert.assertEquals(testNPC.getMovement(), 10);
         Assert.assertEquals(testNPC.getNpcClass(), 2);
     }
 }

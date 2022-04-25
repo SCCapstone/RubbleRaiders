@@ -38,7 +38,6 @@ public class EntityTest {
         // for providing brilliant tutorial in order to learn about Unit testing specifically with jUnit
         Assert.assertEquals(testEntity.getArmorPoints(), 7);
         Assert.assertEquals(testEntity.getHealthPoints(), 10);
-        Assert.assertEquals(testEntity.getMovement(), 10);
     }
 
 }

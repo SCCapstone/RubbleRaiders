@@ -46,7 +46,6 @@ public class PlayerTest {
         Assert.assertEquals(10, player.getArmorPoints());
         Assert.assertEquals(0, player.getPlayerClass());
         Assert.assertEquals("Albatross", player.getPlayerClass());
-        Assert.assertEquals(10, player.getMovement());
         Assert.assertEquals(10, player.getSocial());
         Assert.assertEquals(10, player.getMental());
 
