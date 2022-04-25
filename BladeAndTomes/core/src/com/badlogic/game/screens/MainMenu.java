@@ -122,6 +122,7 @@ public class MainMenu extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 GAME.stageInstance.clear();
                 isTutorial = true;
+                Overworld.tutorialStep = 1;
                 GAME.setScreen(new Overworld(GAME));
 
             }
