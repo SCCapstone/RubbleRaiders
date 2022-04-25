@@ -72,6 +72,9 @@ public class MainMenu extends ScreenAdapter {
         game.player.setKeyControl(game.controls);
         game.player.setCurrentAnimation(game.getCurrentAnimation());
 
+        BladeAndTomes.exitDungeon = false;
+        BladeAndTomes.enterDungeon = false;
+
         batch = new SpriteBatch();
         manager = new AssetManager();
         manager.load("Maps/Forest.png", Texture.class);

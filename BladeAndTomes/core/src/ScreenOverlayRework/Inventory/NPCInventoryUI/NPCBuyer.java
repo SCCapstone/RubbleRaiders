@@ -65,7 +65,6 @@ public class NPCBuyer extends TradeUI {
         itemImage.setColor(Color.BLACK);
         itemImage.setSize(50,50);
         itemImage.setPosition(15,15);
-        //slot.getSlot().addActor(itemImage);//.size(50,50);
         table.add(slot.getSlot()).size(100,100);
         itemLabel.setFontScale(0.63f);
         table.add(itemLabel).size(260,80);
