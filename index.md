@@ -1,7 +1,7 @@
 ## Game Demo 
 
 [![Video PlaceHolder](BladeAndTomes\core\assets\WebsiteImages\OverWorld.PNG)](https://youtu.be/zgyBSEYaviw)
->> Click the Image Above to Watch the Demo(Place Holder)
+>> Click the Image Above to Watch our demo
 
 
 ## About the Game
