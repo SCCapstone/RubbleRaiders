@@ -20,6 +20,7 @@ import java.util.Random;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import jdk.tools.jmod.Main;
 
 public class Dungeon extends ScreenAdapter {
 
@@ -238,8 +239,8 @@ public class Dungeon extends ScreenAdapter {
         tutorialStep = 1;
         combatExplained = false;
         chestExplained = false;
-        tutorialMessage = new Label("This is the dungeon!\n\nExplore rooms of the dungeon to find\n a goblin to fight.", GAME.generalLabelStyle);
-        tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2);
+        tutorialMessage = new Label("This is the dungeon!\n\nExplore rooms of the dungeon\nto find a goblin to fight.", GAME.generalLabelStyle);
+        tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-150, GAME.stageInstance.getHeight()-200);
         tutorialMessage.setSize(300f, 200f);
         tutorialMessage.setAlignment(1,1);
         tutorialMessage.setZIndex(1);
@@ -258,7 +259,6 @@ public class Dungeon extends ScreenAdapter {
             nextTutorial();
             GAME.player.setBruteforce(30);
             GAME.player.setHealthPoints(100);
-            //if goblin in room, set step to 2 to explain combat
         }
 
         //Based off of Window code in Dungeon for Save & Quit menu by Brent Able & Alex Facer
@@ -402,8 +402,8 @@ public class Dungeon extends ScreenAdapter {
                 break;
             case 2: //if goblin appears in room, explain combat
                 GAME.stageInstance.addActor(tutorialMessage);
-                tutorialMessage.setText("Goblins are in this room!\nThere is close combat and ranged\ncombat items" +
-                        "\nClick 'Q' and use movement keys to\nselect an enemy to attack. Then\nconfirm the attack with 'Enter'.");
+                tutorialMessage.setText("Goblins are in this room!\nThere is close combat and\nranged combat items" +
+                        "\nClick 'Q' and use movement\nkeys to select an enemy\nto attack.\nThen confirm the attack\nwith 'Enter'.");
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 combatExplained = true;
                 break;
@@ -445,15 +445,15 @@ public class Dungeon extends ScreenAdapter {
                 GAME.GRID_Y[5] <= GAME.player.playerIcon.getY()) &&
                         (GAME.GRID_X[11] > GAME.player.playerIcon.getX() &&
                 GAME.GRID_Y[6] > GAME.player.playerIcon.getY())) && !safeGuard) {
-            GAME.stageInstance.setKeyboardFocus(null);
-            GAME.stageInstance.addActor(returnMenu);
-            GAME.player.setKeyFlag(new boolean[] {false, false, false, false});
-            returnMenu.add(returnWarning).center().colspan(4);
-            returnMenu.row();
-            returnMenu.add(returnChoices[0], returnChoices[1]).center();
-            GAME.player.kDungeonsExplored++;
-            GAME.player.setHealthPoints(GAME.player.getFullHealth());
-            safeGuard = true;
+                GAME.stageInstance.setKeyboardFocus(null);
+                GAME.stageInstance.addActor(returnMenu);
+                GAME.player.setKeyFlag(new boolean[]{false, false, false, false});
+                returnMenu.add(returnWarning).center().colspan(4);
+                returnMenu.row();
+                returnMenu.add(returnChoices[0], returnChoices[1]).center();
+                GAME.player.kDungeonsExplored++;
+                GAME.player.setHealthPoints(GAME.player.getFullHealth());
+                safeGuard = true;
         }
 
         if (roomHandler.level.getMapID() == 2) {

@@ -80,7 +80,7 @@ public class Overworld extends ScreenAdapter {
     TextButton saveBack;
     Label tutorialMessage;
     TextButton next;
-    int tutorialStep;
+    static int tutorialStep;
 
     TreasureChestUI chest1;
     TreasureChestUI chest2;
@@ -287,15 +287,13 @@ public class Overworld extends ScreenAdapter {
 
         //Tutorial
         tutorialStep = 1;
-        tutorialMessage = new Label("Welcome to Blade and Tomes!\n\nThis tutorial will help you understand" +
-                "\nhow to play the game.\n\nClick Next to continue.", GAME.generalLabelStyle);
+        tutorialMessage = new Label("Welcome to Blade and Tomes!\n\nThis tutorial will help you\nunderstand" +
+                "how to play\nthe game.\n\nClick Next to continue.", GAME.generalLabelStyle);
         tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2);
         tutorialMessage.setSize(300f, 200f);
         tutorialMessage.setAlignment(1,1);
-        tutorialMessage.setZIndex(1);
         next = new TextButton("Next", GAME.generalTextButtonStyle);
         next.setSize(100f, 50f);
-        next.setZIndex(1);
         next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
         next.addListener(new ChangeListener() {
             @Override
@@ -310,9 +308,9 @@ public class Overworld extends ScreenAdapter {
                 tutorialStep = 9;
                 nextTutorial();
             }
-            else {
+            else
                 nextTutorial();
-            }
+
         }
 
         entitiesHandler = new EntitiesHandler(game);
@@ -382,50 +380,50 @@ public class Overworld extends ScreenAdapter {
         switch (tutorialStep) {
             case 1:
                 GAME.stageInstance.addActor(tutorialMessage);
-                GAME.stageInstance.addActor(next);
                 tutorialMessage.setZIndex(0);
+                GAME.stageInstance.addActor(next);
                 next.setZIndex(0);
                 break;
             case 2: //Inventory screen
                 tutorialMessage.setText("Click 'E' to access your Inventory.\n\n Here you can view your items\n and equip armour or potions by\n" +
-                        "dragging them into the bottom slots.\n\nDrag an item from the 5 slots\nin the upper left hand corner into\na slot in this Inventory.");
+                        "dragging them into the\nbottom slots.\n\nDrag an item from the 5 slots\nin the upper left hand corner\ninto a slot in this Inventory.");
                 tutorialMessage.setSize(300f, 300f);
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 4 - 50, GAME.stageInstance.getHeight() / 2);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
             case 3: //Equipped Quests
-                tutorialMessage.setText("Click on the 'Quest' tab in\nthe Inventory.\n\nHere you can view quests that you\nequipped." +
-                        " Buying quests will \nbe explained soon.");
+                tutorialMessage.setText("Click on the 'Quest' tab in\nthe Inventory.\n\nHere you can view quests\nthat you equipped." +
+                        "\nBuying quests will be\nexplained soon.");
                 tutorialMessage.setSize(300f, 200f);
                 break;
             case 4: //Upgrading skills
-                tutorialMessage.setText("Click on the 'Skill' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills. You can earn tokens\nfrom being successful in events\nin the dungeon.\n\nClick 'E' to exit the Inventory.");
+                tutorialMessage.setText("Click on the 'Skill' tab.\n\nHere you can spend tokens to \nupgrade your primary and\nsecondary skills. You can earn\ntokens from being successful\nin events in the dungeon.\n\nClick 'E' to exit the Inventory.");
                 break;
             case 5: //Quests Buying and Selling
-                tutorialMessage.setText("Walk up to the board in the middle\nof town and click 'T'.\n\nHere you can spend gold on quests.\nEach quest has a difficulty \nand reward shown" +
+                tutorialMessage.setText("Walk up to the board in the\nmiddle of town and click 'T'.\n\nHere you can spend gold\non quests. Each quest has a\ndifficulty and reward shown" +
                         "\n\nClick 'T' to exit quests.");
                 GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2, GAME.stageInstance.getHeight()/2+300);
+                //tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2, GAME.stageInstance.getHeight()/2+300);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 300, GAME.stageInstance.getHeight()-250);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 break;
             case 6: //Sell items
                 tutorialMessage.setSize(300f,250f);
-                tutorialMessage.setText("Walk to the top left building\n and click 'T' to sell items.\n\nIf you own one of the items they want\nto buy, drag " +
-                        "it into the slot\nand click sell. Make sure to check \nthat the level of the items are the same\nby hovering your mouse over them" +
+                tutorialMessage.setText("Walk to the top left building\n and click 'T' to sell items.\n\nIf you own one of the items\nthey want to buy, drag " +
+                        "it into\nthe slot and click sell.\nMake sure to check that the\nlevel of the items are\nthe same" +
                         "\n\nClick 'T' to exit menu.");
                 break;
             case 7: //Buy items
                 tutorialMessage.setSize(300f,200f);
-                tutorialMessage.setText("Walk to the building near the bottom \nof town and click 'T' to open the menu.\nClick the pay button to buy the item." +
+                tutorialMessage.setText("Walk to the building near\nthe bottom of town and\nclick 'T' to open the menu.\nClick the pay button to\nbuy the item." +
                         "\n\nClick 'T' to exit menu.");
                 break;
             case 8: //item slot selection
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth() / 2 - 100, (GAME.stageInstance.getHeight() / 3) * 2);
                 next.setPosition(tutorialMessage.getX() + 100, tutorialMessage.getY() - 50);
                 tutorialMessage.setText("The item slots in the top left can\n be selected using 1-5 for the \nrespective slot position");
                 break;
             case 9: //enter dungeon
-                tutorialMessage.setText("Now it's time to fight!\n\nWalk into the portal at the \nbottom of town to enter the dungeon.");
+                tutorialMessage.setText("Now it's time to fight!\n\nWalk into the portal at the \nbottom of town to enter\nthe dungeon.");
                 tutorialMessage.setSize(300f, 200f);
                 next.remove();
                 break;
