@@ -93,24 +93,21 @@ public class Overworld extends ScreenAdapter {
     //https://stackoverflow.com/questions/61491889/how-to-detect-collisions-between-objects-in-libgdx
     //https://libgdx.badlogicgames.com/ci/nightlies/docs/api/com/badlogic/gdx/math/Intersector.html
     EntitiesHandler entitiesHandler;
-    public Overworld (final BladeAndTomes game) {
+    public Overworld(final BladeAndTomes game) {
         // Displays TownHall Interact msg
         // The labels part of anris work for trading and selling
         // Is also piggybacking off of collision
-        if(MainMenu.isTutorial){
-            game.loadSaveManager.generatePlayer();
-        } else {
-            game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
-        }        game.player.playerIcon.setPosition(1920/2,1080/2);
 
         //Passes current animations and game controls to player to make sure it has those stored
         //Keyboard Controls are done by Anirudh Oruganti and Alex Facer.
         //Animation functions were researched and performed by Miller Banford
+
+        this.GAME = game;
+        loadPlayer();
         game.player.setKeyControl(game.controls);
         game.player.setCurrentAnimation(game.getCurrentAnimation());
 
 
-        this.GAME = game;
         GAME.resetElapsedTime();
         objectLayerId = 2;
         GAME._bgmusic.playTownMusic();
@@ -325,12 +322,19 @@ public class Overworld extends ScreenAdapter {
         }
 
         entitiesHandler = new EntitiesHandler(game);
-        c1 = game.overlays.generateChest();
-        c2 = game.overlays.generateChest();
+
 
     }
-    TreasureChestUI c1;
-    TreasureChestUI c2;
+
+
+    public synchronized void loadPlayer(){
+        if(MainMenu.isTutorial){
+            GAME.loadSaveManager.generatePlayer();
+        } else {
+            GAME.player = GAME.loadSaveManager.loadPlayer(GAME.currentSaveIndex);
+        }        GAME.player.playerIcon.setPosition(1920/2,1080/2);
+
+    }
     @Override
     public void render(float delta) {
         GAME.player.isTurn = true;

@@ -337,6 +337,7 @@ public class Dungeon extends ScreenAdapter {
                 //System.out.println( GAME.player.getGold());
                 if(!MainMenu.isTutorial)
                     GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
+                GAME.stageInstance.clear();
                 //GAME.player.kEarnedGoldThroughLevels++;
                 BladeAndTomes.exitDungeon = true;
                 BladeAndTomes.enterDungeon = false;
@@ -840,6 +841,7 @@ public class Dungeon extends ScreenAdapter {
             //set tutorial dungeon variables
             BladeAndTomes.exitDungeon = true;
             BladeAndTomes.enterDungeon = false;
+            GAME.stageInstance.clear();
             GAME.setScreen(new Overworld(GAME));
             GAME.player.setHealthPoints(10);
             GAME.stageInstance.setKeyboardFocus(null);
