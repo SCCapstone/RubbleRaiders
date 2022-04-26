@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="de.tomgrill.gdxtesting.UnitTests.RoomIDTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-04-26T00:56:11" hostname="DESKTOP-QFVEA0L" time="0.237">
-  <properties/>
-  <testcase name="RoomIDTest" classname="de.tomgrill.gdxtesting.UnitTests.RoomIDTest" time="0.237"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

@@ -86,6 +86,7 @@ public class Dungeon extends ScreenAdapter {
     int tutorialStep;
     boolean combatExplained;
     boolean chestExplained;
+    boolean eventExplained;
 
    /* Window exitMenu;
     Label warning;
@@ -239,6 +240,7 @@ public class Dungeon extends ScreenAdapter {
         tutorialStep = 1;
         combatExplained = false;
         chestExplained = false;
+        eventExplained=false;
         tutorialMessage = new Label("This is the dungeon!\n\nExplore rooms of the dungeon\nto find a goblin to fight.", GAME.generalLabelStyle);
         tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-150, GAME.stageInstance.getHeight()-200);
         tutorialMessage.setSize(300f, 200f);
@@ -417,6 +419,12 @@ public class Dungeon extends ScreenAdapter {
                 chestExplained = true;
                 tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
                 break;
+            case 6: //event
+                GAME.stageInstance.addActor(tutorialMessage);
+                tutorialMessage.setText("This is an event!\nWhether you succeed or fail\nis based on the level\nof your skills.");
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()-300, GAME.stageInstance.getHeight()-200);
+                eventExplained = true;
+                break;
             case 7: //done
                 tutorialMessage.remove();
         }
@@ -479,6 +487,10 @@ public class Dungeon extends ScreenAdapter {
         }
         if (MainMenu.isTutorial && roomHandler.combatFlag && combatExplained == false) { //combat
             setTutorial(2);
+            nextTutorial();
+        }
+        if(MainMenu.isTutorial && roomHandler.eventFlag && eventExplained==false){ //&& eventExplained == false
+            setTutorial(6);
             nextTutorial();
         }
 

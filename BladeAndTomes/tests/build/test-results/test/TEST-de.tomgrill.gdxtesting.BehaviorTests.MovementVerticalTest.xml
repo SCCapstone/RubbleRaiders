@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2022-04-26T02:04:44" hostname="DESKTOP-QFVEA0L" time="0.092">
+<testsuite name="de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2022-04-26T01:44:17" hostname="BLANK" time="0.177">
   <properties/>
-  <testcase name="movementVerticalTest" classname="de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest" time="0.092">
+  <testcase name="movementVerticalTest" classname="de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest" time="0.177">
     <failure message="java.lang.NullPointerException" type="java.lang.NullPointerException">java.lang.NullPointerException
-	at de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest.movementVerticalTest(MovementVerticalTest.java:65)
+	at de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest.movementVerticalTest(MovementVerticalTest.java:42)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
