@@ -828,6 +828,7 @@ public class Dungeon extends ScreenAdapter {
             BladeAndTomes.exitDungeon = true;
             BladeAndTomes.enterDungeon = false;
             GAME.setScreen(new Overworld(GAME));
+            GAME.player.setHealthPoints(10);
             GAME.stageInstance.setKeyboardFocus(null);
             //if player is not in tutorial, show the death message, otherwise dont
             if(!MainMenu.isTutorial) {
