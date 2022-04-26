@@ -7,7 +7,7 @@ of dark dungeons. To learn more about the project, please refer to the project
 description on the wiki [here.](https://github.com/SCCapstone/RubbleRaiders/wiki/Project-Description)
 
 ## Requirements
-
+This game is made for windows you may try mac, but we do not guarantee that it works.
 To be able to run the app, please install the following programs:
 
 * [Latest Version of Java](https://www.java.com/en/)
