@@ -207,6 +207,7 @@ public class InventoryUI implements Disposable {
      * @param chestUI GIVEN CHEST
      */
     public void displayChest(TreasureChestUI chestUI){
+        // This removes everything on screen if visible on adds chest ui
         if(chestUI.isTreasureChestVisible()){
             table.addActor(chestUI.getTable());
             HiddenInventorySlots.setVisible(true);
@@ -224,6 +225,7 @@ public class InventoryUI implements Disposable {
     }
 
     public void displayQuestBoardTradeUI(boolean display, TownHallQuestBoard board){
+        // This removes everything on screen if visible on adds quest board ui
         if(display){
             table.addActor(board.getTable());
             HiddenInventorySlots.setVisible(true);
@@ -240,6 +242,7 @@ public class InventoryUI implements Disposable {
         }
     }
     public void Trade_Inventory_NPCBuyer(boolean display, NPCBuyer npc){
+        // This removes everything on screen if visible on adds buyer ui
         if(display){
             table.addActor(npc.getTable());
             HiddenInventorySlots.setVisible(true);
@@ -288,6 +291,8 @@ public class InventoryUI implements Disposable {
 
 
     public void setHiddenInventoryVisibility(boolean val){
+        // This removes everything on screen if visible on adds Inventory ui
+
         if(val){
             HiddenInventorySlots.setVisible(true);
             HiddenQuests.setVisible(false);
@@ -300,8 +305,6 @@ public class InventoryUI implements Disposable {
         else{
             HiddenInventoryTable.setVisible(false);
             Gold.setVisible(false);
-
-
         }
     }
 

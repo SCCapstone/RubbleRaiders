@@ -1,52 +1,52 @@
-de/tomgrill/gdxtesting/examples/AssetExistsExampleTest.java
- de.tomgrill.gdxtesting.examples.AssetExistsExampleTest
 de/tomgrill/gdxtesting/UnitTests/NpcTest.java
  de.tomgrill.gdxtesting.UnitTests.NpcTest
-de/tomgrill/gdxtesting/UnitTests/EntityTest.java
- de.tomgrill.gdxtesting.UnitTests.EntityTest
-de/tomgrill/gdxtesting/GdxTestRunner.java
- de.tomgrill.gdxtesting.GdxTestRunner
-de/tomgrill/gdxtesting/examples/UnitTestExample.java
- de.tomgrill.gdxtesting.examples.UnitTestExample
-de/tomgrill/gdxtesting/UnitTests/Inventory/InventoryTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.InventoryTest
-de/tomgrill/gdxtesting/BehaviorTests/MovementVerticalTest.java
- de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/ItemBuyTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.ItemBuyTest
-de/tomgrill/gdxtesting/UnitTests/GoblinMoveTest.java
- de.tomgrill.gdxtesting.UnitTests.GoblinMoveTest
-de/tomgrill/gdxtesting/UnitTests/GoblinDamageTest.java
- de.tomgrill.gdxtesting.UnitTests.GoblinDamageTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/ItemSellTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.ItemSellTest
+de/tomgrill/gdxtesting/BehaviorTests/Inventory/itemDocumentTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.Inventory.itemDocumentTest
+de/tomgrill/gdxtesting/BehaviorTests/Inventory/ItemGeneratorTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.Inventory.ItemGeneratorTest
+de/tomgrill/gdxtesting/BehaviorTests/Inventory/ItemSelectionTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.Inventory.ItemSelectionTest
 de/tomgrill/gdxtesting/BehaviorTests/MovementHorizontalTest.java
  de.tomgrill.gdxtesting.BehaviorTests.MovementHorizontalTest
 de/tomgrill/gdxtesting/UnitTests/GoblinAttackTest.java
  de.tomgrill.gdxtesting.UnitTests.GoblinAttackTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/MultipleChestSwapTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.MultipleChestSwapTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/ItemSelectionTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.ItemSelectionTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/InventoryItemSwapTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.InventoryItemSwapTest
-de/tomgrill/gdxtesting/UnitTests/MovingIntoRoomTest.java
- de.tomgrill.gdxtesting.UnitTests.MovingIntoRoomTest
-de/tomgrill/gdxtesting/BehaviorTests/RenderTest.java
- de.tomgrill.gdxtesting.BehaviorTests.RenderTest
-de/tomgrill/gdxtesting/UnitTests/GoblinTest.java
- de.tomgrill.gdxtesting.UnitTests.GoblinTest
+de/tomgrill/gdxtesting/BehaviorTests/Inventory/ItemBuyTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.Inventory.ItemBuyTest
 de/tomgrill/gdxtesting/InventoryTesting/ItemSwapTest.java
  de.tomgrill.gdxtesting.InventoryTesting.ItemSwapTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/ItemGeneratorTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.ItemGeneratorTest
 de/tomgrill/gdxtesting/UnitTests/PlayerTest.java
  de.tomgrill.gdxtesting.UnitTests.PlayerTest
-de/tomgrill/gdxtesting/UnitTests/Inventory/itemDocumentTest.java
- de.tomgrill.gdxtesting.UnitTests.Inventory.itemDocumentTest
 de/tomgrill/gdxtesting/UnitTests/RoomIDTest.java
  de.tomgrill.gdxtesting.UnitTests.RoomIDTest
 de/tomgrill/gdxtesting/UnitTests/RoomTest.java
  de.tomgrill.gdxtesting.UnitTests.RoomTest
 de/tomgrill/gdxtesting/UnitTests/RoomNullTest.java
  de.tomgrill.gdxtesting.UnitTests.RoomNullTest
+de/tomgrill/gdxtesting/examples/AssetExistsExampleTest.java
+ de.tomgrill.gdxtesting.examples.AssetExistsExampleTest
+de/tomgrill/gdxtesting/BehaviorTests/MovementVerticalTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.MovementVerticalTest
+de/tomgrill/gdxtesting/UnitTests/GoblinMoveTest.java
+ de.tomgrill.gdxtesting.UnitTests.GoblinMoveTest
+de/tomgrill/gdxtesting/GdxTestRunner.java
+ de.tomgrill.gdxtesting.GdxTestRunner
+de/tomgrill/gdxtesting/BehaviorTests/InventoryTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.InventoryTest
+de/tomgrill/gdxtesting/UnitTests/GoblinDamageTest.java
+ de.tomgrill.gdxtesting.UnitTests.GoblinDamageTest
+de/tomgrill/gdxtesting/BehaviorTests/Inventory/InventoryItemSwapTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.Inventory.InventoryItemSwapTest
+de/tomgrill/gdxtesting/UnitTests/EntityTest.java
+ de.tomgrill.gdxtesting.UnitTests.EntityTest
+de/tomgrill/gdxtesting/UnitTests/MovingIntoRoomTest.java
+ de.tomgrill.gdxtesting.UnitTests.MovingIntoRoomTest
+de/tomgrill/gdxtesting/BehaviorTests/RenderTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.RenderTest
+de/tomgrill/gdxtesting/UnitTests/GoblinTest.java
+ de.tomgrill.gdxtesting.UnitTests.GoblinTest
+de/tomgrill/gdxtesting/examples/UnitTestExample.java
+ de.tomgrill.gdxtesting.examples.UnitTestExample
+de/tomgrill/gdxtesting/BehaviorTests/Inventory/ItemSellTest.java
+ de.tomgrill.gdxtesting.BehaviorTests.Inventory.ItemSellTest
+de/tomgrill/gdxtesting/UnitTests/QuestTest.java
+ de.tomgrill.gdxtesting.UnitTests.QuestTest

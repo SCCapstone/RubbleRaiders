@@ -314,8 +314,12 @@ public class Overworld extends ScreenAdapter {
         }
 
         entitiesHandler = new EntitiesHandler(game);
-    }
+        c1 = game.overlays.generateChest();
+        c2 = game.overlays.generateChest();
 
+    }
+    TreasureChestUI c1;
+    TreasureChestUI c2;
     @Override
     public void render(float delta) {
         GAME.player.isTurn = true;

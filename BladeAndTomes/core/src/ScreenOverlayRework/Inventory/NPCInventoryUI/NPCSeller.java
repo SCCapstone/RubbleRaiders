@@ -46,7 +46,6 @@ public class NPCSeller extends TradeUI {
             trades.add(makeitemRow(trade.get(i)));
             trades.row();
         }
-//        game.stageInstance.addActor(trades);
         trades.setPosition(700,450);
         seller.addActor(trades);
     }
