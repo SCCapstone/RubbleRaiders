@@ -164,7 +164,7 @@ public class Overworld extends ScreenAdapter {
                 viewControls.remove();
                 chooseQuit.remove();
                 exitPause.remove();
-                if(MainMenu.isTutorial){
+                if(MainMenu.isTutorial && BladeAndTomes.enterDungeon==false){
                     GAME.stageInstance.addActor(tutorialMessage);
                     if(tutorialStep<9 || tutorialStep>9){
                         GAME.stageInstance.addActor(next);
@@ -194,7 +194,7 @@ public class Overworld extends ScreenAdapter {
         //option to exit controls view and go back to pause menu options
         exitControls = new TextButton("Back", GAME.generalTextButtonStyle);
         exitControls.setSize(150, 50);
-        exitControls.setPosition(controls.getX()+50, controls.getY()-150);
+        exitControls.setPosition(controls.getX()+50, controls.getY()-50);
         exitControls.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -442,7 +442,7 @@ public class Overworld extends ScreenAdapter {
                 break;
             case 10: //final explanation
                 GAME.stageInstance.addActor(tutorialMessage);
-                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2+200);
+                tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2+100);
                 GAME.stageInstance.addActor(next);
                 next.setPosition(tutorialMessage.getX()+100, tutorialMessage.getY()-50);
                 next.setText("Exit");
