@@ -32,11 +32,11 @@ public class MovementHorizontalTest {
         //as to what could be done to automate input
         Stage test = new Stage(new ScreenViewport(), mock(SpriteBatch.class));
         Gdx.graphics = mock(Gdx.graphics.getClass());
-        Player player = new Player();
+        //Player player = new Player();
 
         //Adds actor to the stage and focuses the keyboard on him
-        test.addActor(player.playerIcon);
-        test.setKeyboardFocus(player.playerIcon);
+//        test.addActor(player.playerIcon);
+//        test.setKeyboardFocus(player.playerIcon);
 
         //Mocks the graphics function to return 5 seconds
         when(Gdx.graphics.getDeltaTime()).thenReturn(5.0f);
