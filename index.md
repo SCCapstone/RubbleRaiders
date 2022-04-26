@@ -3,7 +3,6 @@
 [![Video PlaceHolder](BladeAndTomes\core\assets\WebsiteImages\OverWorld.PNG)](https://youtu.be/zgyBSEYaviw)
 >> Click the Image Above to Watch our demo
 
-
 ## About the Game
 If you enjoy classical fantasy dungeon crawlers then this is a game made for you!
 The game centers around you, the player, creating a simple adventurer,

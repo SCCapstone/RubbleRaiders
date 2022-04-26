@@ -320,7 +320,7 @@ public class RoomHandler {
         stage.setKeyboardFocus(player.playerIcon);
 
         if (level.getMapID() == 10) {
-            Image portal = new Image(new Texture(Gdx.files.internal("PortalToDungeon.jpg")));
+            Image portal = new Image(new Texture(Gdx.files.internal("Maps/Portal_Revamped.png")));
             portal.setPosition(game.GRID_X[10], game.GRID_Y[5]);
             stage.addActor(portal);
         }
