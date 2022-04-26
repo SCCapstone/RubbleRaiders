@@ -25,10 +25,10 @@ public class MovingIntoRoomTest {
 
         Player testPlayer = new Player();
 
-        RoomHandler testHandle = new RoomHandler(test, testPlayer, mock(OverlayManager.class), mock(BladeAndTomes.class));
+        //RoomHandler testHandle = new RoomHandler(test, testPlayer, mock(OverlayManager.class), mock(BladeAndTomes.class));
 
-        testHandle.generateLevelLayout();
-        testPlayer.playerInput.keyDown(new InputEvent(), Input.Keys.DOWN);
-        testHandle.movement();
+        //testHandle.generateLevelLayout();
+        //testPlayer.playerInput.keyDown(new InputEvent(), Input.Keys.DOWN);
+        //testHandle.movement();
     }
 }
