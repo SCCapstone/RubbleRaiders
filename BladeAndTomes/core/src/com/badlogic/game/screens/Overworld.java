@@ -329,7 +329,7 @@ public class Overworld extends ScreenAdapter {
 
     public synchronized void loadPlayer(){
         if(MainMenu.isTutorial){
-            GAME.loadSaveManager.generatePlayer();
+            GAME.player =  GAME.loadSaveManager.generatePlayer();
         } else {
             GAME.player = GAME.loadSaveManager.loadPlayer(GAME.currentSaveIndex);
         }        GAME.player.playerIcon.setPosition(1920/2,1080/2);

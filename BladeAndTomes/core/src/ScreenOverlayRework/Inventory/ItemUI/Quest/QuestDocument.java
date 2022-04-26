@@ -2,6 +2,7 @@ package ScreenOverlayRework.Inventory.ItemUI.Quest;
 
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Hashtable;
 import java.util.Random;
 
 public class QuestDocument {
@@ -18,6 +19,7 @@ public class QuestDocument {
 
 
     // Initial User Stats
+
     private int kInitialKills;
     private int kInitialOpenedChests;
     private int kInitialItemsBought;
@@ -25,6 +27,7 @@ public class QuestDocument {
     private int kInitialDungeonsExplored;
     private int kInitialCompleteQuests;
     private int kInitialPotionsConsumed;
+
     private int kInitialEarnGoldThroughQuest;
     private int kInitialCloseRangeKills;
     private int kInitialLongRangeKills;
@@ -32,17 +35,34 @@ public class QuestDocument {
     private int kInitialEarnGoldThroughLevels;
 
 
-    /**
-     * This constructor has all the available quests
-     * @param difficulty the difficulty of quest: easy medium hard
-     */
+
+
+
+
+    public QuestDocument(){
+        availableQuests = new Array<>();
+//        rewardAmount = 0;
+//        kQuestObtainAmount = 0;
+
+        availableQuests.add("Kill Enemies");
+        availableQuests.add("Open Chests");
+        availableQuests.add("Trade Items with NPC");
+        availableQuests.add("Explore Dungeon Rooms");
+        availableQuests.add("Sell Items to NPC");
+        availableQuests.add("Consume potions");
+        availableQuests.add("Complete quests");
+        availableQuests.add("Buy Items From NPC");
+        availableQuests.add("Kill Enemies Using Close \n\t\t\t\t  Range Weapons");
+        availableQuests.add("Kill Enemies Using Long \n\t\t\t\t  Range Weapons");
+        availableQuests.add("Complete Level(s)");
+        availableQuests.add("Earn Gold Through Levels");
+    }
     public QuestDocument(String difficulty){
         this.difficulty = difficulty;
         availableQuests = new Array<>();
         randomNumber = new Random();
         rewardAmount = 0;
         kQuestObtainAmount = 0;
-        // Available quests
         availableQuests.add("Kill Enemies");
         availableQuests.add("Open Chests");
         availableQuests.add("Trade Items with NPC");
@@ -56,48 +76,36 @@ public class QuestDocument {
         availableQuests.add("Complete Level(s)");
         availableQuests.add("Earn Gold Through Levels");
 
-        // Generates quest based on difficulty
         generateQuest(difficulty);
     }
     public void generateQuest(String diff){
         switch (diff){
             case "HARD":
-                // Random Quest Picking
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
                 info = availableQuests.get(currentQuestIndex);
-                // Calculating Gold
                 isRewardGold = (randomNumber.nextInt(2) == 1)? true:false;
                 rewardAmount = (isRewardGold)?( randomNumber.nextInt(5)+15):(randomNumber.nextInt(2));
                 ++rewardAmount;
-                // Random Quest Obtain Amount
                 kObj = randomNumber.nextInt(5)+7;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4)+randomNumber.nextInt(4);
-                if(isRewardGold)
-                    rewardAmount+=kQuestObtainAmount;
                 break;
             case "MEDIUM":
-                // Random Quest Picking
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
-                // Calculating Gold
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5)+7;
                 ++rewardAmount;
-                // Random Quest Obtain Amount
+
                 kObj = randomNumber.nextInt(5)+2;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4);
-                rewardAmount+=kQuestObtainAmount;
                 break;
             case "EASY":
-                // Random Quest Picking
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
-                // Calculating Gold
                 isRewardGold = true;
-                rewardAmount = randomNumber.nextInt(5);
+                rewardAmount = randomNumber.nextInt(5)+1;
                 ++rewardAmount;
-                // Random Quest Obtain Amount
+
                 kObj = randomNumber.nextInt(5)+1;
                 kQuestObtainAmount = randomNumber.nextInt(4)+1;
-                rewardAmount+=kQuestObtainAmount;
                 break;
         }
         ++rewardAmount;
@@ -119,18 +127,18 @@ public class QuestDocument {
             int kCurrentLevelCompleted,
             int kCurrentEarnGoldThroughLevels
     ){
-         kInitialKills = kCurrentKills;
-         kInitialOpenedChests = kCurrentOpenedChests;
-         kInitialItemsBought = kCurrentItemsBought;
-         kInitialItemsSold = kCurrentItemsSold;
-         kInitialDungeonsExplored = kCurrentDungeonsExplored;
-         kInitialCompleteQuests = kCurrentCompleteQuests;
-         kInitialPotionsConsumed = kCurrentPotionsConsumed;
-         kInitialEarnGoldThroughQuest= kCurrentEarnGoldThroughQuest;
-         kInitialCloseRangeKills= kCurrentCloseRangeKills;
-         kInitialLongRangeKills = kCurrentLongRangeKills;
-         kInitialLevelCompleted =  kCurrentLevelCompleted;
-         kInitialEarnGoldThroughLevels= kCurrentEarnGoldThroughLevels;
+        kInitialKills = kCurrentKills;
+        kInitialOpenedChests = kCurrentOpenedChests;
+        kInitialItemsBought = kCurrentItemsBought;
+        kInitialItemsSold = kCurrentItemsSold;
+        kInitialDungeonsExplored = kCurrentDungeonsExplored;
+        kInitialCompleteQuests = kCurrentCompleteQuests;
+        kInitialPotionsConsumed = kCurrentPotionsConsumed;
+        kInitialEarnGoldThroughQuest= kCurrentEarnGoldThroughQuest;
+        kCurrentCloseRangeKills= kCurrentCloseRangeKills;
+        kCurrentLongRangeKills = kCurrentLongRangeKills;
+        kInitialLevelCompleted =  kCurrentLevelCompleted;
+        kInitialEarnGoldThroughLevels= kCurrentEarnGoldThroughLevels;
 
     }
     public boolean getQuestStatus(){
@@ -202,7 +210,7 @@ public class QuestDocument {
 
             case 9:
                 // Kill Enemies Using Long Range Weapons
-                output = ((kCurrentLongRangeKills-kInitialLongRangeKills))>=kObj;
+                output = ((kCurrentLongRangeKills-kCurrentLongRangeKills))>=kObj;
                 progressBarVal =  ((kCurrentLongRangeKills-kCurrentLongRangeKills));
                 return output;
             case 10:
@@ -221,11 +229,14 @@ public class QuestDocument {
         }
 
     }
+    public void updateQuestStatus(){
+
+    }
     public String getQuestDescription(){
         return availableQuests.get(currentQuestIndex);
     }
     public int getRewardAmount(){
-        return rewardAmount;
+        return rewardAmount/2;
     }
     public int getObjAmount(){
         return kObj;
