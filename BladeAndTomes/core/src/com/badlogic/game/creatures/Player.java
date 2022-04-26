@@ -170,99 +170,8 @@ public class Player extends Entity {
         // https://github.com/libgdx/libgdx/wiki/Scene2d
         gold = 100;
 
-        playerIcon.addListener(playerInput = new InputListener() {
-
-            @Override
-            public boolean keyUp(InputEvent event, int keycode) {
-                if(keycode == kControl.getMoveUp()) {
-                    keyFlag[0] = false;
-                }
-                if (keycode == kControl.getMoveDown()) {
-                    keyFlag[3] = false;
-                }
-                if(keycode == kControl.getMoveLeft()) {
-                    keyFlag[2] = false;
-                }
-                if(keycode == kControl.getMoveRight()) {
-                    keyFlag[1] = false;
-                }
-                return true;
-            }
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode)
-            {
-                //Checks to see if goblins are present and then checks to see if said goblins
-                //are still moving before the player is allowed to move
-                //Derived from Miller's code to get the animations to play
-                if(goblins != null) {
-                    for (int i = 0; i < numOfGoblins; i++) {
-                        //System.out.println(goblins[i].getCurrentAnimation() == null);
-                        if (goblins[i] == null) {
-                            continue;
-                        } else if (!goblins[i].getCurrentAnimation().isAnimationFinished(goblins[i].elapsedTime)) {
-                            return false;
-                        }
-                    }
-                }
-
-                if(keycode == kControl.getMoveUp() && !(keyFlag[1] || keyFlag[2] || keyFlag[3])) {
-                    keyFlag[0] = true;
-                }
-                else if (keycode == kControl.getMoveDown() && !(keyFlag[1] || keyFlag[2] || keyFlag[0])) {
-                    keyFlag[3] = true;
-                }
-                else if(keycode == kControl.getMoveLeft() && !(keyFlag[1] || keyFlag[0] || keyFlag[3])) {
-                    keyFlag[2] = true;
-                }
-                else if(keycode == kControl.getMoveRight() && !(keyFlag[0] || keyFlag[2] || keyFlag[3])) {
-                    keyFlag[1] = true;
-                }
-
-                //Makes sure to move the player when the animation is finished for him.
-                //Based off of Miller's code for working with the animations
-                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime) &&
-                    playerIcon.getY() <= Y_GRID[0] && playerIcon.getY() >= Y_GRID[3] &&
-                    playerIcon.getX() <= X_GRID[1] && playerIcon.getX() >= X_GRID[2]) {
-                    prevX = (int) playerIcon.getX();
-                    prevY = (int) playerIcon.getY();
-                    hasMoved = true;
-                    currentKey = keycode;
-
-                    //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
-                    if(keycode == kControl.getMoveUp()) {
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0.2f));
-                        //playerMovenSound.playMoveSound();
-                        //keyFlag[0] = true;
-                        isTurn = false;
-                    }
-                    else if (keycode == kControl.getMoveDown()) {
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0.2f));
-                        //playerMovenSound.playMoveSound();
-                        //keyFlag[3] = true;
-                        isTurn = false;
-                    }
-                    else if(keycode == kControl.getMoveLeft()) {
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0.2f));
-                        //playerMovenSound.playMoveSound();
-                        //keyFlag[2] = true;
-                        isTurn = false;
-                    }
-                    else if(keycode == kControl.getMoveRight()) {
-                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0.2f));
-                        //playerMovenSound.playMoveSound();
-                        //keyFlag[1] = true;
-                        isTurn = false;
-                    }
-                    else {
-                        return false;
-                    }
-                    moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
-                    interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
-                }
-                return true;
-            }
-        });
+        //Defines the player input
+        definePlayerInput();
 
         //Already done
         kAssassinations = 0;
@@ -334,12 +243,14 @@ public class Player extends Entity {
         interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
         gold = 100;
 
+        definePlayerInput();
+
         // Thank you to libGDX.info editors for creating a helpful tutorial
         // on MoveActions as well as the libGDX creators for teaching pool-able actions
         // and InputListeners on their wiki.
         // https://libgdx.info/basic_action/
         // https://github.com/libgdx/libgdx/wiki/Scene2d
-        playerIcon.addListener(playerInput = new InputListener() {
+        /*playerIcon.addListener(playerInput = new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode)
             {
@@ -397,7 +308,7 @@ public class Player extends Entity {
                 }
                 return true;
             }
-        });
+        });*/
         kAssassinations = 0;
         kDeaths = 0;
         kDungeonsExplored = 0;
@@ -628,16 +539,133 @@ public class Player extends Entity {
         this.elapsedTime = elapsedTime;
     }
 
+    /**
+     * Sets the border that the player can walk through to make sure that icon snapping cannot occur
+     * @param X - X borders
+     * @param Y - Y Borders
+     */
     public void setBorder(int[] X, int[] Y) {
         X_GRID = X;
         Y_GRID = Y;
     }
 
+    /**
+     * Sets the border that the player can walk through to make sure that icon snapping cannot occur
+     * @param keyFlags - Boolean flag array for if various keys are being pressed
+     */
     public void setKeyFlag(boolean[] keyFlags) {
         this.keyFlag = keyFlags;
     }
 
+    /**
+     * Setting the stage inside of the program for the keyFlag parameters
+     * @param stage - Game stage that is being examined
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    /**
+     * Function makes sure that the player input is properly definied within the project.
+     */
+    public void definePlayerInput() {
+        // Thank you to libGDX.info editors for creating a helpful tutorial
+        // on MoveActions as well as the libGDX creators for teaching pool-able actions
+        // and InputListeners on their wiki.
+        // https://libgdx.info/basic_action/
+        // https://github.com/libgdx/libgdx/wiki/Scene2d
+        playerIcon.addListener(playerInput = new InputListener() {
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if(keycode == kControl.getMoveUp()) {
+                    keyFlag[0] = false;
+                }
+                if (keycode == kControl.getMoveDown()) {
+                    keyFlag[3] = false;
+                }
+                if(keycode == kControl.getMoveLeft()) {
+                    keyFlag[2] = false;
+                }
+                if(keycode == kControl.getMoveRight()) {
+                    keyFlag[1] = false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                //Checks to see if goblins are present and then checks to see if said goblins
+                //are still moving before the player is allowed to move
+                //Derived from Miller's code to get the animations to play
+                if(goblins != null) {
+                    for (int i = 0; i < numOfGoblins; i++) {
+                        //System.out.println(goblins[i].getCurrentAnimation() == null);
+                        if (goblins[i] == null) {
+                            continue;
+                        } else if (!goblins[i].getCurrentAnimation().isAnimationFinished(goblins[i].elapsedTime)) {
+                            return false;
+                        }
+                    }
+                }
+
+                if(keycode == kControl.getMoveUp() && !(keyFlag[1] || keyFlag[2] || keyFlag[3])) {
+                    keyFlag[0] = true;
+                }
+                else if (keycode == kControl.getMoveDown() && !(keyFlag[1] || keyFlag[2] || keyFlag[0])) {
+                    keyFlag[3] = true;
+                }
+                else if(keycode == kControl.getMoveLeft() && !(keyFlag[1] || keyFlag[0] || keyFlag[3])) {
+                    keyFlag[2] = true;
+                }
+                else if(keycode == kControl.getMoveRight() && !(keyFlag[0] || keyFlag[2] || keyFlag[3])) {
+                    keyFlag[1] = true;
+                }
+
+                //Makes sure to move the player when the animation is finished for him.
+                //Based off of Miller's code for working with the animations
+                if(isTurn && currentAnimation.isAnimationFinished(elapsedTime) &&
+                        playerIcon.getY() <= Y_GRID[0] && playerIcon.getY() >= Y_GRID[3] &&
+                        playerIcon.getX() <= X_GRID[1] && playerIcon.getX() >= X_GRID[2]) {
+                    prevX = (int) playerIcon.getX();
+                    prevY = (int) playerIcon.getY();
+                    hasMoved = true;
+                    currentKey = keycode;
+
+                    //Worked with Anirudh Oruganti and Alex Facer in order to map the controls to the actions properly
+                    if(keycode == kControl.getMoveUp()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() + MOVE_DISTANCE, 0.2f));
+                        //playerMovenSound.playMoveSound();
+                        //keyFlag[0] = true;
+                        isTurn = false;
+                    }
+                    else if (keycode == kControl.getMoveDown()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX(), playerIcon.getY() - MOVE_DISTANCE, 0.2f));
+                        //playerMovenSound.playMoveSound();
+                        //keyFlag[3] = true;
+                        isTurn = false;
+                    }
+                    else if(keycode == kControl.getMoveLeft()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY(), 0.2f));
+                        //playerMovenSound.playMoveSound();
+                        //keyFlag[2] = true;
+                        isTurn = false;
+                    }
+                    else if(keycode == kControl.getMoveRight()) {
+                        playerIcon.addAction(Actions.moveTo(playerIcon.getX() + MOVE_DISTANCE, playerIcon.getY(), 0.2f));
+                        //playerMovenSound.playMoveSound();
+                        //keyFlag[1] = true;
+                        isTurn = false;
+                    }
+                    else {
+                        return false;
+                    }
+                    moveSquare.setPosition(playerIcon.getX(), playerIcon.getY());
+                    interactSquare.setPosition(playerIcon.getX() - MOVE_DISTANCE, playerIcon.getY() - MOVE_DISTANCE);
+                }
+                return true;
+            }
+        });
     }
 }

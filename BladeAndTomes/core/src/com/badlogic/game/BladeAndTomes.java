@@ -373,8 +373,14 @@ public class BladeAndTomes extends Game {
         attackDownTextureAtlas.dispose();
     }
 
+    /**
+     * Resets elapsed time between rendered frames
+     */
     public void resetElapsedTime() { elapsedTime = 0; }
 
+    /**
+     * Goes through the steps of player animation and allows the player to animate
+     */
     public void runPlayerAnimation() {
         elapsedTime += Gdx.graphics.getDeltaTime();
 

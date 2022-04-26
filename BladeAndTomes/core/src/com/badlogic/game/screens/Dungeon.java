@@ -395,7 +395,9 @@ public class Dungeon extends ScreenAdapter {
 
     }
 
-    //function controlling all tutorial messages in the dungeon and their progression
+    /**
+     * Function controlling all tutorial messages in the dungeon and their progression
+     */
     public void nextTutorial(){
         switch(tutorialStep){
             case 1:
@@ -431,6 +433,8 @@ public class Dungeon extends ScreenAdapter {
         //game screen
         //https://libgdx.com/dev/simple-game-extended/
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        //Forces player/Actors to perform actions over time
         GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
 
         if (!roomHandler.combatFlag &&
@@ -439,7 +443,7 @@ public class Dungeon extends ScreenAdapter {
             roomHandler.spawnGoblin();
         }
 
-        System.out.println(MainMenu.isTutorial);
+        //System.out.println(MainMenu.isTutorial);
 
         //The code for adding columns and how to put things into the Window
         //is based off of Alex Facer's code for the Windows and Menus
@@ -459,10 +463,12 @@ public class Dungeon extends ScreenAdapter {
                 safeGuard = true;
         }
 
+        //Forces render to continuously check if player is in the chest room and what distance it is.
         if (roomHandler.level.getMapID() == 2) {
             roomHandler.checkTouchChest();
         }
 
+        //Renders all animations and tutorial things
         GAME.batch.begin();
         GAME.batch.draw(roomHandler.level.getBackgroundText(), -25, -20, 2000, 1150);
         GAME.runPlayerAnimation();
@@ -476,6 +482,7 @@ public class Dungeon extends ScreenAdapter {
             nextTutorial();
         }
 
+        //Coding block by Miller Banford that handles directional movement animations
         if (Gdx.input.isKeyJustPressed(GAME.controls.getMoveUp()) && GAME.getCurrentAnimation().isAnimationFinished(GAME.elapsedTime)) {
             GAME.resetElapsedTime();
             GAME.runMoveUpAnimation();
@@ -490,12 +497,15 @@ public class Dungeon extends ScreenAdapter {
             GAME.runMoveRightAnimation();
         }
 
+        //Handles combat animations
         if (roomHandler.combatFlag) {
             if (Gdx.input.isKeyJustPressed(GAME.controls.getFightAction())) {
                 GAME.resetElapsedTime();
                 GAME.runAttackDownAnimation();
             }
         }
+
+        //Gets and plays goblin animations
         goblins = roomHandler.getGoblins();
         if (goblins.length > 0) {
             for (Goblin goblin : goblins) {
@@ -505,13 +515,17 @@ public class Dungeon extends ScreenAdapter {
             }
         }
         GAME.batch.end();
+
+        // Draws stage instance
         GAME.stageInstance.draw();
         //inventory.update();
+
+        //Makes sure all overlays are visible.
         GAME.overlays.setOverLayesVisibility(true);
         //GAME.player.repollKey();
 
 
-        //Decides if combat movement or normal movement will be used
+        //Decides if combat movement or normal movement will be used as well as handles combat
         if(roomHandler.combatFlag) {
             roomHandler.handleCombat();
             if(resetBattleMusic) {
@@ -529,6 +543,8 @@ public class Dungeon extends ScreenAdapter {
             }
             resetBattleMusic = true;
         }
+
+        //Massive case statement by Miller Banford in order to handle Events and properly have them render in and out
         if(roomHandler.eventFlag) {
             GAME.stageInstance.setKeyboardFocus(null);
             if(!loadEventOnce) {
@@ -647,7 +663,7 @@ public class Dungeon extends ScreenAdapter {
                 GAME.stageInstance.addActor(optionTwo);
                 loadEventOnce = true;
             }
-
+            //Skill option 1 for Miller
             optionOne.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -713,6 +729,8 @@ public class Dungeon extends ScreenAdapter {
                     GAME.stageInstance.setKeyboardFocus(GAME.player.playerIcon);
                 }
             });
+
+            //Skill option 2 case statement
             optionTwo.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -796,8 +814,9 @@ public class Dungeon extends ScreenAdapter {
                 }
             });
         }
-        
-        GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
+
+        //Forces player/Actors to perform actions over time
+        //GAME.stageInstance.act(Gdx.graphics.getDeltaTime());
 
         //If player is dead, return to the OverWorld
         if(GAME.player.getHealthPoints() <= 0) {
@@ -834,7 +853,9 @@ public class Dungeon extends ScreenAdapter {
         GAME.overlays.render();
     }
 
-    //remove all assets regarding events
+    /**
+     * remove all assets regarding events
+     */
     public void removeEventImages(){
         eventGoblinImage.remove();
         eventTraderImage.remove();
@@ -852,7 +873,9 @@ public class Dungeon extends ScreenAdapter {
         optionTwo.remove();
     }
 
-    //if player is successful in event, this is called
+    /**
+     * if player is successful in event, this is called
+     */
     public void eventSuccess(){
         eventSuccessImage.setX((GAME.WINDOWWIDTH/2)-250);
         eventSuccessImage.setY((GAME.WINDOWHIGHT/2)-250);
@@ -860,7 +883,9 @@ public class Dungeon extends ScreenAdapter {
         GAME.stageInstance.addActor(optionDone);
     }
 
-    //if player fails the event, this is called
+    /**
+     * if player fails the event, this is called
+     */
     public void eventFail(){
         eventFailImage.setX((GAME.WINDOWWIDTH/2)-250);
         eventFailImage.setY((GAME.WINDOWHIGHT/2)-250);
