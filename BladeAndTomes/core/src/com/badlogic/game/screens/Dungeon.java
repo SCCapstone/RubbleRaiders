@@ -312,7 +312,7 @@ public class Dungeon extends ScreenAdapter {
                 GAME.overlays.render();
 
                 //Save player
-
+                if(!MainMenu.isTutorial)
                 GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
 
                 //Makes sure repeated instances are free
@@ -333,7 +333,8 @@ public class Dungeon extends ScreenAdapter {
                 GAME.stageInstance.clear();
                 GAME.player.setGold(GAME.player.getGold() + (int) (10 * roomHandler.getGoblinsKilled() * roomHandler.getLevelMultiplier())+5);
                 //System.out.println( GAME.player.getGold());
-                GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
+                if(!MainMenu.isTutorial)
+                    GAME.loadSaveManager.savePlayer(GAME.player, GAME.currentSaveIndex);
                 //GAME.player.kEarnedGoldThroughLevels++;
                 BladeAndTomes.exitDungeon = true;
                 BladeAndTomes.enterDungeon = false;

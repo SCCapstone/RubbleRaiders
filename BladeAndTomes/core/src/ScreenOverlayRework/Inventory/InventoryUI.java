@@ -224,6 +224,12 @@ public class InventoryUI implements Disposable {
         }
     }
 
+    /**
+     * THIS METHOD IS RESPONSIBLE FOR DISPLAYING GIVEN QuestBoard ONTO THE SCREEN
+     * THIS SETS ALL OTHER UI ELEMENTS OFF.
+     * @param board GIVEN QUEST BOARD UI
+     * @parm display visibility
+     */
     public void displayQuestBoardTradeUI(boolean display, TownHallQuestBoard board){
         // This removes everything on screen if visible on adds quest board ui
         if(display){
@@ -241,6 +247,12 @@ public class InventoryUI implements Disposable {
             board.getTable().removeActor(questUI.getTable());
         }
     }
+    /**
+     * THIS METHOD IS RESPONSIBLE FOR DISPLAYING GIVEN BUYER ONTO THE SCREEN
+     * THIS SETS ALL OTHER UI ELEMENTS OFF.
+     * @param npc GIVEN BUYER UI
+     * @parm display visibility
+     */
     public void Trade_Inventory_NPCBuyer(boolean display, NPCBuyer npc){
         // This removes everything on screen if visible on adds buyer ui
         if(display){
@@ -258,7 +270,12 @@ public class InventoryUI implements Disposable {
             npc.getTable().removeActor(HiddenInventorySlots);
         }
     }
-
+    /**
+     * THIS METHOD IS RESPONSIBLE FOR DISPLAYING GIVEN SELLER ONTO THE SCREEN
+     * THIS SETS ALL OTHER UI ELEMENTS OFF.
+     * @param npc GIVEN SELLER UI
+     * @parm display visibility
+     */
     public void Trade_Inventory_NPCSeller(boolean display, NPCSeller npc){
         if(display){
             table.addActor(npc.getTable());
@@ -275,21 +292,39 @@ public class InventoryUI implements Disposable {
             npc.getTable().removeActor(HiddenInventorySlots);
         }
     }
+
+    /**
+     * THIS IS USED FOR DRAWING AVAILABLE QUESTS IN INVENTORY UI
+     */
     public void drawQuests() {
+
         HiddenQuests.addActor(questUI.getTable());
     }
 
+
+    /**
+     * THIS IS USED FOR DRAWING SKILLS IN INVENTORY UI
+     */
     public void drawSkills() {
         HiddenSkill.add(skillUIs.getTable());
     }
+
+    /**
+     * THIS IS A CONTINUES METHOD WHERE IT UPDATES VARIABLES OVER TIME
+     */
     public void render(){
+        // UPDATING QUEST BOARD ELEMENTS
         questUI.render();
+        // UPDATING SKILL ELEMENTS
         skillUIs.render();
+        // UPDATING GOLD IN INVENTORY
         Gold.setText("Gold: "+String.valueOf(game.player.getGold()));
     }
 
-
-
+    /**
+     * THIS METHOD IS USED TP TOGGLE THE VISIBLY OF HIDDEN INVENTORY
+     * @param val TRUE TO DISPLAY THE INVENTORY OR FALSE TO TAKE IT OUT
+     */
     public void setHiddenInventoryVisibility(boolean val){
         // This removes everything on screen if visible on adds Inventory ui
 
@@ -308,6 +343,9 @@ public class InventoryUI implements Disposable {
         }
     }
 
+    /**
+     * @return THIS RETURNS A TABLE WHERE ALL HIDDEN INVENTORY ELEMENTS ARE DRAWN
+     */
     public Table getUI(){
         return table;
     }

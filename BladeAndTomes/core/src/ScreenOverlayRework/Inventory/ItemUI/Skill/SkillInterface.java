@@ -33,21 +33,23 @@ public class SkillInterface {
         this.avaiableTokens = avaiableTokens;
 
         // Table that contains all layouts and listeners
-
         table = new Table();
-
         // UI Components Init
         plus = new TextButton("Upgrade",game.generalTextButtonStyle);
         skillType = new Label("     "+typeInfo,game.BaseLabelStyle1);
         currentAmount = new Label("     Current Level: \n     \t"+String.valueOf(upgradeObj.get()),game.BaseLabelStyle1);
-//        currentAmount.;
 
+        // Draws Skills layout
         createSkillLayout();
+        // Adds all necessary listeners
         addListener();
 
 
     }
 
+    /**
+     * Creates a layout for skill stats and upgrade
+     */
     public void createSkillLayout(){
 
         table.add(skillType).size(125,70).spaceTop(50);
@@ -59,6 +61,9 @@ public class SkillInterface {
 
     }
 
+    /**
+     * The method is a listener
+     */
     public void addListener(){
         plus.addListener(new ClickListener(){
             @Override
@@ -83,11 +88,12 @@ public class SkillInterface {
     }
 
     public void render(){
+        // updates skills tokens
         currentAmount.setText("     Current Level: \n     "+String.valueOf(upgradeObj.get()));
     }
 
     public Table getTable(){
-
+        // returns skills table with layout
         return table;
     }
 }

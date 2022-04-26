@@ -181,22 +181,10 @@ public class RandomItemGenerator {
     public void setItemDocument(ScreenOverlayRework.Inventory.itemDocument doc) {
          itemDocument = doc;
     }
-
-    public String getInventoryItemsPath() {
-        return inventoryItemsPath;
-    }
-
-    public String getItemType() {
-        return itemType;
-    }
-
     // Return Level of This generated item
 
     public int getLevel() {
         return level;
     }
 
-    public Random getRandom() {
-        return random;
-    }
 }

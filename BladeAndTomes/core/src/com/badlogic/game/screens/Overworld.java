@@ -97,8 +97,11 @@ public class Overworld extends ScreenAdapter {
         // Displays TownHall Interact msg
         // The labels part of anris work for trading and selling
         // Is also piggybacking off of collision
-        game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
-        game.player.playerIcon.setPosition(1920/2,1080/2);
+        if(MainMenu.isTutorial){
+            game.loadSaveManager.generatePlayer();
+        } else {
+            game.player = game.loadSaveManager.loadPlayer(game.currentSaveIndex);
+        }        game.player.playerIcon.setPosition(1920/2,1080/2);
 
         //Passes current animations and game controls to player to make sure it has those stored
         //Keyboard Controls are done by Anirudh Oruganti and Alex Facer.
@@ -351,6 +354,7 @@ public class Overworld extends ScreenAdapter {
             questBoardTrade.render();
         }
         GAME.overlays.render();
+        if(!MainMenu.isTutorial)
         GAME.loadSaveManager.savePlayer(GAME.player,GAME.currentSaveIndex);
     }
     @Override

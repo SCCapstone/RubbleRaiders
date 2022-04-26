@@ -22,7 +22,6 @@ public class Save {
         this.fourPreSets = fourPreSets;
 }
 
-public void addToGeneralSave(){}
     public void saveNewProgress(Player player,int index){
         player.removeTemporary();
         fourPreSets.set(index,saveParser.toJson(player,Player.class));

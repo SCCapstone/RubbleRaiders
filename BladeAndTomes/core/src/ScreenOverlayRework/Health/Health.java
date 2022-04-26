@@ -62,17 +62,6 @@ public class Health implements Disposable {
     }
 
 
-    public void incrementHealth(){
-    }
-    public void decrementHealth(){
-
-    }
-    public void clearAssetManger(){
-        manager.unload("SkinAssets/ProgressBar/healthbarUI.json");
-        manager.unload("SkinAssets/ProgressBar/healthbarUI.atlas");
-        manager.clear();
-    }
-
     @Override
     public void dispose() {
         manager.unload("SkinAssets/ProgressBar/healthbarUI.json");

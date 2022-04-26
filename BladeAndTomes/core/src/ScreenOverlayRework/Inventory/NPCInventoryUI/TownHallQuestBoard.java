@@ -11,10 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Random;
 
 public class TownHallQuestBoard extends TradeUI{
-    private BladeAndTomes game;
     private AssetManager manager;
     private Array<QuestTradeElements> questTrades;
-    public boolean isVisible = false;
     public TownHallQuestBoard(BladeAndTomes game, AssetManager itemsManager, QuestUI questUI) {
         super(game, null, itemsManager, null, "Town Hall \n       Quest Board", true);
         this.manager = itemsManager;

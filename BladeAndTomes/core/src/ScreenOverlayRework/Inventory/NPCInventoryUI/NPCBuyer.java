@@ -23,7 +23,6 @@ public class NPCBuyer extends TradeUI {
 
     public NPCBuyer(BladeAndTomes game, DragAndDrop dnd, AssetManager itemsManager, Array<itemSlot> slots) {
         super(game, dnd, itemsManager, slots, "NPC Buyer",true);
-
         buyer = new Table();
         trade = new Array<>();
         numberOfTrades = 3;
@@ -82,7 +81,6 @@ public class NPCBuyer extends TradeUI {
                     gold.setText("       Gold : " +String.valueOf(game.player.getGold()));
                     slot.tradeComplete();
                     game.player.kTradesNPCBuyer+=1;
-//                    slot.removeItem();
                 }
 
             };
