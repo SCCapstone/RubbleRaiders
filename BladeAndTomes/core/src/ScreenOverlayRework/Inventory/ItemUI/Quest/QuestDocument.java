@@ -32,13 +32,17 @@ public class QuestDocument {
     private int kInitialEarnGoldThroughLevels;
 
 
-
+    /**
+     * This constructor has all the available quests
+     * @param difficulty the difficulty of quest: easy medium hard
+     */
     public QuestDocument(String difficulty){
         this.difficulty = difficulty;
         availableQuests = new Array<>();
         randomNumber = new Random();
         rewardAmount = 0;
         kQuestObtainAmount = 0;
+        // Available quests
         availableQuests.add("Kill Enemies");
         availableQuests.add("Open Chests");
         availableQuests.add("Trade Items with NPC");
@@ -52,35 +56,45 @@ public class QuestDocument {
         availableQuests.add("Complete Level(s)");
         availableQuests.add("Earn Gold Through Levels");
 
+        // Generates quest based on difficulty
         generateQuest(difficulty);
     }
     public void generateQuest(String diff){
         switch (diff){
             case "HARD":
+                // Random Quest Picking
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
                 info = availableQuests.get(currentQuestIndex);
+                // Calculating Gold
                 isRewardGold = (randomNumber.nextInt(2) == 1)? true:false;
                 rewardAmount = (isRewardGold)?( randomNumber.nextInt(5)+15):(randomNumber.nextInt(2));
                 ++rewardAmount;
+                // Random Quest Obtain Amount
                 kObj = randomNumber.nextInt(5)+7;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4)+randomNumber.nextInt(4);
                 if(isRewardGold)
                     rewardAmount+=kQuestObtainAmount;
                 break;
             case "MEDIUM":
+                // Random Quest Picking
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
+                // Calculating Gold
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5)+7;
                 ++rewardAmount;
+                // Random Quest Obtain Amount
                 kObj = randomNumber.nextInt(5)+2;
                 kQuestObtainAmount = randomNumber.nextInt(4)+randomNumber.nextInt(4);
                 rewardAmount+=kQuestObtainAmount;
                 break;
             case "EASY":
+                // Random Quest Picking
                 currentQuestIndex = randomNumber.nextInt(availableQuests.size);
+                // Calculating Gold
                 isRewardGold = true;
                 rewardAmount = randomNumber.nextInt(5);
                 ++rewardAmount;
+                // Random Quest Obtain Amount
                 kObj = randomNumber.nextInt(5)+1;
                 kQuestObtainAmount = randomNumber.nextInt(4)+1;
                 rewardAmount+=kQuestObtainAmount;
@@ -188,7 +202,7 @@ public class QuestDocument {
 
             case 9:
                 // Kill Enemies Using Long Range Weapons
-                output = ((kCurrentLongRangeKills-kCurrentLongRangeKills))>=kObj;
+                output = ((kCurrentLongRangeKills-kInitialLongRangeKills))>=kObj;
                 progressBarVal =  ((kCurrentLongRangeKills-kCurrentLongRangeKills));
                 return output;
             case 10:

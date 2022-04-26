@@ -50,33 +50,7 @@ public class RandomItemGenerator {
         }
     }
 
-    public RandomItemGenerator(AssetManager manager, int maxLevel) {
-        this.manager = manager;
-        random = new Random();
-        items = new Hashtable<String, Hashtable<String,Integer>>();
-        itemsFinal = new Hashtable<String, Hashtable<String,String>>();
-        itemDocument = new itemDocument();
-        inventoryItemsPath = "InventoryItems/";
-        MaxLevel = maxLevel;
-        addAvailableItems();
-        itemType = (String) items.keySet().toArray()[random.nextInt(items.size())];
-        itemCategory = (String) items.get(itemType).keySet().toArray()[random.nextInt(items.get(itemType).size())];
-        level = random.nextInt(items.get(itemType).get(itemCategory)) + 1;
-        AllItems();
-        int ranAmount = random.nextInt(itemsFinal.size());
-        if(ranAmount == 1)
-            ranAmount = random.nextInt(itemsFinal.size());
-        if(ranAmount == 1)
-            ranAmount = random.nextInt(itemsFinal.size());
-        RandomItemType = ((String) itemsFinal.keySet().toArray()[ranAmount]);
-        if(RandomItemType.equalsIgnoreCase("Weapons")){
-            generateWeaponDoc();
-        }else if(RandomItemType.equalsIgnoreCase("Spells")){
-            generateSpellDoc();
-        } else if(RandomItemType.equalsIgnoreCase("Armor")){
-            generateArmorDoc();
-        }
-    }
+
     public void generateArmorDoc(){
         RandomItemName =  (String) itemsFinal.get("Armor").keySet().toArray()[random.nextInt(itemsFinal.get("Armor").size())];
         int itemLevel = random.nextInt(MaxLevel)+1;
@@ -215,6 +189,8 @@ public class RandomItemGenerator {
     public String getItemType() {
         return itemType;
     }
+
+    // Return Level of This generated item
 
     public int getLevel() {
         return level;

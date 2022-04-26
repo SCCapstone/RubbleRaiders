@@ -37,7 +37,7 @@ public class GameSelection extends ScreenAdapter {
         //set game to current game
         this.GAME = game;
         //add background image
-        background = new Texture(Gdx.files.internal("OverworldBackground.jpg"));
+        background = new Texture(Gdx.files.internal("Settings.jpg"));
         backgroundImage = new Image(background);
         GAME.stageInstance.addActor(backgroundImage);
 

@@ -14,8 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 //GdxTestRunner written by Thomas Pronold (TomGrill) for purpose of using as a framework for Gdx testing
 //Source: https://github.com/TomGrill/gdx-testing
@@ -40,12 +39,19 @@ public class MovementVerticalTest {
         //Mocks the graphics class so that functions can be called with intended results
         Gdx.graphics = mock(Gdx.graphics.getClass());
 
+        entity = mock(entity.getClass());
+        player = mock(player.getClass());
+
         //Adds actor to the stage and focuses the keyboard onto him
         //test.addActor(player.playerIcon);
         //test.setKeyboardFocus(player.playerIcon);
 
         //Forces the call of .getDeltaTime() to send a signal of 5 seconds
         when(Gdx.graphics.getDeltaTime()).thenReturn(5.0f);
+
+        entity.moveDown();
+        entity.moveUP();
+        entity.moveUP();
 
         //Sets in a few inputs into the input listener
         //player.playerInput.keyDown(new InputEvent(), Input.Keys.DOWN);
@@ -59,5 +65,6 @@ public class MovementVerticalTest {
 
         //Asserts that the
         //Assert.assertEquals(-64, (int) player.playerIcon.getY());
+        //Assert.assertEquals(160, );
     }
 }
