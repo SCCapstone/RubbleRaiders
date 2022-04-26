@@ -164,6 +164,12 @@ public class Overworld extends ScreenAdapter {
                 viewControls.remove();
                 chooseQuit.remove();
                 exitPause.remove();
+                if(MainMenu.isTutorial){
+                    GAME.stageInstance.addActor(tutorialMessage);
+                    if(tutorialStep<9 || tutorialStep>9){
+                        GAME.stageInstance.addActor(next);
+                    }
+                }
             }
         });
 
@@ -214,7 +220,7 @@ public class Overworld extends ScreenAdapter {
             {
                 if(keycode == game.controls.getOpenPauseMenu())
                 {
-                    if(MainMenu.isTutorial){
+                    if(MainMenu.isTutorial || tutorialStep>9){
                         tutorialMessage.remove();
                         next.remove();
                     }
@@ -288,7 +294,7 @@ public class Overworld extends ScreenAdapter {
         //Tutorial
         tutorialStep = 1;
         tutorialMessage = new Label("Welcome to Blade and Tomes!\n\nThis tutorial will help you\nunderstand" +
-                "how to play\nthe game.\n\nClick Next to continue.", GAME.generalLabelStyle);
+                " how to play\nthe game.\n\nClick Next to continue.", GAME.generalLabelStyle);
         tutorialMessage.setPosition(GAME.stageInstance.getWidth()/2-200, GAME.stageInstance.getHeight()/2);
         tutorialMessage.setSize(300f, 200f);
         tutorialMessage.setAlignment(1,1);
