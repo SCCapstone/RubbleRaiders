@@ -39,8 +39,8 @@ public class MovementVerticalTest {
         //Mocks the graphics class so that functions can be called with intended results
         Gdx.graphics = mock(Gdx.graphics.getClass());
 
-        entity = mock(entity.getClass());
-        player = mock(player.getClass());
+       entity = mock(EntityUIBase.class);
+       player = mock(PlayerEnitityUI.class);
 
         //Adds actor to the stage and focuses the keyboard onto him
         //test.addActor(player.playerIcon);
